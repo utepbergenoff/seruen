@@ -3,6 +3,7 @@
 Mapping follows docs (yerlan.md section 5 / TA appendix B).
 """
 
+import re
 from datetime import date
 
 CATEGORIES = ["coffee", "food", "park", "kids", "culture", "viewpoint", "shopping",
@@ -16,6 +17,9 @@ _RULES: list[tuple[str, set[str], str, list[str]]] = [
     ("amenity", {"restaurant", "food_court", "ice_cream"}, "food", []),
     ("amenity", {"library"}, "library", ["тихо", "розетки", "бесплатно"]),
     ("amenity", {"coworking_space"}, "cowork", ["розетки", "wi-fi", "тихо"]),
+    ("office", {"coworking"}, "cowork", ["розетки", "wi-fi", "тихо"]),
+    ("amenity", {"planetarium"}, "unusual", []),
+    ("leisure", {"escape_game"}, "unusual", ["крытое"]),
     ("amenity", {"theatre", "cinema", "arts_centre"}, "culture", []),
     ("tourism", {"museum", "gallery"}, "culture", []),
     ("tourism", {"zoo", "aquarium", "theme_park"}, "kids", []),
@@ -26,7 +30,9 @@ _RULES: list[tuple[str, set[str], str, list[str]]] = [
     ("leisure", {"ice_rink", "fitness_centre", "sports_centre"}, "sport", []),
     ("shop", {"mall"}, "shopping", ["крытое"]),
 ]
-_UNUSUAL_WORDS = ("лофт", "крыш", "арт", "loft", "roof", "art ")
+_UNUSUAL = re.compile(r"лофт|крыш|\bарт\b|арт-|loft|roof|\bart\b", re.I)
+# Cyrillic letters that look Latin ("Sayajay аrt" is typed with a Cyrillic "а")
+_HOMOGLYPHS = str.maketrans("аеорсхук", "aeopcxyk")
 
 
 def _category(tags: dict) -> tuple[str, list[str]] | None:
@@ -63,7 +69,8 @@ def to_poi(el: dict, today: date | None = None) -> dict | None:
         return None
     category, tag_list = found
     name = (tags.get("name") or "").strip()
-    if category == "viewpoint" and any(w in name.lower() for w in _UNUSUAL_WORDS):
+    low = name.lower()
+    if category in ("viewpoint", "culture") and (_UNUSUAL.search(low) or _UNUSUAL.search(low.translate(_HOMOGLYPHS))):
         category = "unusual"
 
     lat = el.get("lat", el.get("center", {}).get("lat"))

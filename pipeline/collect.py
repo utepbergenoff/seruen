@@ -21,7 +21,9 @@ def build_query(bbox: tuple[float, float, float, float] = BBOX) -> str:
     b = ",".join(str(x) for x in bbox)
     return f"""[out:json][timeout:180];
 (
-  nwr["amenity"~"^(cafe|restaurant|library|theatre|cinema|ice_cream|food_court|coworking_space|bar|pub|nightclub|hookah_lounge|arts_centre)$"]({b});
+  nwr["amenity"~"^(cafe|restaurant|library|theatre|cinema|ice_cream|food_court|coworking_space|bar|pub|nightclub|hookah_lounge|arts_centre|planetarium)$"]({b});
+  nwr["office"="coworking"]({b});
+  nwr["leisure"="escape_game"]({b});
   nwr["tourism"~"^(museum|attraction|viewpoint|gallery|artwork|zoo|aquarium|theme_park)$"]({b});
   nwr["leisure"~"^(park|garden|playground|nature_reserve|ice_rink|fitness_centre|sports_centre|water_park)$"]({b});
   nwr["shop"="mall"]({b});

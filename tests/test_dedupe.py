@@ -39,6 +39,15 @@ def test_mapping_rows_from_the_spec():
     assert to_poi(node({"amenity": "bench"})) is None
 
 
+def test_office_coworking_is_cowork_and_art_spaces_are_unusual():
+    cw = to_poi(node({"office": "coworking", "name": "Astana Hub"}))
+    assert cw["category"] == "cowork" and {"розетки", "wi-fi"} <= set(cw["tags"])
+    assert to_poi(node({"amenity": "arts_centre", "name": "Sayajay аrt"}))["category"] == "unusual"
+    assert to_poi(node({"amenity": "theatre", "name": "Астана Опера"}))["category"] == "culture"
+    assert to_poi(node({"leisure": "escape_game", "name": "Клаустрофобия"}))["category"] == "unusual"
+    assert to_poi(node({"amenity": "planetarium", "name": "Планетарий"}))["category"] == "unusual"
+
+
 def test_dedupe_drops_duplicates_missing_coords_and_junk_with_reasons():
     rich = to_poi(node({"amenity": "cafe", "name": "Коктем", "opening_hours": "24/7", "website": "x"}, id_=1))
     poor = to_poi(node({"amenity": "cafe", "name": "Кафе Коктем"}, id_=2, lat=51.12815))  # ~17 m away
