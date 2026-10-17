@@ -1,0 +1,146 @@
+{
+  "mode": "no_ai",
+  "recommendations": [
+    {
+      "poi_id": "sample_005",
+      "name": "Арт-павильон (демо)",
+      "category": "culture",
+      "coords": {
+        "lat": 51.091,
+        "lon": 71.418
+      },
+      "distance_m": 234,
+      "walk_min": 5,
+      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why_source": "template",
+      "time_to_spend_min": 60,
+      "what_to_do": "Осмотрите доступную экспозицию; билеты и программу уточните на месте.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Su 08:00-22:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "accessibility": "yes",
+      "links": {},
+      "rating": 4.0,
+      "rating_count": 35,
+      "budget_breakdown": {
+        "walk_there_min": 5,
+        "stay_min": 60,
+        "walk_back_min": 5,
+        "reserve_min": 0,
+        "total_min": 70
+      }
+    },
+    {
+      "poi_id": "sample_006",
+      "name": "Световая скульптура (демо)",
+      "category": "unusual",
+      "coords": {
+        "lat": 51.088,
+        "lon": 71.414
+      },
+      "distance_m": 238,
+      "walk_min": 5,
+      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why_source": "template",
+      "time_to_spend_min": 60,
+      "what_to_do": "Осмотрите место с общедоступной территории; детали посещения уточните заранее.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "24/7",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "accessibility": "yes",
+      "links": {},
+      "rating": 4.1,
+      "rating_count": 42,
+      "budget_breakdown": {
+        "walk_there_min": 5,
+        "stay_min": 60,
+        "walk_back_min": 5,
+        "reserve_min": 0,
+        "total_min": 70
+      }
+    },
+    {
+      "poi_id": "sample_011",
+      "name": "Галерея у Mega (демо)",
+      "category": "culture",
+      "coords": {
+        "lat": 51.09,
+        "lon": 71.407
+      },
+      "distance_m": 708,
+      "walk_min": 13,
+      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why_source": "template",
+      "time_to_spend_min": 60,
+      "what_to_do": "Осмотрите доступную экспозицию; билеты и программу уточните на месте.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Su 08:00-22:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "accessibility": "yes",
+      "links": {},
+      "rating": 4.1,
+      "rating_count": 77,
+      "budget_breakdown": {
+        "walk_there_min": 13,
+        "stay_min": 60,
+        "walk_back_min": 13,
+        "reserve_min": 0,
+        "total_min": 86
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 5,
+    "stay_min": 60,
+    "walk_back_min": 5,
+    "reserve_min": 0,
+    "total_min": 70
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 1730,
+    "radius_expanded": false,
+    "time_budget_min": 120,
+    "filters": [
+      "category:culture",
+      "category:viewpoint",
+      "category:unusual",
+      "exclude:shopping"
+    ],
+    "time": "Sun 14:00",
+    "candidates_found": 4,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "rules",
+    "target_time": "2026-10-18T14:00:00+05:00"
+  },
+  "notes": [
+    "Тестовый набор: места и их свойства смоделированы, не используйте их для реального посещения."
+  ],
+  "safety": [],
+  "route": null,
+  "disclaimer": "Данные о местах могут устареть — проверяйте на месте. Время пешком приблизительное.",
+  "data_kind": "sample",
+  "mock": false
+}

@@ -1,0 +1,142 @@
+{
+  "mode": "no_ai",
+  "recommendations": [
+    {
+      "poi_id": "sample_019",
+      "name": "Demo place 19",
+      "category": "coffee",
+      "coords": {
+        "lat": 51.1285,
+        "lon": 71.4305
+      },
+      "distance_m": 66,
+      "walk_min": 2,
+      "why": "Matches the requested category and fits your time budget.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Have a coffee; check seating before ordering.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "24/7",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "accessibility": "yes",
+      "links": {},
+      "rating": 4.4,
+      "rating_count": 133,
+      "budget_breakdown": {
+        "walk_there_min": 2,
+        "stay_min": 30,
+        "walk_back_min": 2,
+        "reserve_min": 60,
+        "total_min": 94
+      }
+    },
+    {
+      "poi_id": "sample_020",
+      "name": "Demo place 20",
+      "category": "unusual",
+      "coords": {
+        "lat": 51.127,
+        "lon": 71.429
+      },
+      "distance_m": 132,
+      "walk_min": 3,
+      "why": "Matches the requested category and fits your time budget.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Explore from public areas; check visitor details beforehand.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "24/7",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "accessibility": "yes",
+      "links": {},
+      "rating": 4.0,
+      "rating_count": 140,
+      "budget_breakdown": {
+        "walk_there_min": 3,
+        "stay_min": 30,
+        "walk_back_min": 3,
+        "reserve_min": 60,
+        "total_min": 96
+      }
+    },
+    {
+      "poi_id": "sample_021",
+      "name": "Demo place 21",
+      "category": "viewpoint",
+      "coords": {
+        "lat": 51.129,
+        "lon": 71.432
+      },
+      "distance_m": 179,
+      "walk_min": 4,
+      "why": "Matches the requested category and fits your time budget.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Explore from public areas; check visitor details beforehand.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "24/7",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "accessibility": "yes",
+      "links": {},
+      "rating": 4.1,
+      "rating_count": 147,
+      "budget_breakdown": {
+        "walk_there_min": 4,
+        "stay_min": 30,
+        "walk_back_min": 4,
+        "reserve_min": 60,
+        "total_min": 98
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 2,
+    "stay_min": 30,
+    "walk_back_min": 2,
+    "reserve_min": 60,
+    "total_min": 94
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 865,
+    "radius_expanded": false,
+    "time_budget_min": 120,
+    "filters": [],
+    "time": "Sun 14:00",
+    "candidates_found": 3,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "rules",
+    "target_time": "2026-10-18T14:00:00+05:00"
+  },
+  "notes": [
+    "Time is reserved for airport travel; this is a fixed estimate, check your route and check-in time.",
+    "Test dataset: places and properties are simulated; do not use them for actual visits."
+  ],
+  "safety": [],
+  "route": null,
+  "disclaimer": "Place data may be outdated; verify locally. Walking times are estimates.",
+  "data_kind": "sample",
+  "mock": false
+}

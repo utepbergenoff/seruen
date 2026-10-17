@@ -1,0 +1,146 @@
+{
+  "mode": "no_ai",
+  "recommendations": [
+    {
+      "poi_id": "sample_010",
+      "name": "Demo place 10",
+      "category": "park",
+      "coords": {
+        "lat": 51.089,
+        "lon": 71.406
+      },
+      "distance_m": 210,
+      "walk_min": 4,
+      "why": "Matches the requested category and fits your time budget.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Walk along public paths and return the same way.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "24/7",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "accessibility": "yes",
+      "links": {},
+      "rating": 4.0,
+      "rating_count": 70,
+      "budget_breakdown": {
+        "walk_there_min": 4,
+        "stay_min": 30,
+        "walk_back_min": 4,
+        "reserve_min": 0,
+        "total_min": 38
+      }
+    },
+    {
+      "poi_id": "sample_011",
+      "name": "Demo place 11",
+      "category": "culture",
+      "coords": {
+        "lat": 51.09,
+        "lon": 71.407
+      },
+      "distance_m": 301,
+      "walk_min": 6,
+      "why": "Matches the requested category and fits your time budget.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Explore the available exhibition; check tickets and the programme on arrival.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Su 08:00-22:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "accessibility": "yes",
+      "links": {},
+      "rating": 4.1,
+      "rating_count": 77,
+      "budget_breakdown": {
+        "walk_there_min": 6,
+        "stay_min": 30,
+        "walk_back_min": 6,
+        "reserve_min": 0,
+        "total_min": 42
+      }
+    },
+    {
+      "poi_id": "sample_004",
+      "name": "Demo place 4",
+      "category": "park",
+      "coords": {
+        "lat": 51.0892,
+        "lon": 71.4125
+      },
+      "distance_m": 664,
+      "walk_min": 12,
+      "why": "Matches the requested category and fits your time budget.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Walk along public paths and return the same way.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "24/7",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "accessibility": "yes",
+      "links": {},
+      "rating": 4.4,
+      "rating_count": 28,
+      "budget_breakdown": {
+        "walk_there_min": 12,
+        "stay_min": 30,
+        "walk_back_min": 12,
+        "reserve_min": 0,
+        "total_min": 54
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 4,
+    "stay_min": 30,
+    "walk_back_min": 4,
+    "reserve_min": 0,
+    "total_min": 38
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 865,
+    "radius_expanded": false,
+    "time_budget_min": 60,
+    "filters": [
+      "category:park",
+      "category:viewpoint",
+      "category:culture",
+      "category:unusual"
+    ],
+    "time": "Sun 14:00",
+    "candidates_found": 5,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "rules",
+    "target_time": "2026-10-18T14:00:00+05:00"
+  },
+  "notes": [
+    "Test dataset: places and properties are simulated; do not use them for actual visits."
+  ],
+  "safety": [],
+  "route": null,
+  "disclaimer": "Place data may be outdated; verify locally. Walking times are estimates.",
+  "data_kind": "sample",
+  "mock": false
+}

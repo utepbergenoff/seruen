@@ -1,0 +1,43 @@
+import os
+from dataclasses import dataclass, field
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+@dataclass
+class Settings:
+    poi_path: Path = ROOT / "data/poi.json"
+    data_kind: str = "real"
+    index_path: Path = ROOT / "data/index/lsa.json"
+    gemini_api_key: str = field(default="", repr=False)
+    gemini_model: str = "gemini-3.8-flash"
+    ai_timeout_s: float = 8.0
+    airport_reserve_min: int = 60
+    cache_size: int = 256
+    mock: bool = False
+    warm_cache: bool = True
+    cors_origins: tuple[str, ...] = ("http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000")
+
+    @classmethod
+    def from_env(cls):
+        load_dotenv(ROOT / ".env")
+        path = Path(os.getenv("POI_PATH", "data/poi.json"))
+        path = path if path.is_absolute() else ROOT / path
+        sample = "sample" in path.name
+        return cls(
+            poi_path=path,
+            data_kind=os.getenv("DATA_KIND", "sample" if sample else "real"),
+            gemini_api_key=os.getenv("GEMINI_API_KEY", ""),
+            gemini_model=os.getenv("GEMINI_MODEL", "gemini-3.8-flash"),
+            mock=os.getenv("MOCK_MODE", "false").lower() == "true",
+            warm_cache=os.getenv("WARM_CACHE", "true").lower() == "true",
+            airport_reserve_min=int(os.getenv("AIRPORT_RESERVE_MIN", "60")),
+            cors_origins=tuple(
+                x.strip().rstrip("/")
+                for x in os.getenv("CORS_ORIGINS", ",".join(cls.cors_origins)).split(",")
+                if x.strip()
+            ),
+        )

@@ -1,0 +1,860 @@
+{
+  "provenance": "Draft fixtures based on team plan v2.1, NOT Erlan final scenarios",
+  "cases": [
+    {
+      "id": "S1.1",
+      "request": {
+        "location": {
+          "lat": 51.089,
+          "lon": 71.417,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Хочу поработать с ноутбуком пару часов, нужно тихое место с кофе и розеткой",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "coffee",
+          "library",
+          "cowork"
+        ]
+      }
+    },
+    {
+      "id": "S1.2",
+      "request": {
+        "location": {
+          "lat": 51.089,
+          "lon": 71.417,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Где рядом спокойная кофейня с Wi-Fi?",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "coffee",
+          "library",
+          "cowork"
+        ]
+      }
+    },
+    {
+      "id": "S1.3",
+      "request": {
+        "location": {
+          "lat": 51.089,
+          "lon": 71.417,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Нужно посидеть с ноутом час-два, тихо",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "coffee",
+          "library",
+          "cowork"
+        ]
+      }
+    },
+    {
+      "id": "S1.4",
+      "request": {
+        "location": {
+          "lat": 51.089,
+          "lon": 71.417,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Кофе, розетка, не шумно",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "coffee",
+          "library",
+          "cowork"
+        ]
+      }
+    },
+    {
+      "id": "S1.5",
+      "request": {
+        "location": {
+          "lat": 51.089,
+          "lon": 71.417,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Quiet cafe with power sockets near me",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "coffee",
+          "library",
+          "cowork"
+        ]
+      }
+    },
+    {
+      "id": "S2.1",
+      "request": {
+        "location": {
+          "lat": 51.133,
+          "lon": 71.404,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Я с ребёнком, есть час. Куда сходить рядом?",
+        "context": {
+          "time_budget_min": 60,
+          "companions": "child",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "child",
+        "time_budget_min": 60,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "kids",
+          "park",
+          "culture"
+        ]
+      }
+    },
+    {
+      "id": "S2.2",
+      "request": {
+        "location": {
+          "lat": 51.133,
+          "lon": 71.404,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "С дочкой 6 лет, час свободен, что рядом?",
+        "context": {
+          "time_budget_min": 60,
+          "companions": "child",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "child",
+        "time_budget_min": 60,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "kids",
+          "park",
+          "culture"
+        ]
+      }
+    },
+    {
+      "id": "S2.3",
+      "request": {
+        "location": {
+          "lat": 51.133,
+          "lon": 71.404,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Детская площадка или музей с интерактивами недалеко",
+        "context": {
+          "time_budget_min": 60,
+          "companions": "child",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "child",
+        "time_budget_min": 60,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "kids",
+          "park",
+          "culture"
+        ]
+      }
+    },
+    {
+      "id": "S2.4",
+      "request": {
+        "location": {
+          "lat": 51.133,
+          "lon": 71.404,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Куда с детьми на часик?",
+        "context": {
+          "time_budget_min": 60,
+          "companions": "child",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "child",
+        "time_budget_min": 60,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "kids",
+          "park",
+          "culture"
+        ]
+      }
+    },
+    {
+      "id": "S2.5",
+      "request": {
+        "location": {
+          "lat": 51.133,
+          "lon": 71.404,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Баламен бір сағат қайда барсақ болады?",
+        "context": {
+          "time_budget_min": 60,
+          "companions": "child",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "child",
+        "time_budget_min": 60,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "kids",
+          "park",
+          "culture"
+        ]
+      }
+    },
+    {
+      "id": "S3.1",
+      "request": {
+        "location": {
+          "lat": 51.089,
+          "lon": 71.403,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Я возле Mega Silk Way, хочу прогуляться 30–60 минут",
+        "context": {
+          "time_budget_min": 60,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 60,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "park",
+          "viewpoint",
+          "culture",
+          "unusual"
+        ]
+      }
+    },
+    {
+      "id": "S3.2",
+      "request": {
+        "location": {
+          "lat": 51.089,
+          "lon": 71.403,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Есть полчаса-час, хочу пройтись",
+        "context": {
+          "time_budget_min": 60,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 60,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "park",
+          "viewpoint",
+          "culture",
+          "unusual"
+        ]
+      }
+    },
+    {
+      "id": "S3.3",
+      "request": {
+        "location": {
+          "lat": 51.089,
+          "lon": 71.403,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Куда прогуляться рядом на 40 минут?",
+        "context": {
+          "time_budget_min": 60,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 60,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "park",
+          "viewpoint",
+          "culture",
+          "unusual"
+        ]
+      }
+    },
+    {
+      "id": "S3.4",
+      "request": {
+        "location": {
+          "lat": 51.089,
+          "lon": 71.403,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Хочу подышать, недолго",
+        "context": {
+          "time_budget_min": 60,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 60,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "park",
+          "viewpoint",
+          "culture",
+          "unusual"
+        ]
+      }
+    },
+    {
+      "id": "S3.5",
+      "request": {
+        "location": {
+          "lat": 51.089,
+          "lon": 71.403,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "A 30–60 minute walk nearby",
+        "context": {
+          "time_budget_min": 60,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 60,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "park",
+          "viewpoint",
+          "culture",
+          "unusual"
+        ]
+      }
+    },
+    {
+      "id": "S4.1",
+      "request": {
+        "location": {
+          "lat": 51.089,
+          "lon": 71.417,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Я у здания Экспо 2017, хочу что-то необычное на 1–2 часа, пешком",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "culture",
+          "viewpoint",
+          "unusual"
+        ]
+      }
+    },
+    {
+      "id": "S4.2",
+      "request": {
+        "location": {
+          "lat": 51.089,
+          "lon": 71.417,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Что-то нестандартное рядом на пару часов",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "culture",
+          "viewpoint",
+          "unusual"
+        ]
+      }
+    },
+    {
+      "id": "S4.3",
+      "request": {
+        "location": {
+          "lat": 51.089,
+          "lon": 71.417,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Надоели ТРЦ, хочу необычное место",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "culture",
+          "viewpoint",
+          "unusual"
+        ]
+      }
+    },
+    {
+      "id": "S4.4",
+      "request": {
+        "location": {
+          "lat": 51.089,
+          "lon": 71.417,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Покажи скрытые места недалеко",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "culture",
+          "viewpoint",
+          "unusual"
+        ]
+      }
+    },
+    {
+      "id": "S4.5",
+      "request": {
+        "location": {
+          "lat": 51.089,
+          "lon": 71.417,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Something unusual within walking distance, 1–2 hours",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": false,
+        "when": "now",
+        "categories": [
+          "culture",
+          "viewpoint",
+          "unusual"
+        ]
+      }
+    },
+    {
+      "id": "S5.1",
+      "request": {
+        "location": {
+          "lat": 51.128,
+          "lon": 71.43,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Я турист, у меня 2 часа перед вылетом, что посмотреть поблизости?",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": true,
+        "when": "now"
+      }
+    },
+    {
+      "id": "S5.2",
+      "request": {
+        "location": {
+          "lat": 51.128,
+          "lon": 71.43,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Через 2 часа в аэропорт, что успею рядом?",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": true,
+        "when": "now"
+      }
+    },
+    {
+      "id": "S5.3",
+      "request": {
+        "location": {
+          "lat": 51.128,
+          "lon": 71.43,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Транзитом в Астане, 2 часа",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": true,
+        "when": "now"
+      }
+    },
+    {
+      "id": "S5.4",
+      "request": {
+        "location": {
+          "lat": 51.128,
+          "lon": 71.43,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "What can I see in 2 hours before my flight?",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": true,
+        "when": "now"
+      }
+    },
+    {
+      "id": "S5.5",
+      "request": {
+        "location": {
+          "lat": 51.128,
+          "lon": 71.43,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Ұшаққа дейін 2 сағат бар, не көруге болады?",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T14:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": true,
+        "when": "now"
+      }
+    },
+    {
+      "id": "S6.1",
+      "request": {
+        "location": {
+          "lat": 51.128,
+          "lon": 71.43,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Ищу необычную ночную активность на последние пару часов",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T23:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": false,
+        "when": "night"
+      }
+    },
+    {
+      "id": "S6.2",
+      "request": {
+        "location": {
+          "lat": 51.128,
+          "lon": 71.43,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Что открыто ночью рядом?",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T23:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": false,
+        "when": "night"
+      }
+    },
+    {
+      "id": "S6.3",
+      "request": {
+        "location": {
+          "lat": 51.128,
+          "lon": 71.43,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Куда сходить после 23:00?",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T23:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": false,
+        "when": "night"
+      }
+    },
+    {
+      "id": "S6.4",
+      "request": {
+        "location": {
+          "lat": 51.128,
+          "lon": 71.43,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Ночная Астана — что посмотреть?",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T23:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": false,
+        "when": "night"
+      }
+    },
+    {
+      "id": "S6.5",
+      "request": {
+        "location": {
+          "lat": 51.128,
+          "lon": 71.43,
+          "precision_m": 100,
+          "source": "preset"
+        },
+        "query": "Unusual things to do late at night nearby",
+        "context": {
+          "time_budget_min": 120,
+          "companions": "alone",
+          "now": "2026-10-18T23:00:00+05:00",
+          "simulate": true,
+          "lang": "auto"
+        }
+      },
+      "expected_intent": {
+        "companions": "alone",
+        "time_budget_min": 120,
+        "before_flight": false,
+        "when": "night"
+      }
+    }
+  ]
+}
