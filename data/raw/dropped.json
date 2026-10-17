@@ -1,0 +1,981 @@
+[
+ {
+  "poi_id": "osm_node_2616721347",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_2638940339",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_2639079672",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_2641415781",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_2736177338",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_3513900168",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_4133836390",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_4209560711",
+  "name": "Т34-85",
+  "reason": "junk_name"
+ },
+ {
+  "poi_id": "osm_node_4278779194",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_4717834695",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_4722247997",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_4957059865",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_4959863403",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_4959863409",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_4959863526",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_4960517245",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_4973280664",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_4993935022",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_5074875221",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_5154853223",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_5244228899",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_5333278826",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_5360782229",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_5592690122",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_5715659521",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_5793959259",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_5911082285",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_6312771198",
+  "name": "Z-1",
+  "reason": "junk_name"
+ },
+ {
+  "poi_id": "osm_node_6534859754",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_6552437087",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_6567839586",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_6609280385",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_6790518473",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_7687750117",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_8121843217",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_8346039218",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_9879159697",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_9882729250",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_9999465717",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_10118208317",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_10570309737",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_10570309738",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_10861996205",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_11104886254",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_11227582237",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_11357775978",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_11500907369",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_11568417269",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_11898122969",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_11898122971",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_11898123069",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_11903442969",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_11927911173",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_11968737470",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12009143370",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12072403000",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12093617401",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12095497033",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12095513450",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12135837813",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12145940573",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12146082826",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12146084401",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12390012066",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12778095709",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12893537988",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12893557788",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12896585187",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12896617066",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12909752901",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12947036970",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_13340040624",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_13340040625",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_13340040626",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_13340040627",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_13340040628",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_13340040629",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_13340040630",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_13412540648",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_13518941853",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_13767468131",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_14073633140",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_14100121691",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_14125475742",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_14248748801",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_226990620",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_240363774",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_241234185",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_241241552",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_241464878",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_425317640",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_428784911",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_506032169",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_508001040",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_1026285035",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_1088449019",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_1089059342",
+  "name": "А8",
+  "reason": "junk_name"
+ },
+ {
+  "poi_id": "osm_way_1125189046",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_1194023939",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_1381414255",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_1381418247",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_1449317882",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_1449322328",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_1449322353",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_way_1546292234",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_relation_20012434",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_relation_21106732",
+  "name": "",
+  "reason": "no_name"
+ },
+ {
+  "poi_id": "osm_node_12990081601",
+  "name": "Coffee Stories",
+  "reason": "duplicate",
+  "kept": "osm_node_12973394495"
+ },
+ {
+  "poi_id": "osm_way_1460702136",
+  "name": "Ататүрік саябағы",
+  "reason": "duplicate",
+  "kept": "osm_way_502046662"
+ },
+ {
+  "poi_id": "osm_way_241090093",
+  "name": "Рахмет ТЦ",
+  "reason": "duplicate",
+  "kept": "osm_node_4900149827"
+ },
+ {
+  "poi_id": "osm_way_497699957",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_497699956"
+ },
+ {
+  "poi_id": "osm_way_497699959",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_497699954"
+ },
+ {
+  "poi_id": "osm_way_497699964",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_497699963"
+ },
+ {
+  "poi_id": "osm_way_497699965",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_497699963"
+ },
+ {
+  "poi_id": "osm_way_497699967",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_497699963"
+ },
+ {
+  "poi_id": "osm_way_497699969",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_497699968"
+ },
+ {
+  "poi_id": "osm_way_1339448504",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_623839035"
+ },
+ {
+  "poi_id": "osm_way_1422579155",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_258818063"
+ },
+ {
+  "poi_id": "osm_way_1422579156",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_258818060"
+ },
+ {
+  "poi_id": "osm_way_1422579157",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_258818061"
+ },
+ {
+  "poi_id": "osm_way_1422579158",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_258818062"
+ },
+ {
+  "poi_id": "osm_way_1422767684",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_1422767683"
+ },
+ {
+  "poi_id": "osm_way_1422767688",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_1422767687"
+ },
+ {
+  "poi_id": "osm_way_1422767689",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_1422767683"
+ },
+ {
+  "poi_id": "osm_way_1422767690",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_1422767683"
+ },
+ {
+  "poi_id": "osm_way_1422767691",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_1422767685"
+ },
+ {
+  "poi_id": "osm_way_1422767692",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_1422767685"
+ },
+ {
+  "poi_id": "osm_way_1422801900",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_1422801899"
+ },
+ {
+  "poi_id": "osm_way_1422801903",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_1422801902"
+ },
+ {
+  "poi_id": "osm_way_1422801905",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_1422801904"
+ },
+ {
+  "poi_id": "osm_way_1490254184",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_1490254183"
+ },
+ {
+  "poi_id": "osm_way_1490254193",
+  "name": "Сквер",
+  "reason": "duplicate",
+  "kept": "osm_way_1490254191"
+ },
+ {
+  "poi_id": "osm_way_1499433763",
+  "name": "Aizere2  Кафе",
+  "reason": "duplicate",
+  "kept": "osm_node_13779471493"
+ },
+ {
+  "poi_id": "osm_relation_20321070",
+  "name": "Макет ракеты-носителя Протон",
+  "reason": "duplicate",
+  "kept": "osm_relation_20321069"
+ },
+ {
+  "poi_id": "osm_node_5767712153",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_node_5767712053"
+ },
+ {
+  "poi_id": "osm_node_10168968309",
+  "name": "Ailand",
+  "reason": "duplicate",
+  "kept": "osm_node_10168959440"
+ },
+ {
+  "poi_id": "osm_way_514843246",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_514840769"
+ },
+ {
+  "poi_id": "osm_way_514843247",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_514840769"
+ },
+ {
+  "poi_id": "osm_way_536297838",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_536297835"
+ },
+ {
+  "poi_id": "osm_way_556574294",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_556574293"
+ },
+ {
+  "poi_id": "osm_way_895974625",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_895974620"
+ },
+ {
+  "poi_id": "osm_way_896646802",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_896646801"
+ },
+ {
+  "poi_id": "osm_way_896726728",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_896716546"
+ },
+ {
+  "poi_id": "osm_way_902255964",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_902255963"
+ },
+ {
+  "poi_id": "osm_way_1102779048",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1102776052"
+ },
+ {
+  "poi_id": "osm_way_1111134706",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1111134705"
+ },
+ {
+  "poi_id": "osm_way_1111134708",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1111134705"
+ },
+ {
+  "poi_id": "osm_way_1111137208",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1111137190"
+ },
+ {
+  "poi_id": "osm_way_1111137219",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1111137218"
+ },
+ {
+  "poi_id": "osm_way_1119404705",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1119403752"
+ },
+ {
+  "poi_id": "osm_way_1122920719",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1122920718"
+ },
+ {
+  "poi_id": "osm_way_1123382934",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1119403752"
+ },
+ {
+  "poi_id": "osm_way_1148721831",
+  "name": "Спортивная площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1148721830"
+ },
+ {
+  "poi_id": "osm_way_1392843792",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1392843791"
+ },
+ {
+  "poi_id": "osm_way_1392843796",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1392843795"
+ },
+ {
+  "poi_id": "osm_way_1396532134",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1376420317"
+ },
+ {
+  "poi_id": "osm_way_1449322332",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1449322330"
+ },
+ {
+  "poi_id": "osm_way_1452597380",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1452597374"
+ },
+ {
+  "poi_id": "osm_way_1452597437",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1452597436"
+ },
+ {
+  "poi_id": "osm_way_1501834947",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1501834946"
+ },
+ {
+  "poi_id": "osm_way_1501834952",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1501834951"
+ },
+ {
+  "poi_id": "osm_way_1504543671",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1504543670"
+ },
+ {
+  "poi_id": "osm_way_1513408215",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1513408214"
+ },
+ {
+  "poi_id": "osm_way_1526900362",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1526900361"
+ },
+ {
+  "poi_id": "osm_way_1527868408",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1527868407"
+ },
+ {
+  "poi_id": "osm_way_1527868409",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1527868407"
+ },
+ {
+  "poi_id": "osm_way_1527868411",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1527868410"
+ },
+ {
+  "poi_id": "osm_way_1527868413",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1527868412"
+ },
+ {
+  "poi_id": "osm_way_1537667157",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1537667156"
+ },
+ {
+  "poi_id": "osm_way_1537906029",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1537906028"
+ },
+ {
+  "poi_id": "osm_way_1539303634",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1539303633"
+ },
+ {
+  "poi_id": "osm_way_1539729976",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1539729975"
+ },
+ {
+  "poi_id": "osm_way_1547964126",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1547964125"
+ },
+ {
+  "poi_id": "osm_way_1547964127",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1547964125"
+ },
+ {
+  "poi_id": "osm_way_1547964129",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1547964128"
+ },
+ {
+  "poi_id": "osm_way_1547964131",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1547964130"
+ },
+ {
+  "poi_id": "osm_way_1547964133",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1547964132"
+ },
+ {
+  "poi_id": "osm_way_1547964134",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1547964132"
+ },
+ {
+  "poi_id": "osm_way_1547964135",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1547964132"
+ },
+ {
+  "poi_id": "osm_way_1547964137",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1547964136"
+ },
+ {
+  "poi_id": "osm_relation_21081841",
+  "name": "Детская площадка",
+  "reason": "duplicate",
+  "kept": "osm_way_1536856228"
+ }
+]

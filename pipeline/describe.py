@@ -15,12 +15,13 @@ import time
 from pipeline.config import CACHE_DIR
 
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
-BATCH = 20
+BATCH = 50  # free tier allows ~20 requests/day for flash: 820 named places -> ~17 calls
 PAUSE_S = 7  # free tier ~10 requests/min
 PROMPT = """Ты пишешь короткие описания мест в Астане для городского помощника.
 Для каждого места ниже напиши 1–2 нейтральных предложения на русском языке ТОЛЬКО по фактам
-из полей name, kind и tags. Не придумывай детали (годы, адреса, меню, цены, отзывы),
-не используй слова «лучший», «самый», «уникальный». Если фактов мало — одно короткое предложение.
+из полей name, kind и features. Не придумывай детали (годы, адреса, меню, цены, отзывы, часы),
+не используй слова «лучший», «самый», «уникальный». Не пиши «работает ночью» — только то, что в features.
+Если фактов мало — одно короткое предложение. Пиши естественно, без конструкции «— это».
 Верни JSON-массив объектов {"poi_id": ..., "description": ...} в том же порядке.
 
 Места:
@@ -71,8 +72,9 @@ def check_generated(text: str, poi: dict) -> str | None:
 def _gemini_batch(client, batch: list[dict]) -> dict[str, str]:
     from google.genai import types
 
-    items = [{"poi_id": p["poi_id"], "name": p["name"], "kind": KIND[p["category"]],
-              "tags": [t for t in p["tags"] if t != "крытое"]} for p in batch]
+    # human-readable tag meaning: the raw tag "ночью" only means "closes at 23:00 or later"
+    items = [{"poi_id": p["poi_id"], "name": p["name"], "kind": KIND[p["category"]].lower(),
+              "features": [TAG_TEXT[t] for t in p["tags"] if t in TAG_TEXT]} for p in batch]
     payload = json.dumps(items, ensure_ascii=False)
     path = CACHE_DIR / "gemini" / f"{hashlib.sha1((GEMINI_MODEL + payload).encode()).hexdigest()}.json"
     if path.exists():
