@@ -82,6 +82,21 @@ def name_matches(osm_name: str, wiki_title: str, threshold: int = MATCH_THRESHOL
     return fuzz.token_set_ratio(a, b) >= threshold and fuzz.token_sort_ratio(a, b) >= 60
 
 
+_ASTANA = re.compile(r"астан|нур-султан|нұр-сұлтан|целиноград|акмол|ақмол|astana|nur-sultan", re.I)
+_MONUMENT_WORD = re.compile(r"ескерткіш|памятник|монумент|мемориал|скульптур|statue|monument|memorial", re.I)
+_MONUMENT_KINDS = {("historic", "monument"), ("historic", "memorial"), ("tourism", "artwork")}
+
+
+def accept_search_hit(tags: dict, title: str, extract: str) -> bool:
+    """A search hit (no wikidata link) is kept only if the article is about Astana; for monuments/artworks
+    the title must name a monument — otherwise it is the article about the person or event."""
+    if not _ASTANA.search(extract or "") and not _ASTANA.search(title):
+        return False
+    if any((k, tags.get(k)) in _MONUMENT_KINDS for k in ("historic", "tourism")):
+        return bool(_MONUMENT_WORD.search(title))
+    return True
+
+
 class Http:
     """GET with on-disk cache (sha1 of URL) so re-runs make 0 requests."""
 
@@ -117,10 +132,13 @@ class Http:
         return data
 
 
-def summary(http: Http, lang: str, title: str) -> tuple[str, str] | None:
+def summary(http: Http, lang: str, title: str, tags: dict | None = None) -> tuple[str, str] | None:
+    """tags given = this title came from a name search and must pass accept_search_hit()."""
     url = f"https://{lang}.wikipedia.org/api/rest_v1/page/summary/{quote(title.replace(' ', '_'), safe='')}"
     data = http.get_json(url)
     if not data or data.get("type") == "disambiguation" or not data.get("extract"):
+        return None
+    if tags is not None and not accept_search_hit(tags, title, data["extract"]):
         return None
     page = data.get("content_urls", {}).get("desktop", {}).get("page") or f"https://{lang}.wikipedia.org/wiki/{quote(title)}"
     return first_sentences(data["extract"], 2), page
@@ -181,10 +199,10 @@ def is_search_candidate(tags: dict) -> bool:
     return any((k, tags.get(k)) in SEARCH_KINDS for k in ("tourism", "amenity"))
 
 
-def build_item(http: Http, titles: dict[str, str], qid: str | None) -> dict | None:
+def build_item(http: Http, titles: dict[str, str], qid: str | None, search_tags: dict | None = None) -> dict | None:
     descriptions, urls = {}, {}
     for lang in LANGS:
-        if lang in titles and (res := summary(http, lang, titles[lang])):
+        if lang in titles and (res := summary(http, lang, titles[lang], search_tags)):
             descriptions[lang], urls[lang] = res
     if not descriptions:
         return None
@@ -221,7 +239,7 @@ def main() -> None:
                 stats["via_wikidata"] += 1
         if item is None and is_search_candidate(tags):
             if titles := search_titles(http, tags):
-                item = build_item(http, titles, qid)
+                item = build_item(http, titles, qid, search_tags=tags)
                 if item:
                     stats["via_search"] += 1
         if item:

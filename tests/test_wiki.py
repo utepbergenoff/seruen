@@ -1,6 +1,22 @@
 import pytest
 
-from pipeline.wiki import first_sentences, name_matches
+from pipeline.wiki import accept_search_hit, first_sentences, name_matches
+
+MONUMENT = {"historic": "monument", "name": "Бауыржан Момышұлы"}
+THEATRE = {"amenity": "theatre", "name": "Театр кукол"}
+
+
+def test_search_hit_must_be_about_astana_and_monuments_must_be_monument_articles():
+    # real wrong hits from the Astana run
+    assert not accept_search_hit(MONUMENT, "Момышулы, Бауыржан", "Советский офицер, Герой Советского Союза.")
+    assert not accept_search_hit(THEATRE, "Гомельский театр кукол", "Кукольный театр в Гомеле.")
+    assert not accept_search_hit({"tourism": "attraction", "name": "Атырау көпірі"}, "Атырау",
+                                 "Город в европейской части Казахстана.")
+    # real correct hits
+    assert accept_search_hit({"historic": "memorial", "name": "Рақымжан Қошқарбаев"}, "Рақымжан Қошқарбаев ескерткіші",
+                             "Рақымжан Қошқарбаев ескерткіші Астана қаласында 2016 жылы ашылды.")
+    assert accept_search_hit({"amenity": "arts_centre", "name": "Астаналық Цирк"}, "Астаналық цирк",
+                             "Астаналық цирк — Астана қаласының мәдениет басқармасына қарасты мекеме.")
 
 
 @pytest.mark.parametrize("osm,title", [
