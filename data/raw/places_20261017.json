@@ -1,0 +1,645 @@
+{
+ "_meta": {
+  "collected_at": "2026-10-17T18:13:29+00:00",
+  "source": "google_places_new",
+  "api_calls": 2,
+  "cache_hits": 106,
+  "google_places_seen": 1126,
+  "popular_osm_poi": 694,
+  "complete": false,
+  "stopped_reason": "Places API HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'SearchNearbyRequest' and limit 'SearchNearbyRequest per day' of service 'places.googleapis.com' fo",
+  "note": "Only place_id + match quality stored (Google Maps Platform ToS)."
+ },
+ "matches": {
+  "osm_node_2671060738": {
+   "google_place_id": "ChIJfc0UMJ6GRUIRbj5n5ViaFPE",
+   "match_score": 100,
+   "distance_m": 1
+  },
+  "osm_node_3421255007": {
+   "google_place_id": "ChIJ3Z0yhAaHRUIRodAqFN3V6wo",
+   "match_score": 100,
+   "distance_m": 2
+  },
+  "osm_node_8237697407": {
+   "google_place_id": "ChIJPfToNb6GRUIRi1BvPtvTpVs",
+   "match_score": 100,
+   "distance_m": 2
+  },
+  "osm_node_5866018450": {
+   "google_place_id": "ChIJ2ekzQ3-HRUIR00say9uSxJw",
+   "match_score": 100,
+   "distance_m": 2
+  },
+  "osm_node_5913449633": {
+   "google_place_id": "ChIJLwA5VlyBRUIRBOzS3BMM1TA",
+   "match_score": 100,
+   "distance_m": 2
+  },
+  "osm_node_5341162522": {
+   "google_place_id": "ChIJKwRjN1-BRUIR1_bRjPKyVEA",
+   "match_score": 100,
+   "distance_m": 3
+  },
+  "osm_node_12973420129": {
+   "google_place_id": "ChIJeQtySQCHRUIRrwYo7fUxKQ8",
+   "match_score": 100,
+   "distance_m": 3
+  },
+  "osm_node_12123366034": {
+   "google_place_id": "ChIJPcn5CgCHRUIRA6mtSfmiEYg",
+   "match_score": 100,
+   "distance_m": 3
+  },
+  "osm_node_4300813085": {
+   "google_place_id": "ChIJ3c-9cmOBRUIRWfEzuLGABZc",
+   "match_score": 100,
+   "distance_m": 3
+  },
+  "osm_node_5920221628": {
+   "google_place_id": "ChIJya5a1rqGRUIRQ9c_LN-VkxI",
+   "match_score": 100,
+   "distance_m": 3
+  },
+  "osm_node_5889720185": {
+   "google_place_id": "ChIJz2K2os2GRUIRBlLmp4BTynw",
+   "match_score": 100,
+   "distance_m": 4
+  },
+  "osm_way_240860160": {
+   "google_place_id": "ChIJGRRdpl-BRUIRepG3997m17c",
+   "match_score": 100,
+   "distance_m": 4
+  },
+  "osm_node_4290625693": {
+   "google_place_id": "ChIJ9-_Ll9CGRUIRDVUKzd8Pu4Q",
+   "match_score": 100,
+   "distance_m": 4
+  },
+  "osm_node_3215326162": {
+   "google_place_id": "ChIJE8oeohSBRUIR_7lvUMTPDfQ",
+   "match_score": 100,
+   "distance_m": 4
+  },
+  "osm_node_14100100183": {
+   "google_place_id": "ChIJsQd_mTGHRUIRbbYA4L--cAE",
+   "match_score": 100,
+   "distance_m": 4
+  },
+  "osm_node_3780072973": {
+   "google_place_id": "ChIJueg5lz6BRUIRx5yiORQy00s",
+   "match_score": 100,
+   "distance_m": 4
+  },
+  "osm_way_1333795504": {
+   "google_place_id": "ChIJOcDzFACHRUIR60f1mcUN3SE",
+   "match_score": 100,
+   "distance_m": 4
+  },
+  "osm_node_4941659457": {
+   "google_place_id": "ChIJLwfUUBaBRUIRsQhqEjVvlgU",
+   "match_score": 100,
+   "distance_m": 4
+  },
+  "osm_node_12917095261": {
+   "google_place_id": "ChIJB12aIC-HRUIRUY8C6WK50c8",
+   "match_score": 100,
+   "distance_m": 5
+  },
+  "osm_way_242373803": {
+   "google_place_id": "ChIJ9z_THxCPRUIRpAJlKFO9Epc",
+   "match_score": 100,
+   "distance_m": 6
+  },
+  "osm_node_13230394599": {
+   "google_place_id": "ChIJfReU_rKFRUIRudb26LsJShY",
+   "match_score": 100,
+   "distance_m": 6
+  },
+  "osm_node_5890019985": {
+   "google_place_id": "ChIJx_I44r-HRUIRpoKGAb-1h4k",
+   "match_score": 100,
+   "distance_m": 6
+  },
+  "osm_node_1843876240": {
+   "google_place_id": "ChIJwcZTidGGRUIRRfuCq02Wkp0",
+   "match_score": 100,
+   "distance_m": 6
+  },
+  "osm_node_13629764401": {
+   "google_place_id": "ChIJQ-VkHQCHRUIRCXthdudOgY4",
+   "match_score": 100,
+   "distance_m": 6
+  },
+  "osm_node_10064384671": {
+   "google_place_id": "ChIJR-r0PimBRUIRDb4Xu6lbJzs",
+   "match_score": 100,
+   "distance_m": 6
+  },
+  "osm_node_2638985382": {
+   "google_place_id": "ChIJEaVxsuaHRUIRmMEwLhpyoo8",
+   "match_score": 100,
+   "distance_m": 6
+  },
+  "osm_node_4938764799": {
+   "google_place_id": "ChIJP-S45y6HRUIRk8nFydCBLIU",
+   "match_score": 100,
+   "distance_m": 6
+  },
+  "osm_node_12973410493": {
+   "google_place_id": "ChIJofeaFjOHRUIREsBcmn44PNE",
+   "match_score": 100,
+   "distance_m": 6
+  },
+  "osm_node_12917106289": {
+   "google_place_id": "ChIJGdVpyhKHRUIRtg0vpVDJU0E",
+   "match_score": 100,
+   "distance_m": 7
+  },
+  "osm_node_5890195286": {
+   "google_place_id": "ChIJf_Pzo5uHRUIRX-EBU1ylqvM",
+   "match_score": 100,
+   "distance_m": 7
+  },
+  "osm_node_12919520489": {
+   "google_place_id": "ChIJsy7VXACHRUIRIvr9qlEzSms",
+   "match_score": 100,
+   "distance_m": 7
+  },
+  "osm_node_12093500118": {
+   "google_place_id": "ChIJJXkGAkGHRUIRQJ0-K_ZiIi0",
+   "match_score": 100,
+   "distance_m": 7
+  },
+  "osm_node_4965763184": {
+   "google_place_id": "ChIJpTVNTXKBRUIR62ldGk8Dfwc",
+   "match_score": 100,
+   "distance_m": 7
+  },
+  "osm_node_12990081601": {
+   "google_place_id": "ChIJ7zXTxlOHRUIRfRY8PhH7ulQ",
+   "match_score": 100,
+   "distance_m": 8
+  },
+  "osm_node_4913160607": {
+   "google_place_id": "ChIJQ6ajitKGRUIREjbSFC8snvM",
+   "match_score": 100,
+   "distance_m": 8
+  },
+  "osm_node_12919553164": {
+   "google_place_id": "ChIJO36cvCuHRUIRVfMAu0jPwQs",
+   "match_score": 100,
+   "distance_m": 8
+  },
+  "osm_node_4922406025": {
+   "google_place_id": "ChIJwfvPHcyGRUIRaicjIOhYw9k",
+   "match_score": 100,
+   "distance_m": 8
+  },
+  "osm_node_2864129921": {
+   "google_place_id": "ChIJ5X_vlGWBRUIRn6diNbx6kNM",
+   "match_score": 100,
+   "distance_m": 8
+  },
+  "osm_node_13230538814": {
+   "google_place_id": "ChIJy40T7BGHRUIRPnYOnyfVBUY",
+   "match_score": 100,
+   "distance_m": 9
+  },
+  "osm_node_4920177022": {
+   "google_place_id": "ChIJpYo7GdqARUIRcuJgNOd2b6k",
+   "match_score": 100,
+   "distance_m": 9
+  },
+  "osm_node_10064384673": {
+   "google_place_id": "ChIJGdSek56GRUIRC-sUFasS-Pk",
+   "match_score": 100,
+   "distance_m": 9
+  },
+  "osm_node_12708582648": {
+   "google_place_id": "ChIJu6nowziHRUIRWVt0_Dg1QzU",
+   "match_score": 100,
+   "distance_m": 9
+  },
+  "osm_way_241248642": {
+   "google_place_id": "ChIJP2nmPXGBRUIRW1GeYi-V7tQ",
+   "match_score": 100,
+   "distance_m": 9
+  },
+  "osm_node_12135824881": {
+   "google_place_id": "ChIJ112NGACHRUIRj2W-aPQSiQ0",
+   "match_score": 100,
+   "distance_m": 9
+  },
+  "osm_node_12747390104": {
+   "google_place_id": "ChIJzSgCsduGRUIRd0dnAUGaugM",
+   "match_score": 100,
+   "distance_m": 10
+  },
+  "osm_node_4286097093": {
+   "google_place_id": "ChIJlZNL39OARUIRVyddn5u0nys",
+   "match_score": 100,
+   "distance_m": 10
+  },
+  "osm_node_4286102095": {
+   "google_place_id": "ChIJkyV26tCGRUIRHJzinIhw9mE",
+   "match_score": 100,
+   "distance_m": 10
+  },
+  "osm_node_5890018987": {
+   "google_place_id": "ChIJx4Jw7NeGRUIRqTiLjAL2O3k",
+   "match_score": 100,
+   "distance_m": 10
+  },
+  "osm_node_4953253121": {
+   "google_place_id": "ChIJHZ8L_Z-GRUIRO7SBtcLFqSc",
+   "match_score": 100,
+   "distance_m": 10
+  },
+  "osm_node_5974548588": {
+   "google_place_id": "ChIJsdN3dGGBRUIRroDcjunIoGs",
+   "match_score": 100,
+   "distance_m": 10
+  },
+  "osm_node_5244218857": {
+   "google_place_id": "ChIJu7KkqM2GRUIRGLUSaZ8ghWY",
+   "match_score": 100,
+   "distance_m": 11
+  },
+  "osm_way_241248762": {
+   "google_place_id": "ChIJBf1bJXKBRUIRx17nnMWzPjs",
+   "match_score": 100,
+   "distance_m": 11
+  },
+  "osm_node_4892345887": {
+   "google_place_id": "ChIJc9KJIEiBRUIRLvttMMRTK5Q",
+   "match_score": 100,
+   "distance_m": 12
+  },
+  "osm_way_30614717": {
+   "google_place_id": "ChIJKWUYACaHRUIRPnm2qk9hFMc",
+   "match_score": 100,
+   "distance_m": 12
+  },
+  "osm_node_5913626963": {
+   "google_place_id": "ChIJv7ZvGh-BRUIRYwxVcCfavvc",
+   "match_score": 100,
+   "distance_m": 12
+  },
+  "osm_node_12993945455": {
+   "google_place_id": "ChIJp1btUJ-HRUIR4hQJVAPGQio",
+   "match_score": 100,
+   "distance_m": 13
+  },
+  "osm_node_12876977238": {
+   "google_place_id": "ChIJnROY3dOGRUIRD7c-Kh458EA",
+   "match_score": 100,
+   "distance_m": 13
+  },
+  "osm_node_12959449801": {
+   "google_place_id": "ChIJKb4-bAOFRUIRnTODJhZakq4",
+   "match_score": 100,
+   "distance_m": 13
+  },
+  "osm_node_4624217690": {
+   "google_place_id": "ChIJy7EJNwCHRUIRcaeUj_aiU90",
+   "match_score": 100,
+   "distance_m": 13
+  },
+  "osm_node_3355349466": {
+   "google_place_id": "ChIJ6ZjcCU6HRUIRO7J3irfuw9c",
+   "match_score": 100,
+   "distance_m": 13
+  },
+  "osm_node_12146103477": {
+   "google_place_id": "ChIJi03LrbyHRUIRZoncXD2K_W8",
+   "match_score": 100,
+   "distance_m": 13
+  },
+  "osm_node_4914343538": {
+   "google_place_id": "ChIJWYM_Zx6HRUIRTIfKVGNrsu8",
+   "match_score": 100,
+   "distance_m": 14
+  },
+  "osm_node_4986871030": {
+   "google_place_id": "ChIJbRdgw9uDRUIRNvVY6-BRYvA",
+   "match_score": 100,
+   "distance_m": 14
+  },
+  "osm_node_10295608316": {
+   "google_place_id": "ChIJXV1h9yiHRUIRIcVyv4HpEXM",
+   "match_score": 100,
+   "distance_m": 14
+  },
+  "osm_node_3404172551": {
+   "google_place_id": "ChIJo0ySNr2GRUIRBlPuGEzVpVg",
+   "match_score": 100,
+   "distance_m": 14
+  },
+  "osm_node_6443541085": {
+   "google_place_id": "ChIJy6rqGyCbRUIRCkFrBWK3lY4",
+   "match_score": 100,
+   "distance_m": 14
+  },
+  "osm_way_278179906": {
+   "google_place_id": "ChIJkSF2AjWHRUIRtBkxZOTlENE",
+   "match_score": 100,
+   "distance_m": 14
+  },
+  "osm_node_4874140222": {
+   "google_place_id": "ChIJ6023jZ6GRUIR0PFU-ZyYQXU",
+   "match_score": 100,
+   "distance_m": 15
+  },
+  "osm_node_5913515786": {
+   "google_place_id": "ChIJMZDQKF2BRUIRL2QIo43fc2Q",
+   "match_score": 100,
+   "distance_m": 15
+  },
+  "osm_node_11171945111": {
+   "google_place_id": "ChIJmR3NZ2SHRUIRy1NaH-Zd-jA",
+   "match_score": 100,
+   "distance_m": 15
+  },
+  "osm_way_240502747": {
+   "google_place_id": "ChIJ-U_qjVmBRUIRY3WXyXfCEtw",
+   "match_score": 100,
+   "distance_m": 15
+  },
+  "osm_node_5077232622": {
+   "google_place_id": "ChIJwSu5dtaGRUIR827xJ5XtuI0",
+   "match_score": 100,
+   "distance_m": 15
+  },
+  "osm_way_240321212": {
+   "google_place_id": "ChIJ9ajj3S6BRUIRw-FrkVS3hHs",
+   "match_score": 100,
+   "distance_m": 16
+  },
+  "osm_node_5865476685": {
+   "google_place_id": "ChIJs9sxbDiBRUIRIRjfwkDPwk4",
+   "match_score": 100,
+   "distance_m": 16
+  },
+  "osm_node_5913426403": {
+   "google_place_id": "ChIJPds_X_mBRUIRxeEomFlStmI",
+   "match_score": 100,
+   "distance_m": 16
+  },
+  "osm_node_13230417216": {
+   "google_place_id": "ChIJw103xtqGRUIRPjlwCAP2Hd4",
+   "match_score": 100,
+   "distance_m": 16
+  },
+  "osm_node_5913715473": {
+   "google_place_id": "ChIJl9ofkluBRUIR9Kb_a6vtmec",
+   "match_score": 100,
+   "distance_m": 16
+  },
+  "osm_node_14100100182": {
+   "google_place_id": "ChIJ4Y4zOnOHRUIRbzk6vwpP3OI",
+   "match_score": 100,
+   "distance_m": 17
+  },
+  "osm_node_4965741511": {
+   "google_place_id": "ChIJk0y7anaBRUIRIE_SLr1MIdA",
+   "match_score": 100,
+   "distance_m": 17
+  },
+  "osm_node_3628048287": {
+   "google_place_id": "ChIJR2-GqGiGRUIRzPAdeVX10tM",
+   "match_score": 100,
+   "distance_m": 18
+  },
+  "osm_node_5901760486": {
+   "google_place_id": "ChIJlZm4gMmGRUIRYWxIpNlGKHI",
+   "match_score": 100,
+   "distance_m": 19
+  },
+  "osm_node_4940269046": {
+   "google_place_id": "ChIJG3rT9EqHRUIRcw3inBp8biA",
+   "match_score": 100,
+   "distance_m": 20
+  },
+  "osm_node_8595205064": {
+   "google_place_id": "ChIJxTWVJKGFRUIRbsL5pBFyt3c",
+   "match_score": 100,
+   "distance_m": 20
+  },
+  "osm_node_12135833544": {
+   "google_place_id": "ChIJS2YLqiGHRUIR2KdFkbNvHaY",
+   "match_score": 100,
+   "distance_m": 21
+  },
+  "osm_way_1179903477": {
+   "google_place_id": "ChIJtdMrUyaHRUIR0TKFqAZTpf8",
+   "match_score": 100,
+   "distance_m": 21
+  },
+  "osm_node_4457713697": {
+   "google_place_id": "ChIJ3Q5zDUqBRUIR_Aj4rGLWIzg",
+   "match_score": 100,
+   "distance_m": 21
+  },
+  "osm_node_12973341171": {
+   "google_place_id": "ChIJ2WwQEcyGRUIRIdpSwI2kK1g",
+   "match_score": 100,
+   "distance_m": 21
+  },
+  "osm_node_5333278825": {
+   "google_place_id": "ChIJLzwaaH2HRUIRcfviyT31zrM",
+   "match_score": 100,
+   "distance_m": 21
+  },
+  "osm_node_5890156991": {
+   "google_place_id": "ChIJAQBQRtCGRUIRYNYRZihYMf8",
+   "match_score": 100,
+   "distance_m": 22
+  },
+  "osm_node_6698615689": {
+   "google_place_id": "ChIJE03CfOOHRUIRsVAWC-rR6DA",
+   "match_score": 100,
+   "distance_m": 22
+  },
+  "osm_node_4717894989": {
+   "google_place_id": "ChIJ4fEQSzOHRUIRFAdeGmB9RtM",
+   "match_score": 100,
+   "distance_m": 25
+  },
+  "osm_node_13448041891": {
+   "google_place_id": "ChIJ8WNrXACHRUIREpTr_xCyGJg",
+   "match_score": 100,
+   "distance_m": 27
+  },
+  "osm_node_4543944911": {
+   "google_place_id": "ChIJeea3h1KHRUIRKjMxPFRn_Po",
+   "match_score": 100,
+   "distance_m": 27
+  },
+  "osm_node_10583640008": {
+   "google_place_id": "ChIJHwgK-cWHRUIRBLlcujfjWBs",
+   "match_score": 100,
+   "distance_m": 27
+  },
+  "osm_node_12744521223": {
+   "google_place_id": "ChIJPZcWQYOHRUIR58L-xIMid6I",
+   "match_score": 100,
+   "distance_m": 27
+  },
+  "osm_way_239954943": {
+   "google_place_id": "ChIJ-SFd5DSHRUIRZxSmpP8XAw4",
+   "match_score": 100,
+   "distance_m": 27
+  },
+  "osm_way_242953032": {
+   "google_place_id": "ChIJV5t2KyqHRUIRNMIjF8iFsFI",
+   "match_score": 100,
+   "distance_m": 29
+  },
+  "osm_node_8237697403": {
+   "google_place_id": "ChIJv9bfgYWHRUIRGaniMw6R0IU",
+   "match_score": 100,
+   "distance_m": 29
+  },
+  "osm_way_241594875": {
+   "google_place_id": "ChIJ9VRjiNCARUIRdU6fPoqDEyw",
+   "match_score": 100,
+   "distance_m": 29
+  },
+  "osm_way_108096984": {
+   "google_place_id": "ChIJm7jF2x-ERUIR178RWtDnNC0",
+   "match_score": 100,
+   "distance_m": 30
+  },
+  "osm_node_4163198590": {
+   "google_place_id": "ChIJkZKXZUGBRUIRWuvEx2NsDUs",
+   "match_score": 100,
+   "distance_m": 30
+  },
+  "osm_node_6404747238": {
+   "google_place_id": "ChIJI8K5yh6ERUIRVZ9hc-DfwUc",
+   "match_score": 100,
+   "distance_m": 31
+  },
+  "osm_node_6404769888": {
+   "google_place_id": "ChIJ7-9_CB2ERUIRvSnX9uqvIOA",
+   "match_score": 100,
+   "distance_m": 31
+  },
+  "osm_node_2639622505": {
+   "google_place_id": "ChIJb6_AGZGBRUIRwi4MFZC24IM",
+   "match_score": 100,
+   "distance_m": 32
+  },
+  "osm_node_4246528694": {
+   "google_place_id": "ChIJP4r0qiuHRUIRbyUWn3anK_g",
+   "match_score": 100,
+   "distance_m": 32
+  },
+  "osm_node_5132817725": {
+   "google_place_id": "ChIJo84FpR6ERUIRFTFFWTfdwY0",
+   "match_score": 100,
+   "distance_m": 35
+  },
+  "osm_node_798212552": {
+   "google_place_id": "ChIJtdt555eHRUIRWgshOenjA9s",
+   "match_score": 100,
+   "distance_m": 35
+  },
+  "osm_node_4713010890": {
+   "google_place_id": "ChIJ-duEGdaGRUIRv47c0724NzY",
+   "match_score": 100,
+   "distance_m": 37
+  },
+  "osm_node_2196651872": {
+   "google_place_id": "ChIJ5_fwN76GRUIR9h-vhyyAhao",
+   "match_score": 100,
+   "distance_m": 37
+  },
+  "osm_node_10559341312": {
+   "google_place_id": "ChIJ245ymBOBRUIRLPi2K5SQXOo",
+   "match_score": 100,
+   "distance_m": 37
+  },
+  "osm_node_12095556432": {
+   "google_place_id": "ChIJGcCU7iyHRUIRenWJfJZxKY4",
+   "match_score": 100,
+   "distance_m": 40
+  },
+  "osm_node_12041597369": {
+   "google_place_id": "ChIJkS-Byh6ERUIR8d6AC3GUI8E",
+   "match_score": 100,
+   "distance_m": 41
+  },
+  "osm_node_12993941023": {
+   "google_place_id": "ChIJgURMJgCHRUIRd7awuIe9IRU",
+   "match_score": 100,
+   "distance_m": 42
+  },
+  "osm_node_12094450075": {
+   "google_place_id": "ChIJ34aBhDGHRUIR9vBOtKnwku4",
+   "match_score": 100,
+   "distance_m": 47
+  },
+  "osm_node_6408271985": {
+   "google_place_id": "ChIJu0San6CGRUIRXuWEE4X8Cag",
+   "match_score": 100,
+   "distance_m": 48
+  },
+  "osm_node_2680126093": {
+   "google_place_id": "ChIJm448yzWBRUIRuO9vr90nVAc",
+   "match_score": 98,
+   "distance_m": 32
+  },
+  "osm_node_455447680": {
+   "google_place_id": "ChIJNSkWM9eGRUIRldqBDY3MjxU",
+   "match_score": 97,
+   "distance_m": 18
+  },
+  "osm_node_5889815192": {
+   "google_place_id": "ChIJwWx6NtCGRUIRA5p4BJqZFwQ",
+   "match_score": 95,
+   "distance_m": 17
+  },
+  "osm_way_240376692": {
+   "google_place_id": "ChIJ73OrYNWGRUIRKDBBm2I9Hzg",
+   "match_score": 93,
+   "distance_m": 3
+  },
+  "osm_node_2826173218": {
+   "google_place_id": "ChIJf38gvDKBRUIRpxupT4khsFk",
+   "match_score": 92,
+   "distance_m": 15
+  },
+  "osm_way_504774632": {
+   "google_place_id": "ChIJqX-G5hSBRUIRYgDSpNOB84o",
+   "match_score": 92,
+   "distance_m": 21
+  },
+  "osm_node_4941659484": {
+   "google_place_id": "ChIJ10htMz-BRUIR-15fNadlr5s",
+   "match_score": 91,
+   "distance_m": 3
+  },
+  "osm_way_475995069": {
+   "google_place_id": "ChIJQfclFx-BRUIRoPpt0wJck0U",
+   "match_score": 90,
+   "distance_m": 25
+  },
+  "osm_node_4946926823": {
+   "google_place_id": "ChIJRxHoOl-BRUIRFbc90hnfFFg",
+   "match_score": 89,
+   "distance_m": 2
+  },
+  "osm_node_4133836392": {
+   "google_place_id": "ChIJtYM0diGERUIRtfaVfcjY374",
+   "match_score": 89,
+   "distance_m": 15
+  },
+  "osm_node_2349675581": {
+   "google_place_id": "ChIJ92gbSMyGRUIRGjcVLI_Xu6s",
+   "match_score": 88,
+   "distance_m": 3
+  }
+ }
+}

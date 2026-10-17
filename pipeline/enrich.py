@@ -54,10 +54,31 @@ def haversine_m(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     return 2 * r * math.asin(math.sqrt(a))
 
 
+_TRANSLIT = str.maketrans({
+    "а": "a", "б": "b", "в": "v", "г": "g", "д": "d", "е": "e", "ё": "e", "ж": "zh", "з": "z",
+    "и": "i", "й": "y", "к": "k", "л": "l", "м": "m", "н": "n", "о": "o", "п": "p", "р": "r",
+    "с": "s", "т": "t", "у": "u", "ф": "f", "х": "h", "ц": "ts", "ч": "ch", "ш": "sh", "щ": "sch",
+    "ъ": "", "ы": "y", "ь": "", "э": "e", "ю": "yu", "я": "ya",
+    "ә": "a", "ғ": "g", "қ": "k", "ң": "n", "ө": "o", "ұ": "u", "ү": "u", "һ": "h", "і": "i",
+})
+
+
 def normalize_name(name: str) -> str:
     text = _PUNCT.sub(" ", name.lower())
     text = _GENERIC.sub(" ", text)
     return " ".join(text.split())
+
+
+def name_score(a: str, b: str) -> float:
+    """0-100. Compares transliterated names; a name fully contained in the other
+    ("Хива" in "Хива, Астана") counts if the shorter one has >= 4 letters."""
+    ta, tb = normalize_name(a).translate(_TRANSLIT), normalize_name(b).translate(_TRANSLIT)
+    if not ta or not tb:
+        return 0.0
+    score = fuzz.ratio(ta, tb)
+    if min(len(ta), len(tb)) >= 4:
+        score = max(score, fuzz.token_set_ratio(ta, tb))
+    return score
 
 
 M_PER_DEG_LAT = 111_320
@@ -119,14 +140,13 @@ def match(pois: list[dict], places: list[dict]) -> dict[str, dict]:
     """
     candidates = []
     for poi in pois:
-        pn = normalize_name(poi["name"])
-        if not pn:
+        if not normalize_name(poi["name"]):
             continue
         for pl in places:
             d = haversine_m(poi["lat"], poi["lon"], pl["lat"], pl["lon"])
             if d >= MAX_DISTANCE_M:
                 continue
-            score = fuzz.ratio(pn, normalize_name(pl["name"]))
+            score = name_score(poi["name"], pl["name"])
             if score >= MIN_NAME_SCORE:
                 candidates.append((score, -d, poi["poi_id"], pl["id"]))
 
@@ -199,7 +219,10 @@ def main() -> None:
 
     stats = {"calls": 0, "cache_hits": 0}
     places: dict[str, dict] = {}
+    stopped: str | None = None
     for cell in cells:
+        if stopped:
+            break
         for types in TYPE_GROUPS.values():
             body = {
                 "includedTypes": types,
@@ -211,7 +234,13 @@ def main() -> None:
                     "radius": float(cell["radius_m"]),
                 }},
             }
-            for p in _cached_post(body, key, stats).get("places", []):
+            try:
+                data = _cached_post(body, key, stats)
+            except RuntimeError as err:  # quota / cap / HTTP error: keep what we have
+                stopped = str(err)[:200]
+                print(f"[enrich] stopped early: {stopped}", file=sys.stderr)
+                break
+            for p in data.get("places", []):
                 places[p["id"]] = {
                     "id": p["id"],
                     "name": p.get("displayName", {}).get("text", ""),
@@ -230,13 +259,16 @@ def main() -> None:
             "cache_hits": stats["cache_hits"],
             "google_places_seen": len(places),
             "popular_osm_poi": len(pois),
+            "complete": stopped is None,
+            "stopped_reason": stopped,
             "note": "Only place_id + match quality stored (Google Maps Platform ToS).",
         },
         "matches": matches,
     }, ensure_ascii=False, indent=1), encoding="utf-8")
     pct = 100 * len(matches) / max(len(pois), 1)
     print(f"[enrich] calls={stats['calls']} cache_hits={stats['cache_hits']} google={len(places)} "
-          f"matched {len(matches)}/{len(pois)} ({pct:.0f}%) -> data/raw/{out.name}")
+          f"matched {len(matches)}/{len(pois)} ({pct:.0f}%) -> data/raw/{out.name}"
+          + ("" if stopped is None else "  [PARTIAL: re-run after quota reset; cached calls are free]"))
 
 
 if __name__ == "__main__":

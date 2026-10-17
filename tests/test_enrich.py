@@ -28,6 +28,20 @@ def test_generic_words_and_quotes_are_ignored_in_names():
     assert out["osm_node_1"]["google_place_id"] == "G1"
 
 
+def test_real_astana_pairs_with_extra_words_or_latin_spelling_are_matched():
+    pairs = [("Хива", "Хива, Астана Нурсултан"), ("Кабачок", "Кабачок пивной бар"),
+             ("Фархи", "restaurant FARHI"), ("Мюллер", "Muller"), ('Бар "Томпсон"', 'BAR "Thompson"')]
+    for i, (o, gname) in enumerate(pairs):
+        out = match([osm(f"osm_node_{i}", o)], [g(f"G{i}", gname, dlat=0.0001)])
+        assert f"osm_node_{i}" in out, (o, gname)
+
+
+def test_unrelated_neighbours_are_not_matched():
+    # real near-misses from the Astana run: same building, different business
+    for o, gname in [("Mega", "Coffee Boom"), ("Арарат", "Кафе «Сафия»"), ("Дастархан", 'Избушка "Достык"')]:
+        assert match([osm("osm_node_1", o)], [g("G1", gname, dlat=0.0001)]) == {}, (o, gname)
+
+
 def _covered(poi, cells):
     return any(haversine_m(poi["lat"], poi["lon"], c["lat"], c["lon"]) <= c["radius_m"] for c in cells)
 
