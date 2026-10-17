@@ -1,0 +1,361 @@
+{
+  "verified_at_utc": "2026-10-17T17:50:08.893553+00:00",
+  "base_url": "https://seruen-backend-f36d.onrender.com",
+  "service_id": "srv-db9r92ajnfac73dc07gg",
+  "deploy_id": "dep-db9r92ijnfac73dc096g",
+  "deployed_commit": "c19daf193c61c132dd8efda521bb4321df05a7c9",
+  "deploy_status": "live",
+  "plan": "free",
+  "health_check_path": "/health",
+  "scope": "Real HTTPS requests to Render; synthetic POI and draft scenarios; no Gemini key",
+  "health": {
+    "status": "ok",
+    "mode_available": [
+      "no_ai"
+    ],
+    "data_snapshot_date": "2026-10-17",
+    "poi_count": 24,
+    "data_kind": "sample",
+    "retrieval_mode": "bm25+lsa",
+    "mock": false
+  },
+  "endpoints": {
+    "/health": 200,
+    "/docs": 200,
+    "/openapi.json": 200,
+    "/scenarios": 200
+  },
+  "demo": [
+    {
+      "id": "S1",
+      "http_status": 200,
+      "modes": [
+        "cached",
+        "cached"
+      ],
+      "cards": 3,
+      "candidates_http_status": 200,
+      "candidates": 4
+    },
+    {
+      "id": "S2",
+      "http_status": 200,
+      "modes": [
+        "cached",
+        "cached"
+      ],
+      "cards": 3,
+      "candidates_http_status": 200,
+      "candidates": 3
+    },
+    {
+      "id": "S3",
+      "http_status": 200,
+      "modes": [
+        "cached",
+        "cached"
+      ],
+      "cards": 3,
+      "candidates_http_status": 200,
+      "candidates": 5
+    },
+    {
+      "id": "S4",
+      "http_status": 200,
+      "modes": [
+        "cached",
+        "cached"
+      ],
+      "cards": 3,
+      "candidates_http_status": 200,
+      "candidates": 4
+    },
+    {
+      "id": "S5",
+      "http_status": 200,
+      "modes": [
+        "cached",
+        "cached"
+      ],
+      "cards": 3,
+      "candidates_http_status": 200,
+      "candidates": 3
+    },
+    {
+      "id": "S6",
+      "http_status": 200,
+      "modes": [
+        "cached",
+        "cached"
+      ],
+      "cards": 2,
+      "candidates_http_status": 200,
+      "candidates": 2
+    }
+  ],
+  "remote_eval": {
+    "queries": 30,
+    "responses_with_cards": 30,
+    "four_parts": 30,
+    "cards": 88,
+    "within_budget": 88,
+    "invented_ids": 0,
+    "unsupported_open_claims": 0,
+    "mean_http_ms": 101.8,
+    "max_http_ms": 112.67,
+    "measurement_note": "Sequential warm-service network requests from this workstation; not a load/cold-start benchmark",
+    "cases": [
+      {
+        "id": "S1.1",
+        "http_status": 200,
+        "mode": "cached",
+        "cards": 3,
+        "http_ms": 98.7
+      },
+      {
+        "id": "S1.2",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 99.56
+      },
+      {
+        "id": "S1.3",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 97.07
+      },
+      {
+        "id": "S1.4",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 96.56
+      },
+      {
+        "id": "S1.5",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 99.18
+      },
+      {
+        "id": "S2.1",
+        "http_status": 200,
+        "mode": "cached",
+        "cards": 3,
+        "http_ms": 99.24
+      },
+      {
+        "id": "S2.2",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 100.32
+      },
+      {
+        "id": "S2.3",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 103.43
+      },
+      {
+        "id": "S2.4",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 99.53
+      },
+      {
+        "id": "S2.5",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 99.82
+      },
+      {
+        "id": "S3.1",
+        "http_status": 200,
+        "mode": "cached",
+        "cards": 3,
+        "http_ms": 100.9
+      },
+      {
+        "id": "S3.2",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 99.9
+      },
+      {
+        "id": "S3.3",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 108.03
+      },
+      {
+        "id": "S3.4",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 105.68
+      },
+      {
+        "id": "S3.5",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 107.99
+      },
+      {
+        "id": "S4.1",
+        "http_status": 200,
+        "mode": "cached",
+        "cards": 3,
+        "http_ms": 98.87
+      },
+      {
+        "id": "S4.2",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 108.34
+      },
+      {
+        "id": "S4.3",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 107.28
+      },
+      {
+        "id": "S4.4",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 100.35
+      },
+      {
+        "id": "S4.5",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 102.0
+      },
+      {
+        "id": "S5.1",
+        "http_status": 200,
+        "mode": "cached",
+        "cards": 3,
+        "http_ms": 106.03
+      },
+      {
+        "id": "S5.2",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 100.9
+      },
+      {
+        "id": "S5.3",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 97.93
+      },
+      {
+        "id": "S5.4",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 97.52
+      },
+      {
+        "id": "S5.5",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 96.15
+      },
+      {
+        "id": "S6.1",
+        "http_status": 200,
+        "mode": "cached",
+        "cards": 2,
+        "http_ms": 112.67
+      },
+      {
+        "id": "S6.2",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 109.45
+      },
+      {
+        "id": "S6.3",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 95.08
+      },
+      {
+        "id": "S6.4",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 3,
+        "http_ms": 105.87
+      },
+      {
+        "id": "S6.5",
+        "http_status": 200,
+        "mode": "no_ai",
+        "cards": 2,
+        "http_ms": 99.65
+      }
+    ]
+  },
+  "cors": [
+    {
+      "origin": "http://localhost:5173",
+      "http_status": 200,
+      "allow_origin": "http://localhost:5173"
+    },
+    {
+      "origin": "http://127.0.0.1:5173",
+      "http_status": 200,
+      "allow_origin": "http://127.0.0.1:5173"
+    },
+    {
+      "origin": "http://localhost:3000",
+      "http_status": 200,
+      "allow_origin": "http://localhost:3000"
+    },
+    {
+      "origin": "https://unapproved.example",
+      "http_status": 400,
+      "allow_origin": null
+    }
+  ],
+  "invalid_request": {
+    "http_status": 422,
+    "code": "invalid_request"
+  },
+  "application_logs": {
+    "source": "Render app logs via MCP, during the public smoke check",
+    "start_utc": "2026-10-17T17:50:09.291020193Z",
+    "end_utc": "2026-10-17T17:50:15.341491007Z",
+    "records": 57,
+    "has_more": false,
+    "keys_allowed_only": true,
+    "internal_errors": 0,
+    "expected_validation_errors": [
+      "http_400",
+      "http_422"
+    ],
+    "note": "Application records contain no query/location fields. Provider request/edge logs and Google are outside this check."
+  },
+  "result": "PASS"
+}

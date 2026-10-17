@@ -1,0 +1,146 @@
+{
+  "mode": "no_ai",
+  "recommendations": [
+    {
+      "poi_id": "sample_014",
+      "name": "Сынақ орны 14",
+      "category": "culture",
+      "coords": {
+        "lat": 51.1325,
+        "lon": 71.403
+      },
+      "distance_m": 90,
+      "walk_min": 2,
+      "why": "Деректе балаларға қолайлы деп белгіленген; барып-қайту уақыт шегіне сай.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Қолжетімді көрмені қараңыз; билет пен бағдарламаны сол жерде нақтылаңыз.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Su 08:00-22:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "accessibility": "yes",
+      "links": {},
+      "rating": 4.4,
+      "rating_count": 98,
+      "budget_breakdown": {
+        "walk_there_min": 2,
+        "stay_min": 30,
+        "walk_back_min": 2,
+        "reserve_min": 0,
+        "total_min": 34
+      }
+    },
+    {
+      "poi_id": "sample_013",
+      "name": "Сынақ орны 13",
+      "category": "kids",
+      "coords": {
+        "lat": 51.1335,
+        "lon": 71.4048
+      },
+      "distance_m": 79,
+      "walk_min": 2,
+      "why": "Деректе балаларға қолайлы деп белгіленген; барып-қайту уақыт шегіне сай.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Баламен уақыт өткізіңіз; жас шектеулерін сол жерде тексеріңіз.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Su 08:00-22:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "accessibility": "yes",
+      "links": {},
+      "rating": 4.3,
+      "rating_count": 91,
+      "budget_breakdown": {
+        "walk_there_min": 2,
+        "stay_min": 30,
+        "walk_back_min": 2,
+        "reserve_min": 0,
+        "total_min": 34
+      }
+    },
+    {
+      "poi_id": "sample_015",
+      "name": "Сынақ орны 15",
+      "category": "park",
+      "coords": {
+        "lat": 51.134,
+        "lon": 71.402
+      },
+      "distance_m": 179,
+      "walk_min": 4,
+      "why": "Деректе балаларға қолайлы деп белгіленген; барып-қайту уақыт шегіне сай.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Қоғамдық жолдармен серуендеп, сол жолмен қайтыңыз.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "24/7",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "accessibility": "yes",
+      "links": {},
+      "rating": 4.0,
+      "rating_count": 105,
+      "budget_breakdown": {
+        "walk_there_min": 4,
+        "stay_min": 30,
+        "walk_back_min": 4,
+        "reserve_min": 0,
+        "total_min": 38
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 2,
+    "stay_min": 30,
+    "walk_back_min": 2,
+    "reserve_min": 0,
+    "total_min": 34
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 692,
+    "radius_expanded": false,
+    "time_budget_min": 60,
+    "filters": [
+      "category:kids",
+      "category:park",
+      "category:culture",
+      "child_friendly"
+    ],
+    "time": "Sun 14:00",
+    "candidates_found": 3,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "rules",
+    "target_time": "2026-10-18T14:00:00+05:00"
+  },
+  "notes": [
+    "Сынақ деректері: орындар мен қасиеттері модельденген, нақты бару үшін қолданбаңыз."
+  ],
+  "safety": [],
+  "route": null,
+  "disclaimer": "Орындар туралы мәлімет ескіруі мүмкін, барған кезде тексеріңіз. Жаяу жүру уақыты шамамен есептелген.",
+  "data_kind": "sample",
+  "mock": false
+}

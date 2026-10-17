@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: seruen-backend
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python scripts/reindex.py
+    startCommand: python -m scripts.serve
+    healthCheckPath: /health
+    autoDeployTrigger: off
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+      - key: HOST
+        value: 0.0.0.0
+      - key: POI_PATH
+        value: data/poi_sample.json
+      - key: DATA_KIND
+        value: sample
+      - key: CORS_ORIGINS
+        value: http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,https://seruen-astana.netlify.app

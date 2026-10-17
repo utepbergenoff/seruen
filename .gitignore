@@ -8,10 +8,10 @@ TA.pdf
 !.env.example
 
 # Python
-__pycache__/
-*.py[cod]
 .venv/
 venv/
+__pycache__/
+*.py[cod]
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -23,8 +23,14 @@ htmlcov/
 node_modules/
 dist/
 
-# Pipeline caches (intermediate API responses, not the committed snapshot)
+# Data: data/poi.json and data/raw/ ARE committed (snapshot for the jury, plan A8);
+# only API response caches stay local.
 data/cache/
+
+# Eval / misc
+eval/human_ratings.json
+work/
+*.log
 
 # Editors / OS
 .vscode/

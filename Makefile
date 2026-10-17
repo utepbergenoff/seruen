@@ -1,14 +1,27 @@
-PY ?= python
+PYTHON ?= python3
+POI_PATH ?= data/poi_sample.json
+export POI_PATH
+.PHONY: setup run test eval index mock data data-fresh test-data
+setup:
+	$(PYTHON) -m venv .venv
+	.venv/bin/python -m pip install -r requirements-dev.txt
+index:
+	.venv/bin/python scripts/reindex.py
+run:
+	.venv/bin/python -m scripts.serve
+mock:
+	MOCK_MODE=true .venv/bin/python -m scripts.serve
+test:
+	.venv/bin/python -m pytest -q
+eval:
+	.venv/bin/python eval/run.py
 
-.PHONY: data data-fresh test-data
-
-# Rebuild data/poi.json + data/quality_report.md from raw files in data/raw/ (no keys needed)
+# --- data pipeline (stream A): rebuild data/poi.json + data/quality_report.md ---
+# from raw files in data/raw/ (no keys, no network)
 data:
-	$(PY) -m pipeline.run
-
-# Full re-collection from OSM + Google Places + Wikipedia (+ Gemini if GEMINI_API_KEY is set)
+	$(PYTHON) -m pipeline.run
+# full re-collection: OSM + Google place_id + Wikipedia (+ Gemini if GEMINI_API_KEY is set)
 data-fresh:
-	$(PY) -m pipeline.run --fresh
-
+	$(PYTHON) -m pipeline.run --fresh
 test-data:
-	$(PY) -m pytest -q tests/test_hours.py tests/test_enrich.py tests/test_wiki.py tests/test_dedupe.py tests/test_describe.py
+	$(PYTHON) -m pytest -q tests/test_hours.py tests/test_enrich.py tests/test_wiki.py tests/test_dedupe.py tests/test_describe.py

@@ -1,0 +1,148 @@
+{
+  "mode": "cached",
+  "recommendations": [
+    {
+      "poi_id": "sample_003",
+      "name": "Рабочая студия (демо)",
+      "category": "cowork",
+      "coords": {
+        "lat": 51.0885,
+        "lon": 71.4174
+      },
+      "distance_m": 63,
+      "walk_min": 2,
+      "why": "По тегам в базе: тихо, розетки, Wi-Fi.",
+      "why_source": "template",
+      "time_to_spend_min": 60,
+      "what_to_do": "Поработайте за ноутбуком; стоимость и свободные места уточните заранее.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Su 08:00-22:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "accessibility": "yes",
+      "links": {},
+      "rating": 4.3,
+      "rating_count": 21,
+      "budget_breakdown": {
+        "walk_there_min": 2,
+        "stay_min": 60,
+        "walk_back_min": 2,
+        "reserve_min": 0,
+        "total_min": 64
+      }
+    },
+    {
+      "poi_id": "sample_001",
+      "name": "Кофе у Экспо (демо)",
+      "category": "coffee",
+      "coords": {
+        "lat": 51.0898,
+        "lon": 71.4168
+      },
+      "distance_m": 91,
+      "walk_min": 2,
+      "why": "По тегам в базе: тихо, розетки, Wi-Fi.",
+      "why_source": "template",
+      "time_to_spend_min": 60,
+      "what_to_do": "Выпейте кофе; перед заказом уточните наличие свободных мест.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Su 08:00-22:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "accessibility": "yes",
+      "links": {},
+      "rating": 4.1,
+      "rating_count": 7,
+      "budget_breakdown": {
+        "walk_there_min": 2,
+        "stay_min": 60,
+        "walk_back_min": 2,
+        "reserve_min": 0,
+        "total_min": 64
+      }
+    },
+    {
+      "poi_id": "sample_002",
+      "name": "Читальный зал (демо)",
+      "category": "library",
+      "coords": {
+        "lat": 51.0906,
+        "lon": 71.415
+      },
+      "distance_m": 227,
+      "walk_min": 4,
+      "why": "По тегам в базе: тихо, розетки, Wi-Fi.",
+      "why_source": "template",
+      "time_to_spend_min": 60,
+      "what_to_do": "Почитайте или поработайте; условия посещения уточните у сотрудников.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Su 08:00-22:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "accessibility": "yes",
+      "links": {},
+      "rating": 4.2,
+      "rating_count": 14,
+      "budget_breakdown": {
+        "walk_there_min": 4,
+        "stay_min": 60,
+        "walk_back_min": 4,
+        "reserve_min": 0,
+        "total_min": 68
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 2,
+    "stay_min": 60,
+    "walk_back_min": 2,
+    "reserve_min": 0,
+    "total_min": 64
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 1730,
+    "radius_expanded": false,
+    "time_budget_min": 120,
+    "filters": [
+      "quiet",
+      "sockets",
+      "wifi",
+      "category:coffee",
+      "category:library",
+      "category:cowork"
+    ],
+    "time": "Sun 14:00",
+    "candidates_found": 4,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "rules",
+    "target_time": "2026-10-18T14:00:00+05:00"
+  },
+  "notes": [
+    "Тестовый набор: места и их свойства смоделированы, не используйте их для реального посещения."
+  ],
+  "safety": [],
+  "route": null,
+  "disclaimer": "Данные о местах могут устареть — проверяйте на месте. Время пешком приблизительное.",
+  "data_kind": "sample",
+  "mock": false
+}
