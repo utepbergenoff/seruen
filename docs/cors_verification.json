@@ -1,0 +1,140 @@
+{
+  "verified_at_utc": "2026-10-17T18:47:26.317976+00:00",
+  "base_url": "https://seruen-backend-f36d.onrender.com",
+  "origin": "https://seruen-astana.netlify.app",
+  "service_id": "srv-db9r92ajnfac73dc07gg",
+  "deploy_id": "dep-db9s4kvavr4c73f7jkcg",
+  "deployed_commit": "9e888a3373334c54deb7902d66795f44faa03d2b",
+  "plan": "free",
+  "deploy_status": "live",
+  "scope": "CORS preflights and actual HTTPS requests with the published frontend Origin; synthetic fixtures, no AI",
+  "preflights": [
+    {
+      "path": "/scenarios",
+      "method": "GET",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept, Accept-Language, Content-Language, Content-Type",
+        "access-control-allow-methods": "GET, POST, OPTIONS",
+        "access-control-allow-origin": "https://seruen-astana.netlify.app",
+        "access-control-max-age": "600"
+      }
+    },
+    {
+      "path": "/health",
+      "method": "GET",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept, Accept-Language, Content-Language, Content-Type",
+        "access-control-allow-methods": "GET, POST, OPTIONS",
+        "access-control-allow-origin": "https://seruen-astana.netlify.app",
+        "access-control-max-age": "600"
+      }
+    },
+    {
+      "path": "/recommend",
+      "method": "POST",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept, Accept-Language, Content-Language, Content-Type",
+        "access-control-allow-methods": "GET, POST, OPTIONS",
+        "access-control-allow-origin": "https://seruen-astana.netlify.app",
+        "access-control-max-age": "600"
+      }
+    },
+    {
+      "path": "/candidates",
+      "method": "POST",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept, Accept-Language, Content-Language, Content-Type",
+        "access-control-allow-methods": "GET, POST, OPTIONS",
+        "access-control-allow-origin": "https://seruen-astana.netlify.app",
+        "access-control-max-age": "600"
+      }
+    }
+  ],
+  "demo": [
+    {
+      "id": "S1",
+      "statuses": {
+        "/recommend": 200,
+        "/candidates": 200
+      },
+      "mode": "cached",
+      "cards": 3
+    },
+    {
+      "id": "S2",
+      "statuses": {
+        "/recommend": 200,
+        "/candidates": 200
+      },
+      "mode": "cached",
+      "cards": 3
+    },
+    {
+      "id": "S3",
+      "statuses": {
+        "/recommend": 200,
+        "/candidates": 200
+      },
+      "mode": "cached",
+      "cards": 3
+    },
+    {
+      "id": "S4",
+      "statuses": {
+        "/recommend": 200,
+        "/candidates": 200
+      },
+      "mode": "cached",
+      "cards": 3
+    },
+    {
+      "id": "S5",
+      "statuses": {
+        "/recommend": 200,
+        "/candidates": 200
+      },
+      "mode": "cached",
+      "cards": 3
+    },
+    {
+      "id": "S6",
+      "statuses": {
+        "/recommend": 200,
+        "/candidates": 200
+      },
+      "mode": "cached",
+      "cards": 2
+    }
+  ],
+  "preserved_local_origins": [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000"
+  ],
+  "health": {
+    "status": "ok",
+    "mode_available": [
+      "no_ai"
+    ],
+    "data_snapshot_date": "2026-10-17",
+    "poi_count": 24,
+    "data_kind": "sample",
+    "retrieval_mode": "bm25+lsa",
+    "mock": false
+  },
+  "unapproved_origins_rejected": true,
+  "result": "PASS",
+  "browser_check": {
+    "url": "https://seruen-astana.netlify.app/",
+    "scenario": "S1",
+    "cards_visible": 3,
+    "map_markers_visible": 3,
+    "sample_disclaimer_visible": true,
+    "result": "PASS",
+    "scope": "One scenario in browser; all six checked over HTTPS with Origin header"
+  }
+}
