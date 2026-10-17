@@ -209,7 +209,7 @@ def build_item(http: Http, titles: dict[str, str], qid: str | None, search_tags:
             descriptions[lang], urls[lang] = res
     if not descriptions:
         return None
-    lang = next(l for l in LANGS if l in descriptions)
+    lang = next(code for code in LANGS if code in descriptions)
     return {
         "description": descriptions[lang],
         "lang": lang,

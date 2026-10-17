@@ -13,15 +13,14 @@ python -m pipeline.run --fresh  # заново OSM + Google place_id + Wikipedia
 
 Снимок `data/poi.json` лежит в репозитории — бэкенду и жюри пересбор не нужен.
 
-## Формат файла
+## Файлы
 
-```json
-{"_meta": {"pipeline_version": "0.1.0", "built_at": "ISO-8601 UTC", "osm_collected_at": "...",
-           "places_complete": false, "gemini_model": null, "descriptions": {...}, "count": 1251},
- "pois": [ {запись}, ... ]}
-```
+- **`data/poi.json`** — контракт бэкенда: JSON-массив записей ровно с полями `backend/schemas.py: POI`
+  (`extra="forbid"`). Тест `tests/test_data_contract.py` грузит его через `backend.loader.load_pois` и требует 0 отклонённых.
+- **`data/poi_full.json`** — полная версия: `{"_meta": {...}, "pois": [...]}` со всеми полями ниже
+  (`google_place_id`, `tags_inferred`, `descriptions` на всех языках, `description_url`, `description_method`, …).
 
-## Поля записи
+## Поля записи (в `poi.json` — только поля контракта; остальные — в `poi_full.json`)
 
 | Поле | Тип / значения | Что значит |
 |---|---|---|

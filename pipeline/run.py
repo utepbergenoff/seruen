@@ -18,6 +18,13 @@ from pipeline.dedupe import dedupe, to_poi
 from pipeline.describe import describe_all
 from pipeline.report import write_report
 
+FULL_PATH = POI_PATH.with_name("poi_full.json")
+CONTRACT_FIELDS = (
+    "poi_id", "name", "name_kk", "name_en", "lat", "lon", "category", "tags", "description",
+    "description_source", "opening_hours_raw", "hours_source", "phone", "website", "rating",
+    "rating_count", "popularity", "wheelchair", "kid_friendly", "adult_only", "indoor", "sources", "last_checked",
+)
+
 
 def _step(module: str, *args: str) -> None:
     print(f"\n== {module} ==", flush=True)
@@ -86,7 +93,12 @@ def build() -> None:
         "descriptions": {k: gen_stats[k] for k in ("llm", "template", "rejected", "gemini_calls")},
         "count": len(pois),
     }
-    POI_PATH.write_text(json.dumps({"_meta": meta, "pois": pois}, ensure_ascii=False, indent=1), encoding="utf-8")
+    # data/poi.json = backend contract (backend/schemas.py POI, extra="forbid"): a plain list, contract fields only.
+    # data/poi_full.json = everything (meta, google_place_id, tags_inferred, all wiki languages...).
+    contract = [{**{k: p.get(k) for k in CONTRACT_FIELDS}, "hours_source": p.get("hours_source") or "none"}
+                for p in pois]
+    POI_PATH.write_text(json.dumps(contract, ensure_ascii=False, indent=1), encoding="utf-8")
+    FULL_PATH.write_text(json.dumps({"_meta": meta, "pois": pois}, ensure_ascii=False, indent=1), encoding="utf-8")
     (RAW_DIR / "dropped.json").write_text(json.dumps(dropped, ensure_ascii=False, indent=1), encoding="utf-8")
     write_report(pois, dropped, meta)
     print(f"\n[run] {len(pois)} POI -> data/poi.json; dropped {len(dropped)}; report -> data/quality_report.md")
