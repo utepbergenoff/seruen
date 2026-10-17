@@ -30,7 +30,8 @@ python -m pipeline.run --fresh  # заново OSM + Google place_id + Wikipedia
 | `lat`, `lon` | float | Для полигонов (парки, ТРЦ) — центр |
 | `category` | одна из 12: `coffee food park kids culture viewpoint shopping sport night unusual library cowork` | Ровно одна |
 | `tags` | list[str] | Настроения/признаки: `wi-fi`, `терраса`, `розетки`, `тихо`, `кофе`, `бесплатно`, `ночью`, `крытое`, `на воздухе`, `фото`, `история`. Всегда ≥ 1 |
-| `opening_hours_raw` | str / null | Строка OSM как есть. **Статус считать через `pipeline.hours.open_status(raw, now)`** → `open` / `closed` / `unknown` |
+| `tags_inferred` | list[str] | Теги, **предположенные по категории** (у библиотек «тихо», «розетки», «бесплатно»; у коворкингов «wi-fi»). Для поиска — можно; в «почему» — только как «обычно», не как факт о месте |
+| `opening_hours_raw` | str / null | Строка OSM как есть. **Статус считать через `pipeline.hours.open_status(raw, now)`** → `open` / `closed` / `unknown`. `now` с часовым поясом переводится во время Астаны (UTC+5); праздничные (`PH`) и неоднозначные правила → `unknown` |
 | `hours_source` | `osm` / null | Источник часов (для FR-7: «по данным OSM») |
 | `phone`, `website` | str / null | Из OSM |
 | `wheelchair` | `yes` / `limited` / `no` / `unknown` | Нет тега → `unknown`, не `no`. Фильтр «без ступеней» = только `yes` (+ `limited` по решению) |
