@@ -126,7 +126,10 @@ class Http:
             time.sleep(wait)
         if resp is None or resp.status_code == 429:
             return None
-        data = resp.json() if resp.status_code == 200 else None
+        try:
+            data = resp.json() if resp.status_code == 200 else None
+        except ValueError:  # 200 with a non-JSON body (maintenance page)
+            return None
         if resp.status_code in (200, 404):  # cache definite answers only
             path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
         return data

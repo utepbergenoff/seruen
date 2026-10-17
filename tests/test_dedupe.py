@@ -65,3 +65,15 @@ def test_dedupe_drops_duplicates_missing_coords_and_junk_with_reasons():
                        "osm_node_5": "junk_name", "osm_node_6": "no_name"}
     playground = next(p for p in kept if p["poi_id"] == "osm_node_7")
     assert playground["name"] == "Детская площадка"
+
+
+def test_category_assumptions_are_kept_apart_from_osm_facts():
+    lib = to_poi(node({"amenity": "library", "name": "Библиотека №3"}))
+    assert {"тихо", "розетки", "бесплатно"} <= set(lib["tags"])  # still searchable
+    assert set(lib["tags_inferred"]) == {"тихо", "розетки", "бесплатно"}  # but marked as assumption
+
+
+def test_last_checked_is_the_osm_collection_date_not_today():
+    from datetime import date
+    p = to_poi(node({"amenity": "cafe", "name": "X"}), today=date(2026, 10, 1))
+    assert p["last_checked"] == "2026-10-01"

@@ -47,8 +47,12 @@ def fetch(query: str) -> dict:
                 if resp.status_code in RETRY_STATUSES:
                     raise requests.HTTPError(f"HTTP {resp.status_code}", response=resp)
                 resp.raise_for_status()
+                data = resp.json()
+                remark = data.get("remark", "")
+                if "error" in remark.lower() or "timed out" in remark.lower():
+                    raise ValueError(f"Overpass partial result: {remark[:120]}")
                 print(f"[collect] ok from {server} (attempt {attempt})")
-                return resp.json()
+                return data
             except (requests.RequestException, ValueError) as err:
                 last_err = err
                 print(f"[collect] {server} attempt {attempt} failed: {err}", file=sys.stderr)
@@ -64,6 +68,12 @@ def main() -> None:
 
     RAW_DIR.mkdir(parents=True, exist_ok=True)
     out = RAW_DIR / f"osm_{now:%Y%m%d}.json"
+    previous = sorted(RAW_DIR.glob("osm_*.json"))
+    if previous:
+        old_n = len(json.loads(previous[-1].read_text(encoding="utf-8")).get("elements", []))
+        new_n = len(data.get("elements", []))
+        if new_n < 0.7 * old_n:
+            sys.exit(f"[collect] only {new_n} elements vs {old_n} in {previous[-1].name}: refusing to overwrite")
     out.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
 
     elements = data.get("elements", [])

@@ -177,6 +177,8 @@ def load_popular_pois() -> list[dict]:
 
 def _cached_post(body: dict, key: str, stats: dict) -> dict:
     payload = json.dumps(body, sort_keys=True)
+    # NB: key excludes FIELD_MASK on purpose (keeps the 107 already-paid responses valid);
+    # if FIELD_MASK ever changes, clear data/cache/places/.
     path = CACHE_DIR / "places" / f"{hashlib.sha1(payload.encode()).hexdigest()}.json"
     if path.exists():
         stats["cache_hits"] += 1
@@ -251,6 +253,9 @@ def main() -> None:
     matches = match(pois, list(places.values()))
     now = datetime.now(timezone.utc)
     out = RAW_DIR / f"places_{now:%Y%m%d}.json"
+    if stopped and out.exists() and json.loads(out.read_text(encoding="utf-8"))["_meta"].get("complete"):
+        print(f"[enrich] keeping complete {out.name}; partial run not saved", file=sys.stderr)
+        return
     out.write_text(json.dumps({
         "_meta": {
             "collected_at": now.isoformat(timespec="seconds"),

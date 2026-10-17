@@ -68,6 +68,7 @@ def to_poi(el: dict, today: date | None = None) -> dict | None:
     if found is None:
         return None
     category, tag_list = found
+    inferred = list(tag_list)
     name = (tags.get("name") or "").strip()
     low = name.lower()
     if category in ("viewpoint", "culture") and (_UNUSUAL.search(low) or _UNUSUAL.search(low.translate(_HOMOGLYPHS))):
@@ -88,6 +89,7 @@ def to_poi(el: dict, today: date | None = None) -> dict | None:
         "lon": lon,
         "category": category,
         "tags": tag_list,
+        "tags_inferred": inferred,  # assumed from the category, not stated by OSM
         "opening_hours_raw": hours,
         "hours_source": "osm" if hours else None,
         "phone": tags.get("phone") or tags.get("contact:phone"),

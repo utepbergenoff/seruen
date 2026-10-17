@@ -31,3 +31,19 @@ def test_check_generated_rejects_hype_invented_numbers_and_wrong_length():
 def test_template_for_unnamed_playground_says_only_what_the_data_says():
     text = template_description(poi(name="Детская площадка", category="kids", tags=[], name_generic=True))
     assert text == "Детская площадка по данным OpenStreetMap."
+
+
+def test_template_never_presents_category_assumptions_as_osm_facts():
+    lib = poi(name="Библиотека №3", category="library", tags=["тихо", "розетки", "бесплатно", "wi-fi"],
+              tags_inferred=["тихо", "розетки", "бесплатно"])
+    text = template_description(lib)
+    assert "Wi-Fi" in text and "тихо" not in text and "розетки" not in text
+
+
+def test_generated_text_must_name_the_place():
+    assert check_generated("Уютная кофейня с Wi-Fi.", poi()) == "wrong_place"
+
+
+def test_template_does_not_repeat_the_kind_when_the_name_already_says_it():
+    assert template_description(poi(name="Библиотека", category="library", tags=[])) == "Библиотека."
+    assert template_description(poi(name="Центральная библиотека", category="library", tags=[])) == "Центральная библиотека."

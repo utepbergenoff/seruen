@@ -10,7 +10,7 @@ import argparse
 import json
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 from pipeline import __version__
 from pipeline.config import POI_PATH, RAW_DIR, latest_raw
@@ -49,7 +49,9 @@ def build() -> None:
     places = _load("places_")
     wiki = _load("wiki_").get("items", {})
 
-    records = [p for e in osm["elements"] if (p := to_poi(e))]
+    collected = osm.get("_meta", {}).get("collected_at")
+    as_of = date.fromisoformat(collected[:10]) if collected else None  # data age, not build day
+    records = [p for e in osm["elements"] if (p := to_poi(e, today=as_of))]
     pois, dropped = dedupe(records)
 
     matches = places.get("matches", {})

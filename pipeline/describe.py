@@ -12,6 +12,8 @@ import re
 import sys
 import time
 
+from rapidfuzz import fuzz
+
 from pipeline.config import CACHE_DIR
 
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
@@ -40,11 +42,19 @@ TAG_TEXT = {
 }
 
 
+def _facts(poi: dict) -> list[str]:
+    """Human-readable features stated by the data (category assumptions excluded)."""
+    assumed = set(poi.get("tags_inferred") or [])
+    return [TAG_TEXT[t] for t in poi.get("tags", []) if t in TAG_TEXT and t not in assumed]
+
+
 def template_description(poi: dict) -> str:
     if poi.get("name_generic"):
         return f"{poi['name']} по данным OpenStreetMap."
-    text = f"{KIND[poi['category']]} «{poi['name']}»."
-    features = [TAG_TEXT[t] for t in poi.get("tags", []) if t in TAG_TEXT]
+    kind = KIND[poi["category"]]
+    first_word = kind.split()[0].lower()
+    text = f"{poi['name']}." if first_word in poi["name"].lower() else f"{kind} «{poi['name']}»."
+    features = _facts(poi)
     if features:
         text += " По данным OpenStreetMap: " + ", ".join(features) + "."
     return text
@@ -66,6 +76,11 @@ def check_generated(text: str, poi: dict) -> str | None:
         return "invented_number"
     if len(_SENTENCE_END.findall(text)) > 2 or len(text) > 300:
         return "too_long"
+    from pipeline.enrich import normalize_name
+
+    name = normalize_name(poi.get("name") or "")
+    if name and fuzz.partial_ratio(name, normalize_name(text)) < 85:
+        return "wrong_place"  # guards against the model swapping ids inside a batch
     return None
 
 
@@ -74,9 +89,9 @@ def _gemini_batch(client, batch: list[dict]) -> dict[str, str]:
 
     # human-readable tag meaning: the raw tag "ночью" only means "closes at 23:00 or later"
     items = [{"poi_id": p["poi_id"], "name": p["name"], "kind": KIND[p["category"]].lower(),
-              "features": [TAG_TEXT[t] for t in p["tags"] if t in TAG_TEXT]} for p in batch]
+              "features": _facts(p)} for p in batch]
     payload = json.dumps(items, ensure_ascii=False)
-    path = CACHE_DIR / "gemini" / f"{hashlib.sha1((GEMINI_MODEL + payload).encode()).hexdigest()}.json"
+    path = CACHE_DIR / "gemini" / f"{hashlib.sha1((GEMINI_MODEL + PROMPT + payload).encode()).hexdigest()}.json"
     if path.exists():
         return json.loads(path.read_text(encoding="utf-8"))
     resp = client.models.generate_content(

@@ -72,3 +72,14 @@ def test_parse_hours_typical_astana_formats(raw, expected_days):
 def test_missing_or_unparseable_hours_are_unknown_never_open():
     for raw in [None, "", "по договорённости", "Mo-Fr 9-18", "sunrise-sunset"]:
         assert open_status(raw, at(2, 12)) == "unknown"
+
+
+def test_holiday_and_ambiguous_rules_are_unknown_not_guessed():
+    assert open_status("Mo-Fr 09:00-18:00; PH off", at(2, 12)) == "unknown"
+    assert open_status("Mo-Sa 08:00-20:00; off", at(2, 12)) == "unknown"
+    assert open_status("Mo-Su,PH 10:00-22:00", at(2, 12)) == "open"  # PH with the same hours is fine
+
+
+def test_utc_time_is_converted_to_astana_time():
+    # 07:00 UTC = 12:00 in Astana (UTC+5)
+    assert open_status("Mo-Su 10:00-14:00", datetime(2026, 10, 14, 7, 0, tzinfo=timezone.utc)) == "open"
