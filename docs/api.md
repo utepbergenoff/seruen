@@ -4,6 +4,8 @@
 
 База локально: `http://127.0.0.1:8000`. JSON, UTF-8; расстояния в метрах, длительности в целых минутах. Все времена с часовым поясом, расчёт в `Asia/Almaty`.
 
+Публичная база: `https://seruen-backend-f36d.onrender.com`, [Swagger](https://seruen-backend-f36d.onrender.com/docs). Render Free, `data_kind=sample`, режимы `no_ai`/`cached`; 6 демо и 30 фикстур проверены по HTTPS 17.10.2026. CORS разрешает `http://localhost:5173`, `http://127.0.0.1:5173`, `http://localhost:3000`. Для публикации фронта сообщить его точный origin и добавить в CORS_ORIGINS; ключ ИИ фронту не передавать.
+
 ## POST /recommend
 
 Полный проверенный запрос: [request.json](request.json). Полный ответ на него: [response.json](response.json).

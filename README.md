@@ -8,7 +8,8 @@
 - Статус каждого B1–B12 и FR: [docs/checklist.md](docs/checklist.md).
 - Измеренный прогон: [eval/report.md](eval/report.md); подробные числа: [eval/report.json](eval/report.json).
 - Размещение и передача команде: [docs/handoff.md](docs/handoff.md).
-- Приложение/видео: ещё не предоставлены командой. Адрес API будет записан в handoff после проверки деплоя.
+- Публичный API на Render Free: [Swagger /docs](https://seruen-backend-f36d.onrender.com/docs), [health](https://seruen-backend-f36d.onrender.com/health). Базовый адрес для фронта: `https://seruen-backend-f36d.onrender.com`.
+- Публичный прогон: [docs/deployment_verification.json](docs/deployment_verification.json) — 6/6 демо, 30/30 фикстур, кеш и CORS проверены 17.10.2026. Приложение/видео ещё не предоставлены командой.
 
 ## Быстрый запуск
 
