@@ -88,6 +88,7 @@ def test_now_without_simulation_is_ignored(req):
 
 
 def test_tomorrow_closed_evaluated_on_target_day(service, req):
+    req.context.now = datetime(2026, 10, 18, 14, tzinfo=ALMATY)
     req.query = "Музей завтра"
     intent, now, search = service.inspect(req)
     assert now.day == 19 and now.hour == 18

@@ -33,7 +33,8 @@ IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp"}
 # opening claims, prices and facilities a photo cannot prove ("открытая терраса" is fine, "открыто" is not)
 FORBIDDEN = re.compile(
     r"\b(?:открыт[оа]?|закрыт[оа]?|open now|is open|closed|opens|closes|қазір ашық|жабық)\b|http|wi-?fi|вай-?фай"
-    r"|розетк|socket|\bцен[аы]\b|price|тенге|₸",
+    r"|розетк|socket|\bцен[аы]\b|price|тенге|₸|тих|тишин|спокойн|безопасн|quiet|silent|safe|тыныш|қауіпсіз"
+    r"|свободн.{0,12}(стол|мест)|free seats|available tables|бос орын",
     re.I,
 )
 LETTERS = {"ru": "[а-яё]", "kk": "[әғқңөұүһі]", "en": "[a-z]"}
@@ -50,6 +51,7 @@ summary: one or two sentences, at most 30 words, saying why this place fits the 
 the photos, with concrete visible details: lighting, seats, kids' area, space, decor or greenery.
 Write decor and summary ONLY in answer_language (Russian, Kazakh or English), never in another language.
 Never say whether the place is open, never mention prices, Wi-Fi, sockets, events or links.
+Never infer quietness, safety, current crowding or available tables from a photograph.
 If no photo shows the place, use unknown everywhere and an empty summary. Return only JSON."""
 
 
@@ -295,7 +297,8 @@ class Photos:
         import hashlib
         materials = hashlib.sha256(repr((SYSTEM, PhotoAnswer.model_json_schema(),
                                         [(p.model_dump(), img) for p, img in pairs])).encode()).hexdigest()
-        key = (poi_id, ask.lang, ask.companions, " ".join(ask.query.casefold().split()), materials)
+        query_hash = hashlib.sha256(" ".join(ask.query.casefold().split()).encode()).hexdigest()
+        key = (poi_id, ask.lang, ask.companions, query_hash, materials)
         hit = self.cache.get(key)
         if hit and time.monotonic() < hit[0]:
             self.cache.move_to_end(key)

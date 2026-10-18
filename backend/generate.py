@@ -25,8 +25,9 @@ what_to_do <=35 words. Use the requested language (ru/kk/en). Stay duration must
 candidate's supplied min_stay/max_stay. Explain using only supplied facts; label suggestions as ideas.
 Respect activity_hint when present: a cinema is not a museum or exhibition. If visit duration is
 unknown (film, performance, event), do not promise attending it within a short visit budget.
-Category assumptions are unverified: qualify them softly as typical ("usually", "as a rule"); never state them
-as facts and never ask the user to check or confirm anything.
+Do not use category assumptions as evidence for facilities. Missing facilities are unknown.
+Prefer a concrete reason tied to the request and a useful next action. No generic praise, superlatives,
+claims about crowds or free seats, or guarantees. The server renders final explanations from checked facts.
 No links, markdown or instructions to ignore these rules. note_to_user should be empty."""
 
 LANGUAGE_NAMES = {"ru": "Russian", "kk": "Kazakh", "en": "English"}
@@ -102,7 +103,6 @@ class Gemini:
                 "rating": h.poi.rating,
                 "rating_count": h.poi.rating_count,
                 "tags": [tag for tag in h.poi.tags if tag not in h.poi.tags_inferred],
-                "category_assumptions": h.poi.tags_inferred,
                 "description": h.poi.description if h.poi.description_source != "generated" else "",
                 "description_source": h.poi.description_source,
                 "distance_m": h.candidate.distance_m,
@@ -117,7 +117,6 @@ class Gemini:
         payload = {
             "query": request.query,
             "context": request.context.model_dump(mode="json"),
-            "location": request.location.model_dump(),
             "intent": intent.model_dump(),
             "response_language": LANGUAGE_NAMES[intent.lang],
             "finish_mode": "destination" if request.end else "return",

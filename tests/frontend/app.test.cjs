@@ -422,3 +422,13 @@ test('photo quota failure is shown as unavailable analysis, not missing photos',
   assert.ok(text.includes(b.w.SeruenApp.T().ph.noAnalysis));
   assert.ok(!text.includes(b.w.SeruenApp.T().ph.none));
 });
+
+test('AI selection and factual explanation have separate labels, with a privacy hint',async t=>{
+  const b=await boot(t);b.click('#goBtn');await tick();
+  const chosen={...rec('p1','Coffee BOOM'),selection_source:'ai'};
+  b.requests[0].resolve(json({...answer('grounded'),mode:'ai',recommendations:[chosen]}));await tick();
+  const card=b.w.document.querySelector('.rec').textContent;
+  assert.match(card,/место выбрал ИИ/);
+  assert.match(card,/объяснение составлено из данных и расчёта/);
+  assert.match(b.w.document.querySelector('#privacyHint').textContent,/Gemini/);
+});

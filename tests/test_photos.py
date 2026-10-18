@@ -42,7 +42,7 @@ class FakeAI:
 ANSWER = {"photos": [{"index": 0, "shows_place": True}, {"index": 1, "shows_place": False}],
           "lighting": "natural", "kids_area": "no", "seats": 24, "seating": "some", "space": "medium",
           "decor": "светлое дерево и растения",
-          "summary": "Большие окна, около 24 мест и спокойный зал — удобно посидеть с ноутбуком."}
+          "summary": "Большие окна, около 24 мест и светлый зал."}
 COMMONS = [{"url": "https://upload.wikimedia.org/a.jpg", "page_url": "https://commons.wikimedia.org/wiki/File:A.jpg",
             "author": "A", "license": "CC BY-SA 4.0", "source": "commons"},
            {"url": "https://upload.wikimedia.org/street.jpg", "source": "commons"}]
@@ -230,3 +230,18 @@ async def test_team_photos_listed_under_a_2gis_id_need_that_place_in_the_answer(
     assert [p.source for p in result.photos] == ["team"] and ai.calls[0]["payload"]["place"]["name"] == remote.name
     photos.catalog_poi = lambda _: None  # not in a recent answer: identity unknown, nothing shown
     assert (await photos.details("2gis_70000001072135261", PhotoRequest(query="x"))).status == "no_photos"
+
+
+async def test_photo_cache_key_does_not_store_the_search_text(settings, poi):
+    photos = make(settings, poi, {'cafe': COMMONS}, FakeAI(ANSWER))
+    query = 'Уникальный личный запрос про работу'
+    await photos.details('cafe', PhotoRequest(query=query))
+    assert photos.cache
+    assert query.casefold() not in repr(list(photos.cache))
+
+
+@pytest.mark.parametrize('claim', ['Здесь тихо и безопасно.', 'Quiet and safe.', 'Тыныш және қауіпсіз.',
+                                    'Есть свободные столы.', 'Available tables.', 'Бос орын бар.'])
+async def test_photo_analysis_cannot_claim_quietness_safety_or_free_tables(settings, poi, claim):
+    result = await make(settings, poi, {'cafe': COMMONS}, FakeAI({**ANSWER, 'summary': claim})).details('cafe', PhotoRequest())
+    assert not result.analysis.summary
