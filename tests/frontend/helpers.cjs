@@ -4,9 +4,10 @@ const tick = () => new Promise(r => setImmediate(r));
 const pending = () => {let resolve; const promise = new Promise(r => resolve = r); return {promise, resolve};};
 const json = data => ({ok:true,json:async()=>data});
 async function boot(t, opts = {}) {
-  const dom = new JSDOM(fs.readFileSync('frontend/index.html','utf8'), {url:'https://example.test/',runScripts:'outside-only'});
+  const dom = new JSDOM(fs.readFileSync('frontend/index.html','utf8'), {url:opts.url||'https://example.test/',runScripts:'outside-only'});
   t.after(() => dom.window.close());
-  const w=dom.window, requests=[], gps={}, gis=[], photos=[], replans=[], comforts=[], builds=[], tiles=[], lines=[];
+  const w=dom.window, requests=[], gps={calls:[]}, gis=[], photos=[], replans=[], comforts=[], builds=[], tiles=[], lines=[];
+  if (opts.clock) {w.setTimeout=opts.clock.setTimeout;w.clearTimeout=opts.clock.clearTimeout;}
   if (opts.live) w.AbortController = AbortController;
   const media={matches:!!opts.darkSystem,addEventListener:(_, cb)=>{media.change=cb;}};
   w.matchMedia=q=>q.includes('prefers-color-scheme') ? media : {matches:false};
@@ -14,7 +15,9 @@ async function boot(t, opts = {}) {
   w.HTMLElement.prototype.scrollIntoView=()=>{};
   w.SERUEN_CONFIG={API_URL:'https://api.example.test',FEATURES:{weather:false}};
   Object.defineProperty(w,'isSecureContext',{value:true});
-  Object.defineProperty(w.navigator,'geolocation',{value:{getCurrentPosition:(ok,fail)=>Object.assign(gps,{ok,fail})}});
+  Object.defineProperty(w.navigator,'geolocation',{value:{getCurrentPosition:(ok,fail,options)=>{
+    gps.calls.push({ok,fail,options});Object.assign(gps,{ok,fail});
+  }}});
   const layers=new Set();
   const map={setView(){return this;},setMaxZoom(z){this.maxZoom=z;return this;},on(){return this;},getZoom(){return 15;},invalidateSize(){},fitBounds(){},removeLayer(l){layers.delete(l);}};
   const events=()=>{const handlers={};return {on(e,cb){handlers[e]=cb;return this;},fire(e,payload={}){handlers[e]?.(payload);return this;}};};
@@ -26,7 +29,7 @@ async function boot(t, opts = {}) {
     DomUtil:{create:(tag,cl)=>{const el=w.document.createElement(tag);el.className=cl;return el;}},
     DomEvent:{disableClickPropagation(){},on:(el,event,cb)=>el.addEventListener(event,cb),stop:e=>e.stopPropagation()}};
   w.fetch=async(url,options)=>{
-    if(url==='presets.json'||url==='scenarios.json') return json(JSON.parse(fs.readFileSync('frontend/'+url,'utf8')));
+    if(url==='presets.json'||url==='scenarios.json') return opts.staticFiles?.[url]?.promise || json(JSON.parse(fs.readFileSync('frontend/'+url,'utf8')));
     if(opts.live && url.startsWith('https://api.example.test')) {
       let response;
       try { response = await fetch(url.replace('https://api.example.test', opts.live), options); }

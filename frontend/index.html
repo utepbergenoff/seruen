@@ -85,7 +85,7 @@
 
   <main class="layout">
     <section class="map-wrap" aria-label="Map">
-      <div id="map"></div>
+      <div id="map" tabindex="0"></div>
       <div class="map-tools">
         <label for="mapMode" data-i18n="mapView"></label>
         <select id="mapMode">
@@ -110,7 +110,11 @@
       <form id="askForm" class="card block" autocomplete="off">
         <h2 data-i18n="what"></h2>
         <p id="locLine" class="loc-line" aria-live="polite"></p>
-        <p id="geoMsg" class="msg warn" hidden></p>
+        <p id="geoMsg" class="msg warn" role="status" hidden></p>
+        <div id="geoActions" class="geo-actions" hidden>
+          <button id="geoRetry" type="button" class="btn small" data-i18n="retry"></button>
+          <button id="geoMap" type="button" class="btn small" data-i18n="geoPickMap"></button>
+        </div>
         <div id="chips" class="chips"></div>
         <div class="ask">
           <input id="query" type="text" maxlength="500" data-i18n-placeholder="placeholder" aria-label="Query" aria-describedby="privacyHint">

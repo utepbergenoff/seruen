@@ -113,6 +113,7 @@ h2 { font: 500 19px/1.25 var(--display); letter-spacing: -.01em; margin-bottom: 
 
 /* "What would you like?" */
 .loc-line { margin: -4px 0 12px; color: var(--muted); font-size: 13.5px; display: flex; align-items: center; gap: 8px; }
+.geo-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
 .loc-line::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--sun); box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--sky); flex: none; }
 .chips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
 .chips .tile { position: relative; height: 92px; border: 0; border-radius: var(--r); overflow: hidden; padding: 0; cursor: pointer;
