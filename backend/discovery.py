@@ -1,4 +1,4 @@
-"""Request-time 2GIS discovery. No import into the POI file, disk index or Gemini."""
+"""Nearby 2GIS retrieval and grounded Gemini selection; no permanent catalog import."""
 
 import asyncio
 import hashlib
@@ -11,19 +11,21 @@ from collections import OrderedDict
 from datetime import datetime, timezone
 
 from .fallback import drafts
+from .generate import AIError, validate_drafts
 from .geo import haversine, in_astana, radius_for, speed, target_time
+from .hours import open_status
 from .intent import rule_intent
 from .loader import Dataset
 from .places import PlacesError
 from .provider_status import log_provider
 from .retrieval import Retriever, SearchResult
-from .schemas import POI
+from .schemas import CatalogPlace, Coords, POI
 from .twogis import DAYS, FIELDS, IDENTIFIER, intervals
 
 ENDPOINT = "https://catalog.api.2gis.com/3.0/items"
 TTL = 300
 PAGE_SIZE = 10
-MAX_PAGES = 5
+BATCH_PAGES = 2
 QUERIES = {"coffee": "Кофейни", "food": "Кафе", "park": "Парки культуры и отдыха", "kids": "Детские развлекательные центры",
            "culture": "Достопримечательности", "viewpoint": "Достопримечательности", "shopping": "Торговые центры",
            "sport": "Спортивные площадки", "night": "Кафе", "unusual": "Достопримечательности",
@@ -44,21 +46,21 @@ CATEGORIES = [
 ]
 MESSAGES = {
     "ru": {
-        "source": "Данные 2ГИС: поиск «{q}». Показаны подходящие места из текущей страницы каталога, а не вся Астана.",
+        "source": "Данные 2ГИС: поиск «{q}». Ближайшие места загружаются порциями.",
         "unavailable": "Не удалось получить места из 2ГИС ({code}). Попробуйте позже. Места из локальной базы не подставлены.",
         "expired": "Поиск устарел. Нажмите «Подобрать», чтобы начать заново.",
         "why": "Найдено в 2ГИС; прогулка с возвращением укладывается в ваш бюджет времени.",
         "limit": "Достигнут предел просмотра этого поиска. Уточните запрос или измените точку на карте.",
     },
     "kk": {
-        "source": "2ГИС деректері: «{q}» іздеу. Бүкіл Астана емес, каталогтың ағымдағы бетіндегі сәйкес орындар көрсетілген.",
+        "source": "2ГИС деректері: «{q}» іздеу. Маңайдағы орындар бөліктермен жүктеледі.",
         "unavailable": "2ГИС орындарын алу мүмкін болмады ({code}). Кейінірек қайталаңыз. Жергілікті база қолданылмады.",
         "expired": "Іздеу мерзімі аяқталды. Жаңадан іздеңіз.",
         "why": "2ГИС-тен табылды; барып-қайту серуені уақыт шегіне сай келеді.",
         "limit": "Іздеу шегіне жеттіңіз. Сұрауды немесе картадағы нүктені өзгертіңіз.",
     },
     "en": {
-        "source": "2GIS data: search for “{q}”. These are suitable places from the current catalog page, not all of Astana.",
+        "source": "2GIS data: search for “{q}”. Nearby places are loaded in batches.",
         "unavailable": "Could not obtain places from 2GIS ({code}). Try later. Local database places were not substituted.",
         "expired": "This search expired. Start a new search.",
         "why": "Found in 2GIS; the visit and return walk fit your time budget.",
@@ -84,6 +86,11 @@ def search_intent(request):
                 intent.categories = [category]
                 break
     query = QUERIES.get(intent.categories[0], "") if intent.categories else text[:100]
+    # Preserve short business names containing a category word (e.g. Coffee Boom).
+    if (1 < len(text.split()) <= 5 and len(text) <= 80 and not re.search(
+            r"хочу|нуж|найд|ищу|рядом|поблиз|погуля|прогуля|кофе и|тих|спокой|работ|ноут|розет|минут|час|ребен|дет|"
+            r"want|need|near|quiet|work|laptop|minute|hour|with|coffee and|қайда|жақын|тыныш|серуен", text, re.I)):
+        query = text
     return intent, query or "Достопримечательности"
 
 
@@ -117,7 +124,9 @@ def to_poi(item, request, radius):
     # Clothes, toy and sports-equipment shops are not playgrounds or sports venues.
     rubrics = " ".join(r for r in rubric_names if not re.search(
         r"одежд|обув|инвентар|товар|оборудован|магазин|игруш|сувенир|clothing|footwear|toy store", r, re.I))
-    category = next((cat for cat, pattern in CATEGORIES if re.search(pattern, rubrics, re.I)), None)
+    categories = [cat for cat, pattern in CATEGORIES if re.search(pattern, rubrics, re.I)]
+    preferred = rule_intent(request).categories
+    category = next((cat for cat in preferred if cat in categories), next(iter(categories), None))
     if category is None and item.get("type") == "attraction":
         category = "culture"
     if category is None:
@@ -137,7 +146,7 @@ def to_poi(item, request, radius):
                opening_hours_raw=hours, hours_source="2gis" if hours else "none", hours_conflict=True,
                rating=rating, rating_count=count, popularity=(rating or 0)/5,
                last_checked=datetime.now(timezone.utc).date(),
-               kid_friendly=category in ("kids", "park"), adult_only=category == "night",
+               kid_friendly=bool({"kids", "park"} & set(categories)), adult_only="night" in categories,
                indoor=category in ("coffee", "food", "library", "cowork", "shopping", "night"))
 
 
@@ -145,7 +154,9 @@ class Discovery:
     def __init__(self, provider, service):
         self.provider, self.service = provider, service
         self.pages, self.cursors = OrderedDict(), OrderedDict()
+        self.ai_cache = OrderedDict()
         self.lock = asyncio.Lock()
+        self.ai_lock = asyncio.Lock()
 
     def active(self):
         s = self.provider.settings
@@ -165,7 +176,7 @@ class Discovery:
                 return cached[1]
             params = {"q": query, "point": f"{request.location.lon},{request.location.lat}",
                       "radius": math.ceil(radius), "page_size": PAGE_SIZE, "page": page,
-                      "locale": "ru_KZ",
+                      "locale": "ru_KZ", "sort": "distance",
                       "fields": FIELDS + ",items.rubrics"}
             try:
                 result = await self.provider.request_items(ENDPOINT, params, max_bytes=1_000_000)
@@ -181,15 +192,49 @@ class Discovery:
                 self.pages.popitem(last=False)
             return result
 
-    def cursor(self, key, page, offset):
+    def cursor(self, key, page, seen):
         token = secrets.token_urlsafe(24)
-        self.cursors[token] = (time.monotonic(), key, page, offset)
+        self.cursors[token] = (time.monotonic(), key, page, frozenset(seen))
         while len(self.cursors) > 128:
             self.cursors.popitem(last=False)
         return token
 
+    async def choose(self, key, request, intent, hits):
+        fallback = drafts(hits, intent)
+        settings = self.service.settings
+        if not hits or not settings.gemini_api_key or settings.mock:
+            return fallback, "no_ai", set(), "none"
+        cache_key = (key, settings.gemini_model, tuple(h.poi.poi_id for h in hits))
+        try:
+            async with self.ai_lock:
+                cached = self.ai_cache.get(cache_key)
+                if cached and time.monotonic() - cached[0] < TTL:
+                    generated = cached[1]
+                else:
+                    async with asyncio.timeout(settings.ai_timeout_s):
+                        generated = await self.service.provider.generate(request, intent, hits)
+                    self.ai_cache[cache_key] = (time.monotonic(), generated)
+                    while len(self.ai_cache) > 64:
+                        self.ai_cache.popitem(last=False)
+            accepted, invented, rejected = validate_drafts(generated, hits, intent.lang)
+            self.service.metrics["invented_ids_rejected"] += invented
+            self.service.metrics["invalid_drafts_rejected"] += rejected
+            if not accepted:
+                raise AIError("all_drafts_rejected")
+            ai_ids = {d.poi_id for d in accepted}
+            return accepted + drafts([h for h in hits if h.poi.poi_id not in ai_ids], intent), "ai", ai_ids, "none"
+        except Exception:
+            self.ai_cache.pop(cache_key, None)
+            self.service.metrics["ai_errors"] += 1
+            log_provider("gemini", "catalog_generation_failed")
+            return fallback, "no_ai", set(), "ai_unavailable"
+
     async def recommend(self, request, current=None):
         intent, query = search_intent(request)
+        # A cafe/restaurant that 2GIS finds for coffee is a valid candidate too.
+        # Keep its real category; do not relabel all such businesses as coffee shops.
+        if "coffee" in intent.categories and "food" not in intent.categories:
+            intent.categories.append("food")
         now = target_time(request, intent, current)
         msg = MESSAGES[intent.lang]
         reserve = min(self.service.settings.airport_reserve_min, intent.time_budget_min) if intent.before_flight else 0
@@ -202,56 +247,76 @@ class Discovery:
             return response, "none"
         key = hashlib.sha256(json.dumps(request.model_dump(mode="json", exclude={"cursor"}),
                                        sort_keys=True).encode()).hexdigest()
-        page, offset = 1, 0
+        page, seen = 1, frozenset()
         try:
             self.check_enabled()
             if request.cursor:
                 saved = self.cursors.get(request.cursor)
                 if not saved or saved[1] != key or time.monotonic() - saved[0] >= TTL:
                     raise PlacesError("twogis_search_expired", 409)
-                _, _, page, offset = saved
+                _, _, page, seen = saved
                 cached = self.pages.get((key, page))
                 if cached and time.monotonic() - cached[0] >= TTL:
                     raise PlacesError("twogis_search_expired", 409)
-            result = await self.page(key, request, query, radius, page)
             pois, items = {}, {}
-            previous_ids = {item.get("id") for (page_key, page_no), (_, old) in self.pages.items()
-                            if page_key == key and page_no < page
-                            for item in old.get("items", []) if isinstance(item, dict)}
-            for item in result.get("items", []):
+            more, total, partial_error = False, 0, None
+            for _ in range(BATCH_PAGES):
                 try:
-                    if isinstance(item, dict) and item.get("id") in previous_ids:
+                    result = await self.page(key, request, query, radius, page)
+                except PlacesError as exc:
+                    if not items:
+                        raise
+                    partial_error, more = exc.code, True
+                    break
+                total = result.get("total", len(result.get("items", [])))
+                for item in result.get("items", []):
+                    try:
+                        poi = to_poi(item, request, radius)
+                    except (ValueError, TypeError, AttributeError):
                         continue
-                    poi = to_poi(item, request, radius)
-                except (ValueError, TypeError, AttributeError):
-                    continue
-                if poi:
-                    pois[poi.poi_id], items[poi.poi_id] = poi, item
+                    if poi and poi.poi_id not in seen:
+                        pois[poi.poi_id], items[poi.poi_id] = poi, item
+                more = bool(result.get("items")) and page * PAGE_SIZE < total
+                page += 1
+                if not more:
+                    break
             retriever = Retriever(Dataset(list(pois.values()), "2gis", 0, 0), None)
             search = retriever.search(request, intent, now, self.service.settings.airport_reserve_min, diversify=False)
             search.mode = "2gis"
-            selected = search.hits[offset:offset+3]
-            shown = SearchResult(search.hits[:10], search.excluded, search.radius, search.expanded,
-                                 search.found, search.reserve, "2gis")
-            # Keep the selected candidates visible on later pages, too.
-            shown.hits = selected + [h for h in search.hits if h not in selected][:7]
-            response = self.service.assemble(request, intent, now, shown, drafts(selected, intent),
-                                             "no_ai", "rules", "none", data_kind="real")
+            selected, mode, ai_ids, ai_error = await self.choose(key, request, intent, search.hits)
+            response = self.service.assemble(request, intent, now, search, selected,
+                                             mode, "rules", ai_error, ai_ids, data_kind="real")
             response.source, response.data_kind = "2gis", "real"
             for card in response.recommendations:
                 poi, item = pois[card.poi_id], items[card.poi_id]
                 address = item.get("address_name")
-                card.facts_source, card.address, card.why = "2gis", address[:1000] if isinstance(address, str) else None, msg["why"]
+                card.facts_source, card.address = "2gis", address[:1000] if isinstance(address, str) else None
+                if card.why_source != "ai":
+                    card.why = msg["why"]
                 card.links["2gis"] = poi.description_url
+            # Browsing includes closed or otherwise ineligible places with an explicit reason.
+            # Hard filters continue to apply to recommendations and Gemini's candidate list.
+            all_candidates = [h.candidate for h in search.hits] + search.excluded
+            for candidate in sorted(all_candidates, key=lambda c: (c.distance_m, c.poi_id)):
+                if candidate.excluded_because in ("category_mismatch", "excluded_category"):
+                    continue
+                poi, item = pois[candidate.poi_id], items[candidate.poi_id]
+                address = item.get("address_name")
+                response.nearby_places.append(CatalogPlace(
+                    poi_id=poi.poi_id, name=poi.name, category=poi.category,
+                    coords=Coords(lat=poi.lat, lon=poi.lon), distance_m=candidate.distance_m,
+                    walk_min=candidate.walk_min, address=address[:1000] if isinstance(address, str) else None,
+                    rating=poi.rating, rating_count=poi.rating_count, open_status=open_status(poi, now),
+                    eligible=candidate.excluded_because is None, excluded_because=candidate.excluded_because,
+                    links={"2gis": poi.description_url}))
+            response.catalog_total = total
             response.notes.insert(0, msg["source"].format(q=query))
-            if offset + 3 < len(search.hits):
-                response.next_cursor = self.cursor(key, page, offset + 3)
-            elif page * PAGE_SIZE < result.get("total", 0):
-                if page < MAX_PAGES:
-                    response.next_cursor = self.cursor(key, page+1, 0)
-                else:
-                    response.notes.append(msg["limit"])
-            return response, "none"
+            if more:
+                response.next_cursor = self.cursor(key, page, seen | pois.keys())
+            if partial_error:
+                response.source_error = partial_error
+                response.notes.append(msg["unavailable"].format(code=partial_error))
+            return response, partial_error or ai_error
         except PlacesError as exc:
             self.provider.last_status = exc.code
             log_provider("twogis_search", exc.code)

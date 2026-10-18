@@ -20,6 +20,8 @@ class Settings:
     twogis_enabled: bool = False
     twogis_search_enabled: bool = True
     twogis_timeout_s: float = 5.0
+    twogis_requests_per_minute: int = 20
+    twogis_requests_per_day: int = 200
     photos_enabled: bool = True
     photo_index_url: str = "https://seruen-astana.netlify.app/img/places/index.json"
     photo_timeout_s: float = 20.0
@@ -48,6 +50,8 @@ class Settings:
             twogis_api_key=os.getenv("TWOGIS_API_KEY", ""),
             twogis_enabled=os.getenv("TWOGIS_ENABLED", "false").lower() == "true",
             twogis_search_enabled=os.getenv("TWOGIS_SEARCH_ENABLED", "true").lower() == "true",
+            twogis_requests_per_minute=max(1, min(60, int(os.getenv("TWOGIS_REQUESTS_PER_MINUTE", "20")))),
+            twogis_requests_per_day=max(1, min(1000, int(os.getenv("TWOGIS_REQUESTS_PER_DAY", "200")))),
             photos_enabled=os.getenv("PHOTOS_ENABLED", "true").lower() == "true",
             photo_index_url=os.getenv("PHOTO_INDEX_URL", cls.photo_index_url),
             gemini_model=os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite"),

@@ -46,7 +46,7 @@
         <li><b>OpenStreetMap</b> (лицензия ODbL) — основа базы: собирается скриптом одной командой.</li>
         <li><b>Википедия</b> (CC BY-SA) — короткие описания достопримечательностей.</li>
         <li><b>Фото мест</b> — свободные фото Wikimedia Commons и снимки команды. ИИ (Gemini) сначала проверяет, что фото действительно показывает место, а не улицу рядом, и только потом описывает свет, количество мест, детскую зону, размер зала и декор. Фото на сервере не сохраняются.</li>
-        <li><b>2ГИС</b> — рейтинг и расписание по кнопке «Рейтинг и часы 2ГИС» на карточке. Запрашиваются только при нажатии, не сохраняются в нашу базу и не передаются ИИ. Фотографий 2ГИС не выдаёт.</li>
+        <li><b>2ГИС</b> — онлайн-поиск ближайших мест, рейтинги и расписание. Подходящие кандидаты передаются Gemini для выбора и объяснений; код проверяет результат. Страницы и ответы кратковременно хранятся в памяти сервера, до 5 минут, без добавления в постоянную базу. Дополнительные часы запрашиваются по кнопке на карточке. Фотографий 2ГИС не выдаёт.</li>
         <li><b>Google Places</b> — сохранены только идентификаторы 175 мест. Запросы рейтингов и часов выключены; в карточках используются часы OSM.</li>
       </ul>
       <p>У каждой карточки указаны источники и дата. Описание, составленное по тегам, помечено «сгенерировано по тегам».</p>
@@ -57,7 +57,7 @@
         <li>Места находит и ранжирует <b>код</b>: расстояние, время, фильтры, статус «открыто».</li>
         <li>ИИ уточняет намерение, выбирает из кандидатов и пишет объяснения «почему» и «что делать».</li>
         <li>Код проверяет ID места, бюджет, язык, длину и некоторые неподтверждённые утверждения. Невалидный ответ отклоняется, при необходимости включаются шаблоны. Это снижает ошибки, но не гарантирует истинность каждой фразы ИИ.</li>
-        <li>Статус «открыто?» считается по расписанию: <i>открыто сейчас</i> — часы источника не старше 30 дней, <i>вероятно открыто</i> — старые/противоречивые данные, <i>часы неизвестны</i> — нет понятного расписания. Закрытые по расписанию места исключаются. Это не проверка работы заведения в реальном времени; в симуляции статус относится к выбранному времени.</li>
+        <li>Статус «открыто?» считается по расписанию: <i>открыто сейчас</i> — часы источника не старше 30 дней, <i>вероятно открыто</i> — старые/противоречивые данные, <i>часы неизвестны</i> — нет понятного расписания. Закрытые по расписанию места исключаются из рекомендаций, но остаются в списке найденных мест с отметкой. Это не проверка работы заведения в реальном времени; в симуляции статус относится к выбранному времени.</li>
       </ul>
     </section>
     <section class="card block">
@@ -90,7 +90,7 @@
     </section>
     <section class="card block" lang="en">
       <h2>In English</h2>
-      <p>No accounts or stored query history. Location is rounded to three decimals on your device; application logs omit query text and coordinates. Gemini receives the query, context, rounded location and selected POI data. Code checks IDs, time budgets and selected unsafe claims; it cannot guarantee every AI sentence. Places come from OpenStreetMap and Wikipedia. Google ratings and hours are disabled. 2GIS rating and hours are fetched only when you press the button on a card; they are not stored or sent to the AI. Place photos come from Wikimedia Commons and the team; Gemini first checks that a photo shows the place, then describes light, seats, kids' area, size and decor, and receives the place name, category and your request text for that. A fresh schedule means no more than 30 days old, not a live availability check. Map, hosting and AI providers have their own data policies. Check details before visiting.</p>
+      <p>No accounts or stored query history. Location is rounded to three decimals on your device; application logs omit query text and coordinates. Gemini receives the query, context, rounded location and selected POI data. Code checks IDs, time budgets and selected unsafe claims; it cannot guarantee every AI sentence. Places come from OpenStreetMap and Wikipedia. Google ratings and hours are disabled. 2GIS supplies live nearby search, ratings and schedules. Eligible candidates are sent to Gemini for selection and explanations. Pages and AI results remain in server memory for up to five minutes, without a permanent database import. Extra schedule details are fetched on demand. Place photos come from Wikimedia Commons and the team; Gemini first checks that a photo shows the place, then describes light, seats, kids' area, size and decor, and receives the place name, category and your request text for that. A fresh schedule means no more than 30 days old, not a live availability check. Map, hosting and AI providers have their own data policies. Check details before visiting.</p>
     </section>
   </main>
 </body>

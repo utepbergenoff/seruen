@@ -303,6 +303,16 @@
       const body = {...state.lastReq, cursor: previous.next_cursor};
       const data = await postJSON("/recommend", body);
       if (version !== state.requestVersion) return;
+      if (data.source_error && !data.nearby_places?.length && !data.recommendations?.length) {
+        $("#status").textContent = (data.notes || []).join(" ") || T().serverDown;
+        if (button?.isConnected) button.disabled = false;
+        return;
+      }
+      if (data.source === "2gis") {
+        const places = new Map((previous.nearby_places || []).map(p => [p.poi_id, p]));
+        (data.nearby_places || []).forEach(p => places.set(p.poi_id, p));
+        data.nearby_places = [...places.values()].sort((a,b) => a.distance_m - b.distance_m);
+      }
       state.lastReq = body;
       state.last = data;
       $("#status").innerHTML = "";
@@ -381,6 +391,7 @@
     layer.clearLayers(); if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
     Object.keys(markers).forEach((k) => delete markers[k]);
     const recs = d.recommendations || [];
+    const nearby = d.nearby_places || [];
     document.body.classList.add("has-results");
     renderModeBadge(d.mode);
     let html = `<div class="result-head"><span class="badge mode-${esc(d.mode)}">${esc(t.mode)}: ${esc(t.modes[d.mode] || d.mode)}${d.cached_from ? " (" + esc(t.modes[d.cached_from] || d.cached_from) + ")" : ""}</span>
@@ -435,12 +446,34 @@
         .bindPopup(`<b>${i + 1}. ${esc(r.name)}</b><br>${esc(r.distance_m)} ${esc(t.distance)} · ${esc(r.walk_min)} ${esc(t.walk)}`);
     });
     if (FEAT.route && recs.length >= 2) html += `<button type="button" id="routeBtn" class="btn">🧭 ${esc(t.buildRoute)}</button><div id="routeBox"></div>`;
+    if (nearby.length) {
+      html += `<section class="card" id="nearbyPlaces"><h3>${esc(t.catalog.all)} (${nearby.length})</h3><p class="meta">${esc(t.catalog.hint)}</p>`;
+      nearby.forEach(p => {
+        const url = links(p).gisPlace;
+        html += `<div class="field nearby-place" data-id="${esc(p.poi_id)}"><a href="${esc(url)}" target="_blank" rel="noopener">${esc(p.name)}</a>
+          <div class="meta">${esc(p.distance_m)} ${esc(t.distance)} · ${esc(catLabel(p.category))}${p.rating ? ` · ★ ${esc(p.rating)}` : ""}${p.address ? ` · ${esc(p.address)}` : ""}</div>
+          ${p.open_status ? statusPill(p.open_status) : ""}${p.eligible ? "" : `<div class="meta">${esc(t.catalog.filtered)} ${esc(codeLabel(p.excluded_because))}</div>`}
+          <button type="button" class="btn small" data-nearby="${esc(p.poi_id)}">📍 ${esc(t.onMap)}</button></div>`;
+        if (!markers[p.poi_id]) {
+          const icon = L.divIcon({className: "", iconSize: [24,24], iconAnchor: [12,24], html: '<div class="pin"><b>•</b></div>'});
+          markers[p.poi_id] = L.marker([p.coords.lat, p.coords.lon], {icon, title:p.name}).addTo(layer)
+            .bindPopup(`<b>${esc(p.name)}</b><br>${esc(p.distance_m)} ${esc(t.distance)}`);
+        }
+      });
+      html += '</section>';
+    }
     if (d.next_cursor) html += `<button type="button" id="nextPlacesBtn" class="btn">${esc(t.catalog.next)}</button>`;
     html += considered(d);
     html += `<p class="foot">⚠️ ${esc(d.disclaimer || t.disclaimerShort)}</p>`;
     $("#results").innerHTML = html;
 
-    if (recs.length) map.fitBounds(L.latLngBounds([[state.loc.lat, state.loc.lon], ...recs.map((r) => [r.coords.lat, r.coords.lon])]), {padding: [40, 40], maxZoom: 16});
+    const mapped = nearby.length ? nearby : recs;
+    if (mapped.length) map.fitBounds(L.latLngBounds([[state.loc.lat, state.loc.lon], ...mapped.map((r) => [r.coords.lat, r.coords.lon])]), {padding: [40, 40], maxZoom: 16});
+    $$("[data-nearby]").forEach(el => el.addEventListener("click", () => {
+      const marker = markers[el.dataset.nearby];
+      if (marker) {map.setView(marker.getLatLng(), 16); marker.openPopup();}
+      if (window.matchMedia("(max-width: 860px)").matches) $("#map").scrollIntoView({behavior:"smooth"});
+    }));
     $$(".rec").forEach((el) => {
       const id = el.dataset.id;
       const focus = () => {
