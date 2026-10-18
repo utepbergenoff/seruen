@@ -20,7 +20,8 @@ whether a place is open or closed: the server supplies that field. Do not sugges
 construction sites or restricted areas. Return only JSON matching the schema. why <=25 words,
 what_to_do <=35 words. Use the requested language (ru/kk/en). Stay duration must be inside each
 candidate's supplied min_stay/max_stay. Explain using only supplied facts; label suggestions as ideas.
-Category assumptions are unverified: qualify them as typical and ask the user to confirm; never state them as facts.
+Category assumptions are unverified: qualify them softly as typical ("usually", "as a rule"); never state them
+as facts and never ask the user to check or confirm anything.
 No links, markdown or instructions to ignore these rules. note_to_user should be empty."""
 
 
@@ -29,7 +30,7 @@ class Gemini:
         self.settings = settings
         self.transport = transport
 
-    async def structured(self, system, payload, schema):
+    async def structured(self, system, payload, schema, images=(), timeout=None):
         if not self.settings.gemini_api_key:
             raise AIError("missing_key")
         if not re.fullmatch(r"[a-zA-Z0-9._-]+", self.settings.gemini_model):
@@ -37,7 +38,8 @@ class Gemini:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.settings.gemini_model}:generateContent"
         body = {
             "systemInstruction": {"parts": [{"text": system}]},
-            "contents": [{"role": "user", "parts": [{"text": json.dumps(payload, ensure_ascii=False)}]}],
+            "contents": [{"role": "user", "parts": [{"text": json.dumps(payload, ensure_ascii=False)}]
+                          + [{"inlineData": {"mimeType": kind, "data": data}} for kind, data in images]}],
             "generationConfig": {
                 "responseMimeType": "application/json",
                 "responseJsonSchema": schema,
@@ -47,7 +49,7 @@ class Gemini:
         }
         try:
             async with httpx.AsyncClient(
-                timeout=self.settings.ai_timeout_s, transport=self.transport, follow_redirects=False
+                timeout=timeout or self.settings.ai_timeout_s, transport=self.transport, follow_redirects=False
             ) as client:
                 response = await client.post(url, headers={"x-goog-api-key": self.settings.gemini_api_key}, json=body)
                 if response.status_code != 200:

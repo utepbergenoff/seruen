@@ -16,6 +16,7 @@ from .schemas import Context, Health, Location, RecommendRequest, RecommendRespo
 from .service import RecommendationService
 from .places import Places, PlaceDetails, PlacesError
 from .twogis import TwoGis, TwoGisDetails
+from .photos import Photos, PhotoRequest, PlacePhotos
 
 logger = logging.getLogger("seruen")
 
@@ -24,7 +25,8 @@ def scenarios():
     return json.loads((ROOT / "data/demo_scenarios.json").read_text(encoding="utf-8"))
 
 
-def create_app(settings=None, provider=None, places_transport=None, twogis_transport=None):
+def create_app(settings=None, provider=None, places_transport=None, twogis_transport=None, photos_transport=None,
+               photos_ai=None):
     settings = settings or Settings.from_env()
 
     @asynccontextmanager
@@ -33,6 +35,8 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
         service = app.state.service
         app.state.places = Places(settings, service.dataset.pois, places_transport)
         app.state.twogis = TwoGis(settings, service.dataset.pois, twogis_transport)
+        app.state.photos = Photos(settings, service.dataset.pois, photos_transport,
+                                  photos_ai or getattr(service.provider, "structured", None) and service.provider)
         await app.state.places.probe()
         logger.info(
             json.dumps(
@@ -139,6 +143,16 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
         request.state.mode = "twogis"
         try:
             return await request.app.state.twogis.details(poi_id, lang)
+        except PlacesError as exc:
+            request.state.error = exc.code
+            return JSONResponse(status_code=exc.status, content={"error": {"code": exc.code}})
+
+    @app.post("/places/{poi_id}/photos", response_model=PlacePhotos)
+    async def place_photos(poi_id: str, payload: PhotoRequest, request: Request):
+        # POST: the request text stays out of URLs and logs
+        request.state.mode = "photos"
+        try:
+            return await request.app.state.photos.details(poi_id, payload)
         except PlacesError as exc:
             request.state.error = exc.code
             return JSONResponse(status_code=exc.status, content={"error": {"code": exc.code}})

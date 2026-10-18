@@ -6,7 +6,7 @@
 (() => {
   "use strict";
   const CFG = window.SERUEN_CONFIG || {};
-  const FEAT = Object.assign({mapLinks: true, weather: true, route: true, languages: true, points: true, twogis: true}, CFG.FEATURES || {});
+  const FEAT = Object.assign({mapLinks: true, weather: true, route: true, languages: true, points: true, twogis: true, photos: true}, CFG.FEATURES || {});
   const API = (CFG.API_URL || "").replace(/\/$/, "");
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => Array.from(document.querySelectorAll(s));
@@ -23,7 +23,7 @@
     lang: params.get("lang") || store.get("seruen_lang", "ru"),
     loc: {...ASTANA, source: "map"}, locKind: "center", locating: false, locVersion: 0, requestVersion: 0, preset: null,
     presets: [], scenarios: [], last: null, lastReq: null, lastWeather: null,
-    showCands: false, extraCands: null, chipCtx: {}, apiMode: null, gis: {},
+    showCands: false, extraCands: null, chipCtx: {}, apiMode: null, gis: {}, photos: {},
   };
   if (!FEAT.languages && !params.get("lang")) state.lang = "ru";
   const T = () => window.I18N[state.lang] || window.I18N.ru;
@@ -369,32 +369,27 @@
     if (notes) html += `<div class="notes">${notes}</div>`;
     if (!recs.length) html += `<div class="card empty"><div class="big">🧭</div><h3>${esc(t.emptyTitle)}</h3><p class="meta">${esc(t.emptyHint)}</p></div>`;
 
+    // the AI may pick fewer than three places; the backend then adds the next best checked ones with template texts
+    const mixed = recs.some((r) => r.why_source === "ai");
     recs.forEach((r, i) => {
       const done = !!visited()[r.poi_id];
       const L2 = links(r);
       const b = cardBudget(r, d);
       const kind = r.kind_label || r.category_label || catLabel(r.category);
-      const generated = /^generated/.test(r.description_source || "");
-      // real descriptions (Wikipedia / OSM) are shown; generated ones are folded behind their honest label
-      const desc = !r.description ? (generated ? `<div class="desc">${esc(t.descSrc.generated_from_tags)}</div>` : "")
-        : generated ? `<details class="desc"><summary>${esc(t.descSrc.generated_from_tags)}</summary>${esc(r.description)}</details>`
-        : `<div class="desc">${esc(r.description)} <span class="src">(${r.description_url && /^https:\/\/(?:[a-z-]+\.)?wikipedia\.org\//i.test(r.description_url) ? `<a href="${esc(r.description_url)}" target="_blank" rel="noopener">${esc(t.descSrc[r.description_source] || r.description_source)}</a>` : esc(t.descSrc[r.description_source] || r.description_source || "")})</span></div>`;
       const rating = r.rating ? ` · ★ ${esc(r.rating)}${r.rating_count ? " (" + esc(r.rating_count) + ")" : ""}` : "";
-      const acc = r.accessibility && r.accessibility !== "unknown" ? (r.accessibility === "no" ? "" : "♿ ") + t.accessL[r.accessibility] : t.accessL.unknown;
-      const tags = (r.tag_labels || []).map((x) => `<span class="tag">${esc(x)}</span>`).join("");
+      // the card face stays short; what the spec also asks for (what to do, time there, sources) sits under "More"
+      const realDesc = r.description && !/^generated/.test(r.description_source || "");
+      const desc = !realDesc ? "" : `<div class="desc">${esc(r.description)} <span class="src">(${r.description_url && /^https:\/\/(?:[a-z-]+\.)?wikipedia\.org\//i.test(r.description_url) ? `<a href="${esc(r.description_url)}" target="_blank" rel="noopener">${esc(t.descSrc[r.description_source] || r.description_source)}</a>` : esc(t.descSrc[r.description_source] || r.description_source || "")})</span></div>`;
+      const picked = r.why_source === "ai" ? t.pickAi : mixed ? t.pickCode : t.pickTpl;
+      const acc = r.accessibility && r.accessibility !== "unknown" ? t.accessL[r.accessibility] : t.accessL.unknown;
       html += `<article class="card rec" data-id="${esc(r.poi_id)}" tabindex="0" aria-label="${esc(r.name)}">
         <div class="rec-title"><span class="num">${i + 1}</span><div>
-          <h3><a class="plain" href="${esc(L2.gisPlace)}" target="_blank" rel="noopener" title="${esc(t.openIn2gis)}">${esc(r.name)}</a> <span class="badge db">${esc(t.fromDb)}</span></h3>
+          <h3><a class="plain" href="${esc(L2.gisPlace)}" target="_blank" rel="noopener" title="${esc(t.openIn2gis)}">${esc(r.name)}</a></h3>
           <div class="meta">${esc(kind)} · ${esc(r.distance_m)} ${esc(t.distance)} · 🚶 ${esc(r.walk_min)} ${esc(t.walk)}${rating}</div>
         </div></div>
         <div>${r.open_status ? statusPill(r.open_status) : ""}</div>
-        <div class="field"><b>${esc(t.why)}:</b> ${esc(r.why)} ${srcBadge(r.why_source)}</div>
-        <div class="field"><b>${esc(t.todo)}:</b> ${esc(r.what_to_do)} ${srcBadge(r.what_to_do_source)}</div>
-        <div class="field">⏱ <b>${esc(t.stay)}:</b> ~${esc(r.time_to_spend_min)} ${esc(t.minutes)}</div>
-        ${budgetBar(b)}
-        ${desc}
-        <div class="tags">${tags}<span class="tag">${esc(acc)}</span></div>
-        <div class="src">${esc(t.sources)}: ${(r.sources || [r.facts_source || "poi_db"]).map(srcName).map(esc).join(", ")}${r.last_checked ? " · " + esc(r.last_checked) : ""}</div>
+        <div class="field why"><b>${esc(t.why)}:</b> ${esc(r.why)}</div>
+        ${FEAT.photos ? `<div class="photos" aria-live="polite"></div>` : ""}
         <div class="actions">
           ${FEAT.mapLinks ? `<a class="btn" href="${esc(L2.gis)}" target="_blank" rel="noopener">🗺 ${esc(t.route2gis)}</a>
           <a class="btn" href="${esc(L2.google)}" target="_blank" rel="noopener">🧭 ${esc(t.routeGoogle)}</a>` : ""}
@@ -403,6 +398,14 @@
           ${FEAT.points ? `<button type="button" class="btn" data-act="visit" ${done ? "disabled" : ""}>${done ? "✓ " + esc(t.visitedDone) : "🪙 " + esc(t.visited) + " +10"}</button>` : ""}
         </div>
         ${FEAT.twogis ? `<div class="gis-box" id="gis-${i}" aria-live="polite" hidden></div>` : ""}
+        <details class="more"><summary>${esc(t.more)}</summary>
+          <div class="field"><b>${esc(t.todo)}:</b> ${esc(r.what_to_do)}</div>
+          <div class="field">⏱ <b>${esc(t.stay)}:</b> ~${esc(r.time_to_spend_min)} ${esc(t.minutes)}</div>
+          ${budgetBar(b)}
+          ${desc}
+          <div class="src">${esc(acc)}</div>
+          <div class="src">${esc(t.sources)}: ${(r.sources || [r.facts_source || "poi_db"]).map(srcName).map(esc).join(", ")}${r.last_checked ? " · " + esc(r.last_checked) : ""} · ${esc(picked)}</div>
+        </details>
       </article>`;
       const icon = L.divIcon({className: "", iconSize: [30, 30], iconAnchor: [15, 30], html: `<div class="pin"><b>${i + 1}</b></div>`});
       markers[r.poi_id] = L.marker([r.coords.lat, r.coords.lon], {icon, title: r.name}).addTo(layer)
@@ -433,7 +436,7 @@
       if (g) g.addEventListener("click", () => toggleGis(el, id, g));
     });
     const rb = $("#routeBtn"); if (rb) rb.addEventListener("click", buildRoute);
-    const cb = $("#candBtn"); if (cb) cb.addEventListener("click", toggleCands);
+    if (FEAT.photos) recs.forEach((r) => loadPhotos(r, d));
   }
 
   // ---------- 2GIS rating and hours (extra): asked only when the button is pressed, never for every card ----------
@@ -507,56 +510,54 @@
     if (rb) rb.addEventListener("click", () => loadGis(card, id, btn));
   }
 
-  async function toggleCands() {
-    state.showCands = !state.showCands;
-    const d = state.last;
-    // backend may put candidates into /recommend; otherwise ask /candidates (POST: coordinates stay out of URLs)
-    if (state.showCands && !(d.candidates && d.candidates.length) && !state.extraCands) {
-      try { const extra = await postJSON("/candidates", state.lastReq); if (state.last !== d) return; state.extraCands = extra; } catch { if (state.last !== d) return; state.extraCands = {candidates: [], excluded: []}; }
+  // ---------- photos of the place and what Gemini sees on them (asked for every card after the answer) ----------
+  const photoCredit = (x) => x.source === "team" ? T().ph.team : `${x.author || "Wikimedia Commons"}${x.license ? ", " + x.license : ""}`;
+  const https = (u) => /^https:\/\//.test(u || "") ? u : "";
+  function photosHtml(p) {
+    const P = T().ph, photos = ((p && p.photos) || []).filter((x) => https(x.url));
+    if (!photos.length) return `<p class="ph-none">📷 ${esc(P.none)}</p>`;
+    const a = p.analysis;
+    const chips = a ? [
+      P.light[a.lighting] && `☀️ ${P.light[a.lighting]}`,
+      P.kids[a.kids_area] && `🧸 ${P.kids[a.kids_area]}`,
+      a.seats ? `🪑 ${fmt(P.seats, {n: a.seats})}` : P.seating[a.seating] && `🪑 ${P.seating[a.seating]}`,
+      P.space[a.space] && `📐 ${P.space[a.space]}`,
+      a.decor && `🎨 ${a.decor}`,
+    ].filter(Boolean).map((x) => `<span class="tag">${esc(x)}</span>`).join("") : "";
+    return `<div class="ph-strip">${photos.map((x) => `<a class="ph" href="${esc(https(x.page_url) || x.url)}" target="_blank" rel="noopener" title="${esc(photoCredit(x))}"><img src="${esc(x.url)}" alt="${esc(P.alt)}" loading="lazy" referrerpolicy="no-referrer"></a>`).join("")}</div>
+      ${a && a.summary ? `<div class="field ph-why"><b>📷 ${esc(P.title)}:</b> ${esc(a.summary)}</div>` : a ? "" : `<p class="src">${esc(P.noAnalysis)}</p>`}
+      ${chips ? `<div class="tags">${chips}</div>` : ""}
+      <p class="src">${esc(P.credit)}: ${[...new Set(photos.map(photoCredit))].map(esc).join("; ")}</p>`;
+  }
+  async function loadPhotos(r, d) {
+    const card = $$(".rec").find((el) => el.dataset.id === r.poi_id), box = card && card.querySelector(".photos");
+    if (!box) return;
+    const ask = {lang: state.lang, query: (state.lastReq && state.lastReq.query) || "", companions: (state.lastReq && state.lastReq.context.companions) || "alone"};
+    const key = `${r.poi_id}|${ask.lang}|${ask.companions}|${ask.query}`;
+    if (!state.photos[key]) {
+      box.innerHTML = `<div class="loading"><div class="spinner"></div>${esc(T().ph.loading)}</div>`;
+      // POST keeps the request text out of URLs; one answer per place and request, kept for this page
+      try { state.photos[key] = await postJSON(`/places/${encodeURIComponent(r.poi_id)}/photos`, ask, 40000); }
+      catch { state.photos[key] = null; }
     }
-    // redraw only the panel, so markers and the route line stay on the map
-    $("#consideredBox").outerHTML = considered(d);
-    $("#candBtn").addEventListener("click", toggleCands);
-    const p = $("#consideredBox"); if (p && state.showCands) p.scrollIntoView({behavior: "smooth", block: "nearest"});
+    if (state.last === d && card.isConnected) box.innerHTML = photosHtml(state.photos[key]);
   }
 
   function considered(d) {
-    const t = T(), c = d.considered || {};
-    const rows = [];
-    const add = (k, v) => { if (v !== undefined && v !== null && v !== "") rows.push(`<dt>${esc(k)}</dt><dd>${v}</dd>`); };
-    const lr = state.lastReq ? state.lastReq.location : null;
-    const loc = c.location || lr;
-    if (loc) add(t.loc, `${esc(loc.lat)}, ${esc(loc.lon)} (±${esc(c.location_rounded_to_m || 100)} ${esc(t.distance)})`);
-    if (c.radius_m) add(t.radius, `${esc(c.radius_m)} ${esc(t.distance)}${c.radius_expanded ? " — " + esc(t.expanded) : ""}`);
-    const bb = d.budget_breakdown;
-    if (c.time_budget_min || bb) {
-      const eff = c.effective_budget_min || c.time_budget_min;
-      let v = eff ? `${esc(eff)} ${esc(t.minutes)}` : "";
-      if (c.effective_budget_min && c.time_budget_min && c.effective_budget_min !== c.time_budget_min) v += ` (${esc(c.time_budget_min)} − ${esc(c.time_budget_min - c.effective_budget_min)})`;
-      if (bb) v += ` · ${esc(fmt(t.budgetLine, {a: bb.walk_there_min, b: bb.stay_min, c: bb.walk_back_min, r: bb.reserve_min || 0, t: bb.total_min, B: c.time_budget_min || bb.budget_min || eff || ""}))}`;
-      add(t.budgetL, v);
-    }
-    if (c.time) add(t.time, `${esc(c.target_time ? new Intl.DateTimeFormat({ru:"ru-RU",kk:"kk-KZ",en:"en-GB"}[state.lang] || "ru-RU", {weekday:"short",hour:"2-digit",minute:"2-digit",timeZone:"Asia/Almaty"}).format(new Date(c.target_time)) : c.time)}${c.time_simulated || c.time_shift ? " · " + esc(t.simulated) : ""}`);
-    if (c.goal || (c.categories && c.categories.length)) add(t.goal, `${esc(c.goal || "")}${c.categories && c.categories.length ? " → " + esc(c.categories.join(", ")) : ""}${c.tags && c.tags.length ? " · " + esc(c.tags.join(", ")) : ""}`);
-    if (c.filters && c.filters.length) add(t.filters, esc(c.filters.map(codeLabel).join("; ")));
-    if (c.walk_speed_m_per_min) add(t.speed, `${esc(c.walk_speed_m_per_min)} ${esc(t.mPerMin)} × ${esc(c.street_factor || 1.3)}`);
+    const t = T(), c = d.considered || {}, rows = [];
+    const add = (icon, k, v) => { if (v) rows.push(`<li><span class="ic" aria-hidden="true">${icon}</span><span><b>${esc(k)}:</b> ${v}</span></li>`); };
     const w = c.weather && c.weather.temp_c !== undefined ? {...c.weather, simulated: !!state.lastWeather?.simulated, wind_ms: c.weather.wind_ms ?? (c.weather.wind_kmh ? c.weather.wind_kmh / 3.6 : 0)} : state.lastWeather;
-    if (FEAT.weather && w) add(t.weatherL, esc(weatherText(w)));
-    add(t.found, esc(c.candidates_found ?? (d.candidates || []).length));
-    add(t.mode, esc(t.modes[d.mode] || d.mode));
-    if (c.data_snapshot) add(t.snapshot, `${esc(c.data_snapshot)}${c.places_in_database ? " · " + esc(c.places_in_database) + " " + esc(t.places) : ""}`);
-    let cands = "";
-    if (state.showCands) {
-      const src = (d.candidates && d.candidates.length) ? d : (state.extraCands || {});
-      const cl = src.candidates || [], ex = [...(src.excluded || [])].sort((a, b) => a.distance_m - b.distance_m);
-      cands = `<h3 class="sub">${esc(t.cands)} (${cl.length})</h3><p class="meta">${esc(t.candsHint)}</p><div class="tbl"><table class="cands"><tr><th>#</th><th></th><th>${esc(t.distance)}</th><th>${esc(t.score)}</th></tr>` +
-        cl.map((x, i) => `<tr><td>${i + 1}</td><td>${esc(x.name)}<br><span class="meta">${esc(x.category_label || catLabel(x.category))}${(x.reasons || []).length ? " · " + esc(x.reasons.map(codeLabel).join(", ")) : ""}</span></td><td>${esc(x.distance_m)}</td><td>${x.score != null ? esc(Number(x.score).toFixed(2)) : ""}</td></tr>`).join("") +
-        `</table></div>` + (ex.length ? `<h3 class="sub">${esc(t.excluded)} (${Math.min(20, ex.length)}/${src.excluded_count ?? ex.length})</h3><div class="tbl"><table class="cands">` +
-        ex.slice(0, 20).map((x) => `<tr><td>${esc(x.name)}<br><span class="meta">${esc(x.category_label || catLabel(x.category))} · ${esc(x.distance_m)} ${esc(t.distance)}</span></td><td>${esc(x.excluded_label || codeLabel(x.excluded_because))}</td></tr>`).join("") + "</table></div>" : "");
-    }
-    const any = (d.candidates || []).length || (d.excluded || []).length || c.candidates_found;
-    return `<section class="card considered" id="consideredBox"><h3>🔎 ${esc(t.considered)}</h3><dl class="kv">${rows.join("")}</dl>
-      ${any ? `<button type="button" id="candBtn" class="btn small" aria-expanded="${state.showCands}">${esc(state.showCands ? t.hideCands : t.showCands)}</button>` : ""}${cands}</section>`;
+    if (FEAT.weather && w) add("🌤", t.weatherL, esc(weatherText(w)));
+    if (c.time) add("🕘", t.time, `${esc(c.target_time ? new Intl.DateTimeFormat({ru:"ru-RU",kk:"kk-KZ",en:"en-GB"}[state.lang] || "ru-RU", {weekday:"short",hour:"2-digit",minute:"2-digit",timeZone:"Asia/Almaty"}).format(new Date(c.target_time)) : c.time)}${c.time_simulated || c.time_shift ? " · " + esc(t.simulated) : ""}`);
+    if (c.radius_m) add("📍", t.radius, `${esc(c.radius_m)} ${esc(t.distance)}${c.radius_expanded ? " — " + esc(t.expanded) : ""} · ${esc(fmt(t.roundedTo, {m: c.location_rounded_to_m || 100}))}`);
+    const looked = (c.filters || []).filter((f) => !String(f).startsWith("exclude:")).map(codeLabel);
+    if (looked.length) add("🎯", t.lookedFor, esc(looked.join(", ")));
+    // every place the count mentions is listed; the chosen ones are ticked
+    const chosen = new Set((d.recommendations || []).map((r) => r.poi_id));
+    const list = d.candidates || [];
+    if (list.length) add("📋", fmt(t.lookedAt, {n: list.length}), `<span class="cands-list">${list.map((x) =>
+      `<span class="cand${chosen.has(x.poi_id) ? " on" : ""}">${chosen.has(x.poi_id) ? "✓ " : ""}${esc(x.name)} · ${esc(x.distance_m)} ${esc(t.distance)}</span>`).join("")}</span>`);
+    return `<section class="card considered" id="consideredBox"><h3>🔎 ${esc(t.considered)}</h3><ul class="cons">${rows.join("")}</ul></section>`;
   }
 
   // ---------- mini-route (extra): computed in the browser, the backend is not touched ----------

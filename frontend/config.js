@@ -12,6 +12,7 @@ window.SERUEN_CONFIG = {
     languages: true,  // KZ / RU / EN switch
     points: true,     // coins for visited places, stored only in this browser
     twogis: true,     // "2GIS rating & hours" button on each card: asks the backend only when pressed
+    photos: true,     // photos of each place + what Gemini sees on them (lighting, seats, kids' area, space)
   },
 
   // Route line geometry. The public OSRM demo server; if it fails we draw straight lines.
