@@ -63,7 +63,7 @@ def build_index(dataset, path: Path):
 
 class Embeddings:
     def __init__(self, path, dataset):
-        data = json.loads(path.read_text())
+        data = json.loads(path.read_text(encoding="utf-8"))
         if (
             data["fingerprint"] != dataset.fingerprint
             or data["ids"] != [p.poi_id for p in dataset.pois]

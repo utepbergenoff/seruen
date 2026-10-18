@@ -1,15 +1,42 @@
+# Private planning docs (not for the repo)
+yerlan.md
+TA.pdf
+
+# Secrets
 .env
 .env.*
 !.env.example
+
+# Python
 .venv/
+venv/
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.mypy_cache/
 .ruff_cache/
 *.egg-info/
-.DS_Store
-work/
-data/poi.json
-data/raw/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+dist/
+
+# Data: data/poi.json and data/raw/ ARE committed (snapshot for the jury, plan A8);
+# only API response caches stay local.
+data/cache/
+
+# Eval / misc
 eval/human_ratings.json
+work/
 *.log
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Claude Code local settings
+.claude/settings.local.json

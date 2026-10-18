@@ -29,10 +29,10 @@ def test_no_internet_bm25_fallback(service, settings, tmp_path, req):
 
 def test_hybrid_index_and_stale_rejection(service, settings, tmp_path):
     assert service.retriever.mode == "bm25+lsa"
-    data = json.loads(settings.index_path.read_text())
+    data = json.loads(settings.index_path.read_text(encoding="utf-8"))
     data["fingerprint"] = "wrong"
     path = tmp_path / "index.json"
-    path.write_text(json.dumps(data))
+    path.write_text(json.dumps(data), encoding="utf-8")
     assert Retriever(service.dataset, path).mode == "bm25"
 
 
@@ -192,7 +192,7 @@ async def test_http_adapter_errors(settings, kind):
 
 
 async def test_30_intents_match_expected(service):
-    cases = json.loads((ROOT / "eval/scenarios.json").read_text())["cases"]
+    cases = json.loads((ROOT / "eval/scenarios.json").read_text(encoding="utf-8"))["cases"]
     correct = 0
     for row in cases:
         intent = rule_intent(RecommendRequest.model_validate(row["request"])).model_dump()

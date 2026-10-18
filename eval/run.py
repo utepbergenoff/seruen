@@ -26,7 +26,7 @@ async def run(args):
     if args.ai and not settings.gemini_api_key:
         raise SystemExit("--ai requires GEMINI_API_KEY; no AI report was produced")
     service = RecommendationService(settings)
-    source = json.loads(Path(args.scenarios).read_text())
+    source = json.loads(Path(args.scenarios).read_text(encoding="utf-8"))
     cases = source["cases"]
     out = Path(args.output)
     (out / "answers").mkdir(parents=True, exist_ok=True)
@@ -65,7 +65,7 @@ async def run(args):
             counters["unsupported_open_claims"] += c.open_status.state == "open" and (
                 not c.open_status.hours or c.open_status.source == "none"
             )
-        (out / "answers" / f"{row['id']}.json").write_text(result.model_dump_json(indent=2) + "\n")
+        (out / "answers" / f"{row['id']}.json").write_text(result.model_dump_json(indent=2) + "\n", encoding="utf-8")
     for row in scenarios():
         req = RecommendRequest.model_validate(row["request"])
         await service.recommend(req, force_no_ai=not args.ai)
@@ -88,7 +88,7 @@ async def run(args):
             client.post("/recommend", json=row["request"])
     handler.close()
     logger.removeHandler(handler)
-    log_text = log_path.read_text()
+    log_text = log_path.read_text(encoding="utf-8")
     private_values = [r["request"]["query"] for r in cases] + [
         str(r["request"]["location"][k]) for r in cases for k in ("lat", "lon")
     ]
@@ -97,10 +97,11 @@ async def run(args):
     rating_file = out / "human_ratings.json"
     if not rating_file.exists():
         rating_file.write_text(
-            json.dumps({r["id"]: [None, None, None] for r in cases}, ensure_ascii=False, indent=2) + "\n"
+            json.dumps({r["id"]: [None, None, None] for r in cases}, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
         )
     else:
-        raw = json.loads(rating_file.read_text())
+        raw = json.loads(rating_file.read_text(encoding="utf-8"))
         values = [v for row in cases for v in raw.get(row["id"], [])]
         if len(values) == 3 * len(cases) and all(type(v) in (int, float) and 1 <= v <= 5 for v in values):
             ratings = statistics.mean(values)
@@ -120,7 +121,7 @@ async def run(args):
         manual_mean=ratings,
         **service.metrics,
     )
-    (out / "report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
+    (out / "report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     n, count = len(cases), counters["cards"]
     lines = [
         "# Eval Серуен",
@@ -153,7 +154,7 @@ async def run(args):
         "Полные ответы: answers/*.json. Для человеческой оценки заполнить human_ratings.json тремя оценками 1–5 на каждый ответ.",
         "",
     ]
-    (out / "report.md").write_text("\n".join(lines))
+    (out / "report.md").write_text("\n".join(lines), encoding="utf-8")
     print(json.dumps(report, ensure_ascii=False, indent=2))
     if (
         counters["responses_with_cards"] != n
