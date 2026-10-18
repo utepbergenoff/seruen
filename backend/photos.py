@@ -44,8 +44,9 @@ lighting: bright, natural (big windows, daylight) or dim. kids_area: yes only if
 corner or kids' furniture is visible; no if the space is clearly visible without one; else unknown.
 seats: rough number of visible seats, null if this is not a seating place or it is unclear.
 seating: few, some or many. space: small, medium or large. decor: style in up to 8 words.
-summary: one or two sentences, at most 30 words, in the requested language (ru, kk or en), saying
-what the photos show that matters for the request, using lighting, seats, kids' area, space or decor.
+summary: one or two sentences, at most 30 words, saying why this place fits the request judging by
+the photos, with concrete visible details: lighting, seats, kids' area, space, decor or greenery.
+Write decor and summary ONLY in answer_language (Russian, Kazakh or English), never in another language.
 Never say whether the place is open, never mention prices, Wi-Fi, sockets, events or links.
 If no photo shows the place, use unknown everywhere and an empty summary. Return only JSON."""
 
@@ -184,6 +185,7 @@ class Photos:
             "place": {"name": poi.name, "category": poi.category},
             "request": {"query": ask.query, "companions": ask.companions},
             "language": ask.lang,
+            "answer_language": {"ru": "Russian", "kk": "Kazakh", "en": "English"}[ask.lang],
             "photos": [{"index": i, "source": p.source} for i, p in enumerate(photos)],
         }
         async with self.slots:
@@ -207,7 +209,7 @@ class Photos:
             return PlacePhotos(poi_id=poi_id, status="disabled", checked_at=now)
         key = (poi_id, ask.lang, ask.companions, " ".join(ask.query.casefold().split()))
         hit = self.cache.get(key)
-        if hit and time.monotonic() - hit[0] < 6 * 3600:
+        if hit and time.monotonic() < hit[0]:
             self.cache.move_to_end(key)
             return hit[1]
         async with httpx.AsyncClient(timeout=self.settings.photo_timeout_s, transport=self.transport,
@@ -239,7 +241,8 @@ class Photos:
         result = PlacePhotos(poi_id=poi_id, photos=keep, analysis=facts if keep else None,
                              analysis_source="gemini" if keep else "none",
                              status="ok" if keep else "not_relevant", checked_at=now)
-        self.cache[key] = (time.monotonic(), result)
+        # a place without usable photos is asked again sooner: new photos may have been added to the list
+        self.cache[key] = (time.monotonic() + (6 * 3600 if keep else 1200), result)
         while len(self.cache) > 512:
             self.cache.popitem(last=False)
         return result

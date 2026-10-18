@@ -191,6 +191,16 @@ test('photos: strip, photo reason and facts per card; no photos says so; text st
   assert.match(c2.querySelector('.photos').textContent,/Фото этого места пока нет/);
 });
 
+test('answers come from the checked database with AI; the 2GIS catalog only from its own button',async t=>{
+  const b=await boot(t);b.click('#goBtn');await tick();
+  assert.equal(b.requests[0].body.source,'local');
+  b.requests[0].resolve(json({...answer('local'),recommendations:[rec('p1','Drinkit')]}));await tick();
+  b.click('#catalogBtn');await tick();
+  assert.equal(b.requests[1].body.source,'2gis');assert.equal(b.requests[1].body.cursor,undefined);
+  b.requests[1].resolve(json({...answer('catalog'),source:'2gis',recommendations:[rec('2gis_1','Coffee BOOM')]}));await tick();
+  assert.match(b.w.document.querySelector('#results').textContent,/Coffee BOOM/);
+  assert.equal(b.w.document.querySelector('#catalogBtn'),null);
+});
 const nearbyPlace = (id,name,eligible=true) => ({poi_id:id,name,category:'coffee',coords:{lat:51.128,lon:71.43},distance_m:100,walk_min:2,address:'Test address',rating:4.8,eligible,excluded_because:eligible?null:'closed',links:{'2gis':'https://2gis.kz/astana/firm/123'}});
 test('nearby list contains unselected and closed places; next page appends without duplicates', async t=>{
   const b=await boot(t);b.click('#goBtn');await tick();

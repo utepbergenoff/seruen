@@ -6,7 +6,7 @@
 (() => {
   "use strict";
   const CFG = window.SERUEN_CONFIG || {};
-  const FEAT = Object.assign({mapLinks: true, weather: true, route: true, languages: true, points: true, twogis: true, photos: true}, CFG.FEATURES || {});
+  const FEAT = Object.assign({mapLinks: true, weather: true, route: true, languages: true, points: true, twogis: true, photos: true, twogisSearch: true}, CFG.FEATURES || {});
   const API = (CFG.API_URL || "").replace(/\/$/, "");
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => Array.from(document.querySelectorAll(s));
@@ -275,8 +275,10 @@
     $("#status").innerHTML = `<div class="loading" role="status"><div class="spinner"></div>${esc(T().loading)}</div>`;
     $("#goBtn").disabled = true;
     try {
+      // "local" = our checked database with Gemini and photos; the 2GIS catalog has no AI and only
+      // 25 searches a day on the demo key, so it is asked only from its own button below the answer
       const body = {location: {lat: round3(state.loc.lat), lon: round3(state.loc.lon), precision_m: 100, source: state.loc.source},
-        query: $("#query").value.trim(), context: await context()};
+        query: $("#query").value.trim(), context: await context(), source: "local"};
       if (version !== state.requestVersion) return;
       const data = await postJSON("/recommend", body);
       if (version !== state.requestVersion) return;
@@ -291,6 +293,28 @@
       $("#status").innerHTML = `<p class="msg err">${esc(T().serverDown)} <button type="button" class="btn small" id="retryBtn">${esc(T().retry)}</button></p>`;
       $("#retryBtn").addEventListener("click", ask);
     } finally { if (version === state.requestVersion) $("#goBtn").disabled = false; }
+  }
+
+  async function askCatalog() {
+    if (!state.lastReq) return;
+    const version = ++state.requestVersion;
+    const button = $("#catalogBtn");
+    if (button) button.disabled = true;
+    $("#status").innerHTML = `<div class="loading" role="status"><div class="spinner"></div>${esc(T().loading)}</div>`;
+    try {
+      const {cursor, ...base} = state.lastReq;  // a new catalog search starts from its first page
+      const body = {...base, source: "2gis"};
+      const data = await postJSON("/recommend", body);
+      if (version !== state.requestVersion) return;
+      state.lastReq = body;
+      state.last = data;
+      $("#status").innerHTML = "";
+      render(data);
+    } catch {
+      if (version !== state.requestVersion) return;
+      $("#status").innerHTML = `<p class="msg err">${esc(T().serverDown)}</p>`;
+      if (button?.isConnected) button.disabled = false;
+    }
   }
 
   async function askNext() {
@@ -463,6 +487,7 @@
       html += '</section>';
     }
     if (d.next_cursor) html += `<button type="button" id="nextPlacesBtn" class="btn">${esc(t.catalog.next)}</button>`;
+    if (FEAT.twogisSearch && d.source !== "2gis" && state.lastReq) html += `<button type="button" id="catalogBtn" class="btn">🔎 ${esc(t.catalog.more)}</button>`;
     html += considered(d);
     html += `<p class="foot">⚠️ ${esc(d.disclaimer || t.disclaimerShort)}</p>`;
     $("#results").innerHTML = html;
@@ -493,6 +518,7 @@
       if (g) g.addEventListener("click", () => toggleGis(el, id, g));
     });
     const np = $("#nextPlacesBtn"); if (np) np.addEventListener("click", askNext);
+    const cb = $("#catalogBtn"); if (cb) cb.addEventListener("click", askCatalog);
     const rb = $("#routeBtn"); if (rb) rb.addEventListener("click", buildRoute);
     if (FEAT.photos) recs.forEach((r) => loadPhotos(r, d));
   }
