@@ -1,0 +1,16 @@
+# Keep the runtime snapshot, demo scenarios and rebuilt data/index in the slug.
+.env
+.env.*
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+__pycache__/
+tests/
+eval/
+docs/
+work/
+data/raw/
+data/cache/
+data/poi_full.json
+data/poi_sample.json

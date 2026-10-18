@@ -1,0 +1,61 @@
+{
+  "scope": "Local execution of Heroku build hook and exact Procfile command; not a Heroku cloud deployment",
+  "heroku_deployed": false,
+  "paid_resources_created": false,
+  "build_output": "Indexed 1251 POIs, 64 LSA dimensions; rejected=0, duplicates=0",
+  "health": {
+    "status": "ok",
+    "mode_available": [
+      "no_ai"
+    ],
+    "data_snapshot_date": "2026-10-17",
+    "poi_count": 1251,
+    "data_kind": "real",
+    "retrieval_mode": "bm25+lsa",
+    "mock": false
+  },
+  "scenarios": [
+    {
+      "id": "S1",
+      "cards": 2,
+      "cached": true
+    },
+    {
+      "id": "S2",
+      "cards": 3,
+      "cached": true
+    },
+    {
+      "id": "S3",
+      "cards": 3,
+      "cached": true
+    },
+    {
+      "id": "S4",
+      "cards": 3,
+      "cached": true
+    },
+    {
+      "id": "S5",
+      "cards": 3,
+      "cached": true
+    },
+    {
+      "id": "S6",
+      "cards": 3,
+      "cached": true
+    }
+  ],
+  "cors_passed": true,
+  "existing_render_health": {
+    "status": "ok",
+    "mode_available": [
+      "no_ai"
+    ],
+    "data_snapshot_date": "2026-10-17",
+    "poi_count": 1251,
+    "data_kind": "real",
+    "retrieval_mode": "bm25+lsa",
+    "mock": false
+  }
+}
