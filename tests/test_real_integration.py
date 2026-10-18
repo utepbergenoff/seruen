@@ -54,7 +54,7 @@ async def test_real_demo_invariants(real_service, scenario):
     assert error == "none" and result.data_kind == "real"
     assert result.considered.retrieval_mode == "bm25+lsa"
     assert result.recommendations or result.notes  # honest empty result is allowed for sparse areas
-    ids = {p.poi_id for p in real_service.dataset.pois}
+    ids = set(real_service.features.pois)  # base snapshot + verified team places
     for card in result.recommendations:
         assert card.poi_id in ids and card.budget_breakdown.total_min <= result.considered.time_budget_min
         assert card.open_status.state != "closed"
