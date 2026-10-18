@@ -2,46 +2,6 @@
   "mode": "no_ai",
   "recommendations": [
     {
-      "poi_id": "osm_way_1470780026",
-      "name": "Дубовая аллея",
-      "category": "park",
-      "coords": {
-        "lat": 51.135573,
-        "lon": 71.408849
-      },
-      "distance_m": 444,
-      "walk_min": 10,
-      "why": "В базе отмечено как подходящее для детей; время с дорогой укладывается в бюджет.",
-      "why_source": "template",
-      "time_to_spend_min": 30,
-      "what_to_do": "Прогуляйтесь по общедоступным дорожкам и вернитесь тем же путём.",
-      "what_to_do_source": "template",
-      "open_status": {
-        "state": "unknown",
-        "confidence": "low",
-        "hours": null,
-        "source": "none",
-        "checked_at": "2026-10-17"
-      },
-      "facts_source": "poi_db",
-      "description_source": "generated",
-      "description_url": null,
-      "accessibility": "unknown",
-      "links": {
-        "2gis": "https://2gis.kz/astana/geo/71.408849,51.135573",
-        "google": "https://www.google.com/maps/search/?api=1&query=51.135573%2C71.408849"
-      },
-      "rating": null,
-      "rating_count": null,
-      "budget_breakdown": {
-        "walk_there_min": 10,
-        "stay_min": 30,
-        "walk_back_min": 10,
-        "reserve_min": 0,
-        "total_min": 50
-      }
-    },
-    {
       "poi_id": "osm_way_1449322330",
       "name": "Детская площадка",
       "category": "kids",
@@ -65,7 +25,12 @@
       },
       "facts_source": "poi_db",
       "description_source": "generated",
+      "description": "Детская площадка по данным OpenStreetMap.",
       "description_url": null,
+      "sources": [
+        "osm"
+      ],
+      "last_checked": "2026-10-17",
       "accessibility": "unknown",
       "links": {
         "2gis": "https://2gis.kz/astana/geo/71.403346,51.1322703",
@@ -105,7 +70,13 @@
       },
       "facts_source": "poi_db",
       "description_source": "generated",
+      "description": "Ғашықтар саябағы — парк или сквер.",
       "description_url": null,
+      "sources": [
+        "osm",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
       "accessibility": "unknown",
       "links": {
         "2gis": "https://2gis.kz/astana/geo/71.4092097,51.1314922",
@@ -120,27 +91,80 @@
         "reserve_min": 0,
         "total_min": 48
       }
+    },
+    {
+      "poi_id": "osm_way_1449322354",
+      "name": "Fame City",
+      "category": "kids",
+      "coords": {
+        "lat": 51.1325344,
+        "lon": 71.4038802
+      },
+      "distance_m": 53,
+      "walk_min": 2,
+      "why": "В базе отмечено как подходящее для детей; время с дорогой укладывается в бюджет.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Проведите время с ребёнком; проверьте возрастные ограничения на месте.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description": "Fame City — место для детей.",
+      "description_url": null,
+      "sources": [
+        "osm",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4038802,51.1325344",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1325344%2C71.4038802"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 2,
+        "stay_min": 30,
+        "walk_back_min": 2,
+        "reserve_min": 0,
+        "total_min": 34
+      }
     }
   ],
   "budget_breakdown": {
-    "walk_there_min": 10,
+    "walk_there_min": 3,
     "stay_min": 30,
-    "walk_back_min": 10,
+    "walk_back_min": 3,
     "reserve_min": 0,
-    "total_min": 50
+    "total_min": 36
   },
   "considered": {
     "location_rounded_to_m": 100,
     "radius_m": 692,
     "radius_expanded": false,
     "time_budget_min": 60,
+    "effective_budget_min": 60,
+    "reserve_min": 0,
+    "walk_speed_m_per_min": 60,
+    "street_factor": 1.3,
+    "companions": "child",
+    "time_simulated": true,
+    "lang": "ru",
     "filters": [
       "category:kids",
       "category:park",
       "category:culture",
       "child_friendly"
     ],
-    "time": "Sun 14:00",
+    "time": "вс 14:00",
     "candidates_found": 10,
     "weather": null,
     "retrieval_mode": "bm25+lsa",

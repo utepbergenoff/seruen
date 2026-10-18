@@ -148,7 +148,10 @@ class Recommendation(Model):
     open_status: OpenStatus
     facts_source: Literal["poi_db"] = "poi_db"
     description_source: Literal["wikipedia", "source", "generated"]
+    description: str = ""
     description_url: str | None = None
+    sources: list[str] = Field(default_factory=list)
+    last_checked: date | None = None
     accessibility: Literal["yes", "limited", "no", "unknown"]
     links: dict[str, str]
     rating: float | None
@@ -168,6 +171,13 @@ class Considered(Model):
     radius_m: int
     radius_expanded: bool
     time_budget_min: int
+    effective_budget_min: int = Field(default=0, ge=0)
+    reserve_min: int = Field(default=0, ge=0)
+    walk_speed_m_per_min: int = 75
+    street_factor: float = 1.3
+    companions: Literal["alone", "child", "group"] = "alone"
+    time_simulated: bool = False
+    lang: Lang = "ru"
     filters: list[str]
     time: str
     candidates_found: int

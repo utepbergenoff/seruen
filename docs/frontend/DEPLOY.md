@@ -4,7 +4,7 @@
 > Бэкенд: https://seruen-backend-f36d.onrender.com (Томирис). Обновить сайт после правок — одна команда:
 >
 > ```bash
-> cd frontend && npx -y netlify-cli@23.15.1 deploy --prod --dir . --site seruen-astana
+> cd frontend && npx -y netlify-cli@23.15.1 deploy --prod --dir . --site 2e26f14f-5250-414b-9efc-adbb5f4145d9
 > ```
 >
 > Защита «только для команды Netlify» у сайта выключена (иначе жюри видит страницу входа).

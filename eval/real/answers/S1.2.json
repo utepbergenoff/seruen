@@ -25,7 +25,13 @@
       },
       "facts_source": "poi_db",
       "description_source": "generated",
+      "description": "Кофейня Drinkit предлагает Wi-Fi и кофе.",
       "description_url": null,
+      "sources": [
+        "osm",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
       "accessibility": "unknown",
       "links": {
         "2gis": "https://2gis.kz/astana/geo/71.40609,51.0890765",
@@ -65,7 +71,13 @@
       },
       "facts_source": "poi_db",
       "description_source": "generated",
+      "description": "Кофейня Starbucks предлагает кофе.",
       "description_url": null,
+      "sources": [
+        "osm",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
       "accessibility": "unknown",
       "links": {
         "2gis": "https://2gis.kz/astana/geo/71.4089158,51.0890092",
@@ -94,6 +106,13 @@
     "radius_m": 865,
     "radius_expanded": false,
     "time_budget_min": 120,
+    "effective_budget_min": 120,
+    "reserve_min": 0,
+    "walk_speed_m_per_min": 75,
+    "street_factor": 1.3,
+    "companions": "alone",
+    "time_simulated": true,
+    "lang": "ru",
     "filters": [
       "quiet",
       "wifi",
@@ -101,7 +120,7 @@
       "category:library",
       "category:cowork"
     ],
-    "time": "Sun 14:00",
+    "time": "вс 14:00",
     "candidates_found": 6,
     "weather": null,
     "retrieval_mode": "bm25+lsa",

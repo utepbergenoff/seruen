@@ -8,6 +8,7 @@ Checks, on a laptop-size and a phone-size window:
     what to do + source badge, time on site, budget line, "from database" badge
   - the "What I considered" panel is under every answer; "Show candidates" opens
   - coordinates in the outgoing request have at most 3 decimals (~100 m)
+  - the location is detected automatically on open (and a clear message if it is blocked)
   - no coordinates in the page URL; no JavaScript errors
   - manifest, icons, service worker file, About page are reachable
 Prints a PASS/FAIL table; exit code 1 if anything failed.
@@ -23,6 +24,7 @@ from playwright.sync_api import sync_playwright
 if len(sys.argv) < 2:
     sys.exit("Give the site address, e.g.: python scripts/check_site.py https://seruen-astana.netlify.app")
 BASE = sys.argv[1].rstrip("/")
+THEME = ""
 DAY = "2026-10-18T15:00"
 results: list[tuple[str, bool, str]] = []
 
@@ -42,7 +44,7 @@ def run_scenarios(ctx, label: str) -> None:
         errors, bodies = [], []
         page.on("pageerror", lambda e, errs=errors: errs.append(str(e)))
         page.on("request", lambda r, b=bodies: b.append(r.post_data) if r.url.endswith("/recommend") else None)
-        page.goto(f"{BASE}/?scenario={sid}&at={DAY}")
+        page.goto(f"{BASE}/?scenario={sid}&at={DAY}{THEME}")
         try:
             page.wait_for_selector(".rec, .empty", timeout=25000)
         except Exception:
@@ -72,7 +74,7 @@ def run_scenarios(ctx, label: str) -> None:
             page.click("#candBtn")
             page.wait_for_selector("table.cands", timeout=10000)
             check(f"{label} {sid}: candidates open", page.locator("table.cands tr").count() > 1)
-        pins = page.locator(".pin, .chest").count()
+        pins = page.locator(".pin, .chest, .seal").count()
         check(f"{label} {sid}: numbered markers on map", pins == n, f"{pins} markers")
         if bodies and bodies[0]:
             loc = json.loads(bodies[0])["location"]
@@ -102,21 +104,37 @@ def main() -> int:
               {"192x192", "512x512"} <= {i.get("sizes") for i in m.get("icons", [])})
         # error state: backend not reachable
         page.route("**/recommend", lambda route: route.abort())
-        page.goto(f"{BASE}/?at={DAY}")
+        page.goto(f"{BASE}/?at={DAY}{THEME}")
         page.wait_for_selector("#chips button")
         page.click("#chips button >> nth=0")
         page.wait_for_selector(".msg.err", timeout=15000)
         check("error state: server unreachable shows a message", "Сервер" in page.inner_text("#status") or
               "server" in page.inner_text("#status").lower())
         page.close()
-        # error state: geolocation denied
+        # location detected automatically on open (simulated position near Expo)
+        ctx = browser.new_context(viewport={"width": 390, "height": 844}, permissions=["geolocation"],
+                                  geolocation={"latitude": 51.09012, "longitude": 71.41837})
+        page = ctx.new_page()
+        bodies = []
+        page.on("request", lambda r: bodies.append(r.post_data) if r.url.endswith("/recommend") else None)
+        page.goto(f"{BASE}/?at={DAY}")
+        page.wait_for_function("() => /рядом с вами/.test(document.querySelector('#locLine').textContent)", timeout=15000)
+        check("location detected automatically on open", True, page.inner_text("#locLine"))
+        page.click("#chips button >> nth=0")
+        page.wait_for_selector(".rec, .empty", timeout=30000)
+        loc = json.loads(bodies[0])["location"] if bodies else {}
+        check("request uses the detected point, rounded", loc.get("lat") == 51.09 and loc.get("lon") == 71.418 and loc.get("source") == "gps",
+              f"{loc.get('lat')}, {loc.get('lon')}, {loc.get('source')}")
+        ctx.close()
+        # error state: geolocation denied -> message right away, point in the centre
         ctx = browser.new_context(viewport={"width": 390, "height": 844}, permissions=[])
         page = ctx.new_page()
         page.goto(f"{BASE}/")
-        page.wait_for_selector("#chips button")
-        page.click("#geoBtn")
         page.wait_for_selector("#geoMsg:not([hidden])", timeout=15000)
         check("error state: geolocation denied shows a message", len(page.inner_text("#geoMsg")) > 10)
+        page.click("#geoBtn")  # the locate button on the map tries again
+        page.wait_for_selector("#geoMsg:not([hidden])", timeout=15000)
+        check("locate button on the map works", True)
         browser.close()
 
     width = max(len(n) for n, _, _ in results)

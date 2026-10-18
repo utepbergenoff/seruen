@@ -2,6 +2,8 @@
 
 **Сайт:** https://seruen-astana.netlify.app · **бэкенд:** https://seruen-backend-f36d.onrender.com
 
+Оформление: тёплый айвори `#F7F5EF`, лесной зелёный `#123D32`, заголовки Playfair Display, текст Manrope. Местоположение определяется автоматически при открытии (можно отказаться — точка в центре, её можно перетащить).
+
 Стек — **план Б** из командного плана: одна HTML-страница + чистый JavaScript + Leaflet, без сборки.
 Код: `seruen/frontend/`. Всё, что сайт ждёт от бэкенда, описано в `CONTRACT_FOR_BACKEND.md`.
 
@@ -20,8 +22,8 @@ cd frontend && python3 -m http.server 8080
 |---|---|
 | `/?scenario=S1` … `S6` | запускает сценарий из меню «Сценарии» |
 | `/?at=2026-10-18T15:00` | симуляция времени (днём показать то, что будет в 15:00, или ночь в 23:00) |
-| `/?preset=khan` | стартовая точка (mega, expo, khan, baiterek, nurly, airport) |
-| `/?lang=kk`, `/?pirate=1`, `/?chip=0` | язык, пиратский режим, сразу нажать чипс №0 |
+| `/?preset=khan` | стартовая точка вместо автоопределения (mega, expo, khan, baiterek, nurly, airport) |
+| `/?lang=kk`, `/?chip=0` | язык, сразу нажать чипс №0 |
 
 ## Файлы
 
@@ -29,8 +31,8 @@ cd frontend && python3 -m http.server 8080
 |---|---|
 | `index.html`, `styles.css`, `app.js` | экран, вёрстка (ноутбук + телефон), логика |
 | `i18n.js` | подписи RU / KK / EN (казахский — проверить носителю языка) |
-| `config.js` | адрес API и **флаги фишек** (`mapLinks`, `weather`, `route`, `languages`, `pirate`, `points`) |
-| `presets.json` | 6 точек, координаты сверены с объектами OSM (`docs/frontend/presets_check.md`) |
+| `config.js` | адрес API и **флаги фишек** (`mapLinks`, `weather`, `route`, `languages`, `points`) |
+| `presets.json` | 6 точек для сценариев и ссылок `?preset=`, координаты сверены с OSM (`docs/frontend/presets_check.md`) |
 | `scenarios.json` | 6 сценариев — запасной вариант, если `GET /scenarios` не отвечает |
 | `about.html` | «О данных и приватности» |
 | `manifest.json`, `sw.js`, `icons/` | PWA: установка на экран, работа оболочки офлайн |
@@ -56,7 +58,7 @@ cd frontend && python3 -m http.server 8080
 - [x] Координаты округляются до 3 знаков до отправки; в адресе страницы координат нет
 - [x] PWA-файлы (манифест, иконки 192/512, service worker); страница «О данных»; дисклеймер
 - [x] Фишки уровня 1 за флагами: кнопки 2GIS/Google (формат проверен в браузере), погода (Open-Meteo),
-      маршрут из 3 мест в браузере (OSRM), KZ/RU/EN, пиратский стиль, монеты в браузере
+      маршрут из 3 мест в браузере (OSRM), KZ/RU/EN, монеты в браузере
 - [x] Скриншоты 6 сценариев (ноутбук + телефон) → `docs/screenshots/`
 - [x] Публичная ссылка: https://seruen-astana.netlify.app (17.10), CORS у Томирис открыт; `check_site.py` на публичной ссылке: 107/107
 - [x] Проверка с боевым бэкендом Томирис: 107/107 (локально, порт 5173)

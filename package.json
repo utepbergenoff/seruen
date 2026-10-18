@@ -1,0 +1,7 @@
+{
+  "name": "seruen-interface-checks",
+  "private": true,
+  "scripts": {"test": "node --test tests/frontend/*.test.cjs"},
+  "engines": {"node": ">=22"},
+  "devDependencies": {"jsdom": "^27.0.0"}
+}

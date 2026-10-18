@@ -25,7 +25,12 @@
       },
       "facts_source": "poi_db",
       "description_source": "generated",
+      "description": "Детская площадка по данным OpenStreetMap.",
       "description_url": null,
+      "sources": [
+        "osm"
+      ],
+      "last_checked": "2026-10-17",
       "accessibility": "unknown",
       "links": {
         "2gis": "https://2gis.kz/astana/geo/71.403346,51.1322703",
@@ -65,7 +70,12 @@
       },
       "facts_source": "poi_db",
       "description_source": "generated",
+      "description": "Детская площадка по данным OpenStreetMap.",
       "description_url": null,
+      "sources": [
+        "osm"
+      ],
+      "last_checked": "2026-10-17",
       "accessibility": "unknown",
       "links": {
         "2gis": "https://2gis.kz/astana/geo/71.3983901,51.1324475",
@@ -105,7 +115,13 @@
       },
       "facts_source": "poi_db",
       "description_source": "generated",
+      "description": "Ғашықтар саябағы — парк или сквер.",
       "description_url": null,
+      "sources": [
+        "osm",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
       "accessibility": "unknown",
       "links": {
         "2gis": "https://2gis.kz/astana/geo/71.4092097,51.1314922",
@@ -134,13 +150,20 @@
     "radius_m": 692,
     "radius_expanded": false,
     "time_budget_min": 60,
+    "effective_budget_min": 60,
+    "reserve_min": 0,
+    "walk_speed_m_per_min": 60,
+    "street_factor": 1.3,
+    "companions": "child",
+    "time_simulated": true,
+    "lang": "ru",
     "filters": [
       "category:kids",
       "category:park",
       "category:culture",
       "child_friendly"
     ],
-    "time": "Sun 14:00",
+    "time": "вс 14:00",
     "candidates_found": 10,
     "weather": null,
     "retrieval_mode": "bm25+lsa",

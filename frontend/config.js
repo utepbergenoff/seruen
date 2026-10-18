@@ -10,10 +10,9 @@ window.SERUEN_CONFIG = {
     weather: true,    // Astana weather from Open-Meteo -> context.weather
     route: true,      // "Build a route" from 3 places, line on the map (computed in the browser)
     languages: true,  // KZ / RU / EN switch
-    pirate: true,     // pirate theme, parrot captain, treasure chests on the map
     points: true,     // coins for visited places, stored only in this browser
   },
 
   // Route line geometry. The public OSRM demo server; if it fails we draw straight lines.
-  OSRM_URL: "https://router.project-osrm.org",
+  OSRM_URL: "https://routing.openstreetmap.de/routed-foot",
 };
