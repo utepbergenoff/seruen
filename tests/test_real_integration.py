@@ -42,7 +42,8 @@ def test_snapshot_metadata_survives_contract_export(real_service):
     assert len(real_service.dataset.pois) == 1251
     assert real_service.retriever.mode == "bm25+lsa"
     assert sum(p.name_generic for p in real_service.dataset.pois) == 418
-    assert sum(bool(p.google_place_id) for p in real_service.dataset.pois) == 125
+    # pinned to the current snapshot; grows while A3 (Google place_id matching) is still partial
+    assert sum(bool(p.google_place_id) for p in real_service.dataset.pois) == 175
     assert sum(bool(p.description_url) for p in real_service.dataset.pois) == 22
 
 
