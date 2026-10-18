@@ -34,8 +34,20 @@ def schedule_open(raw, now):
     if raw in ("24/7", "круглосуточно"):
         return True
     raw = re.sub(r"^(ежедневно|Daily|daily)\s+", "", raw)
+    raw = re.sub(r"(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})", r"\1-\2", raw)
+    day = r"(?:Mo|Tu|We|Th|Fr|Sa|Su|PH)"
+    raw = re.sub(rf"(?<=\d{{2}}),\s*(?={day})", "; ", raw)
+    raw = re.sub(rf",\s+(?={day})", ",", raw)
     rules = []
     for clause in raw.split(";"):
+        clause = clause.strip()
+        if "PH" in clause:
+            prefix, _, hours = clause.partition(" ")
+            regular = ",".join(d for d in prefix.split(",") if d != "PH")
+            # Only ignore PH when it has exactly the same hours as every weekday.
+            if _days(regular) != set(range(7)) or not regular:
+                raise ValueError("holiday_hours_unconfirmed")
+            clause = regular + " " + hours
         match = re.fullmatch(
             r"\s*(?:(Mo|Tu|We|Th|Fr|Sa|Su)([A-Za-z,\-]*)\s+)?(off|closed|\d{1,2}:\d{2}-\d{1,2}:\d{2}(?:\s*,\s*\d{1,2}:\d{2}-\d{1,2}:\d{2})*)\s*",
             clause,

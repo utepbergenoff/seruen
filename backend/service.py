@@ -140,6 +140,7 @@ class RecommendationService:
                     what_to_do_source="ai" if mode == "ai" else "template",
                     open_status=hit.status,
                     description_source=p.description_source,
+                    description_url=p.description_url,
                     accessibility=p.wheelchair,
                     links=links,
                     rating=p.rating,
@@ -168,6 +169,8 @@ class RecommendationService:
             notes.append(message("sample", intent.lang))
         if self.settings.mock:
             notes.append(message("mock", intent.lang))
+        if request.context.simulate and request.context.now:
+            notes.append(message("simulation", intent.lang).format(time=now.strftime("%d.%m.%Y %H:%M")))
         filters = [
             *intent.tags,
             *[f"category:{c}" for c in intent.categories],

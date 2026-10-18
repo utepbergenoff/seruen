@@ -1,0 +1,159 @@
+{
+  "mode": "no_ai",
+  "recommendations": [
+    {
+      "poi_id": "osm_node_5880883097",
+      "name": "Chaplin Cinema",
+      "category": "culture",
+      "coords": {
+        "lat": 51.0883192,
+        "lon": 71.40973
+      },
+      "distance_m": 477,
+      "walk_min": 9,
+      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Осмотрите доступную экспозицию; билеты и программу уточните на месте.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Su 10:00-02:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.40973,51.0883192",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.0883192%2C71.40973"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 9,
+        "stay_min": 30,
+        "walk_back_min": 9,
+        "reserve_min": 0,
+        "total_min": 48
+      }
+    },
+    {
+      "poi_id": "osm_way_1467797207",
+      "name": "NU Park",
+      "category": "park",
+      "coords": {
+        "lat": 51.0872699,
+        "lon": 71.3994394
+      },
+      "distance_m": 315,
+      "walk_min": 6,
+      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Прогуляйтесь по общедоступным дорожкам и вернитесь тем же путём.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.3994394,51.0872699",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.0872699%2C71.3994394"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 6,
+        "stay_min": 30,
+        "walk_back_min": 6,
+        "reserve_min": 0,
+        "total_min": 42
+      }
+    },
+    {
+      "poi_id": "osm_way_1470723968",
+      "name": "Сквер",
+      "category": "park",
+      "coords": {
+        "lat": 51.0921362,
+        "lon": 71.3994992
+      },
+      "distance_m": 426,
+      "walk_min": 8,
+      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Прогуляйтесь по общедоступным дорожкам и вернитесь тем же путём.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.3994992,51.0921362",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.0921362%2C71.3994992"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 8,
+        "stay_min": 30,
+        "walk_back_min": 8,
+        "reserve_min": 0,
+        "total_min": 46
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 9,
+    "stay_min": 30,
+    "walk_back_min": 9,
+    "reserve_min": 0,
+    "total_min": 48
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 865,
+    "radius_expanded": false,
+    "time_budget_min": 60,
+    "filters": [
+      "category:park",
+      "category:viewpoint",
+      "category:culture",
+      "category:unusual"
+    ],
+    "time": "Sun 14:00",
+    "candidates_found": 4,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "rules",
+    "target_time": "2026-10-18T14:00:00+05:00"
+  },
+  "notes": [
+    "Часы работы одного места неизвестны — проверьте перед визитом.",
+    "Демо-расчёт на 18.10.2026 14:00 по времени Астаны: часы работы и безопасность рассчитаны для этого времени."
+  ],
+  "safety": [],
+  "route": null,
+  "disclaimer": "Данные о местах могут устареть — проверяйте на месте. Время пешком приблизительное.",
+  "data_kind": "real",
+  "mock": false
+}

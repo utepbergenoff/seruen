@@ -1,4 +1,9 @@
 MESSAGES = {
+    "simulation": (
+        "Демо-расчёт на {time} по времени Астаны: часы работы и безопасность рассчитаны для этого времени.",
+        "Demo for {time} Astana time: opening hours and safety are evaluated for that time.",
+        "Астана уақытымен {time} үшін демо: жұмыс уақыты мен қауіпсіздік осы уақытқа есептелген.",
+    ),
     "alternative": (
         "В запрошенной категории нет подходящего места в бюджете времени; показаны ближайшие альтернативы других категорий.",
         "No place in the requested category fits your time budget; nearby alternatives in other categories are shown.",

@@ -4,7 +4,7 @@
 
 База локально: `http://127.0.0.1:8000`. JSON, UTF-8; расстояния в метрах, длительности в целых минутах. Все времена с часовым поясом, расчёт в `Asia/Almaty`.
 
-Публичная база: `https://seruen-backend-f36d.onrender.com`, [Swagger](https://seruen-backend-f36d.onrender.com/docs). Render Free, `data_kind=sample`, режимы `no_ai`/`cached`; 6 демо и 30 фикстур проверены по HTTPS 17.10.2026. CORS разрешает `https://seruen-astana.netlify.app`, `http://localhost:5173`, `http://127.0.0.1:5173`, `http://localhost:3000`; методы GET/POST/OPTIONS и заголовок Content-Type. Публичный origin проверен после перезапуска: [cors_verification.json](cors_verification.json). Ключ ИИ фронту не передавать.
+Публичная база: `https://seruen-backend-f36d.onrender.com`, [Swagger](https://seruen-backend-f36d.onrender.com/docs). Сервис Render Free; целевая конфигурация после интеграции — `data_kind=real`, 1 251 место, режимы `no_ai`/`cached`. Текущую версию проверять через `/health`; сведения о развёртывании — в [handoff.md](handoff.md). CORS разрешает `https://seruen-astana.netlify.app`, `http://localhost:5173`, `http://127.0.0.1:5173`, `http://localhost:3000`; методы GET/POST/OPTIONS и заголовок Content-Type. Публичный origin проверен после перезапуска: [cors_verification.json](cors_verification.json). Ключ ИИ фронту не передавать.
 
 ## POST /recommend
 
@@ -69,7 +69,7 @@
 
 ### Уточнения к исходному плану
 
-Названия исходных полей сохранены. Добавлены `template` к источникам объяснений, `data_kind`, `mock`, `reserve_min`, бюджет каждой карточки и диагностические поля `considered`. Это делает режим без ИИ и тестовые данные честными. `open_status.hours` и `checked_at` nullable. Все добавления требуют согласования с Алиханом, если он уже зафиксировал собственную схему.
+Названия исходных полей сохранены. Необязательный `description_url` содержит ссылку на описание Wikipedia. Добавлены `template` к источникам объяснений, `data_kind`, `mock`, `reserve_min`, бюджет каждой карточки и диагностические поля `considered`. Это делает режим без ИИ и тестовые данные честными. `open_status.hours` и `checked_at` nullable. Исходные обязательные поля сохранены; Алихан подтвердил контракт шести сценариев.
 
 Статус open означает только попадание в распознанное расписание со свежей датой (0–30 дней), не подтверждённую работу в реальном времени. Неизвестный синтаксис часов → unknown. Неполные события не рекомендуются. Для детского запроса нужны kid_friendly=true и adult_only=false. Если категория не помещается в бюджет, допускается близкая альтернатива с отдельной нотой; слова «только/only/тек» запрещают такое ослабление. Явные исключения сохраняются.
 

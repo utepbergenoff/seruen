@@ -44,7 +44,7 @@ def write_report(pois: list[dict], dropped: list[dict], meta: dict) -> str:
         f"yes {wheel.get('yes', 0)}, limited {wheel.get('limited', 0)}, no {wheel.get('no', 0)} |",
         f"| Сопоставлено с Google Places (place_id) | {google} ({_pct(google, n)})"
         f"{'' if meta.get('places_complete', True) else ' — неполный прогон'} |",
-        "| С рейтингом | 0 — рейтинги Google не храним (условия Google); бэкенд запрашивает их вживую |",
+        "| С рейтингом | 0 — рейтинги Google не храним (условия Google); запросы Google Places в бэкенде пока не подключены |",
         f"| Отсеяно | {len(dropped)}: " + ", ".join(f"{k} {v}" for k, v in reasons.most_common()) + " |",
         "",
         "## По категориям",

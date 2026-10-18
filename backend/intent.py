@@ -62,6 +62,14 @@ def rule_intent(request):
     if re.search(r"завтра|tomorrow|ертең", q):
         when = "tomorrow"
     before_flight = bool(re.search(r"вылет|аэропорт|транзит|flight|airport|ұшақ", q))
+    if before_flight and not categories:
+        categories = ["viewpoint", "culture", "park", "coffee", "unusual"]
+    if (
+        when == "night"
+        and not child
+        and categories in ([], ["culture", "viewpoint", "unusual"], ["park", "viewpoint", "culture", "unusual"])
+    ):
+        categories = ["night", "viewpoint", "food", "coffee", "unusual", "park"]
     unsafe = bool(re.search(r"выйти на лед|по льду|стройк|заброш|крыш[ауи]|trespass|construction site|on the ice", q))
     unrelated = bool(
         re.search(

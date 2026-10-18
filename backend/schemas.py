@@ -73,10 +73,14 @@ class POI(Model):
     name: str = Field(min_length=2, max_length=200)
     name_kk: str | None = None
     name_en: str | None = None
+    name_generic: bool = False
     lat: float = Field(ge=-90, le=90)
     lon: float = Field(ge=-180, le=180)
     category: Category
     tags: list[str] = Field(default_factory=list)
+    tags_inferred: list[str] = Field(default_factory=list)
+    google_place_id: str | None = Field(default=None, max_length=255)
+    description_url: str | None = None
     description: str = Field(default="", max_length=2000)
     description_source: Literal["wikipedia", "source", "generated"] = "source"
     opening_hours_raw: str | None = None
@@ -144,6 +148,7 @@ class Recommendation(Model):
     open_status: OpenStatus
     facts_source: Literal["poi_db"] = "poi_db"
     description_source: Literal["wikipedia", "source", "generated"]
+    description_url: str | None = None
     accessibility: Literal["yes", "limited", "no", "unknown"]
     links: dict[str, str]
     rating: float | None

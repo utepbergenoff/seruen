@@ -1,6 +1,6 @@
 # Data pipeline (stream A). Backend/frontend have their own requirements.
 requests==2.32.3
-python-dotenv==1.0.1
+python-dotenv==1.2.4
 rapidfuzz==3.10.1
 google-genai==1.2.0
-pytest==8.3.4
+# Test dependencies are in requirements-dev.txt.

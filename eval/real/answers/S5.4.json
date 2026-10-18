@@ -1,0 +1,161 @@
+{
+  "mode": "no_ai",
+  "recommendations": [
+    {
+      "poi_id": "osm_node_6408271985",
+      "name": "CrepeCafe",
+      "category": "coffee",
+      "coords": {
+        "lat": 51.1293821,
+        "lon": 71.4285934
+      },
+      "distance_m": 183,
+      "walk_min": 4,
+      "why": "Matches the requested category and fits your time budget.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Have a coffee; check seating before ordering.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Fr 08:00-00:00; Sa-Su 09:00-00:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4285934,51.1293821",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1293821%2C71.4285934"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 4,
+        "stay_min": 30,
+        "walk_back_min": 4,
+        "reserve_min": 60,
+        "total_min": 98
+      }
+    },
+    {
+      "poi_id": "osm_way_230401645",
+      "name": "Bayterek",
+      "category": "viewpoint",
+      "coords": {
+        "lat": 51.1282882,
+        "lon": 71.4304546
+      },
+      "distance_m": 46,
+      "walk_min": 1,
+      "why": "Matches the requested category and fits your time budget.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Explore from public areas; check visitor details beforehand.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "wikipedia",
+      "description_url": "https://ru.wikipedia.org/wiki/%D0%91%D0%B0%D0%B9%D1%82%D0%B5%D1%80%D0%B5%D0%BA_(%D0%BC%D0%BE%D0%BD%D1%83%D0%BC%D0%B5%D0%BD%D1%82)",
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4304546,51.1282882",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1282882%2C71.4304546"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 1,
+        "stay_min": 30,
+        "walk_back_min": 1,
+        "reserve_min": 60,
+        "total_min": 92
+      }
+    },
+    {
+      "poi_id": "osm_node_5132817725",
+      "name": "Starbucks",
+      "category": "coffee",
+      "coords": {
+        "lat": 51.1250687,
+        "lon": 71.4326558
+      },
+      "distance_m": 375,
+      "walk_min": 7,
+      "why": "Matches the requested category and fits your time budget.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Have a coffee; check seating before ordering.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Fr 07:30-23:00; Sa-Su 08:00-23:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4326558,51.1250687",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1250687%2C71.4326558"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 7,
+        "stay_min": 30,
+        "walk_back_min": 7,
+        "reserve_min": 60,
+        "total_min": 104
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 4,
+    "stay_min": 30,
+    "walk_back_min": 4,
+    "reserve_min": 60,
+    "total_min": 98
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 865,
+    "radius_expanded": false,
+    "time_budget_min": 120,
+    "filters": [
+      "category:viewpoint",
+      "category:culture",
+      "category:park",
+      "category:coffee",
+      "category:unusual"
+    ],
+    "time": "Sun 14:00",
+    "candidates_found": 51,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "rules",
+    "target_time": "2026-10-18T14:00:00+05:00"
+  },
+  "notes": [
+    "Some opening hours are unknown; check before visiting.",
+    "Time is reserved for airport travel; this is a fixed estimate, check your route and check-in time.",
+    "Demo for 18.10.2026 14:00 Astana time: opening hours and safety are evaluated for that time."
+  ],
+  "safety": [],
+  "route": null,
+  "disclaimer": "Place data may be outdated; verify locally. Walking times are estimates.",
+  "data_kind": "real",
+  "mock": false
+}

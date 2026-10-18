@@ -43,13 +43,29 @@ def test_time_from_text(req, text, budget):
         ("Mo-Su 09:00-22:00; Su off", "2026-10-18T12:00:00+05:00", False),
         ("Su-Mo 08:00-22:00", "2026-10-19T12:00:00+05:00", True),
         ("Mo-Su off", "2026-10-18T12:00:00+05:00", False),
+        ("12:00 - 06:00", "2026-10-18T01:00:00+05:00", True),
+        ("Mo-Fr 08:00-00:00, Sa-Su 09:00-00:00", "2026-10-18T12:00:00+05:00", True),
+        ("Mo-Su,PH 10:00-22:00", "2026-10-18T23:00:00+05:00", False),
+        ("PH,Mo-Su 10:00-22:00", "2026-10-18T12:00:00+05:00", True),
+        ("Su, Tu-Fr 11:00-19:00", "2026-10-18T12:00:00+05:00", True),
     ],
 )
 def test_hours_parser_10_formats(raw, time, expected):
     assert schedule_open(raw, datetime.fromisoformat(time)) is expected
 
 
-@pytest.mark.parametrize("raw", [None, "by appointment", "sunrise-sunset", "Mo-Fr 09:00-18:00; PH off", "25:30-26:00"])
+@pytest.mark.parametrize(
+    "raw",
+    [
+        None,
+        "by appointment",
+        "sunrise-sunset",
+        "Mo-Fr 09:00-18:00; PH off",
+        "25:30-26:00",
+        "Mo-Fr 07:14-23:00; Sa,Su,PH 08:14-23:00",
+        "Mo-Sa 07:14-24:00, Su,PH 08:14-01:00",
+    ],
+)
 def test_fr7_no_open_claim_when_unknown(service, raw):
     poi = service.dataset.pois[0].model_copy(update={"opening_hours_raw": raw})
     status = open_status(poi, datetime(2026, 10, 18, 12, tzinfo=ALMATY))

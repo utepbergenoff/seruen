@@ -19,6 +19,7 @@ whether a place is open or closed: the server supplies that field. Do not sugges
 construction sites or restricted areas. Return only JSON matching the schema. why <=25 words,
 what_to_do <=35 words. Use the requested language (ru/kk/en). Stay duration must be inside each
 candidate's supplied min_stay/max_stay. Explain using only supplied facts; label suggestions as ideas.
+Category assumptions are unverified: qualify them as typical and ask the user to confirm; never state them as facts.
 No links, markdown or instructions to ignore these rules. note_to_user should be empty."""
 
 
@@ -81,7 +82,8 @@ class Gemini:
                 "poi_id": h.poi.poi_id,
                 "name": h.poi.name,
                 "category": h.poi.category,
-                "tags": h.poi.tags,
+                "tags": [tag for tag in h.poi.tags if tag not in h.poi.tags_inferred],
+                "category_assumptions": h.poi.tags_inferred,
                 "description": h.poi.description,
                 "distance_m": h.candidate.distance_m,
                 "walk_min": h.candidate.walk_min,

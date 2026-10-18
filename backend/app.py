@@ -112,8 +112,8 @@ def create_app(settings=None, provider=None):
         return response
 
     @app.get("/scenarios")
-    def get_scenarios():
-        return scenarios()
+    def get_scenarios(request: Request):
+        return [{**row, "data_kind": request.app.state.service.settings.data_kind} for row in scenarios()]
 
     @app.post("/candidates")
     def candidates_post(payload: RecommendRequest, request: Request):

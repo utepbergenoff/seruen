@@ -1,5 +1,5 @@
 PYTHON ?= python3
-POI_PATH ?= data/poi_sample.json
+POI_PATH ?= data/poi.json
 export POI_PATH
 .PHONY: setup run test eval index mock data data-fresh test-data
 setup:

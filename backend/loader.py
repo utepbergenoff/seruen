@@ -53,7 +53,11 @@ def load_pois(path):
             rejected += 1
             continue
         if p.poi_id in ids or any(
-            canonical_name(p.name) == canonical_name(other.name) and haversine(p.lat, p.lon, other.lat, other.lon) < 80
+            not p.name_generic
+            and not other.name_generic
+            and p.category == other.category
+            and canonical_name(p.name) == canonical_name(other.name)
+            and haversine(p.lat, p.lon, other.lat, other.lon) < 30
             for other in pois
         ):
             duplicates += 1

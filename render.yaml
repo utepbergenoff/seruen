@@ -13,8 +13,8 @@ services:
       - key: HOST
         value: 0.0.0.0
       - key: POI_PATH
-        value: data/poi_sample.json
+        value: data/poi.json
       - key: DATA_KIND
-        value: sample
+        value: real
       - key: CORS_ORIGINS
         value: http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,https://seruen-astana.netlify.app

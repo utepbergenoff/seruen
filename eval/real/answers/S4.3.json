@@ -1,0 +1,159 @@
+{
+  "mode": "no_ai",
+  "recommendations": [
+    {
+      "poi_id": "osm_node_5880883097",
+      "name": "Chaplin Cinema",
+      "category": "culture",
+      "coords": {
+        "lat": 51.0883192,
+        "lon": 71.40973
+      },
+      "distance_m": 514,
+      "walk_min": 9,
+      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why_source": "template",
+      "time_to_spend_min": 60,
+      "what_to_do": "Осмотрите доступную экспозицию; билеты и программу уточните на месте.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Su 10:00-02:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.40973,51.0883192",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.0883192%2C71.40973"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 9,
+        "stay_min": 60,
+        "walk_back_min": 9,
+        "reserve_min": 0,
+        "total_min": 78
+      }
+    },
+    {
+      "poi_id": "osm_way_499328449",
+      "name": "Астана балет",
+      "category": "culture",
+      "coords": {
+        "lat": 51.0992346,
+        "lon": 71.4196527
+      },
+      "distance_m": 1154,
+      "walk_min": 21,
+      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why_source": "template",
+      "time_to_spend_min": 60,
+      "what_to_do": "Осмотрите доступную экспозицию; билеты и программу уточните на месте.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4196527,51.0992346",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.0992346%2C71.4196527"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 21,
+        "stay_min": 60,
+        "walk_back_min": 21,
+        "reserve_min": 0,
+        "total_min": 102
+      }
+    },
+    {
+      "poi_id": "osm_way_1460763574",
+      "name": "Тәуелсіздіктің 25 жылдығы",
+      "category": "viewpoint",
+      "coords": {
+        "lat": 51.0934524,
+        "lon": 71.4175645
+      },
+      "distance_m": 497,
+      "walk_min": 9,
+      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why_source": "template",
+      "time_to_spend_min": 60,
+      "what_to_do": "Осмотрите место с общедоступной территории; детали посещения уточните заранее.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4175645,51.0934524",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.0934524%2C71.4175645"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 9,
+        "stay_min": 60,
+        "walk_back_min": 9,
+        "reserve_min": 0,
+        "total_min": 78
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 9,
+    "stay_min": 60,
+    "walk_back_min": 9,
+    "reserve_min": 0,
+    "total_min": 78
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 1730,
+    "radius_expanded": false,
+    "time_budget_min": 120,
+    "filters": [
+      "category:culture",
+      "category:viewpoint",
+      "category:unusual",
+      "exclude:shopping"
+    ],
+    "time": "Sun 14:00",
+    "candidates_found": 3,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "rules",
+    "target_time": "2026-10-18T14:00:00+05:00"
+  },
+  "notes": [
+    "Часы работы одного места неизвестны — проверьте перед визитом.",
+    "Демо-расчёт на 18.10.2026 14:00 по времени Астаны: часы работы и безопасность рассчитаны для этого времени."
+  ],
+  "safety": [],
+  "route": null,
+  "disclaimer": "Данные о местах могут устареть — проверяйте на месте. Время пешком приблизительное.",
+  "data_kind": "real",
+  "mock": false
+}
