@@ -24,6 +24,10 @@ class Model(BaseModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True, allow_inf_nan=False)
 
 
+class Correlated(Model):
+    request_id: str | None = Field(default=None, min_length=1, max_length=40)
+
+
 class Coords(Model):
     lat: float = Field(ge=-90, le=90)
     lon: float = Field(ge=-180, le=180)
@@ -68,6 +72,7 @@ class Preferences(Model):
     exclude_visited: bool = False
     preferred_categories: list[Category] = Field(default_factory=list, max_length=12)
     max_walk_min: int | None = Field(default=None, ge=1, le=120)
+    max_distance_m: int | None = Field(default=None, ge=50, le=10000)
     indoor_only: bool = False
     expense_mode: Literal["any", "free_only", "no_required_purchase"] = "any"
     atmosphere_example_id: str | None = Field(default=None, min_length=1, max_length=120)
@@ -110,8 +115,9 @@ class AtmosphereMatch(Model):
     photo_ids: list[str] = Field(default_factory=list)
 
 
-class RecommendRequest(Model):
+class RecommendRequest(Correlated):
     location: Location
+    end: Location | None = None
     query: str = Field(default="", max_length=1000)
     context: Context = Field(default_factory=Context)
     source: Literal["auto", "local", "2gis"] = "auto"
@@ -191,6 +197,7 @@ class Budget(Model):
     walk_there_min: int = Field(ge=0)
     stay_min: int = Field(ge=0)
     walk_back_min: int = Field(ge=0)
+    walk_to_end_min: int | None = Field(default=None, ge=0)
     reserve_min: int = Field(default=0, ge=0)
     total_min: int = Field(ge=0)
 
@@ -223,6 +230,8 @@ class Recommendation(Model):
     budget_breakdown: Budget
     visit_condition: VisitConditionView = Field(default_factory=VisitConditionView)
     atmosphere_match: AtmosphereMatch = Field(default_factory=AtmosphereMatch)
+    arrival_estimate: datetime | None = None
+    offline_allowed: bool = False
 
     @field_validator("why", "what_to_do")
     @classmethod
@@ -281,7 +290,18 @@ class CatalogPlace(Model):
     links: dict[str, str]
 
 
-class RecommendResponse(Model):
+class RouteSuggestion(Model):
+    kind: Literal["more_time", "fewer_stops"]
+    min: int | None = Field(default=None, ge=5, le=480)
+
+
+class RouteImpossible(Model):
+    reason: Literal["budget", "distance"]
+    need_min: int = Field(ge=0)
+    suggestions: list[RouteSuggestion] = Field(default_factory=list, max_length=2)
+
+
+class RecommendResponse(Correlated):
     candidates: list[Candidate] = Field(default_factory=list, max_length=30)
     excluded: list[Candidate] = Field(default_factory=list, max_length=20)
     excluded_count: int = Field(default=0, ge=0)
@@ -303,6 +323,7 @@ class RecommendResponse(Model):
     applied_preferences: Preferences = Field(default_factory=Preferences)
     change_codes: list[str] = Field(default_factory=list)
     relaxation_options: list[str] = Field(default_factory=list)
+    route_impossible: RouteImpossible | None = None
 
 
 class PlacesStatus(Model):
@@ -321,6 +342,11 @@ class Health(Model):
     mock: bool
     google_places: PlacesStatus | None = None
     twogis: "TwoGisStatus | None" = None
+    feature_contract_version: int = 2
+    features: dict[str, int] = Field(default_factory=lambda: {
+        "replan": 1, "end_point": 1, "constraints": 1, "comfort": 1,
+        "cost": 1, "atmosphere": 1, "plan_export": 1,
+    })
 
 
 class TwoGisStatus(Model):

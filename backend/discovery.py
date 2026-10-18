@@ -273,12 +273,16 @@ class Discovery:
         reserve = min(self.service.settings.airport_reserve_min, intent.time_budget_min) if intent.before_flight else 0
         radius = min(5000, radius_for(intent.time_budget_min - reserve, speed(request, intent, now),
                                      now.hour >= 22 or now.hour < 6) * 1.5)
+        if request.end:
+            radius = min(5000, radius * 2)
+        if request.preferences.max_distance_m is not None:
+            radius = min(radius, request.preferences.max_distance_m)
         empty = SearchResult([], [], radius, False, 0, reserve, "2gis")
         response = self.service.assemble(request, intent, now, empty, [], "no_ai", "rules", "none", data_kind="real")
         response.source, response.data_kind = "2gis", "real"
         if self.service.refusal(request, intent) or radius <= 0:
             return response, "none"
-        key = hashlib.sha256(json.dumps(request.model_dump(mode="json", exclude={"cursor"}),
+        key = hashlib.sha256(json.dumps(request.model_dump(mode="json", exclude={"cursor", "request_id"}),
                                        sort_keys=True).encode()).hexdigest()
         page, seen = 1, frozenset()
         try:

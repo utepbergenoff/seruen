@@ -23,6 +23,9 @@ class PlanState(Model):
     skipped_ids: list[Id] = Field(default_factory=list, max_length=200)
     preferences: Preferences = Field(default_factory=Preferences)
     exclude_categories: list[Category] = Field(default_factory=list, max_length=12)
+    companions: Literal["alone", "child", "group"] = "alone"
+    accessibility: bool = False
+    reserve_min: int = Field(default=5, ge=0, le=120)
 
 
 class PlanRequest(Model):

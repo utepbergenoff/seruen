@@ -1,7 +1,7 @@
 // Service worker: caches the app shell so the site opens offline / on a weak network.
 // API answers are never cached here (they depend on time and place).
-const CACHE = "seruen-v15";
-const SHELL = ["./", "index.html", "about.html", "styles.css", "app.js", "route.js", "i18n.js", "config.js", "manifest.json",
+const CACHE = "seruen-v18-contract2";
+const SHELL = ["./", "index.html", "about.html", "styles.css", "app.js", "route.js", "i18n.js", "config.js", "storage.js", "features.js", "manifest.json",
   "presets.json", "scenarios.json",
   "vendor/leaflet/leaflet.css", "vendor/leaflet/leaflet.js", "icons/icon.svg", "icons/icon-192.png"];
 self.addEventListener("install", (e) => e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())));

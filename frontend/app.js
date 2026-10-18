@@ -1,12 +1,14 @@
 /* Серуен website: plain JavaScript + Leaflet, no build step (plan B of the team plan).
    Privacy: coordinates are rounded to 3 decimals (~100 m) here, before anything is sent,
-   and only travel in POST bodies. Visited places and coins live in this browser only.
+   and only travel in POST bodies. Personal places and saved walks live on this device only (storage.js).
    The page works with any backend that follows docs/api.md: optional fields
    (per-card budget, labels, candidates) are computed here when the backend does not send them. */
 (() => {
   "use strict";
   const CFG = window.SERUEN_CONFIG || {};
-  const FEAT = Object.assign({mapLinks: true, weather: true, route: true, languages: true, points: true, twogis: true, photos: true}, CFG.FEATURES || {});
+  const FEAT = Object.assign({mapLinks: true, weather: true, route: true, languages: true, twogis: true, photos: true}, CFG.FEATURES || {});
+  // extension points filled by features.js (my places, saved walks, the eight-feature UI); every hook is optional
+  const ext = window.SeruenExt = window.SeruenExt || {};
   const API = (CFG.API_URL || "").replace(/\/$/, "");
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => Array.from(document.querySelectorAll(s));
@@ -24,7 +26,7 @@
     lang: params.get("lang") || store.get("seruen_lang", "ru"),
     loc: {...ASTANA, source: "map"}, locKind: "center", locating: false, locVersion: 0, requestVersion: 0, preset: null,
     presets: [], scenarios: [], last: null, lastReq: null, lastWeather: null,
-    showCands: false, extraCands: null, chipCtx: {}, apiMode: null, gis: {}, photos: {},
+    showCands: false, extraCands: null, chipCtx: {}, apiMode: null, gis: {}, photos: {}, photoPending: {}, features: {},
   };
   if (!FEAT.languages && !params.get("lang")) state.lang = "ru";
   const T = () => window.I18N[state.lang] || window.I18N.ru;
@@ -41,7 +43,7 @@
   const me = L.marker([state.loc.lat, state.loc.lon], {draggable: true, zIndexOffset: 1000, keyboard: true, icon: meIcon()}).addTo(map);
   me.bindTooltip(T().youAreHere, {permanent: true, direction: "top", offset: [0, -14], className: "me-label"});
   me.on("dragend", () => { const p = me.getLatLng(); setLoc(p.lat, p.lng, "map", null, false); });
-  map.on("click", (e) => setLoc(e.latlng.lat, e.latlng.lng, "map", null, false));
+  map.on("click", (e) => { if (ext.onMapClick && ext.onMapClick(e)) return; setLoc(e.latlng.lat, e.latlng.lng, "map", null, false); });
   // the map box gets its final size after CSS/layout: tell Leaflet, or tiles leave grey gaps
   const fixSize = () => map.invalidateSize();
   window.addEventListener("load", fixSize);
@@ -70,7 +72,8 @@
     $$("[data-i18n-placeholder]").forEach((el) => { el.placeholder = t[el.dataset.i18nPlaceholder]; });
     $$(".lang button").forEach((b) => b.classList.toggle("on", b.dataset.lang === state.lang));
     me.setTooltipContent(t.youAreHere);
-    renderChips(); renderScenarioMenu(); renderScenarioStrip(); renderPoints(); renderModeBadge(); renderLocLine();
+    renderChips(); renderScenarioMenu(); renderScenarioStrip(); renderModeBadge(); renderLocLine();
+    if (ext.onLang) ext.onLang();
     const gb = $("#geoBtn"); if (gb) { gb.title = t.myLocation; gb.setAttribute("aria-label", t.myLocation); }
     if (state.last) render(state.last);
   }
@@ -283,11 +286,12 @@
       let body = {location: {lat: round3(state.loc.lat), lon: round3(state.loc.lon), precision_m: 100, source: state.loc.source},
         query: $("#query").value.trim(), context: await context()};
       if (version !== state.requestVersion) return;
+      if (ext.requestExtras) Object.assign(body, ext.requestExtras(body));
       let data = await postJSON("/recommend", body);
       if (version !== state.requestVersion) return;
       // a 2GIS answer that lists nearby places or can load more is kept: the person sees them on the map
       if (data.source === "2gis" && !(data.recommendations || []).length
-          && (data.source_error || (!(data.nearby_places || []).length && !data.next_cursor))) {
+          && (data.source_error || body.preferences?.atmosphere_example_id || (!(data.nearby_places || []).length && !data.next_cursor))) {
         const local = await postJSON("/recommend", {...body, source: "local"});
         if (version !== state.requestVersion) return;
         if ((local.recommendations || []).length || data.source_error) {
@@ -304,7 +308,7 @@
       $("#results").scrollIntoView({behavior: "smooth", block: "start"});
     } catch (err) {
       if (version !== state.requestVersion) return;
-      $("#status").innerHTML = `<p class="msg err">${esc(T().serverDown)} <button type="button" class="btn small" id="retryBtn">${esc(T().retry)}</button></p>`;
+      $("#status").innerHTML = `<p class="msg err">${esc(err.userMessage || T().serverDown)} <button type="button" class="btn small" id="retryBtn">${esc(T().retry)}</button></p>`;
       $("#retryBtn").addEventListener("click", ask);
     } finally { if (version === state.requestVersion) $("#goBtn").disabled = false; }
   }
@@ -383,17 +387,12 @@
   const srcBadge = (src) => src === "ai" ? `<span class="badge ai">${esc(T().aiIdea)}</span>` : `<span class="badge tpl">${esc(T().template)}</span>`;
   function budgetBar(b) {
     const t = T(), tot = Math.max(b.budget_min || b.total_min, b.total_min);
+    const finalWalk = b.walk_to_end_min ?? b.walk_back_min;
     const pc = (x) => (100 * x / tot).toFixed(1) + "%";
-    const line = fmt(t.budgetLine, {a: b.walk_there_min, b: b.stay_min, c: b.walk_back_min, r: b.reserve_min || 0, t: b.total_min, B: b.budget_min});
-    return `<div class="bar" aria-hidden="true"><span class="w" style="width:${pc(b.walk_there_min)}"></span><span class="s" style="width:${pc(b.stay_min)}"></span><span class="w" style="width:${pc(b.walk_back_min)}"></span></div>
+    const template = b.walk_to_end_min != null ? t.x.budgetToEnd : t.budgetLine;
+    const line = fmt(template, {a: b.walk_there_min, b: b.stay_min, c: finalWalk, r: b.reserve_min || 0, t: b.total_min, B: b.budget_min});
+    return `<div class="bar" aria-hidden="true"><span class="w" style="width:${pc(b.walk_there_min)}"></span><span class="s" style="width:${pc(b.stay_min)}"></span><span class="w" style="width:${pc(finalWalk)}"></span></div>
       <div class="bar-cap">${esc(line)} ${icon(b.total_min <= b.budget_min ? "check" : "info")}${b.spare_min > 0 ? ` · ${esc(t.spare)} ${b.spare_min} ${esc(t.minutes)}` : ""}</div>`;
-  }
-  const visited = () => store.get("seruen_visited", {});
-  function renderPoints() {
-    if (!FEAT.points) { $("#points").textContent = ""; return; }
-    const n = Object.keys(visited()).length * 10;
-    $("#points").textContent = n ? `${T().points}: ${n} ${T().pointsUnit}` : "";
-    $("#points").title = T().pointsHint;
   }
   function renderModeBadge(mode) {
     const m = mode || state.apiMode;
@@ -403,6 +402,7 @@
 
   // ---------- rendering ----------
   function render(d) {
+    if (ext.filterAnswer) d = ext.filterAnswer(d);
     const t = T();
     layer.clearLayers(); if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
     Object.keys(markers).forEach((k) => delete markers[k]);
@@ -418,12 +418,12 @@
     // the answer opens with the walking-time ruler; the server's notes follow it
     html += timeRuler(recs);
     if (notes) html += `<div class="notes">${notes}</div>`;
+    if (ext.resultsTop) html += ext.resultsTop(d);
     if (!recs.length) html += `<div class="card empty"><div class="big">${icon("nav")}</div><h3>${esc(t.emptyTitle)}</h3><p class="meta">${esc(t.emptyHint)}</p></div>`;
 
     // the AI may pick fewer than three places; the backend then adds the next best checked ones with template texts
     const mixed = recs.some((r) => r.why_source === "ai");
     recs.forEach((r, i) => {
-      const done = !!visited()[r.poi_id];
       const L2 = links(r);
       const b = cardBudget(r, d);
       const kind = r.kind_label || r.category_label || catLabel(r.category);
@@ -441,7 +441,7 @@
         <div class="walk"><span class="walk-line" aria-hidden="true"><i></i></span>
           <span class="walk-txt">${icon("walk")} <b>${esc(r.walk_min)}</b> ${esc(t.walk)} · ${esc(r.distance_m)} ${esc(t.distance)}</span></div>
         ${r.address ? `<div class="meta">${icon("pin")} ${esc(r.address)}</div>` : ""}
-        <div>${r.open_status ? statusPill(r.open_status) : ""}</div>
+        <div class="pills">${r.open_status ? statusPill(r.open_status) : ""}${ext.cardBadges ? ext.cardBadges(r) : ""}</div>
         <div class="field why"><b>${esc(t.why)}:</b> ${esc(r.why)}</div>
         ${FEAT.photos ? `<div class="photos" aria-live="polite"></div>` : ""}
         <div class="actions">
@@ -449,9 +449,9 @@
           <a class="btn" href="${esc(L2.google)}" target="_blank" rel="noopener">${icon("nav")} ${esc(t.routeGoogle)}</a>` : ""}
           <button type="button" class="btn" data-act="map">${icon("pin")} ${esc(t.onMap)}</button>
           ${FEAT.twogis ? `<button type="button" class="btn" data-act="gis" aria-expanded="false" aria-controls="gis-${i}">${icon("star")} ${esc(t.gisBtn)}</button>` : ""}
-          ${FEAT.points ? `<button type="button" class="btn" data-act="visit" ${done ? "disabled" : ""}>${done ? icon("check") + " " + esc(t.visitedDone) : icon("visit") + " " + esc(t.visited) + " +10"}</button>` : ""}
         </div>
         ${FEAT.twogis ? `<div class="gis-box" id="gis-${i}" aria-live="polite" hidden></div>` : ""}
+        ${ext.cardExtras ? ext.cardExtras(r, i, d) : ""}
         <details class="more"><summary>${esc(t.more)}</summary>
           <div class="field"><b>${esc(t.todo)}:</b> ${esc(r.what_to_do)}</div>
           <div class="field">⏱ <b>${esc(t.stay)}:</b> ~${esc(r.time_to_spend_min)} ${esc(t.minutes)}</div>
@@ -468,7 +468,7 @@
       markers[r.poi_id] = L.marker([r.coords.lat, r.coords.lon], {icon: pinIcon, title: r.name}).addTo(layer)
         .bindPopup(`<b>${i + 1}. ${esc(r.name)}</b><br>${esc(r.distance_m)} ${esc(t.distance)} · ${esc(r.walk_min)} ${esc(t.walk)}`);
     });
-    if (FEAT.route && recs.length >= 2) html += `<button type="button" id="routeBtn" class="btn">${icon("route")} ${esc(t.buildRoute)}</button><div id="routeBox"></div>`;
+    if (FEAT.route && !state.features.plan_export && recs.length >= 2) html += `<button type="button" id="routeBtn" class="btn">${icon("route")} ${esc(t.buildRoute)}</button><div id="routeBox"></div>`;
     if (nearby.length) {
       html += `<section class="card" id="nearbyPlaces"><h3>${esc(t.catalog.all)} (${nearby.length})</h3><p class="meta">${esc(t.catalog.hint)}</p>`;
       nearby.forEach(p => {
@@ -486,6 +486,7 @@
       html += '</section>';
     }
     if (d.next_cursor) html += `<button type="button" id="nextPlacesBtn" class="btn">${esc(t.catalog.next)}</button>`;
+    if (ext.resultsBottom) html += ext.resultsBottom(d);
     html += considered(d);
     html += `<p class="foot">${icon("info")} ${esc(d.disclaimer || t.disclaimerShort)}</p>`;
     $("#results").innerHTML = html;
@@ -507,11 +508,6 @@
       el.addEventListener("click", (e) => { if (!e.target.closest("a,button,.gis-box")) focus(); });
       el.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target === el) focus(); });
       el.querySelector('[data-act="map"]').addEventListener("click", focus);
-      const v = el.querySelector('[data-act="visit"]');
-      if (v) v.addEventListener("click", () => {
-        const all = visited(); all[id] = Date.now(); store.set("seruen_visited", all); renderPoints();
-        v.disabled = true; v.innerHTML = icon("check") + " " + esc(T().visitedDone);
-      });
       const g = el.querySelector('[data-act="gis"]');
       if (g) g.addEventListener("click", () => toggleGis(el, id, g));
     });
@@ -524,6 +520,7 @@
     const np = $("#nextPlacesBtn"); if (np) np.addEventListener("click", askNext);
     const rb = $("#routeBtn"); if (rb) rb.addEventListener("click", buildRoute);
     if (FEAT.photos) recs.forEach((r) => loadPhotos(r, d));
+    if (ext.afterRender) ext.afterRender(d);
   }
 
   // ---------- 2GIS rating and hours (extra): asked only when the button is pressed, never for every card ----------
@@ -602,7 +599,7 @@
   const https = (u) => /^https:\/\//.test(u || "") ? u : "";
   function photosHtml(p) {
     const P = T().ph, photos = ((p && p.photos) || []).filter((x) => https(x.url));
-    if (!photos.length) return `<p class="ph-none">${icon("camera")} ${esc(P.none)}</p>`;
+    if (!photos.length) return `<p class="ph-none">${icon("camera")} ${esc(!p || p.status === "ai_unavailable" ? P.noAnalysis : P.none)}</p>`;
     const a = p.analysis;
     const chips = a ? [
       P.light[a.lighting] && ["sun", P.light[a.lighting]],
@@ -626,7 +623,11 @@
     if (!state.photos[key]) {
       box.innerHTML = `<div class="loading"><div class="spinner"></div>${esc(T().ph.loading)}</div>`;
       // POST keeps the request text out of URLs; one answer per place and request, kept for this page
-      try { state.photos[key] = await postJSON(`/places/${encodeURIComponent(r.poi_id)}/photos`, ask, 40000); }
+      try {
+        if (!state.photoPending[key]) state.photoPending[key] = postJSON(`/places/${encodeURIComponent(r.poi_id)}/photos`, ask, 40000)
+          .finally(() => { delete state.photoPending[key]; });
+        state.photos[key] = await state.photoPending[key];
+      }
       catch { state.photos[key] = null; }
     }
     if (state.last === d && card.isConnected) box.innerHTML = photosHtml(state.photos[key]);
@@ -746,6 +747,8 @@
     void (async () => {
     try {
       const h = await getJSON(API + "/health");
+      state.features = h.feature_contract_version === 2 && h.features && typeof h.features === "object" ? h.features : {};
+      if (ext.onHealth) ext.onHealth(h);
       const avail = h.mode_available || [];
       state.apiMode = h.ai === "gemini" || avail.includes("ai") ? "ai" : h.ai === "no_ai" || avail.includes("no_ai") ? "no_ai" : (h.mode || null);
       const snap = h.data_snapshot || h.data_snapshot_date, places = h.places || h.poi_count;
@@ -757,5 +760,8 @@
       navigator.serviceWorker.register("sw.js").catch(() => {});
     }
   }
+  window.SeruenApp = {state, FEAT, API, T, fmt, esc, icon, $, $$, map, layer, markers, L, showAt, fitTo, round3,
+    postJSON, getJSON, ask: () => ask(), render: (d) => render(d), rerender: () => { if (state.last) render(state.last); }, catLabel};
   init();
+  if (ext.onReady) ext.onReady();
 })();

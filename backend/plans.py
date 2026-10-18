@@ -85,6 +85,9 @@ class Planner:
             intent, query = search_intent(request)
             if request.preferences.preferred_categories:
                 query = QUERIES[request.preferences.preferred_categories[0]]
+            elif request.preferences.indoor_only:
+                # Generic "warm place" text is not a business name in the catalogue.
+                query = QUERIES["coffee"]
             # Search near the trip corridor rather than apply round-trip filters to a one-way plan.
             center = Location(lat=(request.location.lat + destination.lat) / 2,
                               lon=(request.location.lon + destination.lon) / 2)
@@ -108,6 +111,9 @@ class Planner:
         return [p for pid, p in self.features.pois.items() if pid not in self.features.comfort], "local"
 
     def rejection(self, poi, req, intent, arrival, departure, walking):
+        if req.preferences.max_distance_m is not None and haversine(
+                req.location.lat, req.location.lon, poi.lat, poi.lon) > req.preferences.max_distance_m:
+            return "distance_limit"
         comfort = self.features.comfort.get(poi.poi_id)
         reason = self.features.constraint(poi, req.preferences, walking, arrival.date(), comfort=bool(comfort))
         if reason:
@@ -158,6 +164,8 @@ class Planner:
 
     async def build(self, payload, current=None, use_current_time=False):
         req = apply_feedback(payload.request)
+        if req.end is not None and "finish_mode" not in payload.model_fields_set:
+            payload = payload.model_copy(update={"finish_mode": "destination", "destination": req.end})
         prefs = req.preferences
         combined = list(dict.fromkeys([*prefs.exclude_poi_ids, *payload.completed_ids, *payload.skipped_ids]))
         # Preserve every exclusion; reject oversize state instead of silently dropping old exclusions.
@@ -226,6 +234,8 @@ class Planner:
             arrival = now + timedelta(minutes=sum(est.minutes[:-1]) + sum(s for _, s in chosen))
             departure = arrival + timedelta(minutes=stay)
             reason = self.rejection(poi, req, intent, arrival, departure, est.minutes[-2])
+            if not reason and prefs.max_walk_min is not None and est.minutes[-1] > prefs.max_walk_min:
+                reason = "finish_walk_limit"
             if not reason and sum(est.minutes) + sum(s for _, s in trial) + reserve > available:
                 reason = "over_budget"
             if reason:
@@ -306,7 +316,8 @@ class Planner:
         state = PlanState(created_at=datetime.now(timezone.utc), origin=origin, finish_mode=payload.finish_mode,
                           finish=finish, remaining_ids=[p.poi_id for p in stops], completed_ids=payload.completed_ids,
                           skipped_ids=payload.skipped_ids, preferences=prefs,
-                          exclude_categories=req.context.exclude_categories)
+                          exclude_categories=intent.exclude_categories, companions=intent.companions,
+                          accessibility=req.context.accessibility, reserve_min=reserve)
         return PlanResponse(status=status, fits=fits, stops=stops, legs=legs,
                             budget=PlanBudget(available_min=available, walking_min=sum(routed.minutes),
                                               visiting_min=sum(s for _, s in chosen), reserve_min=reserve,
@@ -320,6 +331,12 @@ class Planner:
 
     async def replan(self, payload):
         state, req = payload.previous, payload.request.model_copy(deep=True)
+        previous_intent = rule_intent(req)
+        req.context.companions = state.companions if "companions" in state.model_fields_set else previous_intent.companions
+        if "accessibility" in state.model_fields_set:
+            req.context.accessibility = state.accessibility
+        reserve = max(payload.reserve_min, state.reserve_min,
+                      self.settings.airport_reserve_min if previous_intent.before_flight else 0)
         # Replanning preserves previous filters unless the frontend explicitly sends a replacement snapshot.
         if "preferences" not in payload.request.model_fields_set:
             req.preferences = state.preferences.model_copy(deep=True)
@@ -344,8 +361,8 @@ class Planner:
             req.preferences.indoor_only = True
             req.preferences.max_walk_min = min(req.preferences.max_walk_min or 120, 5)
             # Replace outdoor intent explicitly when the person asks to warm up.
-            req.query = {"en": "warm indoor place", "kk": "жылы жабық орын қайда", "ru": "тёплое помещение"}.get(
-                req.context.lang, "тёплое помещение")
+            req.query = {"en": "warm indoor place", "kk": "жылы жабық орын қайда", "ru": "тёплое место рядом"}.get(
+                req.context.lang, "тёплое место рядом")
         if payload.reason == "tired":
             req.preferences.max_walk_min = min(req.preferences.max_walk_min or 120, 5)
         remaining = [x for x in state.remaining_ids if x not in completed and x not in skipped]
@@ -358,7 +375,7 @@ class Planner:
         result = await self.build(PlanRequest(request=req, origin=state.origin,
                                               finish_mode=state.finish_mode, destination=state.finish,
                                               stop_ids=remaining, completed_ids=completed, skipped_ids=skipped,
-                                              reserve_min=payload.reserve_min, max_stops=5), use_current_time=True)
+                                              reserve_min=reserve, max_stops=5), use_current_time=True)
         result.change_codes = [payload.reason]
         result.notes.insert(0, text("changed", rule_intent(req).lang))
         return result

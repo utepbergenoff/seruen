@@ -49,11 +49,12 @@ def walk_minutes(distance_m, walking_speed):
     return math.ceil(distance_m * 1.3 / walking_speed)
 
 
-def budget_for(walk_min, stay_min, reserve=0):
+def budget_for(walk_min, stay_min, reserve=0, to_end=None):
     return Budget(
         walk_there_min=walk_min,
         stay_min=stay_min,
-        walk_back_min=walk_min,
+        walk_back_min=walk_min if to_end is None else 0,
+        walk_to_end_min=to_end,
         reserve_min=reserve,
-        total_min=2 * walk_min + stay_min + reserve,
+        total_min=walk_min + (walk_min if to_end is None else to_end) + stay_min + reserve,
     )
