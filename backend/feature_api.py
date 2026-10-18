@@ -57,6 +57,31 @@ def register_features(app):
              "analysis_source": r.analysis_source, "analysis_version": r.analysis_version,
              "evidence": r.evidence.model_dump(mode="json")} for r in rows]}
 
+    @app.get("/atmosphere/profiles")
+    async def atmosphere_profiles(request: Request):
+        from .atmosphere import PROFILES
+        data = request.app.state.service.features
+        today = datetime.now(ALMATY).date()
+        profiles = []
+        for ident, profile in PROFILES.items():
+            # Examples illustrate this mood; they are not promises about every search result.
+            rows, seen = [], set()
+            for row in data.examples(today):
+                poi = data.pois[data.canonical(row.poi_id)]
+                if poi.category not in profile["categories"] or row.poi_id in seen:
+                    continue
+                match = data.match(row.poi_id, None, today, ident)
+                if match.status != "confirmed":
+                    continue
+                seen.add(row.poi_id)
+                photo = next((p for r in data.examples(today) for p in r.photos if p.photo_id in match.photo_ids), None)
+                if photo:
+                    rows.append({"poi_id": row.poi_id, "name": poi.name, "photo_url": str(photo.url),
+                                 "attribution": photo.attribution, "features": match.matched_features,
+                                 "checked_at": str(match.checked_at)})
+            profiles.append({"id": ident, **profile, "examples": rows[:3], "reviewed_places": len(rows)})
+        return {"schema_version": 1, "profiles": profiles}
+
     @app.post("/places/identities")
     async def identities(payload: IdentityRequest, request: Request):
         features = request.app.state.service.features

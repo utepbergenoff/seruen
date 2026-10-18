@@ -40,6 +40,7 @@ async function boot(t, opts = {}) {
     if(url.endsWith('/health')) return opts.health ? opts.health.promise : json(opts.healthData||{mode_available:['no_ai']});
     if(url.endsWith('/plans/recalculate')) {const p=pending();replans.push({body:JSON.parse(options.body),...p});return p.promise;}
     if(url.endsWith('/comfort/search')) {comforts.push(JSON.parse(options.body));return json(opts.comfort||[]);}
+    if(url.endsWith('/atmosphere/profiles')) return opts.atmosProfileResponse?.promise || json(opts.atmosProfiles || {profiles:[]});
     if(url.endsWith('/atmosphere/examples')) return json(opts.atmos||[]);
     if(url.includes('/city/stories?')) return json({items: opts.stories || []});
     if(url.endsWith('/plans/build')) {builds.push(JSON.parse(options.body));return opts.buildResponse ? opts.buildResponse.promise : json(opts.build);}

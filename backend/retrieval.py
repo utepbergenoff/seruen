@@ -136,9 +136,10 @@ class Retriever:
                     reason = "night_safety_unconfirmed"
                 tag_match = len(matched) / max(len(intent.tags), 1)
                 rank = score(semantic, distance, current_radius, p.popularity, status.state, tag_match)
-                if self.features and request.preferences.atmosphere_example_id:
-                    match = self.features.match(p.poi_id, request.preferences.atmosphere_example_id, now.date())
-                    rank += min(0.3, len(match.matched_features) * 0.05)
+                if self.features and (request.preferences.atmosphere_example_id or request.preferences.atmosphere_profile):
+                    match = self.features.match(p.poi_id, request.preferences.atmosphere_example_id, now.date(), request.preferences.atmosphere_profile)
+                    rank += ({"confirmed": .6, "partial": .3}.get(match.status, 0)
+                             if request.preferences.atmosphere_profile else min(.3, len(match.matched_features) * .05))
                 reasons = [f"inferred_tag:{t}" if t in inferred else f"tag:{t}" for t in matched]
                 if severe and p.indoor:
                     rank += 0.15

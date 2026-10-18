@@ -128,7 +128,7 @@ def explanation(hit, request, intent, budget, condition, visual, category_relaxe
     unknown = [FACILITIES[tag][index] for tag in wanted if tag not in confirmed]
     if category_relaxed:
         head = ('Альтернатива: ', 'Alternative: ', 'Балама: ')[index] + category.lower() + '.'
-    elif request.preferences.atmosphere_example_id and visual.matched_features:
+    elif (request.preferences.atmosphere_example_id or request.preferences.atmosphere_profile) and visual.matched_features:
         labels = [VISUAL[f][index] for f in visual.matched_features if f in VISUAL][:2]
         if labels:
             head = ('По фото: ', 'From photos: ', 'Фото бойынша: ')[index] + ', '.join(labels) + '.'

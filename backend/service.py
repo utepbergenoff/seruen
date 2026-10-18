@@ -170,6 +170,13 @@ class RecommendationService:
             notes.append(feedback_note(request.feedback.reason, intent.lang))
         data_kind = data_kind or self.settings.data_kind
         lookup = {h.poi.poi_id: h for h in search.hits}
+        if request.preferences.atmosphere_profile:
+            # AI can phrase/select within valid candidates, but unknown decor must not displace
+            # reviewed matches for an explicitly selected mood. Per-card selection source stays honest.
+            by_id = {d.poi_id: d for d in [*selected, *drafts(search.hits, intent)]}
+            selected = sorted(by_id.values(), key=lambda d: {
+                "confirmed": 0, "partial": 1, "unknown": 2}.get(self.features.match(
+                    d.poi_id, None, now.date(), request.preferences.atmosphere_profile).status, 2))
         for draft in selected:
             if len(cards) == 3:
                 break
@@ -186,7 +193,7 @@ class RecommendationService:
                 continue
             budget = budget_for(c.walk_min, stay, search.reserve, hit.to_end)
             condition = self.features.condition(p.poi_id, now.date())
-            visual = self.features.match(p.poi_id, request.preferences.atmosphere_example_id, now.date())
+            visual = self.features.match(p.poi_id, request.preferences.atmosphere_example_id, now.date(), request.preferences.atmosphere_profile)
             why, todo = explanation(hit, request, intent, budget, condition, visual, search.category_relaxed)
             google = maps_url(p)
             links = (

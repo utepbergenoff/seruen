@@ -28,7 +28,7 @@ def rule_intent(request):
     )
     if child:
         categories = ["kids", "park", "culture"]
-    walking = bool(re.search(r"прогул|прогуля|пройтись|подыш|walk|серуен|\bпарк|\bpark|сквер", q))
+    walking = bool(re.search(r"прогул|погул|прогуля|пройтись|подыш|walk|серуен|\bпарк|\bpark|сквер", q))
     indoor_visit = bool(re.search(r"музей|museum|мұражай|кино|cinema|театр|theat|галере|gallery|в помещении|indoors", q))
     if walking and not indoor_visit and (not categories or child):
         tags.append("outdoor_walk")
@@ -82,10 +82,16 @@ def rule_intent(request):
         )
     )
     domain = re.search(
-        r"прогул|прогуля|пройтись|подыш|рядом|сходить|посмотр|коф|кафе|ноут|музей|мұражай|кино|cinema|театр|theat|галере|gallery|парк|park|сквер|тихо|розет|ноч|вечер|мест|час|минут|вылет|аэропорт|транзит|ребен|дет|доч|необыч|walk|near|place|cafe|coffee|museum|quiet|socket|night|hour|minute|flight|airport|child|kid|unusual|бала|сағат|қайда|серуен|ұшақ|көруге",
+        r"прогул|погул|прогуля|пройтись|подыш|рядом|сходить|посмотр|коф|кафе|ноут|музей|мұражай|кино|cinema|театр|theat|галере|gallery|парк|park|сквер|тихо|розет|ноч|вечер|мест|час|минут|вылет|аэропорт|транзит|ребен|дет|доч|необыч|walk|near|place|cafe|coffee|museum|quiet|socket|night|hour|minute|flight|airport|child|kid|unusual|бала|сағат|қайда|серуен|ұшақ|көруге",
         q,
     )
     unrelated = unrelated or bool(q.strip() and not domain)
+    if request.preferences.atmosphere_profile:
+        from .atmosphere import PROFILES
+        profile = PROFILES[request.preferences.atmosphere_profile]
+        categories = request.preferences.preferred_categories or profile["categories"].copy()
+        if profile["scene"] == "indoor":
+            tags = [t for t in tags if t != "outdoor_walk"]
     return Intent(
         categories=categories,
         tags=tags,
@@ -105,7 +111,9 @@ def merge_intent(rules, generated, request):
     return generated.model_copy(
         update={
             "categories": rules.categories or generated.categories,
-            "tags": sorted(set(rules.tags + generated.tags)),
+            "tags": sorted(set(rules.tags + [t for t in generated.tags if not (
+                t == "outdoor_walk" and request.preferences.atmosphere_profile
+                and request.preferences.atmosphere_profile != "green_walk")])),
             "time_budget_min": rules.time_budget_min,
             "companions": rules.companions,
             "when": rules.when if rules.when != "now" else generated.when,

@@ -9,6 +9,7 @@ from typing import Annotated, Literal
 from pydantic import Field, HttpUrl, model_validator
 
 from .schemas import AtmosphereMatch, Model, POI, VisitConditionView
+from .atmosphere import PROFILES, apply_profile, visual_tags
 
 VisualFeature = Literal[
     "natural_light", "bright", "dim", "greenery", "open_space", "small_space",
@@ -174,6 +175,11 @@ class FeatureData:
     def condition(self, poi_id, today):
         record = self.conditions.get(self.canonical(poi_id))
         if not record:
+            comfort = self.comfort.get(self.canonical(poi_id))
+            if comfort and comfort.access == "public" and self.verified(comfort.evidence, today, 30):
+                return VisitConditionView(kind="free", note=comfort.evidence.note,
+                    source_url=str(comfort.evidence.source_url), checked_at=comfort.evidence.checked_at,
+                    verification="verified")
             return VisitConditionView()
         valid = self.verified(record.evidence, today, 30)
         status = record.evidence.verification if record.evidence.verification != "verified" else (
@@ -185,7 +191,23 @@ class FeatureData:
     def examples(self, today):
         return [r for r in self.atmosphere.values() if self.verified(r.evidence, today)]
 
-    def match(self, poi_id, example_id, today):
+    def match(self, poi_id, example_id, today, profile_id=None):
+        if profile_id in PROFILES:
+            profile = PROFILES[profile_id]
+            wanted = set(profile["features"])
+            best = AtmosphereMatch(requested_features=sorted(wanted), unconfirmed_features=sorted(wanted), status="unknown")
+            for row in self.examples(today):
+                if self.canonical(row.poi_id) != self.canonical(poi_id) or profile["scene"] not in row.features:
+                    continue
+                tags = visual_tags(row.features)
+                overlap = sorted(wanted & tags)
+                if len(overlap) > len(best.matched_features):
+                    missing = sorted(wanted - tags)
+                    best = AtmosphereMatch(matched_features=overlap, requested_features=sorted(wanted),
+                        unconfirmed_features=missing, status="partial" if missing else "confirmed",
+                        source=row.analysis_source, checked_at=row.evidence.checked_at,
+                        photo_ids=[p.photo_id for p in row.photos])
+            return best
         example = self.atmosphere.get(example_id)
         if not example or not self.verified(example.evidence, today):
             return AtmosphereMatch()
@@ -199,9 +221,10 @@ class FeatureData:
             if ("bright" in example.features and "dim" in row.features
                     or "dim" in example.features and "bright" in row.features):
                 continue
-            overlap = sorted(set(example.features) & set(row.features))
+            # "Indoors" alone says nothing about the appearance of two interiors.
+            overlap = sorted((set(example.features) & set(row.features)) - {"indoor", "outdoor"})
             if len(overlap) > len(best.matched_features):
-                best = AtmosphereMatch(matched_features=overlap, source=row.analysis_source,
+                best = AtmosphereMatch(matched_features=overlap, source=row.analysis_source, status="confirmed",
                                        checked_at=row.evidence.checked_at, photo_ids=[p.photo_id for p in row.photos])
         return best
 
@@ -216,6 +239,17 @@ class FeatureData:
             return "already_visited"
         if not comfort and preferences.preferred_categories and poi.category not in preferences.preferred_categories:
             return "preferred_category_mismatch"
+        profile = PROFILES.get(preferences.atmosphere_profile) if not comfort else None
+        if profile:
+            if poi.category not in profile["categories"]:
+                return "preferred_category_mismatch"
+            if profile["scene"] == "indoor" and not poi.indoor:
+                return "indoor_required"
+            if profile["scene"] == "outdoor" and poi.indoor:
+                return "atmosphere_scene_mismatch"
+            if preferences.atmosphere_verified_only and self.match(poi.poi_id, None, today,
+                    preferences.atmosphere_profile).status != "confirmed":
+                return "atmosphere_unconfirmed"
         if preferences.max_walk_min is not None and walk > preferences.max_walk_min:
             return "walking_limit"
         if preferences.indoor_only and not poi.indoor:
@@ -234,6 +268,7 @@ class FeatureData:
 def apply_feedback(request):
     """Stateless: undo means resend the previous preferences without feedback."""
     request = request.model_copy(deep=True)
+    request = apply_profile(request)
     feedback, prefs = request.feedback, request.preferences
     if not feedback:
         return request
@@ -262,6 +297,8 @@ def relaxation_options(preferences):
     if preferences.expense_mode != "any":
         result.append("allow_unknown_expenses")
     if preferences.atmosphere_example_id:
+        result.append("remove_atmosphere_filter")
+    if preferences.atmosphere_profile:
         result.append("remove_atmosphere_filter")
     if preferences.exclude_visited:
         result.append("include_visited")

@@ -23,6 +23,7 @@
   // F3/F5: what the person asked to avoid, shown above the answer with "Undo"
   let cons = {exclude_ids: [], max_distance_m: null, exclude_categories: [], no_spend: null};
   let finish = null, picking = false, atmosphere = null, atmosExamples = [], comfortKinds = new Set(), comfortMsg = "";
+  let atmosProfiles = [], atmosProfile = null, atmosStrict = false, atmosLoading = false, atmosFailed = false;
   let walk = null, walkVersion = 0, walkMsg = "", walkBusy = false, reqSeq = 0;
   const personal = L.layerGroup().addTo(map), comfortLayer = L.layerGroup().addTo(map), pauseLayer = L.layerGroup().addTo(map);
   let finishMarker = null, walkLine = null, comfortVersion = 0;
@@ -74,6 +75,10 @@
     if (has("end_point") && finish) out.end = {lat: r3(finish.lat), lon: r3(finish.lon), precision_m: 100,
       source: finish.source === "landmark" ? "preset" : finish.source || "map"};
     if (has("atmosphere") && atmosphere) preferences.atmosphere_example_id = atmosphere;
+    if (has("atmosphere_profiles") && atmosProfile) {
+      preferences.atmosphere_profile = atmosProfile;
+      preferences.atmosphere_verified_only = atmosStrict;
+    }
     if (Object.keys(preferences).length) out.preferences = preferences;
     if (Object.keys(out).length) out.request_id = `r${++reqSeq}`;
     return out;
@@ -105,6 +110,10 @@
     if (r.atmosphere_match && (r.atmosphere_match.matched_features || []).length) {
       const f = r.atmosphere_match.matched_features.map((k) => x.feat[k] || k).join(", ");
       html += `<div class="meta">${icon("image")} ${esc(fmt(x.matched, {f}))} · ${esc(r.atmosphere_match.source === "gemini" ? x.srcAi : x.srcManual)}</div>`;
+    }
+    if (r.atmosphere_match?.unconfirmed_features?.length) {
+      const f = r.atmosphere_match.unconfirmed_features.map(k => x.feat[k] || k).join(", ");
+      html += `<p class="meta atmos-unknown">${esc(fmt(x.atmosUnknown, {f}))}</p>`;
     }
     html += `<div class="keep" role="group" aria-label="${esc(x.keepTitle)}">
       ${chip("want", "flag", !!p.want, x.want)}${chip("visited", "visit", !!p.visited_at, x.visited)}
@@ -207,7 +216,7 @@
       const k = b.dataset.relax;
       if (k === "max_distance_m") cons.max_distance_m = null; else if (k === "no_spend") { cons.no_spend = null; syncSpend(); }
       else if (k === "exclude_categories") cons.exclude_categories = []; else if (k === "exclude_ids") cons.exclude_ids = [];
-      else if (k === "atmosphere") { atmosphere = null; renderAtmosphere(); }
+      else if (k === "atmosphere") { atmosphere = null; atmosProfile = null; atmosStrict = false; renderAtmosphere(); }
       A.ask();
     }));
     $$("[data-more]").forEach((b) => b.addEventListener("click", () => {
@@ -312,28 +321,54 @@
   }
 
   // ---------- F7: search by atmosphere ----------
-  async function mountAtmosphere() {
-    if ($("#atmosField") || !has("atmosphere")) return;
-    try {
-      const res = await A.getJSON(A.API + "/atmosphere/examples");
-      atmosExamples = (res.examples || []).map(a => ({id: a.example_id, title: a.titles,
-        fallbackTitle: a.title, image_url: a.photos?.[0]?.url, credit: a.photos?.[0]?.attribution}));
-    } catch { atmosExamples = []; }
-    if (!Array.isArray(atmosExamples) || $("#atmosField")) return;
-    const box = document.createElement("div");
-    box.id = "atmosField"; box.className = "atmos";
-    $(".ask").insertAdjacentElement("afterend", box);
+  async function mountAtmosphere(retry = false) {
+    if (atmosLoading || !has("atmosphere") || ($("#atmosField") && !retry)) return;
+    atmosLoading = true; atmosFailed = false;
+    if (!$("#atmosField")) {
+      const box = document.createElement("div"); box.id = "atmosField"; box.className = "atmos";
+      $(".ask").insertAdjacentElement("afterend", box);
+    }
     renderAtmosphere();
+    const results = await Promise.allSettled([
+      A.getJSON(A.API + "/atmosphere/examples"),
+      has("atmosphere_profiles") ? A.getJSON(A.API + "/atmosphere/profiles") : Promise.resolve({profiles: []}),
+    ]);
+    if (results[0].status === "fulfilled") atmosExamples = (results[0].value.examples || []).map(a => ({id: a.example_id, title: a.titles,
+      fallbackTitle: a.title, image_url: a.photos?.[0]?.url, credit: a.photos?.[0]?.attribution}));
+    if (results[1].status === "fulfilled") atmosProfiles = results[1].value.profiles || [];
+    atmosFailed = results.some(r => r.status === "rejected"); atmosLoading = false; renderAtmosphere();
   }
   function renderAtmosphere() {
     const box = $("#atmosField"); if (!box) return;
     const x = X(), safe = (u) => (/^(https:\/\/|img\/)/.test(u || "") ? u : "");
-    if (!atmosExamples.length) { box.innerHTML = `<p class="meta">${esc(x.unavailableAtmosphere)}</p>`; return; }
-    box.innerHTML = `<p class="lbl">${icon("image")} ${esc(x.atmos)} <span class="meta">${esc(x.atmosHint)}</span></p><div class="atmos-row">
-      <button type="button" class="atmos-tile none${atmosphere ? "" : " on"}" data-atmos="" aria-pressed="${!atmosphere}">${esc(x.atmosAny)}</button>
-      ${atmosExamples.map((a) => `<button type="button" class="atmos-tile${atmosphere === a.id ? " on" : ""}" data-atmos="${esc(a.id)}" aria-pressed="${atmosphere === a.id}" title="${esc(a.credit || "")}">
-        ${safe(a.image_url) ? `<img src="${esc(safe(a.image_url))}" alt="" loading="lazy">` : ""}<span>${esc((a.title && (a.title[state.lang] || a.title.ru)) || a.fallbackTitle || a.id)}</span></button>`).join("")}</div>`;
-    box.querySelectorAll("[data-atmos]").forEach((b) => b.addEventListener("click", () => { atmosphere = b.dataset.atmos || null; renderAtmosphere(); }));
+    if (atmosLoading) { box.innerHTML = `<p class="meta" role="status">${esc(x.atmosLoading)}</p>`; return; }
+    const selected = atmosProfiles.find(p => p.id === atmosProfile);
+    const name = p => p.titles?.[state.lang] || p.titles?.ru || p.id;
+    if (atmosProfiles.length) {
+      box.innerHTML = `<fieldset class="atmos-moods"><legend>${icon("image")} ${esc(x.atmos)}</legend>
+        <p class="meta">${esc(x.atmosPurpose)}</p><div class="atmos-options">
+        <button type="button" class="chip-btn${!atmosProfile ? " on" : ""}" data-mood="" aria-pressed="${!atmosProfile}">${esc(x.atmosAny)}</button>
+        ${atmosProfiles.map(p => `<button type="button" class="chip-btn${atmosProfile === p.id ? " on" : ""}" data-mood="${esc(p.id)}" aria-pressed="${atmosProfile === p.id}">${esc(name(p))}</button>`).join("")}</div>
+        ${selected ? `<p class="atmos-summary" role="status">${esc(name(selected))} · ${esc(selected.features.map(k=>x.feat[k] || k).join(", "))}</p>
+          <label class="row"><input type="checkbox" id="atmosStrict" ${atmosStrict ? "checked" : ""}>${esc(x.atmosStrict)}</label>
+          <p class="meta">${esc(atmosStrict ? x.atmosStrictHint : x.atmosHonest)}</p>
+          ${selected.examples.length ? `<details class="atmos-examples"><summary>${esc(x.atmosExamples)}</summary><div class="atmos-row">${selected.examples.map(a => `<figure class="atmos-sample">${safe(a.photo_url) ? `<img src="${esc(safe(a.photo_url))}" alt="${esc(a.name)}" loading="lazy">` : ""}<figcaption>${esc(a.name)}<small>${esc(a.attribution)} · ${esc(a.checked_at)}</small></figcaption></figure>`).join("")}</div></details>` : `<p class="meta">${esc(x.atmosNoEvidence)}</p>`}
+          <button type="button" class="btn small" id="applyAtmosphere">${esc(x.atmosSearch)}</button>` : ""}</fieldset>`;
+      box.querySelectorAll("[data-mood]").forEach(b => b.addEventListener("click", () => {
+        atmosProfile = b.dataset.mood || null; atmosphere = null; renderAtmosphere();
+        box.dispatchEvent(new Event("change", {bubbles:true}));
+      }));
+      $("#atmosStrict")?.addEventListener("change", e => { atmosStrict = e.target.checked; renderAtmosphere(); box.dispatchEvent(new Event("change", {bubbles:true})); });
+      $("#applyAtmosphere")?.addEventListener("click", () => { if (!$("#goBtn").disabled) $("#goBtn").click(); });
+    } else if (atmosExamples.length && !has("atmosphere_profiles")) {
+      box.innerHTML = `<p class="lbl">${esc(x.atmos)}</p><div class="atmos-row"><button type="button" class="atmos-tile none" data-atmos="">${esc(x.atmosAny)}</button>
+        ${atmosExamples.map(a=>`<button type="button" class="atmos-tile" data-atmos="${esc(a.id)}">${safe(a.image_url) ? `<img src="${esc(a.image_url)}" alt="" loading="lazy">` : ""}<span>${esc(a.title?.[state.lang] || a.fallbackTitle || a.id)}</span></button>`).join("")}</div>`;
+      box.querySelectorAll("[data-atmos]").forEach(b => b.addEventListener("click", () => { atmosphere = b.dataset.atmos || null; renderAtmosphere(); }));
+    } else box.innerHTML = `<p class="meta">${esc(x.unavailableAtmosphere)}</p>`;
+    if (atmosFailed) {
+      box.insertAdjacentHTML("beforeend", `<button type="button" class="btn small" id="retryAtmosphere">${esc(T().retry)}</button>`);
+      $("#retryAtmosphere").addEventListener("click", () => mountAtmosphere(true));
+    }
   }
 
   // ---------- F4: comfort points ----------
@@ -449,6 +484,41 @@
     renderWalk();
     $("#walk").scrollIntoView({behavior: "smooth", block: "start"});
   }
+  async function loadRestOptions(reason) {
+    if (!walk || !has("comfort_breaks")) return;
+    const rest = {reason, location: currentLocation(), points: [], loading: true, error: false};
+    walk.rest = rest;
+    try {
+      const points = await A.postJSON("/comfort/search", {location: rest.location,
+        kinds: ["warming", "bench", "toilet", "water", "entrance"], radius_m: 500, verified_only: true});
+      if (!walk || walk.rest !== rest) return;
+      rest.points = points.filter(p => !walk.plan.stops.some(s => s.poi_id === p.poi_id));
+      const priority = p => p.open_status?.state === "closed" ? 9 : reason === "cold"
+        ? p.kind === "warming" && p.indoor ? 0 : p.kind === "bench" && !p.indoor ? 3 : 1
+        : p.kind === "bench" ? 0 : p.kind === "warming" ? 1 : 2;
+      rest.points.sort((a,b) => priority(a)-priority(b) || a.distance_m-b.distance_m);
+    } catch { if (walk?.rest === rest) rest.error = true; }
+    finally { if (walk?.rest === rest) {rest.loading = false; renderWalk();} }
+  }
+  function restHTML() {
+    const rest = walk?.rest; if (!rest) return "";
+    const x = X();
+    return `<section class="rest-options" id="restOptions"><h3>${esc(x.restTitle)}</h3>
+      <p class="meta">${esc(x.restHint)}</p>${rest.loading ? `<p role="status">${esc(x.restLoading)}</p>` : ""}
+      ${rest.error ? `<p>${esc(x.restError)}</p><button type="button" class="btn small" id="retryRest">${esc(T().retry)}</button>` : ""}
+      ${!rest.loading && !rest.error && !rest.points.length ? `<p class="meta">${esc(x.restNone)}</p>` : ""}
+      <div class="rest-list">${rest.points.map(p => {
+        const kind = {warming: "kWarm", bench: "kSit", toilet: "kToilet", water: "kWater", entrance: "kEntrance"}[p.kind];
+        const acc = {public:"accFree",customers_only:"accCustomers",paid:"costPaid",unknown:"accUnknown"}[p.access];
+        const closed = p.open_status?.state === "closed";
+        return `<article class="rest-card"><b>${esc(p.name)}</b><p class="meta">${esc(x[kind])} · ≈${esc(p.walk_min)} ${esc(T().minutes)} · ${esc(p.distance_m)} м</p>
+          <p class="meta">${esc(x[acc])}${p.floor ? ` · ${esc(x.restFloor)} ${esc(p.floor)}` : ""} · ${esc(closed ? x.restClosed : p.open_status?.state === "open" ? x.restOpen : x.restHoursUnknown)}</p>
+          ${rest.reason === "cold" && !p.indoor && p.kind === "bench" ? `<p class="msg warn">${esc(x.restColdBench)}</p>` : ""}
+          ${p.note ? `<p class="meta">${esc(p.note.replace(/Координаты и вид —.*$/u, "").trim())}</p>` : ""}
+          <p class="src">${/^https:\/\//.test(p.source_url || "") ? `<a href="${esc(p.source_url)}" target="_blank" rel="noopener noreferrer">${esc(T().sources)}</a>` : esc(T().sources)} · ${esc(p.checked_at)}</p>
+          <button type="button" class="btn small" data-rest-add="${esc(p.poi_id)}" ${closed || walkBusy ? "disabled" : ""}>${esc(x.restCheck)}</button></article>`;
+      }).join("")}</div></section>`;
+  }
   function renderWalk() {
     const box = $("#walk"); if (!box) return;
     window.dispatchEvent(new CustomEvent("seruen:walk-change"));
@@ -468,6 +538,12 @@
       L.marker([s.coords.lat, s.coords.lon], {icon: pin, title: s.name}).addTo(pauseLayer)
         .bindPopup(`<b>${esc(s.name)}</b><br>${esc(x.breakPreview)}`)
         .on("click", () => { walk.collapsed = false; renderWalk(); $("#walkProposal")?.scrollIntoView({block: "start", behavior: "smooth"}); });
+    });
+    (walk.rest?.points || []).forEach(p => {
+      const ic = {warming:"fire", bench:"bench", toilet:"toilet", water:"water", entrance:"door"}[p.kind] || "info";
+      const pin = L.divIcon({className:"",iconSize:[26,26],iconAnchor:[13,13],html:`<div class="cpin">${icon(ic)}</div>`});
+      L.marker([p.coords.lat,p.coords.lon], {icon:pin,title:p.name,bubblingMouseEvents:false}).addTo(pauseLayer)
+        .bindPopup(`<b>${esc(p.name)}</b>`).on("click", () => {walk.collapsed=false;renderWalk();$("#restOptions")?.scrollIntoView({block:"start",behavior:"smooth"});});
     });
     if (walk.collapsed) {
       box.innerHTML = `<div class="walk-head"><h2>${icon("walk")} ${esc(x.activeWalk)}</h2>
@@ -510,6 +586,7 @@
         <p class="meta">${esc(walk.proposal.plan.server.notes.join(" "))}</p>
         <div class="row"><button type="button" class="btn primary" id="applyWalkProposal">${esc(x.applyBreak)}</button>
         <button type="button" class="btn" id="discardWalkProposal">${esc(x.keepCurrentRoute)}</button></div></section>` : ""}
+      ${restHTML()}
       ${walk.history.length ? `<button type="button" class="btn small" id="walkUndo">${esc(x.undoReplan)}</button>` : ""}
       <div class="row">${p.build_request ? `<button type="button" class="btn" id="walkSave">${icon("save")} ${esc(x.saveWalk)}</button>` : ""}
         <button type="button" class="btn" id="walkEnd">${esc(x.endWalk)}</button></div>`;
@@ -530,8 +607,15 @@
       }
       walkVersion++; walkBusy = false;
       walk.history.push(JSON.parse(JSON.stringify(walk.plan))); if (walk.history.length > 5) walk.history.shift();
-      walk.plan = proposal.plan; walk.proposal = null; walkMsg = X().breakAdded; renderWalk();
+      walk.plan = proposal.plan; walk.proposal = null; walk.rest = null; walkMsg = X().breakAdded; renderWalk();
     });
+    $("#retryRest")?.addEventListener("click", () => loadRestOptions(walk.rest.reason));
+    box.querySelectorAll("[data-rest-add]").forEach(b => b.addEventListener("click", () => {
+      if (JSON.stringify(walk.rest.location) !== JSON.stringify(currentLocation())) {
+        walkMsg = X().restMoved; loadRestOptions(walk.rest.reason); renderWalk(); return;
+      }
+      replan("add_stop", b.dataset.restAdd);
+    }));
     const wr = $("#walkRefresh"); if (wr) wr.addEventListener("click", () => {
       refreshWalk();
     });
@@ -577,7 +661,9 @@
       walkMsg = X().breakNeedsUpdate; renderWalk(); return;
     }
     const version = ++walkVersion, before = JSON.parse(JSON.stringify(walk.plan));
-    walkBusy = true; walkMsg = ""; walk.proposal = null; renderWalk();
+    walkBusy = true; walkMsg = ""; walk.proposal = null;
+    if (["cold", "tired"].includes(change)) loadRestOptions(change);
+    renderWalk();
     const left = remaining ?? Math.floor((before.deadline_ms - Date.now()) / 60000);
     if (left < 5) { walkBusy = false; walkMsg = X().planUnavailable; renderWalk(); return; }
     const request = {...before.request, location: currentLocation(),
@@ -586,7 +672,7 @@
     const completed = before.stops.filter(s => s.status === "done" && before.server.state.remaining_ids.includes(s.poi_id)).map(s => s.poi_id);
     const body = {request, previous: before.server.state, reason: change,
       remaining_time_min: left, completed_ids: completed, reserve_min: before.server.budget.reserve_min};
-    const nearbyBreak = ["cold", "tired"].includes(change);
+    const nearbyBreak = ["cold", "tired"].includes(change) || (change === "add_stop" && has("comfort_breaks"));
     if (nearbyBreak) body.keep_stops = true;
     if (target) body.poi_id = target;
     try {
@@ -610,12 +696,12 @@
         walk.proposal = {plan: replacement, created: Date.now()}; walkMsg = X().breakKeepsRoute; return;
       }
       walk.history.push(before); if (walk.history.length > 5) walk.history.shift();
-      walk.plan = replacement;
+      walk.plan = replacement; walk.rest = null;
       walkMsg = res.notes.join(" ");
     } catch (error) {
       if (version !== walkVersion || !walk) return;
       walk.plan = before;
-      walkMsg = error.code === "no_replacement_found" ? X().replanEmpty : X().replanFail;
+      walkMsg = error.code === "no_replacement_found" ? (nearbyBreak && has("comfort_breaks") ? X().restNoFit : X().replanEmpty) : X().replanFail;
     } finally { if (version === walkVersion) { walkBusy = false; renderWalk(); } }
   }
 
