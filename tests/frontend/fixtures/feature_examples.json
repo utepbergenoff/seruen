@@ -1,0 +1,402 @@
+{
+ "synthetic": true,
+ "note": "Synthetic examples for docs/feature_expansion_contract.md v0. Not real places, prices or hours.",
+ "health_with_features": {
+  "status": "ok",
+  "features": {
+   "replan": 1,
+   "end_point": 1,
+   "constraints": 1,
+   "comfort": 1,
+   "cost": 1,
+   "atmosphere": 1,
+   "plan_export": 1
+  }
+ },
+ "recommend_normal": {
+  "request_id": "r1",
+  "mode": "ai",
+  "recommendations": [
+   {
+    "poi_id": "osm_node_1",
+    "name": "Парк ЭКСПО",
+    "category": "park",
+    "coords": {
+     "lat": 51.09,
+     "lon": 71.418
+    },
+    "distance_m": 300,
+    "walk_min": 5,
+    "why": "Рядом и укладывается во время.",
+    "why_source": "template",
+    "what_to_do": "Прогуляйтесь по аллеям.",
+    "what_to_do_source": "template",
+    "time_to_spend_min": 20,
+    "open_status": {
+     "state": "open",
+     "confidence": "high",
+     "hours": "24/7",
+     "source": "osm",
+     "checked_at": "2026-10-17"
+    },
+    "cost": {
+     "status": "free",
+     "note": "вход свободный",
+     "source": "osm",
+     "checked_at": "2026-10-17"
+    },
+    "budget_breakdown": {
+     "walk_there_min": 5,
+     "stay_min": 20,
+     "walk_to_end_min": 7,
+     "reserve_min": 0,
+     "total_min": 32,
+     "budget_min": 60
+    },
+    "arrival_estimate": "2026-10-19T11:32:00+05:00"
+   },
+   {
+    "poi_id": "osm_node_2",
+    "name": "Нур Алем",
+    "category": "park",
+    "coords": {
+     "lat": 51.09,
+     "lon": 71.418
+    },
+    "distance_m": 300,
+    "walk_min": 5,
+    "why": "Рядом и укладывается во время.",
+    "why_source": "template",
+    "what_to_do": "Прогуляйтесь по аллеям.",
+    "what_to_do_source": "template",
+    "time_to_spend_min": 20,
+    "open_status": {
+     "state": "open",
+     "confidence": "high",
+     "hours": "24/7",
+     "source": "osm",
+     "checked_at": "2026-10-17"
+    },
+    "cost": {
+     "status": "paid_entry",
+     "note": "вход в музей платный",
+     "source": "2gis",
+     "checked_at": "2026-10-18"
+    },
+    "budget_breakdown": {
+     "walk_there_min": 5,
+     "stay_min": 20,
+     "walk_to_end_min": 7,
+     "reserve_min": 0,
+     "total_min": 32,
+     "budget_min": 60
+    },
+    "arrival_estimate": "2026-10-19T11:32:00+05:00"
+   },
+   {
+    "poi_id": "osm_node_3",
+    "name": "Discovery Coffee",
+    "category": "park",
+    "coords": {
+     "lat": 51.09,
+     "lon": 71.418
+    },
+    "distance_m": 300,
+    "walk_min": 5,
+    "why": "Рядом и укладывается во время.",
+    "why_source": "template",
+    "what_to_do": "Прогуляйтесь по аллеям.",
+    "what_to_do_source": "template",
+    "time_to_spend_min": 20,
+    "open_status": {
+     "state": "open",
+     "confidence": "high",
+     "hours": "24/7",
+     "source": "osm",
+     "checked_at": "2026-10-17"
+    },
+    "cost": {
+     "status": "optional_purchase",
+     "note": "можно посидеть, покупка по желанию",
+     "source": "team",
+     "checked_at": "2026-10-18"
+    },
+    "budget_breakdown": {
+     "walk_there_min": 5,
+     "stay_min": 20,
+     "walk_to_end_min": 7,
+     "reserve_min": 0,
+     "total_min": 32,
+     "budget_min": 60
+    },
+    "arrival_estimate": "2026-10-19T11:32:00+05:00"
+   }
+  ],
+  "considered": {
+   "constraints_applied": [
+    "no_spend:lenient"
+   ],
+   "time_budget_min": 60
+  },
+  "notes": [],
+  "safety": [],
+  "disclaimer": "Проверяйте на месте."
+ },
+ "recommend_empty": {
+  "request_id": "r2",
+  "mode": "no_ai",
+  "recommendations": [],
+  "notes": [
+   "Подходящих мест в 600 м нет."
+  ],
+  "considered": {
+   "constraints_applied": [
+    "max_distance_m:600",
+    "no_spend:strict"
+   ],
+   "time_budget_min": 60
+  },
+  "relaxable": [
+   {
+    "constraint": "max_distance_m",
+    "would_find": 2
+   },
+   {
+    "constraint": "no_spend",
+    "would_find": 1
+   }
+  ],
+  "safety": [],
+  "disclaimer": "Проверяйте на месте."
+ },
+ "recommend_route_impossible": {
+  "request_id": "r3",
+  "mode": "no_ai",
+  "recommendations": [],
+  "notes": [
+   "До финиша не успеть за 30 минут."
+  ],
+  "route_impossible": {
+   "reason": "budget",
+   "need_min": 75,
+   "suggestions": [
+    {
+     "kind": "more_time",
+     "min": 75
+    },
+    {
+     "kind": "fewer_stops"
+    }
+   ]
+  },
+  "considered": {
+   "time_budget_min": 30
+  },
+  "safety": [],
+  "disclaimer": "Проверяйте на месте."
+ },
+ "provider_failure": {
+  "status": 503,
+  "body": {
+   "error": {
+    "code": "provider_unavailable"
+   }
+  }
+ },
+ "replan_ok": {
+  "request_id": "r4",
+  "plan": {
+   "version": 1,
+   "saved_at": "2026-10-19T10:00:00+05:00",
+   "lang": "ru",
+   "query": "Прогулка у ЭКСПО на час",
+   "start": {
+    "lat": 51.089,
+    "lon": 71.416
+   },
+   "end": null,
+   "budget_min": 60,
+   "total_min": 31,
+   "stops": [
+    {
+     "poi_id": "osm_node_1",
+     "name": "Парк ЭКСПО",
+     "address": "проспект Мангилик Ел, 55",
+     "coords": {
+      "lat": 51.0895,
+      "lon": 71.4172
+     },
+     "walk_min": 4,
+     "stay_min": 20,
+     "hours_text": "09:00–22:00",
+     "open_state": "open",
+     "source": "osm",
+     "checked_at": "2026-10-17",
+     "status": "done"
+    },
+    {
+     "poi_id": "osm_node_3",
+     "name": "Нур Алем",
+     "address": "проспект Мангилик Ел, 55",
+     "coords": {
+      "lat": 51.0899,
+      "lon": 71.416
+     },
+     "walk_min": 4,
+     "stay_min": 10,
+     "hours_text": "09:00–22:00",
+     "open_state": "open",
+     "source": "osm",
+     "checked_at": "2026-10-17",
+     "status": "next"
+    }
+   ],
+   "disclaimer": "Часы и условия могли измениться — проверьте перед визитом."
+  },
+  "explanation": "Стало холоднее: убрал уличную остановку и оставил тёплое место рядом.",
+  "changed": [
+   "removed:osm_node_2"
+  ]
+ },
+ "replan_impossible": {
+  "status": 409,
+  "body": {
+   "error": {
+    "code": "replan_impossible"
+   },
+   "reasons": [
+    "time"
+   ],
+   "suggestions": [
+    {
+     "kind": "end_here"
+    }
+   ]
+  }
+ },
+ "comfort": {
+  "points": [
+   {
+    "id": "c1",
+    "kind": "warm",
+    "name": "Холл ТРЦ",
+    "coords": {
+     "lat": 51.0901,
+     "lon": 71.4181
+    },
+    "access": "free",
+    "conditions": "в часы работы ТРЦ",
+    "source": "osm",
+    "checked_at": "2026-10-17",
+    "limits": ""
+   },
+   {
+    "id": "c2",
+    "kind": "toilet",
+    "name": "Туалет в кафе",
+    "coords": {
+     "lat": 51.0912,
+     "lon": 71.4188
+    },
+    "access": "customers",
+    "conditions": "для посетителей",
+    "source": "team",
+    "checked_at": "2026-10-18",
+    "limits": "по покупке"
+   }
+  ]
+ },
+ "atmosphere_examples": [
+  {
+   "id": "bright_interior",
+   "title": {
+    "ru": "Светлый интерьер",
+    "kk": "Жарық интерьер",
+    "en": "Bright interior"
+   },
+   "image_url": "img/places/c/team-coffeeboom-expo-1.jpg",
+   "credit": "команда Серуен",
+   "features": [
+    "bright"
+   ]
+  },
+  {
+   "id": "greenery",
+   "title": {
+    "ru": "Зелень",
+    "kk": "Жасыл желек",
+    "en": "Greenery"
+   },
+   "image_url": "img/cat-walk.jpg",
+   "credit": "Wikimedia Commons",
+   "features": [
+    "greenery",
+    "open_space"
+   ]
+  }
+ ],
+ "plan_export_v1": {
+  "version": 1,
+  "saved_at": "2026-10-19T10:00:00+05:00",
+  "lang": "ru",
+  "query": "Прогулка у ЭКСПО на час",
+  "start": {
+   "lat": 51.089,
+   "lon": 71.416
+  },
+  "end": null,
+  "budget_min": 60,
+  "total_min": 52,
+  "stops": [
+   {
+    "poi_id": "osm_node_1",
+    "name": "Парк ЭКСПО",
+    "address": "проспект Мангилик Ел, 55",
+    "coords": {
+     "lat": 51.0895,
+     "lon": 71.4172
+    },
+    "walk_min": 4,
+    "stay_min": 20,
+    "hours_text": "09:00–22:00",
+    "open_state": "open",
+    "source": "osm",
+    "checked_at": "2026-10-17",
+    "status": "done"
+   },
+   {
+    "poi_id": "osm_node_2",
+    "name": "Discovery Coffee",
+    "address": "проспект Мангилик Ел, 55",
+    "coords": {
+     "lat": 51.0911,
+     "lon": 71.419
+    },
+    "walk_min": 6,
+    "stay_min": 15,
+    "hours_text": "09:00–22:00",
+    "open_state": "open",
+    "source": "osm",
+    "checked_at": "2026-10-17",
+    "status": "next"
+   },
+   {
+    "poi_id": "osm_node_3",
+    "name": "Нур Алем",
+    "address": "проспект Мангилик Ел, 55",
+    "coords": {
+     "lat": 51.0899,
+     "lon": 71.416
+    },
+    "walk_min": 5,
+    "stay_min": 10,
+    "hours_text": "09:00–22:00",
+    "open_state": "open",
+    "source": "osm",
+    "checked_at": "2026-10-17",
+    "status": "next"
+   }
+  ],
+  "disclaimer": "Часы и условия могли измениться — проверьте перед визитом."
+ }
+}
