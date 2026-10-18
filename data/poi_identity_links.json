@@ -118,6 +118,19 @@
     "method": "team_review",
     "note": "Сверены название, адрес и координаты OSM и 2ГИС, не только название. Сарыарқа / Saryarqa: Тұран 24 = проспект Туран 24, 26 м."
    }
+  },
+  {
+   "canonical_id": "team_cafe_coffeeboom_expo",
+   "aliases": [
+    "2gis_70000001072135261"
+   ],
+   "evidence": {
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
+    "checked_at": "2026-10-19",
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: вывеска Coffee BOOM; адрес 2ГИС Мангилик Ел 55/1. Точки расходятся на 202 м (большой комплекс EXPO); в радиусе 400 м других Coffee BOOM в 2ГИС нет."
+   }
   }
  ]
 }

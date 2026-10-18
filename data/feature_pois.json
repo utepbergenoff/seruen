@@ -1,1 +1,29 @@
-{"version": 1, "items": []}
+{
+ "version": 1,
+ "items": [
+  {
+   "poi": {
+    "poi_id": "team_cafe_coffeeboom_expo",
+    "name": "Coffee BOOM (EXPO, Мангилик Ел 55/1)",
+    "lat": 51.090488,
+    "lon": 71.41574,
+    "category": "coffee",
+    "indoor": true,
+    "sources": [
+     "team"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
+    "checked_at": "2026-10-19",
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "Ерлан был на месте: вывеска Coffee BOOM, координаты сняты на месте телефоном."
+   },
+   "offline_allowed": true,
+   "license": "Собственные данные команды Серуен",
+   "attribution": "Команда Серуен"
+  }
+ ]
+}
