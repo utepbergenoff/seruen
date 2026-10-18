@@ -1,0 +1,7 @@
+{
+  "excluded": {
+    "osm_node_4920065833": "Article describes the theatre; old and new sites differ.",
+    "osm_way_963855443": "Nazarbayev Centre and Centre-2 are not safely interchangeable."
+  },
+  "policy": "Only direct, reviewed object matches; no articles about chains or people in place of venues."
+}

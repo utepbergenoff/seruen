@@ -1,0 +1,707 @@
+[
+  {
+    "id": "baiterek",
+    "poi_id": "osm_way_230401645",
+    "coords": {
+      "lat": 51.1282882,
+      "lon": 71.4304546
+    },
+    "source_title": "Visit Astana",
+    "source_url": "https://www.visitastana.kz/ru/about-city/what-to-see/monument-astana-bayterek/",
+    "checked_at": "2026-10-19",
+    "translations": {
+      "ru": {
+        "title": "Бәйтерек: дерево жизни",
+        "story": "Образ монумента связан с Древом жизни и тремя мирами в мировоззрении кочевников. Архитектор — Акмырза Рустембеков.",
+        "look_for": "Посмотрите, как ствол и шар образуют силуэт дерева. Символический сюжет — часть культурной интерпретации, а не историческое событие."
+      },
+      "en": {
+        "title": "Baiterek: the tree of life",
+        "story": "The monument interprets a tree connecting three worlds in nomadic cosmology. Its architect is Akmyrza Rustembekov.",
+        "look_for": "Look at how the trunk and sphere suggest a tree. This is cultural symbolism, not a historical event."
+      },
+      "kk": {
+        "title": "Бәйтерек: өмір ағашы",
+        "story": "Монумент көшпелілер дүниетанымындағы үш әлемді байланыстыратын өмір ағашының бейнесіне негізделген. Сәулетшісі — Ақмырза Рүстембеков.",
+        "look_for": "Діңгек пен шардың ағаш бейнесін қалай құрайтынына назар аударыңыз. Бұл тарихи оқиға емес, мәдени символ."
+      }
+    },
+    "wikipedia_url": "https://ru.wikipedia.org/wiki/Байтерек_(монумент)",
+    "aliases": [
+      "Бәйтерек",
+      "Bayterek",
+      "Байтерек (монумент)"
+    ]
+  },
+  {
+    "id": "khan-shatyr",
+    "poi_id": "osm_way_460703779",
+    "coords": {
+      "lat": 51.1325089,
+      "lon": 71.4038726
+    },
+    "source_title": "Foster + Partners",
+    "source_url": "https://www.fosterandpartners.com/projects/khan-shatyr-entertainment-center/",
+    "checked_at": "2026-10-19",
+    "translations": {
+      "ru": {
+        "title": "Хан Шатыр: город под шатром",
+        "story": "Foster + Partners связывает форму здания с традицией кочевого шатра. Прозрачная оболочка пропускает дневной свет и защищает внутреннее пространство от погодных воздействий.",
+        "look_for": "Посмотрите на наклонную мачту и натянутую оболочку. Архитектурная идея объясняет форму здания, но не подтверждает сегодняшние часы или условия входа."
+      },
+      "en": {
+        "title": "Khan Shatyr: a city under a tent",
+        "story": "Foster + Partners connects the building to the nomadic tent. Its translucent envelope brings in daylight and shelters the interior from weather.",
+        "look_for": "Look for the tilted mast and tensioned envelope. The design story does not confirm current hours or entry conditions."
+      },
+      "kk": {
+        "title": "Хан Шатыр: шатыр астындағы қала",
+        "story": "Foster + Partners ғимарат пішінін көшпелі шатыр дәстүрімен байланыстырады. Жарық өткізетін қабық ішкі кеңістікті ауа райынан қорғайды.",
+        "look_for": "Көлбеу діңгек пен керілген қабыққа назар аударыңыз. Сәулеттік идея қазіргі жұмыс уақытын немесе кіру шарттарын растамайды."
+      }
+    },
+    "wikipedia_url": "https://ru.wikipedia.org/wiki/Хан_Шатыр",
+    "aliases": [
+      "Хан Шатыр",
+      "Khan Shatyr"
+    ]
+  },
+  {
+    "id": "astana-opera",
+    "poi_id": "osm_way_917478479",
+    "coords": {
+      "lat": 51.1354512,
+      "lon": 71.410753
+    },
+    "source_title": "Астана Опера",
+    "source_url": "https://astanaopera.kz/ru/about-us",
+    "checked_at": "2026-10-19",
+    "translations": {
+      "ru": {
+        "title": "Астана Опера: новая сцена столицы",
+        "story": "Театр открылся в 2013 году. Его архитектура сочетает классические формы с казахскими национальными мотивами.",
+        "look_for": "Рассмотрите фасад и орнамент. Осмотр снаружи не означает доступ внутрь: для спектакля отдельно проверьте афишу и билет."
+      },
+      "en": {
+        "title": "Astana Opera: a new stage for the capital",
+        "story": "The theatre opened in 2013. Its architecture combines classical forms with Kazakh national motifs.",
+        "look_for": "Look at the facade and ornament. Viewing the exterior does not imply interior access: check the programme and tickets separately."
+      },
+      "kk": {
+        "title": "Астана Опера: елорданың жаңа сахнасы",
+        "story": "Театр 2013 жылы ашылды. Сәулетінде классикалық пішіндер мен қазақтың ұлттық нақыштары үйлеседі.",
+        "look_for": "Қасбет пен ою-өрнекке назар аударыңыз. Сыртынан көру ішке кіруге рұқсат бермейді: афиша мен билетті бөлек тексеріңіз."
+      }
+    },
+    "wikipedia_url": "https://ru.wikipedia.org/wiki/Астана_Опера",
+    "aliases": [
+      "Астана Опера",
+      "Astana Opera"
+    ]
+  },
+  {
+    "id": "osm_node_2681623412",
+    "poi_id": "osm_node_2681623412",
+    "coords": {
+      "lat": 51.1221098,
+      "lon": 71.4698815
+    },
+    "source_title": "Wikipedia",
+    "source_url": "https://kk.wikipedia.org/wiki/%D2%9A%D0%B0%D0%B7%D0%B0%D2%9B_%D0%B5%D0%BB%D1%96_(%D0%BC%D0%BE%D0%BD%D1%83%D0%BC%D0%B5%D0%BD%D1%82)",
+    "wikipedia_url": "https://kk.wikipedia.org/wiki/%D2%9A%D0%B0%D0%B7%D0%B0%D2%9B_%D0%B5%D0%BB%D1%96_(%D0%BC%D0%BE%D0%BD%D1%83%D0%BC%D0%B5%D0%BD%D1%82)",
+    "checked_at": "2026-10-17",
+    "content_license": "CC BY-SA 4.0",
+    "source_snapshot": "data/raw/wiki_20261017.json",
+    "translations": {
+      "ru": {
+        "title": "Қазақ елі",
+        "story": "Монумент «Қазақ елі» посвящён казахской государственности. Он появился в Астане в 2009 году.",
+        "look_for": "Сопоставьте место с описанием в статье. Доступ внутрь, билеты и часы проверяйте отдельно."
+      },
+      "en": {
+        "title": "Kazak Eli Monument",
+        "story": "The Qazaq Eli monument represents Kazakh statehood. It was opened in Astana in 2009.",
+        "look_for": "Compare the place with its article. Check access, tickets and hours separately."
+      },
+      "kk": {
+        "title": "Қазақ елі",
+        "story": "«Қазақ елі» монументі қазақ мемлекеттілігін бейнелейді. Ол Астанада 2009 жылы ашылды.",
+        "look_for": "Орынды мақаладағы сипаттамамен салыстырыңыз. Кіру шарттарын, билеттерді және уақытты бөлек тексеріңіз."
+      }
+    },
+    "aliases": [
+      "Қазақ елі",
+      "Kazak Eli Monument",
+      "Қазақ елі (монумент)"
+    ]
+  },
+  {
+    "id": "osm_node_2712544129",
+    "poi_id": "osm_node_2712544129",
+    "coords": {
+      "lat": 51.1664322,
+      "lon": 71.4169499
+    },
+    "source_title": "Wikipedia",
+    "source_url": "https://kk.wikipedia.org/wiki/%D0%9A%D0%B5%D1%80%D0%B5%D0%B9_%D0%BC%D0%B5%D0%BD_%D0%96%D3%99%D0%BD%D1%96%D0%B1%D0%B5%D0%BA_%D1%85%D0%B0%D0%BD%D0%B4%D0%B0%D1%80_%D0%B5%D1%81%D0%BA%D0%B5%D1%80%D1%82%D0%BA%D1%96%D1%88%D1%96",
+    "wikipedia_url": "https://kk.wikipedia.org/wiki/%D0%9A%D0%B5%D1%80%D0%B5%D0%B9_%D0%BC%D0%B5%D0%BD_%D0%96%D3%99%D0%BD%D1%96%D0%B1%D0%B5%D0%BA_%D1%85%D0%B0%D0%BD%D0%B4%D0%B0%D1%80_%D0%B5%D1%81%D0%BA%D0%B5%D1%80%D1%82%D0%BA%D1%96%D1%88%D1%96",
+    "checked_at": "2026-10-17",
+    "content_license": "CC BY-SA 4.0",
+    "source_snapshot": "data/raw/wiki_20261017.json",
+    "translations": {
+      "ru": {
+        "title": "Памятник \"Жанибек и Керей хандары\"",
+        "story": "Этот памятник посвящён первым казахским ханам — Керею и Жанибеку.",
+        "look_for": "Сопоставьте место с описанием в статье. Доступ внутрь, билеты и часы проверяйте отдельно."
+      },
+      "en": {
+        "title": "Памятник \"Жанибек и Керей хандары\"",
+        "story": "This monument commemorates Kerey and Janibek, the first Kazakh khans.",
+        "look_for": "Compare the place with its article. Check access, tickets and hours separately."
+      },
+      "kk": {
+        "title": "Жәнібек пен Керей хандар ескерткіші",
+        "story": "Бұл ескерткіш алғашқы қазақ хандары Керей мен Жәнібекке арналған.",
+        "look_for": "Орынды мақаладағы сипаттамамен салыстырыңыз. Кіру шарттарын, билеттерді және уақытты бөлек тексеріңіз."
+      }
+    },
+    "aliases": [
+      "Памятник \"Жанибек и Керей хандары\"",
+      "Жәнібек пен Керей хандар ескерткіші",
+      "Керей мен Жәнібек хандар ескерткіші"
+    ]
+  },
+  {
+    "id": "osm_node_4894937300",
+    "poi_id": "osm_node_4894937300",
+    "coords": {
+      "lat": 51.1182297,
+      "lon": 71.4693823
+    },
+    "source_title": "Wikipedia",
+    "source_url": "https://ru.wikipedia.org/wiki/%D0%9D%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9_%D0%BC%D1%83%D0%B7%D0%B5%D0%B9_%D0%9A%D0%B0%D0%B7%D0%B0%D1%85%D1%81%D1%82%D0%B0%D0%BD%D0%B0",
+    "wikipedia_url": "https://ru.wikipedia.org/wiki/%D0%9D%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9_%D0%BC%D1%83%D0%B7%D0%B5%D0%B9_%D0%9A%D0%B0%D0%B7%D0%B0%D1%85%D1%81%D1%82%D0%B0%D0%BD%D0%B0",
+    "checked_at": "2026-10-17",
+    "content_license": "CC BY-SA 4.0",
+    "source_snapshot": "data/raw/wiki_20261017.json",
+    "translations": {
+      "ru": {
+        "title": "Қазақстан Республикасының Ұлттық Мұражайы",
+        "story": "Национальный музей рассказывает об истории и культуре Казахстана. Не путайте дату учреждения музея с открытием его здания.",
+        "look_for": "Сопоставьте место с описанием в статье. Доступ внутрь, билеты и часы проверяйте отдельно."
+      },
+      "en": {
+        "title": "National Museum of the Republic of Kazakhstan",
+        "story": "The National Museum explores Kazakhstan’s history and culture. The institution’s founding and the building’s opening are different events.",
+        "look_for": "Compare the place with its article. Check access, tickets and hours separately."
+      },
+      "kk": {
+        "title": "Қазақстан Республикасының Ұлттық Мұражайы",
+        "story": "Ұлттық музей Қазақстанның тарихы мен мәдениетін таныстырады. Мекеменің құрылуы мен ғимараттың ашылуы — бөлек оқиғалар.",
+        "look_for": "Орынды мақаладағы сипаттамамен салыстырыңыз. Кіру шарттарын, билеттерді және уақытты бөлек тексеріңіз."
+      }
+    },
+    "aliases": [
+      "Қазақстан Республикасының Ұлттық Мұражайы",
+      "National Museum of the Republic of Kazakhstan",
+      "Национальный музей Казахстана"
+    ]
+  },
+  {
+    "id": "osm_node_5126825313",
+    "poi_id": "osm_node_5126825313",
+    "coords": {
+      "lat": 51.1450693,
+      "lon": 71.4189112
+    },
+    "source_title": "Wikipedia",
+    "source_url": "https://kk.wikipedia.org/wiki/%D0%90%D1%81%D1%82%D0%B0%D0%BD%D0%B0%D0%BB%D1%8B%D2%9B_%D1%86%D0%B8%D1%80%D0%BA",
+    "wikipedia_url": "https://kk.wikipedia.org/wiki/%D0%90%D1%81%D1%82%D0%B0%D0%BD%D0%B0%D0%BB%D1%8B%D2%9B_%D1%86%D0%B8%D1%80%D0%BA",
+    "checked_at": "2026-10-17",
+    "content_license": "CC BY-SA 4.0",
+    "source_snapshot": "data/raw/wiki_20261017.json",
+    "translations": {
+      "ru": {
+        "title": "Астаналық Цирк",
+        "story": "Астанинский цирк — один из основных цирков Казахстана. Это отдельное цирковое учреждение города.",
+        "look_for": "Сопоставьте место с описанием в статье. Доступ внутрь, билеты и часы проверяйте отдельно."
+      },
+      "en": {
+        "title": "City Circus",
+        "story": "Astana Circus is one of Kazakhstan’s main circus institutions.",
+        "look_for": "Compare the place with its article. Check access, tickets and hours separately."
+      },
+      "kk": {
+        "title": "Астаналық Цирк",
+        "story": "Астаналық цирк — Қазақстанның негізгі цирк мекемелерінің бірі.",
+        "look_for": "Орынды мақаладағы сипаттамамен салыстырыңыз. Кіру шарттарын, билеттерді және уақытты бөлек тексеріңіз."
+      }
+    },
+    "aliases": [
+      "Астаналық Цирк",
+      "City Circus",
+      "Астаналық цирк"
+    ]
+  },
+  {
+    "id": "osm_node_5918121388",
+    "poi_id": "osm_node_5918121388",
+    "coords": {
+      "lat": 51.1298506,
+      "lon": 71.4590741
+    },
+    "source_title": "Wikipedia",
+    "source_url": "https://kk.wikipedia.org/wiki/%D0%A0%D0%B0%D2%9B%D1%8B%D0%BC%D0%B6%D0%B0%D0%BD_%D2%9A%D0%BE%D1%88%D2%9B%D0%B0%D1%80%D0%B1%D0%B0%D0%B5%D0%B2_%D0%B5%D1%81%D0%BA%D0%B5%D1%80%D1%82%D0%BA%D1%96%D1%88%D1%96",
+    "wikipedia_url": "https://kk.wikipedia.org/wiki/%D0%A0%D0%B0%D2%9B%D1%8B%D0%BC%D0%B6%D0%B0%D0%BD_%D2%9A%D0%BE%D1%88%D2%9B%D0%B0%D1%80%D0%B1%D0%B0%D0%B5%D0%B2_%D0%B5%D1%81%D0%BA%D0%B5%D1%80%D1%82%D0%BA%D1%96%D1%88%D1%96",
+    "checked_at": "2026-10-17",
+    "content_license": "CC BY-SA 4.0",
+    "source_snapshot": "data/raw/wiki_20261017.json",
+    "translations": {
+      "ru": {
+        "title": "Рақымжан Қошқарбаев",
+        "story": "Памятник Рахимжану Кошкарбаеву появился в Астане в октябре 2016 года.",
+        "look_for": "Сопоставьте место с описанием в статье. Доступ внутрь, билеты и часы проверяйте отдельно."
+      },
+      "en": {
+        "title": "Rakhimzhan Koshkarbaev",
+        "story": "Astana’s monument to Rakhimzhan Qoshqarbaev was unveiled in October 2016.",
+        "look_for": "Compare the place with its article. Check access, tickets and hours separately."
+      },
+      "kk": {
+        "title": "Рақымжан Қошқарбаев",
+        "story": "Астанадағы Рақымжан Қошқарбаев ескерткіші 2016 жылғы қазанда ашылды.",
+        "look_for": "Орынды мақаладағы сипаттамамен салыстырыңыз. Кіру шарттарын, билеттерді және уақытты бөлек тексеріңіз."
+      }
+    },
+    "aliases": [
+      "Рақымжан Қошқарбаев",
+      "Rakhimzhan Koshkarbaev",
+      "Рақымжан Қошқарбаев ескерткіші"
+    ]
+  },
+  {
+    "id": "osm_node_14080048397",
+    "poi_id": "osm_node_14080048397",
+    "coords": {
+      "lat": 51.1486007,
+      "lon": 71.4699085
+    },
+    "source_title": "Wikipedia",
+    "source_url": "https://kk.wikipedia.org/wiki/%D3%98%D0%BB-%D0%A4%D0%B0%D1%80%D0%B0%D0%B1%D0%B8_%D0%B5%D1%81%D0%BA%D0%B5%D1%80%D1%82%D0%BA%D1%96%D1%88%D1%96_(%D0%90%D1%81%D1%82%D0%B0%D0%BD%D0%B0)",
+    "wikipedia_url": "https://kk.wikipedia.org/wiki/%D3%98%D0%BB-%D0%A4%D0%B0%D1%80%D0%B0%D0%B1%D0%B8_%D0%B5%D1%81%D0%BA%D0%B5%D1%80%D1%82%D0%BA%D1%96%D1%88%D1%96_(%D0%90%D1%81%D1%82%D0%B0%D0%BD%D0%B0)",
+    "checked_at": "2026-10-17",
+    "content_license": "CC BY-SA 4.0",
+    "source_snapshot": "data/raw/wiki_20261017.json",
+    "translations": {
+      "ru": {
+        "title": "Әл-Фараби",
+        "story": "Этот памятник аль-Фараби был открыт в Астане в ноябре 2021 года.",
+        "look_for": "Сопоставьте место с описанием в статье. Доступ внутрь, билеты и часы проверяйте отдельно."
+      },
+      "en": {
+        "title": "Әл-Фараби",
+        "story": "This Al-Farabi monument was unveiled in Astana in November 2021.",
+        "look_for": "Compare the place with its article. Check access, tickets and hours separately."
+      },
+      "kk": {
+        "title": "Әл-Фараби",
+        "story": "Бұл әл-Фараби ескерткіші Астанада 2021 жылғы қарашада ашылды.",
+        "look_for": "Орынды мақаладағы сипаттамамен салыстырыңыз. Кіру шарттарын, билеттерді және уақытты бөлек тексеріңіз."
+      }
+    },
+    "aliases": [
+      "Әл-Фараби",
+      "Әл-Фараби ескерткіші (Астана)"
+    ]
+  },
+  {
+    "id": "osm_way_69232075",
+    "poi_id": "osm_way_69232075",
+    "coords": {
+      "lat": 51.1359887,
+      "lon": 71.4384501
+    },
+    "source_title": "Wikipedia",
+    "source_url": "https://ru.wikipedia.org/wiki/%D0%96%D0%B5%D1%82%D1%8B%D1%81%D1%83_(%D0%BF%D0%B0%D1%80%D0%BA)",
+    "wikipedia_url": "https://ru.wikipedia.org/wiki/%D0%96%D0%B5%D1%82%D1%8B%D1%81%D1%83_(%D0%BF%D0%B0%D1%80%D0%BA)",
+    "checked_at": "2026-10-17",
+    "content_license": "CC BY-SA 4.0",
+    "source_snapshot": "data/raw/wiki_20261017.json",
+    "translations": {
+      "ru": {
+        "title": "Жетісу саябағы",
+        "story": "Парк Жетысу раньше назывался Арай. В 2018 году его реконструировали.",
+        "look_for": "Сопоставьте место с описанием в статье. Доступ внутрь, билеты и часы проверяйте отдельно."
+      },
+      "en": {
+        "title": "Zhetysu Park",
+        "story": "Zhetysu Park was formerly called Arai. It was reconstructed in 2018.",
+        "look_for": "Compare the place with its article. Check access, tickets and hours separately."
+      },
+      "kk": {
+        "title": "Жетісу саябағы",
+        "story": "Жетісу саябағы бұрын Арай деп аталған. 2018 жылы саябақ қайта жаңғыртылды.",
+        "look_for": "Орынды мақаладағы сипаттамамен салыстырыңыз. Кіру шарттарын, билеттерді және уақытты бөлек тексеріңіз."
+      }
+    },
+    "aliases": [
+      "Жетісу саябағы",
+      "Zhetysu Park",
+      "Жетысу (парк)"
+    ]
+  },
+  {
+    "id": "osm_way_166265821",
+    "poi_id": "osm_way_166265821",
+    "coords": {
+      "lat": 51.1100367,
+      "lon": 71.407336
+    },
+    "source_title": "Wikipedia",
+    "source_url": "https://ru.wikipedia.org/wiki/%D0%A1%D0%B0%D1%80%D1%8B%D0%B0%D1%80%D0%BA%D0%B0_(%D0%B2%D0%B5%D0%BB%D0%BE%D1%82%D1%80%D0%B5%D0%BA)",
+    "wikipedia_url": "https://ru.wikipedia.org/wiki/%D0%A1%D0%B0%D1%80%D1%8B%D0%B0%D1%80%D0%BA%D0%B0_(%D0%B2%D0%B5%D0%BB%D0%BE%D1%82%D1%80%D0%B5%D0%BA)",
+    "checked_at": "2026-10-17",
+    "content_license": "CC BY-SA 4.0",
+    "source_snapshot": "data/raw/wiki_20261017.json",
+    "translations": {
+      "ru": {
+        "title": "Сарыарқа",
+        "story": "Силуэт велотрека «Сарыарка» напоминает велосипедный шлем — назначение здания отражено в его форме.",
+        "look_for": "Сопоставьте место с описанием в статье. Доступ внутрь, билеты и часы проверяйте отдельно."
+      },
+      "en": {
+        "title": "Сарыарқа",
+        "story": "The Saryarka Velodrome resembles a cycling helmet: its form echoes its sporting purpose.",
+        "look_for": "Compare the place with its article. Check access, tickets and hours separately."
+      },
+      "kk": {
+        "title": "Сарыарқа",
+        "story": "«Сарыарқа» велотрегінің пішіні велосипедшінің дулығасына ұқсайды: ғимарат түрі оның мақсатын бейнелейді.",
+        "look_for": "Орынды мақаладағы сипаттамамен салыстырыңыз. Кіру шарттарын, билеттерді және уақытты бөлек тексеріңіз."
+      }
+    },
+    "aliases": [
+      "Сарыарқа",
+      "Сарыарка (велотрек)"
+    ]
+  },
+  {
+    "id": "osm_way_166267459",
+    "poi_id": "osm_way_166267459",
+    "coords": {
+      "lat": 51.1048776,
+      "lon": 71.4050693
+    },
+    "source_title": "Wikipedia",
+    "source_url": "https://ru.wikipedia.org/wiki/%D0%90%D0%BB%D0%B0%D1%83_(%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D1%8B%D0%B9_%D0%B4%D0%B2%D0%BE%D1%80%D0%B5%D1%86)",
+    "wikipedia_url": "https://ru.wikipedia.org/wiki/%D0%90%D0%BB%D0%B0%D1%83_(%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D1%8B%D0%B9_%D0%B4%D0%B2%D0%BE%D1%80%D0%B5%D1%86)",
+    "checked_at": "2026-10-17",
+    "content_license": "CC BY-SA 4.0",
+    "source_snapshot": "data/raw/wiki_20261017.json",
+    "translations": {
+      "ru": {
+        "title": "Алау мұзайдыны сарайы",
+        "story": "«Алау» — крытый стадион для конькобежного спорта и других ледовых дисциплин.",
+        "look_for": "Сопоставьте место с описанием в статье. Доступ внутрь, билеты и часы проверяйте отдельно."
+      },
+      "en": {
+        "title": "Ice Palace Alau",
+        "story": "Alau is an indoor venue for speed skating and other ice sports.",
+        "look_for": "Compare the place with its article. Check access, tickets and hours separately."
+      },
+      "kk": {
+        "title": "Алау мұзайдыны сарайы",
+        "story": "«Алау» — конькимен жүгіруге және басқа мұз спорты түрлеріне арналған жабық кешен.",
+        "look_for": "Орынды мақаладағы сипаттамамен салыстырыңыз. Кіру шарттарын, билеттерді және уақытты бөлек тексеріңіз."
+      }
+    },
+    "aliases": [
+      "Алау мұзайдыны сарайы",
+      "Ice Palace Alau",
+      "Алау (ледовый дворец)"
+    ]
+  },
+  {
+    "id": "osm_way_215529755",
+    "poi_id": "osm_way_215529755",
+    "coords": {
+      "lat": 51.153449,
+      "lon": 71.4577683
+    },
+    "source_title": "Wikipedia",
+    "source_url": "https://kk.wikipedia.org/wiki/%D0%9E%D1%82%D0%B0%D0%BD_%D2%9B%D0%BE%D1%80%D2%93%D0%B0%D1%83%D1%88%D1%8B%D0%BB%D0%B0%D1%80_(%D0%BC%D0%BE%D0%BD%D1%83%D0%BC%D0%B5%D0%BD%D1%82)",
+    "wikipedia_url": "https://kk.wikipedia.org/wiki/%D0%9E%D1%82%D0%B0%D0%BD_%D2%9B%D0%BE%D1%80%D2%93%D0%B0%D1%83%D1%88%D1%8B%D0%BB%D0%B0%D1%80_(%D0%BC%D0%BE%D0%BD%D1%83%D0%BC%D0%B5%D0%BD%D1%82)",
+    "checked_at": "2026-10-17",
+    "content_license": "CC BY-SA 4.0",
+    "source_snapshot": "data/raw/wiki_20261017.json",
+    "translations": {
+      "ru": {
+        "title": "Отан Қорғаушылар",
+        "story": "Мемориал «Отан қорғаушылар» был открыт 9 мая 2001 года. Его также называют «Отан-Ана».",
+        "look_for": "Сопоставьте место с описанием в статье. Доступ внутрь, билеты и часы проверяйте отдельно."
+      },
+      "en": {
+        "title": "Monument to the Defenders of the Motherland",
+        "story": "The Otan Qorgaushylar memorial opened on 9 May 2001. It is also known as Otan-Ana.",
+        "look_for": "Compare the place with its article. Check access, tickets and hours separately."
+      },
+      "kk": {
+        "title": "Отан Қорғаушылар",
+        "story": "«Отан қорғаушылар» мемориалы 2001 жылғы 9 мамырда ашылды. Ол «Отан-Ана» деп те аталады.",
+        "look_for": "Орынды мақаладағы сипаттамамен салыстырыңыз. Кіру шарттарын, билеттерді және уақытты бөлек тексеріңіз."
+      }
+    },
+    "aliases": [
+      "Отан Қорғаушылар",
+      "Monument to the Defenders of the Motherland",
+      "Отан қорғаушылар (монумент)"
+    ]
+  },
+  {
+    "id": "osm_way_240376692",
+    "poi_id": "osm_way_240376692",
+    "coords": {
+      "lat": 51.1714825,
+      "lon": 71.4235922
+    },
+    "source_title": "Wikipedia",
+    "source_url": "https://ru.wikipedia.org/wiki/%D0%9C%D1%83%D0%B7%D0%B5%D0%B9_%D0%A1%D0%B0%D0%BA%D0%B5%D0%BD%D0%B0_%D0%A1%D0%B5%D0%B9%D1%84%D1%83%D0%BB%D0%BB%D0%B8%D0%BD%D0%B0",
+    "wikipedia_url": "https://ru.wikipedia.org/wiki/%D0%9C%D1%83%D0%B7%D0%B5%D0%B9_%D0%A1%D0%B0%D0%BA%D0%B5%D0%BD%D0%B0_%D0%A1%D0%B5%D0%B9%D1%84%D1%83%D0%BB%D0%BB%D0%B8%D0%BD%D0%B0",
+    "checked_at": "2026-10-17",
+    "content_license": "CC BY-SA 4.0",
+    "source_snapshot": "data/raw/wiki_20261017.json",
+    "translations": {
+      "ru": {
+        "title": "Сәкен Сейфуллин музейі",
+        "story": "Музей Сакена Сейфуллина расположен в здании XIX века. Экспозиция посвящена жизни писателя и государственного деятеля.",
+        "look_for": "Сопоставьте место с описанием в статье. Доступ внутрь, билеты и часы проверяйте отдельно."
+      },
+      "en": {
+        "title": "Сәкен Сейфуллин музейі",
+        "story": "Saken Seifullin’s museum occupies a nineteenth-century building and explores his life as a writer and public figure.",
+        "look_for": "Compare the place with its article. Check access, tickets and hours separately."
+      },
+      "kk": {
+        "title": "Сәкен Сейфуллин музейі",
+        "story": "Сәкен Сейфуллин музейі XIX ғасырдағы ғимаратта орналасқан. Экспозиция жазушы әрі мемлекет қайраткерінің өміріне арналған.",
+        "look_for": "Орынды мақаладағы сипаттамамен салыстырыңыз. Кіру шарттарын, билеттерді және уақытты бөлек тексеріңіз."
+      }
+    },
+    "aliases": [
+      "Сәкен Сейфуллин музейі",
+      "Музей Сакена Сейфуллина"
+    ]
+  },
+  {
+    "id": "osm_way_549307755",
+    "poi_id": "osm_way_549307755",
+    "coords": {
+      "lat": 51.1043034,
+      "lon": 71.4300836
+    },
+    "source_title": "Wikipedia",
+    "source_url": "https://kk.wikipedia.org/wiki/%D0%9C%D3%99%D2%A3%D0%B3%D1%96%D0%BB%D1%96%D0%BA_%D0%B5%D0%BB_%D2%9B%D0%B0%D2%9B%D0%BF%D0%B0%D1%81%D1%8B",
+    "wikipedia_url": "https://kk.wikipedia.org/wiki/%D0%9C%D3%99%D2%A3%D0%B3%D1%96%D0%BB%D1%96%D0%BA_%D0%B5%D0%BB_%D2%9B%D0%B0%D2%9B%D0%BF%D0%B0%D1%81%D1%8B",
+    "checked_at": "2026-10-17",
+    "content_license": "CC BY-SA 4.0",
+    "source_snapshot": "data/raw/wiki_20261017.json",
+    "translations": {
+      "ru": {
+        "title": "Мәңгілік Ел салтанат қақпасы",
+        "story": "«Мәңгілік Ел» — триумфальная арка Астаны. Статья рассказывает об этом архитектурном объекте.",
+        "look_for": "Сопоставьте место с описанием в статье. Доступ внутрь, билеты и часы проверяйте отдельно."
+      },
+      "en": {
+        "title": "Mäñgilik El Triumphal Arch",
+        "story": "Mangilik El is Astana’s triumphal arch. The article describes this architectural landmark.",
+        "look_for": "Compare the place with its article. Check access, tickets and hours separately."
+      },
+      "kk": {
+        "title": "Мәңгілік Ел салтанат қақпасы",
+        "story": "«Мәңгілік Ел» — Астананың салтанат қақпасы. Мақала осы сәулет нысаны туралы баяндайды.",
+        "look_for": "Орынды мақаладағы сипаттамамен салыстырыңыз. Кіру шарттарын, билеттерді және уақытты бөлек тексеріңіз."
+      }
+    },
+    "aliases": [
+      "Мәңгілік Ел салтанат қақпасы",
+      "Mäñgilik El Triumphal Arch",
+      "Мәңгілік ел қақпасы"
+    ]
+  },
+  {
+    "id": "osm_way_762780007",
+    "poi_id": "osm_way_762780007",
+    "coords": {
+      "lat": 51.1219718,
+      "lon": 71.4279322
+    },
+    "source_title": "Wikipedia",
+    "source_url": "https://ru.wikipedia.org/wiki/%D0%90%D0%B1%D1%83-%D0%94%D0%B0%D0%B1%D0%B8_%D0%9F%D0%BB%D0%B0%D0%B7%D0%B0",
+    "wikipedia_url": "https://ru.wikipedia.org/wiki/%D0%90%D0%B1%D1%83-%D0%94%D0%B0%D0%B1%D0%B8_%D0%9F%D0%BB%D0%B0%D0%B7%D0%B0",
+    "checked_at": "2026-10-17",
+    "content_license": "CC BY-SA 4.0",
+    "source_snapshot": "data/raw/wiki_20261017.json",
+    "translations": {
+      "ru": {
+        "title": "Abu Dhabi Plaza",
+        "story": "Abu Dhabi Plaza — многофункциональный городской комплекс Астаны, а не один отдельный магазин.",
+        "look_for": "Сопоставьте место с описанием в статье. Доступ внутрь, билеты и часы проверяйте отдельно."
+      },
+      "en": {
+        "title": "Abu Dhabi Plaza",
+        "story": "Abu Dhabi Plaza is a mixed-use complex in Astana, rather than a single shop.",
+        "look_for": "Compare the place with its article. Check access, tickets and hours separately."
+      },
+      "kk": {
+        "title": "Abu Dhabi Plaza",
+        "story": "Abu Dhabi Plaza — Астанадағы көпфункционалды кешен; ол бір ғана дүкен емес.",
+        "look_for": "Орынды мақаладағы сипаттамамен салыстырыңыз. Кіру шарттарын, билеттерді және уақытты бөлек тексеріңіз."
+      }
+    },
+    "aliases": [
+      "Abu Dhabi Plaza",
+      "Абу-Даби Плаза"
+    ]
+  },
+  {
+    "id": "osm_way_917348929",
+    "poi_id": "osm_way_917348929",
+    "coords": {
+      "lat": 51.1205589,
+      "lon": 71.4799743
+    },
+    "source_title": "Wikipedia",
+    "source_url": "https://ru.wikipedia.org/wiki/%D0%9A%D0%B0%D0%B7%D0%B0%D1%85%D1%81%D0%BA%D0%B8%D0%B9_%D0%BC%D1%83%D0%B7%D1%8B%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE-%D0%B4%D1%80%D0%B0%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D1%82%D0%B5%D0%B0%D1%82%D1%80_%D0%B8%D0%BC%D0%B5%D0%BD%D0%B8_%D0%9A._%D0%9A%D1%83%D0%B0%D0%BD%D1%8B%D1%88%D0%B1%D0%B0%D0%B5%D0%B2%D0%B0",
+    "wikipedia_url": "https://ru.wikipedia.org/wiki/%D0%9A%D0%B0%D0%B7%D0%B0%D1%85%D1%81%D0%BA%D0%B8%D0%B9_%D0%BC%D1%83%D0%B7%D1%8B%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE-%D0%B4%D1%80%D0%B0%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D1%82%D0%B5%D0%B0%D1%82%D1%80_%D0%B8%D0%BC%D0%B5%D0%BD%D0%B8_%D0%9A._%D0%9A%D1%83%D0%B0%D0%BD%D1%8B%D1%88%D0%B1%D0%B0%D0%B5%D0%B2%D0%B0",
+    "checked_at": "2026-10-17",
+    "content_license": "CC BY-SA 4.0",
+    "source_snapshot": "data/raw/wiki_20261017.json",
+    "translations": {
+      "ru": {
+        "title": "Қ.Қуанышбаев атындағы Мемлекеттік академиялық қазақ музыкалық-драма театры",
+        "story": "Казахский музыкально-драматический театр имени Куанышбаева начал работу в 1991 году. История учреждения старше нынешней площадки.",
+        "look_for": "Сопоставьте место с описанием в статье. Доступ внутрь, билеты и часы проверяйте отдельно."
+      },
+      "en": {
+        "title": "Қ.Қуанышбаев атындағы Мемлекеттік академиялық қазақ музыкалық-драма театры",
+        "story": "The Kuanyshbayev Kazakh music and drama theatre began operating in 1991. The institution predates its current venue.",
+        "look_for": "Compare the place with its article. Check access, tickets and hours separately."
+      },
+      "kk": {
+        "title": "Қ.Қуанышбаев атындағы Мемлекеттік академиялық қазақ музыкалық-драма театры",
+        "story": "Қуанышбаев атындағы қазақ музыкалық-драма театры 1991 жылы жұмысын бастады. Театр тарихы қазіргі ғимараттан ертерек басталған.",
+        "look_for": "Орынды мақаладағы сипаттамамен салыстырыңыз. Кіру шарттарын, билеттерді және уақытты бөлек тексеріңіз."
+      }
+    },
+    "aliases": [
+      "Қ.Қуанышбаев атындағы Мемлекеттік академиялық қазақ музыкалық-драма театры",
+      "Казахский музыкально-драматический театр имени К. Куанышбаева"
+    ]
+  },
+  {
+    "id": "osm_way_1196402246",
+    "poi_id": "osm_way_1196402246",
+    "coords": {
+      "lat": 51.1061652,
+      "lon": 71.4165705
+    },
+    "source_title": "Wikipedia",
+    "source_url": "https://ru.wikipedia.org/wiki/%D0%90%D1%81%D1%82%D0%B0%D0%BD%D0%B8%D0%BD%D1%81%D0%BA%D0%B8%D0%B9_%D0%B1%D0%BE%D1%82%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D1%81%D0%B0%D0%B4",
+    "wikipedia_url": "https://ru.wikipedia.org/wiki/%D0%90%D1%81%D1%82%D0%B0%D0%BD%D0%B8%D0%BD%D1%81%D0%BA%D0%B8%D0%B9_%D0%B1%D0%BE%D1%82%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D1%81%D0%B0%D0%B4",
+    "checked_at": "2026-10-17",
+    "content_license": "CC BY-SA 4.0",
+    "source_snapshot": "data/raw/wiki_20261017.json",
+    "translations": {
+      "ru": {
+        "title": "Ботаникалық бақ",
+        "story": "Ботанический сад на левобережье открылся в июле 2018 года к двадцатилетию столицы.",
+        "look_for": "Сопоставьте место с описанием в статье. Доступ внутрь, билеты и часы проверяйте отдельно."
+      },
+      "en": {
+        "title": "Botanical Garden",
+        "story": "The botanical garden on the left bank opened in July 2018 for the capital’s twentieth anniversary.",
+        "look_for": "Compare the place with its article. Check access, tickets and hours separately."
+      },
+      "kk": {
+        "title": "Ботаникалық бақ",
+        "story": "Сол жағалаудағы ботаникалық бақ елорданың жиырма жылдығына орай 2018 жылғы шілдеде ашылды.",
+        "look_for": "Орынды мақаладағы сипаттамамен салыстырыңыз. Кіру шарттарын, билеттерді және уақытты бөлек тексеріңіз."
+      }
+    },
+    "aliases": [
+      "Ботаникалық бақ",
+      "Botanical Garden",
+      "Астанинский ботанический сад"
+    ]
+  },
+  {
+    "id": "osm_way_1460537088",
+    "poi_id": "osm_way_1460537088",
+    "coords": {
+      "lat": 51.1227533,
+      "lon": 71.4417645
+    },
+    "source_title": "Wikipedia",
+    "source_url": "https://ru.wikipedia.org/wiki/%D0%9A%D0%B0%D0%B7%D0%B0%D1%85%D1%81%D1%82%D0%B0%D0%BD_(%D0%BA%D0%BE%D0%BD%D1%86%D0%B5%D1%80%D1%82%D0%BD%D1%8B%D0%B9_%D0%B7%D0%B0%D0%BB)",
+    "wikipedia_url": "https://ru.wikipedia.org/wiki/%D0%9A%D0%B0%D0%B7%D0%B0%D1%85%D1%81%D1%82%D0%B0%D0%BD_(%D0%BA%D0%BE%D0%BD%D1%86%D0%B5%D1%80%D1%82%D0%BD%D1%8B%D0%B9_%D0%B7%D0%B0%D0%BB)",
+    "checked_at": "2026-10-17",
+    "content_license": "CC BY-SA 4.0",
+    "source_snapshot": "data/raw/wiki_20261017.json",
+    "translations": {
+      "ru": {
+        "title": "Astana Musical",
+        "story": "Центральный концертный зал «Казахстан» известен также как «Цветок пустыни». Статья относится к зданию, а не к афише Astana Musical.",
+        "look_for": "Сопоставьте место с описанием в статье. Доступ внутрь, билеты и часы проверяйте отдельно."
+      },
+      "en": {
+        "title": "Astana Musical",
+        "story": "The Kazakhstan Central Concert Hall is also known as the Flower of the Desert. The article concerns the building, not Astana Musical’s programme.",
+        "look_for": "Compare the place with its article. Check access, tickets and hours separately."
+      },
+      "kk": {
+        "title": "Astana Musical",
+        "story": "«Қазақстан» орталық концерт залы «Дала гүлі» деп те аталады. Мақала Astana Musical афишасы емес, ғимарат туралы.",
+        "look_for": "Орынды мақаладағы сипаттамамен салыстырыңыз. Кіру шарттарын, билеттерді және уақытты бөлек тексеріңіз."
+      }
+    },
+    "aliases": [
+      "Astana Musical",
+      "Казахстан (концертный зал)"
+    ]
+  },
+  {
+    "id": "osm_way_1460700597",
+    "poi_id": "osm_way_1460700597",
+    "coords": {
+      "lat": 51.1492984,
+      "lon": 71.4180805
+    },
+    "source_title": "Wikipedia",
+    "source_url": "https://kk.wikipedia.org/wiki/%D0%90%D1%82%D0%B0%D0%BC%D0%B5%D0%BA%D0%B5%D0%BD_(%D0%BC%D2%B1%D1%80%D0%B0%D0%B6%D0%B0%D0%B9)",
+    "wikipedia_url": "https://kk.wikipedia.org/wiki/%D0%90%D1%82%D0%B0%D0%BC%D0%B5%D0%BA%D0%B5%D0%BD_(%D0%BC%D2%B1%D1%80%D0%B0%D0%B6%D0%B0%D0%B9)",
+    "checked_at": "2026-10-17",
+    "content_license": "CC BY-SA 4.0",
+    "source_snapshot": "data/raw/wiki_20261017.json",
+    "translations": {
+      "ru": {
+        "title": "Атамекен Қазақстан картасы этно-мемориалдық кешені",
+        "story": "«Атамекен» — музей под открытым небом, представляющий Казахстан в виде карты с миниатюрами.",
+        "look_for": "Сопоставьте место с описанием в статье. Доступ внутрь, билеты и часы проверяйте отдельно."
+      },
+      "en": {
+        "title": "Атамекен Қазақстан картасы этно-мемориалдық кешені",
+        "story": "Atameken is an open-air museum presenting Kazakhstan as a map of miniature landmarks.",
+        "look_for": "Compare the place with its article. Check access, tickets and hours separately."
+      },
+      "kk": {
+        "title": "Атамекен Қазақстан картасы этно-мемориалдық кешені",
+        "story": "«Атамекен» — Қазақстанды нысандардың шағын үлгілері бар карта түрінде таныстыратын ашық аспан астындағы музей.",
+        "look_for": "Орынды мақаладағы сипаттамамен салыстырыңыз. Кіру шарттарын, билеттерді және уақытты бөлек тексеріңіз."
+      }
+    },
+    "aliases": [
+      "Атамекен Қазақстан картасы этно-мемориалдық кешені",
+      "Атамекен (мұражай)"
+    ]
+  }
+]
