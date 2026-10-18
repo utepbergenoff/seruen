@@ -481,6 +481,7 @@
     if (!plan.server && !plan.offline) return;
     walk = {plan: JSON.parse(JSON.stringify(plan)), savedId, history: [], collapsed: false, proposal: null};
     walkMsg = ""; walkBusy = false; walkVersion++;
+    ext.onWalkStart?.();
     renderWalk();
     $("#walk").scrollIntoView({behavior: "smooth", block: "start"});
   }
@@ -520,6 +521,7 @@
       }).join("")}</div></section>`;
   }
   function renderWalk() {
+    A.setWalkActive(!!walk);
     const box = $("#walk"); if (!box) return;
     window.dispatchEvent(new CustomEvent("seruen:walk-change"));
     pauseLayer.clearLayers();

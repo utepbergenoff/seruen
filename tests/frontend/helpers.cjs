@@ -22,9 +22,9 @@ async function boot(t, opts = {}) {
   const map={setView(){return this;},setMaxZoom(z){this.maxZoom=z;return this;},on(){return this;},getZoom(){return 15;},invalidateSize(){},fitBounds(){},removeLayer(l){layers.delete(l);}};
   const events=()=>{const handlers={};return {on(e,cb){handlers[e]=cb;return this;},fire(e,payload={}){handlers[e]?.(payload);return this;}};};
   w.L={map:()=>map,tileLayer:(url,options)=>{const l={url,options,...events(),addTo(){layers.add(this);return this;}};tiles.push(l);return l;},divIcon:x=>x,
-    marker:(coords,options)=>{const p={coords,options,...events(),addTo(target){this.target=target;return this;},bindTooltip(){return this;},bindPopup(){return this;},getLatLng(){return coords;},openPopup(){},setLatLng(){},setTooltipContent(){}};pins.push(p);return p;},
-    polyline:(coords,options)=>{const l={coords,options,addTo(target){if(target===map)layers.add(this);return this;}};lines.push(l);return l;},
-    layerGroup:()=>({addTo(){return this;},clearLayers(){}}),latLngBounds:x=>x,
+    marker:(coords,options)=>{const p={coords,options,...events(),addTo(target){this.target=target;if(target===map)layers.add(this);else target.addLayer?.(this);return this;},bindTooltip(){return this;},bindPopup(){return this;},getLatLng(){return coords;},openPopup(){},setLatLng(){},setTooltipContent(){}};pins.push(p);return p;},
+    polyline:(coords,options)=>{const l={coords,options,addTo(target){this.target=target;if(target===map)layers.add(this);else target.addLayer?.(this);return this;}};lines.push(l);return l;},
+    layerGroup:()=>({members:new Set(),addLayer(l){this.members.add(l);return this;},addTo(){layers.add(this);return this;},clearLayers(){this.members.clear();return this;}}),latLngBounds:x=>x,
     Control:{extend:cfg=>class{addTo(){w.document.body.appendChild(cfg.onAdd());}}},
     DomUtil:{create:(tag,cl)=>{const el=w.document.createElement(tag);el.className=cl;return el;}},
     DomEvent:{disableClickPropagation(){},on:(el,event,cb)=>el.addEventListener(event,cb),stop:e=>e.stopPropagation()}};
