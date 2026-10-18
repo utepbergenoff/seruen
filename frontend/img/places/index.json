@@ -2933,22 +2933,71 @@
 {
 "url": "c/team-coffeeboom-expo-1.jpg",
 "source": "team",
+"author": "Ерлан, команда Серуен",
+"license": "Собственное фото команды",
 "note": "Coffee BOOM, проспект Мангилик Ел 55/1 (EXPO)"
 },
 {
 "url": "c/team-coffeeboom-expo-2.jpg",
 "source": "team",
+"author": "Ерлан, команда Серуен",
+"license": "Собственное фото команды",
 "note": "Coffee BOOM, проспект Мангилик Ел 55/1 (EXPO)"
 },
 {
 "url": "c/team-coffeeboom-expo-3.jpg",
 "source": "team",
+"author": "Ерлан, команда Серуен",
+"license": "Собственное фото команды",
 "note": "Coffee BOOM, проспект Мангилик Ел 55/1 (EXPO)"
+}
+],
+"osm_node_6408271985": [
+{
+"url": "c/team-crepecafe-nurzhol-1.jpg",
+"source": "team",
+"author": "Ерлан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "CrepeCafe у бульвара Нуржол"
 },
 {
-"url": "c/team-coffeeboom-expo-4.jpg",
+"url": "c/team-crepecafe-nurzhol-2.jpg",
 "source": "team",
-"note": "Coffee BOOM, проспект Мангилик Ел 55/1 (EXPO)"
+"author": "Ерлан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "CrepeCafe у бульвара Нуржол"
+}
+],
+"osm_node_12520559589": [
+{
+"url": "c/team-lepim-keruen-1.jpg",
+"source": "team",
+"author": "Ерлан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Лепим и варим, ТРК Керуен"
+},
+{
+"url": "c/team-lepim-keruen-2.jpg",
+"source": "team",
+"author": "Ерлан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Лепим и варим, ТРК Керуен"
+}
+],
+"osm_way_1449317691": [
+{
+"url": "c/team-lepim-khan-1.jpg",
+"source": "team",
+"author": "Ерлан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Лепим и варим, ТРЦ Хан Шатыр"
+},
+{
+"url": "c/team-lepim-khan-2.jpg",
+"source": "team",
+"author": "Ерлан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Лепим и варим, ТРЦ Хан Шатыр"
 }
 ]
 },

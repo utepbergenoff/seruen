@@ -251,6 +251,186 @@
    },
    "analysis_source": "manual",
    "analysis_version": "manual-v1"
+  },
+  {
+   "example_id": "atm_coffeeboom_expo",
+   "poi_id": "team_cafe_coffeeboom_expo",
+   "title": "Coffee BOOM у EXPO",
+   "features": [
+    "indoor",
+    "natural_light",
+    "modern",
+    "visible_seating",
+    "greenery"
+   ],
+   "photos": [
+    {
+     "photo_id": "atm_coffeeboom_expo_1",
+     "url": "https://seruen-astana.netlify.app/img/places/c/team-coffeeboom-expo-1.jpg",
+     "content_sha256": "8157f53c8b15da4da876255841e553998a8597eec2b86dd839133ebb00811fe2",
+     "license": "Собственное фото команды, публикация в Серуен разрешена автором",
+     "attribution": "Ерлан, команда Серуен",
+     "offline_allowed": false
+    },
+    {
+     "photo_id": "atm_coffeeboom_expo_2",
+     "url": "https://seruen-astana.netlify.app/img/places/c/team-coffeeboom-expo-2.jpg",
+     "content_sha256": "b62c965666bd62e40bc75a0f964789f0f740598192b365dc4f6b63a8f1d2b171",
+     "license": "Собственное фото команды, публикация в Серуен разрешена автором",
+     "attribution": "Ерлан, команда Серуен",
+     "offline_allowed": false
+    },
+    {
+     "photo_id": "atm_coffeeboom_expo_3",
+     "url": "https://seruen-astana.netlify.app/img/places/c/team-coffeeboom-expo-3.jpg",
+     "content_sha256": "574b61d493e92f812eb5d673c89e6dc5c668b0f8c28b1fc1c1502b9790a20683",
+     "license": "Собственное фото команды, публикация в Серуен разрешена автором",
+     "attribution": "Ерлан, команда Серуен",
+     "offline_allowed": false
+    }
+   ],
+   "evidence": {
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
+    "checked_at": "2026-10-19",
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "Своё фото с места; филиал подтверждён автором. Признаки — только видимое."
+   },
+   "analysis_source": "manual",
+   "analysis_version": "manual-v1"
+  },
+  {
+   "example_id": "atm_crepecafe_hall",
+   "poi_id": "osm_node_6408271985",
+   "title": "CrepeCafe у Нуржол: зал",
+   "features": [
+    "indoor",
+    "bright",
+    "modern",
+    "visible_seating",
+    "greenery"
+   ],
+   "photos": [
+    {
+     "photo_id": "atm_crepecafe_hall_1",
+     "url": "https://seruen-astana.netlify.app/img/places/c/team-crepecafe-nurzhol-1.jpg",
+     "content_sha256": "f53cbdfa5d697ca5ffb94ecde71eaff78aed843e117355ac7e41df14ff814a80",
+     "license": "Собственное фото команды, публикация в Серуен разрешена автором",
+     "attribution": "Ерлан, команда Серуен",
+     "offline_allowed": false
+    }
+   ],
+   "evidence": {
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
+    "checked_at": "2026-10-19",
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "Своё фото с места; филиал подтверждён автором. Признаки — только видимое."
+   },
+   "analysis_source": "manual",
+   "analysis_version": "manual-v1"
+  },
+  {
+   "example_id": "atm_crepecafe_mural",
+   "poi_id": "osm_node_6408271985",
+   "title": "CrepeCafe у Нуржол: стена с росписью",
+   "features": [
+    "indoor",
+    "bright",
+    "visible_seating"
+   ],
+   "photos": [
+    {
+     "photo_id": "atm_crepecafe_mural_1",
+     "url": "https://seruen-astana.netlify.app/img/places/c/team-crepecafe-nurzhol-2.jpg",
+     "content_sha256": "eb5b5609c7a29c9e8fa13bbbca34acb8d4373775a31fa231abcb788e49ac6cba",
+     "license": "Собственное фото команды, публикация в Серуен разрешена автором",
+     "attribution": "Ерлан, команда Серуен",
+     "offline_allowed": false
+    }
+   ],
+   "evidence": {
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
+    "checked_at": "2026-10-19",
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "Своё фото с места; филиал подтверждён автором. Признаки — только видимое."
+   },
+   "analysis_source": "manual",
+   "analysis_version": "manual-v1"
+  },
+  {
+   "example_id": "atm_lepim_keruen",
+   "poi_id": "osm_node_12520559589",
+   "title": "Лепим и варим в Керуене",
+   "features": [
+    "indoor",
+    "modern"
+   ],
+   "photos": [
+    {
+     "photo_id": "atm_lepim_keruen_1",
+     "url": "https://seruen-astana.netlify.app/img/places/c/team-lepim-keruen-1.jpg",
+     "content_sha256": "9a6a46edc4d4c573f131badeb75a9ad6ef1061fe4bd2d63c81afc1c1d0035a06",
+     "license": "Собственное фото команды, публикация в Серуен разрешена автором",
+     "attribution": "Ерлан, команда Серуен",
+     "offline_allowed": false
+    },
+    {
+     "photo_id": "atm_lepim_keruen_2",
+     "url": "https://seruen-astana.netlify.app/img/places/c/team-lepim-keruen-2.jpg",
+     "content_sha256": "990423df3a5f48aeeca07e107ca049352081b62d334e6325d055beb3f24c6ac0",
+     "license": "Собственное фото команды, публикация в Серуен разрешена автором",
+     "attribution": "Ерлан, команда Серуен",
+     "offline_allowed": false
+    }
+   ],
+   "evidence": {
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
+    "checked_at": "2026-10-19",
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "Своё фото с места; филиал подтверждён автором. Признаки — только видимое."
+   },
+   "analysis_source": "manual",
+   "analysis_version": "manual-v1"
+  },
+  {
+   "example_id": "atm_lepim_khan_shatyr",
+   "poi_id": "osm_way_1449317691",
+   "title": "Лепим и варим в Хан Шатыре",
+   "features": [
+    "indoor",
+    "bright",
+    "modern"
+   ],
+   "photos": [
+    {
+     "photo_id": "atm_lepim_khan_shatyr_1",
+     "url": "https://seruen-astana.netlify.app/img/places/c/team-lepim-khan-1.jpg",
+     "content_sha256": "03a7a6eb5c4e8897d484f9645895027e5433215badb46c7e98345ddbab0b4230",
+     "license": "Собственное фото команды, публикация в Серуен разрешена автором",
+     "attribution": "Ерлан, команда Серуен",
+     "offline_allowed": false
+    },
+    {
+     "photo_id": "atm_lepim_khan_shatyr_2",
+     "url": "https://seruen-astana.netlify.app/img/places/c/team-lepim-khan-2.jpg",
+     "content_sha256": "675ef41ad190b697497784957f28a7d831c2bdf3f4a371aebdc8b80fa5f3a20a",
+     "license": "Собственное фото команды, публикация в Серуен разрешена автором",
+     "attribution": "Ерлан, команда Серуен",
+     "offline_allowed": false
+    }
+   ],
+   "evidence": {
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
+    "checked_at": "2026-10-19",
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "Своё фото с места; филиал подтверждён автором. Признаки — только видимое."
+   },
+   "analysis_source": "manual",
+   "analysis_version": "manual-v1"
   }
  ]
 }
