@@ -109,6 +109,18 @@ def test_selected_bench_inserted_before_destination_with_finish_and_cost_preserv
     assert result['fits']
 
 
+def test_plan_and_additive_break_keep_the_destinations_atmosphere_evidence(api):
+    req = profile_request(strict=True)
+    original = post(api, '/plans/build', plan(request=req, stop_ids=['team_coffee']))
+    assert original['stops'][0]['atmosphere_match']['status'] == 'confirmed'
+    result = post(api, '/plans/recalculate', {'request': req, 'previous': original['state'],
+        'reason': 'add_stop', 'poi_id': 'team_bench', 'remaining_time_min': 90, 'keep_stops': True})
+    assert result['fits'] and [r['poi_id'] for r in result['stops']] == ['team_bench', 'team_coffee']
+    assert result['stops'][0]['atmosphere_match']['status'] == 'not_requested'
+    assert result['stops'][1]['atmosphere_match']['status'] == 'confirmed'
+    assert result['stops'][1]['atmosphere_match']['photo_ids'] == original['stops'][0]['atmosphere_match']['photo_ids']
+
+
 @pytest.mark.parametrize('failure', ['budget', 'closed', 'distant', 'duplicate', 'unverified'])
 def test_impossible_extra_stop_does_not_return_a_replacement_route(api, failure):
     original = post(api, '/plans/build', plan(stop_ids=['team_coffee']))

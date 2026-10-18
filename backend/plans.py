@@ -283,7 +283,7 @@ class Planner:
                                   departure_at=departure, stay_min=stay, open_status=open_status(poi, arrival),
                                   visit_condition=self.features.condition(poi.poi_id, arrival.date()),
                                   atmosphere_match=self.features.match(poi.poi_id, prefs.atmosphere_example_id,
-                                                                      arrival.date()), sources=poi.sources))
+                                                                      arrival.date(), prefs.atmosphere_profile), sources=poi.sources))
             cursor = departure
         ids = ["start", *[p.poi_id for p, _ in chosen], "finish"]
         legs = [PlanLeg(from_id=ids[i], to_id=ids[i+1], distance_m=d, walk_min=routed.minutes[i], source=routed.source)
@@ -455,6 +455,10 @@ class Planner:
             raise PlanError("no_replacement_found", 409)
         result.state.preferences = original_preferences
         result.applied_preferences = original_preferences
+        for stop in result.stops:
+            if stop.poi_id not in self.features.comfort:
+                stop.atmosphere_match = self.features.match(stop.poi_id, original_preferences.atmosphere_example_id,
+                    stop.arrival_at.date(), original_preferences.atmosphere_profile)
         result.change_codes = [payload.reason, "nearby_break_keeps_stops"]
         result.notes.insert(0, {"ru": "Предложена остановка рядом. Прежние остановки и финиш сохранены; проверьте условия доступа.",
             "en": "Suggested a nearby break. All remaining stops and the finish are kept; check access conditions.",
