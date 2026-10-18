@@ -12,7 +12,7 @@
   let activeStory = null;
   const storyLayer = L.layerGroup().addTo(map);
   let storyIndex = [], storyLang = null, storyPending = false;
-  const point = p => ({lat: A.round3(p.lat), lon: A.round3(p.lon), precision_m: 100, source: p.source || "map"});
+  const point = p => ({lat: A.round3(p.lat), lon: A.round3(p.lon), precision_m: p.precision_m || 100, source: p.source || "map"});
   const stamp = () => JSON.stringify([state.locVersion, state.requestVersion, state.selectedPlaceId, state.lang,
     F.walk?.plan?.server || null, mode, winterEnabled, winterLimit, meetLimit, second,
     ["query","budget","whenSel","whenAt","companions","weather"].map(id => $("#"+id)?.value),
