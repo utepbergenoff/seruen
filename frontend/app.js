@@ -100,7 +100,9 @@
 
   // source goes to the backend (gps | map | preset); locKind is only for the line under the title
   function cancelLocation() {
-    state.locVersion++; state.locating = false; clearTimeout(state.locTimer);
+    state.locVersion++; state.locating = false;
+    clearTimeout(state.locTimer); clearTimeout(state.locHintTimer);
+    if (state.geoMessage === "geoSlow") state.geoMessage = null;
   }
   function setLoc(lat, lon, source, presetId, pan = true, kind = null) {
     cancelLocation(); state.geoMessage = null;
@@ -257,7 +259,7 @@
   function renderLocLine() {
     const t = T(), p = state.presets.find((x) => x.id === state.preset);
     const text = state.locating ? t.locLocating
-      : state.locKind === "gps" ? t.locFound
+      : state.locKind === "gps" ? fmt(t.locFound, {accuracy: state.loc.precision_m || 100})
       : p ? fmt(t.locPreset, {name: plabel(p)})
       : state.locKind === "map" ? t.locMap
       : t.locCenter;
@@ -274,28 +276,39 @@
     ext.cancelMapPick?.();
     const version = ++state.locVersion;
     const fail = (key) => {
-      if (version !== state.locVersion) return;
-      clearTimeout(state.locTimer); state.locating = false;
+      if (version !== state.locVersion || !state.locating) return;
+      cancelLocation();
       state.geoMessage = key; renderLocLine(); // Keep the current point and active walk, including on failure.
     };
     state.geoMessage = null; state.locating = true; renderLocLine();
     if (!navigator.geolocation || !window.isSecureContext) return fail("geoUnavailable");
-    // Bound the UI wait even when the browser's permission prompt remains unanswered.
-    state.locTimer = setTimeout(() => { if (state.locating) fail("geoTimeout"); }, 5000);
+    // A slow Wi-Fi fix or permission dialog must not throw away an otherwise valid answer.
+    // Offer the map early, but let this one bounded request finish; search never waits for GPS.
+    state.locHintTimer = setTimeout(() => {
+      if (version !== state.locVersion || !state.locating) return;
+      state.geoMessage = "geoSlow"; renderLocLine();
+    }, 3000);
+    state.locTimer = setTimeout(() => fail("geoTimeout"), 15000);
     try { navigator.geolocation.getCurrentPosition((pos) => {
       if (version !== state.locVersion || !state.locating) return;
       const lat = round3(pos.coords.latitude), lon = round3(pos.coords.longitude);  // rounded right away
       if (!Number.isFinite(lat) || !Number.isFinite(lon)) return fail("geoUnavailable");
+      const accuracy = pos.coords.accuracy;
+      // A city-sized network estimate cannot support nearby venues or walking directions.
+      if (!Number.isFinite(accuracy) || accuracy < 0 || accuracy > 1000) return fail("geoImprecise");
       if (lat < 51.0 || lat > 51.25 || lon < 71.25 || lon > 71.65) {
         fail("geoOutside"); return;
       }
       setLoc(lat, lon, "gps", null);
+      state.loc.precision_m = Math.max(100, Math.ceil(accuracy / 100) * 100);
+      state.geoMessage = accuracy > 300 ? "geoApproximate" : null;
+      renderLocLine();
     }, (err) => {
       if (version !== state.locVersion || !state.locating) return;
       clearTimeout(state.locTimer);
       // 1 = permission denied, 2 = position unavailable (often: browser not allowed in macOS/Windows settings), 3 = timeout
       fail(err && err.code === 1 ? "geoDenied" : err && err.code === 3 ? "geoTimeout" : "geoUnavailable");
-    }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 60000});
+    }, {enableHighAccuracy: false, timeout: 15000, maximumAge: 60000});
     } catch { fail("geoUnavailable"); }
   }
   $("#geoRetry").addEventListener("click", locate);
@@ -351,7 +364,7 @@
     try {
       // the server searches the full 2GIS catalog with Gemini; if 2GIS fails, its demo quota is used up or it
       // has nothing that fits, the same request goes to our own checked database, so 2GIS never leaves it empty
-      let body = {location: {lat: round3(state.loc.lat), lon: round3(state.loc.lon), precision_m: 100, source: state.loc.source},
+      let body = {location: {lat: round3(state.loc.lat), lon: round3(state.loc.lon), precision_m: state.loc.precision_m || 100, source: state.loc.source},
         query: $("#query").value.trim(), context: await context()};
       if (version !== state.requestVersion) return;
       if (ext.requestExtras) Object.assign(body, ext.requestExtras(body));

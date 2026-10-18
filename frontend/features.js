@@ -404,7 +404,7 @@
   });
 
   // ---------- F6: saved walks, F1: the walk in progress ----------
-  const currentLocation = () => ({lat: r3(state.loc.lat), lon: r3(state.loc.lon), precision_m: 100,
+  const currentLocation = () => ({lat: r3(state.loc.lat), lon: r3(state.loc.lon), precision_m: state.loc.precision_m || 100,
     source: ["gps", "map", "preset"].includes(state.loc.source) ? state.loc.source : "map"});
   function planView(result, request, done = [], deadline = null) {
     request = JSON.parse(JSON.stringify(request));

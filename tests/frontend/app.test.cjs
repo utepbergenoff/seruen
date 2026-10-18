@@ -14,7 +14,7 @@ test('shell and six demos stay usable while backend health is pending', async t=
 });
 test('late GPS cannot replace a selected demo',async t=>{
   const b=await boot(t); b.click('#scenarioCards button');await tick();
-  b.gps.ok({coords:{latitude:51.15,longitude:71.44}});
+  b.gps.ok({coords:{latitude:51.15,longitude:71.44,accuracy:80}});
   b.click('#chips button');await tick();
   assert.equal(b.requests[1].body.location.source,'preset');
   assert.deepEqual(b.requests[1].body.location,b.requests[0].body.location);
@@ -28,7 +28,7 @@ test('only the newest request may render, even if older request arrives last',as
   assert.doesNotMatch(b.w.document.querySelector('#results').textContent,/STALE/);
 });
 test('coordinates round on device and permission failure keeps the chosen point',async t=>{
-  const b=await boot(t);b.gps.ok({coords:{latitude:51.1284321,longitude:71.4304321}});
+  const b=await boot(t);b.gps.ok({coords:{latitude:51.1284321,longitude:71.4304321,accuracy:80}});
   b.click('#goBtn');await tick();
   assert.equal(b.requests[0].body.location.lat,51.128);
   assert.equal(b.requests[0].body.location.lon,71.43);

@@ -37,12 +37,26 @@ test('GPS starts before static files or health finish, and search stays usable',
   assert.equal(b.w.document.querySelector('#geoActions').hidden,true);
 });
 
-test('unanswered GPS or permission prompt releases UI after 5 seconds; retry ignores old callbacks',async t=>{
+test('a slow Mac fix survives the old five-second deadline without blocking search',async t=>{
+  const c=clock(), b=await boot(t,{clock:c}), a=b.w.SeruenApp;
+  c.advance(3000);
+  assert.equal(a.state.locating,true);
+  assert.equal(b.w.document.querySelector('#geoMsg').textContent,b.w.I18N.ru.geoSlow);
+  assert.equal(b.w.document.querySelector('#goBtn').disabled,false);
+  assert.equal(b.w.document.querySelector('#geoMap').disabled,false);
+  c.advance(5000);b.gps.ok(pos());
+  assert.equal(a.state.loc.source,'gps');assert.equal(a.state.loc.lat,51.15);
+  assert.equal(a.state.locating,false);
+  assert.equal(b.w.document.querySelector('#geoMsg').hidden,true);
+  c.advance(15000);assert.equal(b.w.document.querySelector('#geoMsg').hidden,true);
+});
+
+test('unanswered GPS has a final deadline; retry ignores old callbacks',async t=>{
   const c=clock(), b=await boot(t,{clock:c}), a=b.w.SeruenApp;
   const old=b.gps.calls[0];
-  c.advance(4999);assert.equal(a.state.locating,true);
+  c.advance(14999);assert.equal(a.state.locating,true);
   c.advance(1);assert.equal(a.state.locating,false);
-  assert.match(b.w.document.querySelector('#geoMsg').textContent,/5 секунд/);
+  assert.match(b.w.document.querySelector('#geoMsg').textContent,/15 секунд/);
   assert.equal(b.w.document.querySelector('#geoRetry').disabled,false);
   const before=JSON.stringify(a.state.loc);
   old.ok(pos());assert.equal(JSON.stringify(a.state.loc),before);
@@ -57,16 +71,19 @@ test('unanswered GPS or permission prompt releases UI after 5 seconds; retry ign
 });
 
 test('map selection cancels waiting immediately and ignores a late GPS response',async t=>{
-  const b=await boot(t);const old=b.gps.calls[0],a=b.w.SeruenApp,before=JSON.stringify(a.state.loc);
+  const c=clock(),b=await boot(t,{clock:c});const old=b.gps.calls[0],a=b.w.SeruenApp,before=JSON.stringify(a.state.loc);
   b.click('#geoMap');
   assert.equal(a.state.locating,false);
   assert.equal(b.w.document.activeElement.id,'map');
   assert.match(b.w.document.querySelector('#geoMsg').textContent,/Нажмите на карту/);
   old.ok(pos());assert.equal(JSON.stringify(a.state.loc),before);
+  c.advance(20000);
+  assert.match(b.w.document.querySelector('#geoMsg').textContent,/Нажмите на карту/);
 });
 
 test('a search freezes its visible point while a GPS response is pending',async t=>{
-  const b=await boot(t), a=b.w.SeruenApp;
+  const c=clock(),b=await boot(t,{clock:c}), a=b.w.SeruenApp;
+  c.advance(8000);
   b.click('#goBtn');await tick();
   const before=JSON.stringify(a.state.loc);
   b.gps.ok(pos());
@@ -74,6 +91,35 @@ test('a search freezes its visible point while a GPS response is pending',async 
   assert.equal(JSON.stringify(a.state.loc),before);
   assert.equal(b.requests[0].body.location.lat,a.state.loc.lat);
   assert.equal(b.requests[0].body.location.lon,a.state.loc.lon);
+  assert.equal(b.w.document.querySelector('#geoMsg').hidden,true);
+});
+
+test('instant fixes cancel the slow hint and show rounded accuracy in all languages',async t=>{
+  const c=clock(),b=await boot(t,{clock:c});b.gps.ok(pos());
+  c.advance(15000);
+  assert.equal(b.w.document.querySelector('#geoMsg').hidden,true);
+  for(const lang of ['en','kk','ru']) {
+    b.click(`[data-lang="${lang}"]`);
+    assert.equal(b.w.document.querySelector('#locLine').textContent,b.w.I18N[lang].locFound.replace('{accuracy}','300'));
+  }
+  b.click('#goBtn');await tick();assert.equal(b.requests[0].body.location.precision_m,300);
+  assert.equal(b.w.localStorage.getItem('seruen_location'),null);
+});
+
+test('coarse location is labelled approximate and not advertised as 100 m precision',async t=>{
+  const b=await boot(t);b.gps.ok({coords:{latitude:51.151234,longitude:71.441234,accuracy:650}});
+  assert.equal(b.w.document.querySelector('#geoMsg').textContent,b.w.I18N.ru.geoApproximate);
+  b.click('#goBtn');await tick();
+  assert.deepEqual(b.requests[0].body.location,{lat:51.151,lon:71.441,precision_m:700,source:'gps'});
+});
+
+test('city-scale or unknown accuracy cannot silently replace the chosen starting point',async t=>{
+  const b=await boot(t,{url:'https://example.test/?preset=baiterek'}), before=JSON.stringify(b.w.SeruenApp.state.loc);
+  for(const accuracy of [12000,NaN,undefined,-1]) {
+    b.click('#geoBtn');b.gps.ok({coords:{latitude:51.15,longitude:71.44,accuracy}});
+    assert.equal(JSON.stringify(b.w.SeruenApp.state.loc),before);
+    assert.equal(b.w.document.querySelector('#geoMsg').textContent,b.w.I18N.ru.geoImprecise);
+  }
 });
 
 test('denied or outside-city retry preserves selected point and active walk',async t=>{
