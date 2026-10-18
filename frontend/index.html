@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Серуен — прогулки по Астане</title>
+  <meta name="description" content="ИИ-помощник по прогулкам в Астане: 1–3 места рядом с честным «почему», временем и планом.">
+  <meta name="theme-color" content="#0f766e">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">🧭</span>
+      <div>
+        <h1>Серуен</h1>
+        <p class="tagline" data-i18n="tagline"></p>
+      </div>
+    </div>
+    <nav class="top-actions">
+      <div class="dropdown">
+        <button id="scenariosBtn" class="btn ghost" aria-haspopup="true" aria-expanded="false"><span data-i18n="scenarios"></span> ▾</button>
+        <div id="scenariosMenu" class="menu" role="menu" hidden></div>
+      </div>
+      <div class="lang" role="group" aria-label="Language">
+        <button data-lang="kk">KZ</button><button data-lang="ru">RU</button><button data-lang="en">EN</button>
+      </div>
+      <span id="modeBadge" class="badge" hidden></span>
+      <button id="pirateBtn" class="btn ghost icon" title="Pirate mode" aria-pressed="false">🏴‍☠️</button>
+      <span id="points" class="points" title=""></span>
+      <a class="btn ghost" href="about.html" data-i18n="about"></a>
+    </nav>
+  </header>
+
+  <main class="layout">
+    <section class="map-wrap" aria-label="Map">
+      <div id="map"></div>
+      <div id="captain" class="captain" hidden></div>
+    </section>
+
+    <section class="panel">
+      <div class="card block">
+        <h2 data-i18n="where"></h2>
+        <div id="presets" class="presets"></div>
+        <div class="row">
+          <button id="geoBtn" class="btn small">📍 <span data-i18n="myLocation"></span></button>
+          <span class="hint" data-i18n="dragHint"></span>
+        </div>
+        <p id="geoMsg" class="msg warn" hidden></p>
+      </div>
+
+      <form id="askForm" class="card block" autocomplete="off">
+        <h2 data-i18n="what"></h2>
+        <div id="chips" class="chips"></div>
+        <div class="ask">
+          <input id="query" type="text" maxlength="500" data-i18n-placeholder="placeholder" aria-label="Query">
+          <button id="goBtn" class="btn primary" type="submit" data-i18n="go"></button>
+        </div>
+        <details id="ctxBox" class="ctx">
+          <summary data-i18n="settings"></summary>
+          <div class="ctx-grid">
+            <label><span data-i18n="budget"></span>
+              <span class="row"><input id="budget" type="range" min="15" max="180" step="5" value="60">
+              <output id="budgetOut">60</output>&nbsp;<span data-i18n="minutes"></span></span>
+              <span class="row small"><input id="budgetAuto" type="checkbox" checked> <span data-i18n="budgetAuto"></span></span>
+            </label>
+            <label><span data-i18n="with"></span>
+              <select id="companions">
+                <option value="alone" data-i18n="alone"></option>
+                <option value="child" data-i18n="child"></option>
+                <option value="group" data-i18n="group"></option>
+              </select>
+            </label>
+            <label><span data-i18n="when"></span>
+              <span class="row"><select id="whenSel"><option value="now" data-i18n="now"></option><option value="other" data-i18n="other"></option></select>
+              <input id="whenAt" type="datetime-local" hidden></span>
+            </label>
+            <label id="weatherField"><span data-i18n="weather"></span>
+              <select id="weather">
+                <option value="auto" data-i18n="wAuto"></option>
+                <option value="off" data-i18n="wOff"></option>
+                <option value="cold" data-i18n="wCold"></option>
+                <option value="mild" data-i18n="wMild"></option>
+              </select>
+            </label>
+            <label class="check"><input id="access" type="checkbox"> <span data-i18n="access"></span></label>
+          </div>
+        </details>
+      </form>
+
+      <div id="status" class="status" aria-live="polite"></div>
+      <div id="results"></div>
+      <p class="foot"><span data-i18n="disclaimerShort"></span> <span id="snapshot"></span> · <a href="about.html" data-i18n="about"></a></p>
+    </section>
+  </main>
+
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script src="config.js"></script>
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
