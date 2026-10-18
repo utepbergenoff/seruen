@@ -2,6 +2,8 @@
 
 Backend integration update: see [real_data_integration.md](real_data_integration.md) and [handoff.md](handoff.md). The sections below retain Yerlan's pre-integration snapshot.
 
+API update 18.10: Gemini Flash-Lite is live (5/6 demo responses use AI; S1 safely falls back). Google Places key passed an IDs Only probe; paid ratings/hours remain disabled pending owner-side quota verification. See [api_integrations.md](api_integrations.md) and [verification](api_integrations_verification.json). 185 tests pass.
+
 Living note for the team. Owner: Yerlan. Update it when something changes.
 
 ---

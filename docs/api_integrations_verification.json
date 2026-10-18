@@ -1,0 +1,139 @@
+{
+  "checked_at": "2026-10-18T07:16:43.178667+00:00",
+  "base_url": "https://seruen-backend-f36d.onrender.com",
+  "gemini_model": "gemini-3.5-flash-lite",
+  "checks": [
+    {
+      "scenario": "S1",
+      "http": 200,
+      "seconds": 3.42,
+      "mode": "no_ai",
+      "sources": [
+        "template",
+        "template"
+      ],
+      "cards": 2,
+      "known_ids": true,
+      "budget_valid": true,
+      "cors": true,
+      "safety_notes": 0
+    },
+    {
+      "scenario": "S2",
+      "http": 200,
+      "seconds": 3.28,
+      "mode": "ai",
+      "sources": [
+        "ai",
+        "ai"
+      ],
+      "cards": 2,
+      "known_ids": true,
+      "budget_valid": true,
+      "cors": true,
+      "safety_notes": 0
+    },
+    {
+      "scenario": "S3",
+      "http": 200,
+      "seconds": 2.93,
+      "mode": "ai",
+      "sources": [
+        "ai"
+      ],
+      "cards": 1,
+      "known_ids": true,
+      "budget_valid": true,
+      "cors": true,
+      "safety_notes": 0
+    },
+    {
+      "scenario": "S4",
+      "http": 200,
+      "seconds": 2.79,
+      "mode": "ai",
+      "sources": [
+        "ai"
+      ],
+      "cards": 1,
+      "known_ids": true,
+      "budget_valid": true,
+      "cors": true,
+      "safety_notes": 0
+    },
+    {
+      "scenario": "S5",
+      "http": 200,
+      "seconds": 3.11,
+      "mode": "ai",
+      "sources": [
+        "ai",
+        "ai"
+      ],
+      "cards": 2,
+      "known_ids": true,
+      "budget_valid": true,
+      "cors": true,
+      "safety_notes": 0
+    },
+    {
+      "scenario": "S6",
+      "http": 200,
+      "seconds": 3.11,
+      "mode": "ai",
+      "sources": [
+        "ai",
+        "ai"
+      ],
+      "cards": 2,
+      "known_ids": true,
+      "budget_valid": true,
+      "cors": true,
+      "safety_notes": 1
+    }
+  ],
+  "health": {
+    "status": "ok",
+    "mode_available": [
+      "no_ai",
+      "ai"
+    ],
+    "data_snapshot_date": "2026-10-17",
+    "poi_count": 1251,
+    "data_kind": "real",
+    "retrieval_mode": "bm25+lsa",
+    "mock": false,
+    "google_places": {
+      "configured": true,
+      "details_enabled": false,
+      "ids_probe": "ok"
+    }
+  },
+  "cache": {
+    "mode": "cached",
+    "sources": [
+      "template",
+      "template"
+    ]
+  },
+  "places_gate": {
+    "http": 503,
+    "error": "places_disabled",
+    "no_store": true,
+    "cors": true
+  },
+  "preflight": {
+    "/recommend": {
+      "http": 200,
+      "origin": "https://seruen-astana.netlify.app",
+      "methods": "GET, POST, OPTIONS"
+    },
+    "/places/osm_node_10064384671/details": {
+      "http": 200,
+      "origin": "https://seruen-astana.netlify.app",
+      "methods": "GET, POST, OPTIONS"
+    }
+  },
+  "ai_scenarios": 5,
+  "places_paid_fields_tested": false
+}
