@@ -1,0 +1,5 @@
+# Netlify: always fetch the newest service worker and settings
+/sw.js
+  Cache-Control: no-cache
+/config.js
+  Cache-Control: no-cache

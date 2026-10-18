@@ -1,0 +1,68 @@
+[
+  {
+    "id": "mega",
+    "label": {
+      "ru": "Я у Mega Silk Way",
+      "en": "At Mega Silk Way",
+      "kk": "Mega Silk Way жанында"
+    },
+    "lat": 51.0891,
+    "lon": 71.4073,
+    "osm": "way/499328514"
+  },
+  {
+    "id": "expo",
+    "label": {
+      "ru": "Я у Экспо (Нур Алем)",
+      "en": "At Expo (Nur Alem)",
+      "kk": "Экспо (Нұр Әлем) жанында"
+    },
+    "lat": 51.0893,
+    "lon": 71.4162,
+    "osm": "way/454857501"
+  },
+  {
+    "id": "khan",
+    "label": {
+      "ru": "Я у Хан Шатыра",
+      "en": "At Khan Shatyr",
+      "kk": "Хан Шатыр жанында"
+    },
+    "lat": 51.1325,
+    "lon": 71.4039,
+    "osm": "way/460703779"
+  },
+  {
+    "id": "baiterek",
+    "label": {
+      "ru": "Я у Байтерека",
+      "en": "At Baiterek",
+      "kk": "Бәйтерек жанында"
+    },
+    "lat": 51.1283,
+    "lon": 71.4305,
+    "osm": "way/230401645"
+  },
+  {
+    "id": "nurly",
+    "label": {
+      "ru": "Я у вокзала Нурлы Жол",
+      "en": "At Nurly Zhol station",
+      "kk": "Нұрлы Жол вокзалы жанында"
+    },
+    "lat": 51.112,
+    "lon": 71.5289,
+    "osm": "node/13612447905"
+  },
+  {
+    "id": "airport",
+    "label": {
+      "ru": "Я в аэропорту",
+      "en": "At the airport",
+      "kk": "Әуежайда"
+    },
+    "lat": 51.0259,
+    "lon": 71.4663,
+    "osm": "way/507841374"
+  }
+]
