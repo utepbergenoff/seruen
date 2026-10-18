@@ -17,7 +17,7 @@ async function boot(t, opts = {}) {
   Object.defineProperty(w.navigator,'geolocation',{value:{getCurrentPosition:(ok,fail)=>Object.assign(gps,{ok,fail})}});
   const map={setView(){return this;},on(){return this;},getZoom(){return 15;},invalidateSize(){},fitBounds(){},removeLayer(){}};
   w.L={map:()=>map,tileLayer:()=>({addTo(){}}),divIcon:x=>x,
-    marker:()=>({addTo(){return this;},bindTooltip(){return this;},bindPopup(){return this;},on(){return this;},setLatLng(){},setTooltipContent(){}}),
+    marker:()=>({addTo(){return this;},bindTooltip(){return this;},bindPopup(){return this;},getLatLng(){return [51.13,71.43];},openPopup(){},on(){return this;},setLatLng(){},setTooltipContent(){}}),
     layerGroup:()=>({addTo(){return this;},clearLayers(){}}),latLngBounds:x=>x,
     Control:{extend:cfg=>class{addTo(){w.document.body.appendChild(cfg.onAdd());}}},
     DomUtil:{create:(tag,cl)=>{const el=w.document.createElement(tag);el.className=cl;return el;}},
@@ -136,7 +136,7 @@ test('2GIS is asked only on the button, once per place, and its text is escaped'
   const btn=b.w.document.querySelector('.rec [data-act="gis"]'),box=b.w.document.querySelector('.rec .gis-box');
   btn.click();await tick();await tick();
   assert.equal(b.gis.length,1);assert.match(b.gis[0],/\/places\/p1\/2gis\?lang=ru$/);
-  assert.match(box.textContent,/Данные 2ГИС/);assert.match(box.textContent,/★ 4\.6 · отзывов: 321/);
+  assert.match(box.textContent,/Данные 2ГИС/);assert.match(box.textContent,/4\.6 · отзывов: 321/);assert.ok(box.querySelector('use[href="#i-star"]'));
   assert.match(box.textContent,/пн–пт 08:00–22:00; сб–вс нет данных/);
   assert.match(box.textContent,/не подтверждает, что место открыто прямо сейчас/);
   assert.equal(box.querySelector('img'),null);
@@ -236,4 +236,18 @@ test('provider quota error preserves the accumulated catalog for retry',async t=
   b.requests[1].resolve(json({...answer('LIMIT'),source:'2gis',source_error:'twogis_local_limit'}));await tick();
   assert.match(b.w.document.querySelector('#nearbyPlaces').textContent,/Espresso Day/);
   assert.equal(b.w.document.querySelector('#nextPlacesBtn').disabled,false);
+});
+
+test('the time ruler puts every pick at its walking minutes and opens its card',async t=>{
+  const b=await boot(t);b.click('#goBtn');await tick();
+  b.requests[0].resolve(json({...answer('ruler'),recommendations:[{...rec('p1','Near'),walk_min:5},{...rec('p2','Far'),walk_min:21}]}));await tick();
+  const stops=[...b.w.document.querySelectorAll('.ruler-stop')];
+  assert.equal(stops.length,2);
+  assert.deepEqual(stops.map(s=>s.textContent.trim()),['15 мин','221 мин']);
+  assert.ok(parseFloat(stops[0].style.getPropertyValue('--x'))<parseFloat(stops[1].style.getPropertyValue('--x')));
+  assert.match(b.w.document.querySelector('.ruler-scale').textContent,/Я здесь.*25 мин/s);
+  stops[1].click();
+  assert.ok(b.w.document.querySelectorAll('.rec')[1].classList.contains('active'));
+  assert.equal(b.w.document.querySelectorAll('.rec .ic').length>0,true);
+  assert.doesNotMatch(b.w.document.querySelector('#results').textContent,/[\u{1F300}-\u{1FAFF}]/u);
 });

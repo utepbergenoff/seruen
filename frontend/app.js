@@ -10,6 +10,7 @@
   const API = (CFG.API_URL || "").replace(/\/$/, "");
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => Array.from(document.querySelectorAll(s));
+  const icon = (n) => `<svg class="ic" aria-hidden="true"><use href="#i-${n}"/></svg>`;
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
   const round3 = (x) => Math.round(x * 1000) / 1000;
   const store = {
@@ -31,6 +32,8 @@
 
   // ---------- map ----------
   const map = L.map("map", {zoomControl: true}).setView([state.loc.lat, state.loc.lon], 15);
+  const fitTo = (bounds, opts = {}) => map.fitBounds(bounds, {padding: [48, 48], ...opts});
+  const showAt = (latlng, zoom) => map.setView(latlng, zoom);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(map);
@@ -55,7 +58,7 @@
     state.preset = presetId;
     state.locKind = kind || source;
     me.setLatLng([lat, lon]);
-    if (pan) map.setView([lat, lon], Math.max(map.getZoom(), 15));
+    if (pan) showAt([lat, lon], Math.max(map.getZoom(), 15));
     if (kind !== "center") $("#geoMsg").hidden = true;
     renderLocLine();
   }
@@ -272,7 +275,7 @@
   async function ask() {
     const version = ++state.requestVersion;
     const simulatedWeather = ["cold", "mild"].includes($("#weather").value);
-    $("#status").innerHTML = `<div class="loading" role="status"><div class="spinner"></div>${esc(T().loading)}</div>`;
+    $("#status").innerHTML = `<div class="loading walking" role="status"><span class="trail" aria-hidden="true"><i></i></span>${esc(T().loading)}</div>`;
     $("#goBtn").disabled = true;
     try {
       // the server searches the full 2GIS catalog with Gemini; if 2GIS fails, its demo quota is used up or it
@@ -298,7 +301,7 @@
       state.last = data;
       $("#status").innerHTML = "";
       render(data);
-      if (window.matchMedia("(max-width: 860px)").matches) $("#results").scrollIntoView({behavior: "smooth", block: "start"});
+      $("#results").scrollIntoView({behavior: "smooth", block: "start"});
     } catch (err) {
       if (version !== state.requestVersion) return;
       $("#status").innerHTML = `<p class="msg err">${esc(T().serverDown)} <button type="button" class="btn small" id="retryBtn">${esc(T().retry)}</button></p>`;
@@ -383,7 +386,7 @@
     const pc = (x) => (100 * x / tot).toFixed(1) + "%";
     const line = fmt(t.budgetLine, {a: b.walk_there_min, b: b.stay_min, c: b.walk_back_min, r: b.reserve_min || 0, t: b.total_min, B: b.budget_min});
     return `<div class="bar" aria-hidden="true"><span class="w" style="width:${pc(b.walk_there_min)}"></span><span class="s" style="width:${pc(b.stay_min)}"></span><span class="w" style="width:${pc(b.walk_back_min)}"></span></div>
-      <div class="bar-cap">${esc(line)} ${b.total_min <= b.budget_min ? "✓" : "⚠"}${b.spare_min > 0 ? ` · ${esc(t.spare)} ${b.spare_min} ${esc(t.minutes)}` : ""}</div>`;
+      <div class="bar-cap">${esc(line)} ${icon(b.total_min <= b.budget_min ? "check" : "info")}${b.spare_min > 0 ? ` · ${esc(t.spare)} ${b.spare_min} ${esc(t.minutes)}` : ""}</div>`;
   }
   const visited = () => store.get("seruen_visited", {});
   function renderPoints() {
@@ -412,8 +415,10 @@
     if (d.source === "2gis") html += `<p class="badge gis">${esc(t.catalog.source)}</p>`;
     const notes = (d.notes || []).map((n) => `<div class="note info">${esc(n)}</div>`).join("") +
       (d.safety || []).map((n) => `<div class="note safety">${esc(n)}</div>`).join("");
+    // the answer opens with the walking-time ruler; the server's notes follow it
+    html += timeRuler(recs);
     if (notes) html += `<div class="notes">${notes}</div>`;
-    if (!recs.length) html += `<div class="card empty"><div class="big">🧭</div><h3>${esc(t.emptyTitle)}</h3><p class="meta">${esc(t.emptyHint)}</p></div>`;
+    if (!recs.length) html += `<div class="card empty"><div class="big">${icon("nav")}</div><h3>${esc(t.emptyTitle)}</h3><p class="meta">${esc(t.emptyHint)}</p></div>`;
 
     // the AI may pick fewer than three places; the backend then adds the next best checked ones with template texts
     const mixed = recs.some((r) => r.why_source === "ai");
@@ -422,27 +427,29 @@
       const L2 = links(r);
       const b = cardBudget(r, d);
       const kind = r.kind_label || r.category_label || catLabel(r.category);
-      const rating = r.rating ? ` · ★ ${esc(r.rating)}${r.rating_count ? " (" + esc(r.rating_count) + ")" : ""}` : "";
+      const rating = r.rating ? ` · ${icon("star")} ${esc(r.rating)}${r.rating_count ? " (" + esc(r.rating_count) + ")" : ""}` : "";
       // the card face stays short; what the spec also asks for (what to do, time there, sources) sits under "More"
       const realDesc = r.description && !/^generated/.test(r.description_source || "");
       const desc = !realDesc ? "" : `<div class="desc">${esc(r.description)} <span class="src">(${r.description_url && /^https:\/\/(?:[a-z-]+\.)?wikipedia\.org\//i.test(r.description_url) ? `<a href="${esc(r.description_url)}" target="_blank" rel="noopener">${esc(t.descSrc[r.description_source] || r.description_source)}</a>` : esc(t.descSrc[r.description_source] || r.description_source || "")})</span></div>`;
       const picked = r.why_source === "ai" ? t.pickAi : mixed ? t.pickCode : t.pickTpl;
       const acc = r.accessibility && r.accessibility !== "unknown" ? t.accessL[r.accessibility] : t.accessL.unknown;
-      html += `<article class="card rec" data-id="${esc(r.poi_id)}" tabindex="0" aria-label="${esc(r.name)}">
-        <div class="rec-title"><span class="num">${i + 1}</span><div>
+      html += `<article class="card rec" data-id="${esc(r.poi_id)}" tabindex="0" aria-label="${esc(r.name)}" style="--i:${i}">
+        <div class="rec-title"><span class="num">${i + 1}</span><div class="rec-name">
           <h3><a class="plain" href="${esc(L2.gisPlace)}" target="_blank" rel="noopener" title="${esc(t.openIn2gis)}">${esc(r.name)}</a></h3>
-          <div class="meta">${esc(kind)} · ${esc(r.distance_m)} ${esc(t.distance)} · 🚶 ${esc(r.walk_min)} ${esc(t.walk)}${rating}</div>
+          <div class="meta">${esc(kind)}${rating}</div>
         </div></div>
-        ${r.address ? `<div class="meta">📍 ${esc(r.address)}</div>` : ""}
+        <div class="walk"><span class="walk-line" aria-hidden="true"><i></i></span>
+          <span class="walk-txt">${icon("walk")} <b>${esc(r.walk_min)}</b> ${esc(t.walk)} · ${esc(r.distance_m)} ${esc(t.distance)}</span></div>
+        ${r.address ? `<div class="meta">${icon("pin")} ${esc(r.address)}</div>` : ""}
         <div>${r.open_status ? statusPill(r.open_status) : ""}</div>
         <div class="field why"><b>${esc(t.why)}:</b> ${esc(r.why)}</div>
         ${FEAT.photos ? `<div class="photos" aria-live="polite"></div>` : ""}
         <div class="actions">
-          ${FEAT.mapLinks ? `<a class="btn" href="${esc(L2.gis)}" target="_blank" rel="noopener">🗺 ${esc(t.route2gis)}</a>
-          <a class="btn" href="${esc(L2.google)}" target="_blank" rel="noopener">🧭 ${esc(t.routeGoogle)}</a>` : ""}
-          <button type="button" class="btn" data-act="map">📍 ${esc(t.onMap)}</button>
-          ${FEAT.twogis ? `<button type="button" class="btn" data-act="gis" aria-expanded="false" aria-controls="gis-${i}">⭐ ${esc(t.gisBtn)}</button>` : ""}
-          ${FEAT.points ? `<button type="button" class="btn" data-act="visit" ${done ? "disabled" : ""}>${done ? "✓ " + esc(t.visitedDone) : "🪙 " + esc(t.visited) + " +10"}</button>` : ""}
+          ${FEAT.mapLinks ? `<a class="btn" href="${esc(L2.gis)}" target="_blank" rel="noopener">${icon("map")} ${esc(t.route2gis)}</a>
+          <a class="btn" href="${esc(L2.google)}" target="_blank" rel="noopener">${icon("nav")} ${esc(t.routeGoogle)}</a>` : ""}
+          <button type="button" class="btn" data-act="map">${icon("pin")} ${esc(t.onMap)}</button>
+          ${FEAT.twogis ? `<button type="button" class="btn" data-act="gis" aria-expanded="false" aria-controls="gis-${i}">${icon("star")} ${esc(t.gisBtn)}</button>` : ""}
+          ${FEAT.points ? `<button type="button" class="btn" data-act="visit" ${done ? "disabled" : ""}>${done ? icon("check") + " " + esc(t.visitedDone) : icon("visit") + " " + esc(t.visited) + " +10"}</button>` : ""}
         </div>
         ${FEAT.twogis ? `<div class="gis-box" id="gis-${i}" aria-live="polite" hidden></div>` : ""}
         <details class="more"><summary>${esc(t.more)}</summary>
@@ -454,22 +461,25 @@
           <div class="src">${esc(t.sources)}: ${(r.sources || [r.facts_source || "poi_db"]).map(srcName).map(esc).join(", ")}${r.last_checked ? " · " + esc(r.last_checked) : ""} · ${esc(picked)}</div>
         </details>
       </article>`;
-      const icon = L.divIcon({className: "", iconSize: [30, 30], iconAnchor: [15, 30], html: `<div class="pin"><b>${i + 1}</b></div>`});
-      markers[r.poi_id] = L.marker([r.coords.lat, r.coords.lon], {icon, title: r.name}).addTo(layer)
+      const pinIcon = L.divIcon({className: "", iconSize: [30, 30], iconAnchor: [15, 15], html: `<div class="pin"><b>${i + 1}</b></div>`});
+      // a thin dashed line from the person to each pick: every place is measured from where they stand
+      const from = state.lastReq ? state.lastReq.location : state.loc;
+      if (L.polyline) L.polyline([[from.lat, from.lon], [r.coords.lat, r.coords.lon]], {color: "#00AFCA", weight: 3, dashArray: "1 8", lineCap: "round", opacity: .95, interactive: false}).addTo(layer);
+      markers[r.poi_id] = L.marker([r.coords.lat, r.coords.lon], {icon: pinIcon, title: r.name}).addTo(layer)
         .bindPopup(`<b>${i + 1}. ${esc(r.name)}</b><br>${esc(r.distance_m)} ${esc(t.distance)} · ${esc(r.walk_min)} ${esc(t.walk)}`);
     });
-    if (FEAT.route && recs.length >= 2) html += `<button type="button" id="routeBtn" class="btn">🧭 ${esc(t.buildRoute)}</button><div id="routeBox"></div>`;
+    if (FEAT.route && recs.length >= 2) html += `<button type="button" id="routeBtn" class="btn">${icon("route")} ${esc(t.buildRoute)}</button><div id="routeBox"></div>`;
     if (nearby.length) {
       html += `<section class="card" id="nearbyPlaces"><h3>${esc(t.catalog.all)} (${nearby.length})</h3><p class="meta">${esc(t.catalog.hint)}</p>`;
       nearby.forEach(p => {
         const url = links(p).gisPlace;
         html += `<div class="field nearby-place" data-id="${esc(p.poi_id)}"><a href="${esc(url)}" target="_blank" rel="noopener">${esc(p.name)}</a>
-          <div class="meta">${esc(p.distance_m)} ${esc(t.distance)} · ${esc(catLabel(p.category))}${p.rating ? ` · ★ ${esc(p.rating)}` : ""}${p.address ? ` · ${esc(p.address)}` : ""}</div>
+          <div class="meta">${esc(p.distance_m)} ${esc(t.distance)} · ${esc(catLabel(p.category))}${p.rating ? ` · ${icon("star")} ${esc(p.rating)}` : ""}${p.address ? ` · ${esc(p.address)}` : ""}</div>
           ${p.open_status ? statusPill(p.open_status) : ""}${p.eligible ? "" : `<div class="meta">${esc(t.catalog.filtered)} ${esc(codeLabel(p.excluded_because))}</div>`}
-          <button type="button" class="btn small" data-nearby="${esc(p.poi_id)}">📍 ${esc(t.onMap)}</button></div>`;
+          <button type="button" class="btn small" data-nearby="${esc(p.poi_id)}">${icon("pin")} ${esc(t.onMap)}</button></div>`;
         if (!markers[p.poi_id]) {
-          const icon = L.divIcon({className: "", iconSize: [24,24], iconAnchor: [12,24], html: '<div class="pin"><b>•</b></div>'});
-          markers[p.poi_id] = L.marker([p.coords.lat, p.coords.lon], {icon, title:p.name}).addTo(layer)
+          const dotIcon = L.divIcon({className: "", iconSize: [24,24], iconAnchor: [12,12], html: '<div class="pin dot"><b>•</b></div>'});
+          markers[p.poi_id] = L.marker([p.coords.lat, p.coords.lon], {icon: dotIcon, title:p.name}).addTo(layer)
             .bindPopup(`<b>${esc(p.name)}</b><br>${esc(p.distance_m)} ${esc(t.distance)}`);
         }
       });
@@ -477,20 +487,20 @@
     }
     if (d.next_cursor) html += `<button type="button" id="nextPlacesBtn" class="btn">${esc(t.catalog.next)}</button>`;
     html += considered(d);
-    html += `<p class="foot">⚠️ ${esc(d.disclaimer || t.disclaimerShort)}</p>`;
+    html += `<p class="foot">${icon("info")} ${esc(d.disclaimer || t.disclaimerShort)}</p>`;
     $("#results").innerHTML = html;
 
     const mapped = nearby.length ? nearby : recs;
-    if (mapped.length) map.fitBounds(L.latLngBounds([[state.loc.lat, state.loc.lon], ...mapped.map((r) => [r.coords.lat, r.coords.lon])]), {padding: [40, 40], maxZoom: 16});
+    if (mapped.length) fitTo(L.latLngBounds([[state.loc.lat, state.loc.lon], ...mapped.map((r) => [r.coords.lat, r.coords.lon])]), {maxZoom: 16});
     $$("[data-nearby]").forEach(el => el.addEventListener("click", () => {
       const marker = markers[el.dataset.nearby];
-      if (marker) {map.setView(marker.getLatLng(), 16); marker.openPopup();}
+      if (marker) {showAt(marker.getLatLng(), 16); marker.openPopup();}
       if (window.matchMedia("(max-width: 860px)").matches) $("#map").scrollIntoView({behavior:"smooth"});
     }));
     $$(".rec").forEach((el) => {
       const id = el.dataset.id;
       const focus = () => {
-        const m = markers[id]; if (m) { map.setView(m.getLatLng(), Math.max(map.getZoom(), 16)); m.openPopup(); }
+        const m = markers[id]; if (m) { showAt(m.getLatLng(), Math.max(map.getZoom(), 16)); m.openPopup(); }
         $$(".rec").forEach((x) => x.classList.toggle("active", x === el));
         if (window.matchMedia("(max-width: 860px)").matches) $("#map").scrollIntoView({behavior: "smooth"});
       };
@@ -500,11 +510,17 @@
       const v = el.querySelector('[data-act="visit"]');
       if (v) v.addEventListener("click", () => {
         const all = visited(); all[id] = Date.now(); store.set("seruen_visited", all); renderPoints();
-        v.disabled = true; v.textContent = "✓ " + T().visitedDone;
+        v.disabled = true; v.innerHTML = icon("check") + " " + esc(T().visitedDone);
       });
       const g = el.querySelector('[data-act="gis"]');
       if (g) g.addEventListener("click", () => toggleGis(el, id, g));
     });
+    $$(".ruler-stop").forEach((b) => b.addEventListener("click", () => {
+      const el = $$(".rec").find((x) => x.dataset.id === b.dataset.stop), m = markers[b.dataset.stop];
+      $$(".rec").forEach((x) => x.classList.toggle("active", x === el));
+      if (el) el.scrollIntoView({behavior: "smooth", block: "start"});
+      if (m) { showAt(m.getLatLng(), Math.max(map.getZoom(), 16)); m.openPopup(); }
+    }));
     const np = $("#nextPlacesBtn"); if (np) np.addEventListener("click", askNext);
     const rb = $("#routeBtn"); if (rb) rb.addEventListener("click", buildRoute);
     if (FEAT.photos) recs.forEach((r) => loadPhotos(r, d));
@@ -546,20 +562,20 @@
     const special = (g.special_hours || []).filter((x) => x.date >= today).slice(0, 3)
       .map((x) => `${x.date.split("-").reverse().join(".")} ${(x.intervals || []).map((v) => `${v.start}–${v.end}`).join(", ") || G.noData}`);
     const rating = g.rating != null
-      ? `★ ${esc(g.rating)}${g.rating_count != null ? ` · ${esc(G.reviews)}: ${esc(g.rating_count)}` : ""}${G.scope[g.rating_scope] ? ` <span class="meta">(${esc(G.scope[g.rating_scope])})</span>` : ""}`
+      ? `${icon("star")} ${esc(g.rating)}${g.rating_count != null ? ` · ${esc(G.reviews)}: ${esc(g.rating_count)}` : ""}${G.scope[g.rating_scope] ? ` <span class="meta">(${esc(G.scope[g.rating_scope])})</span>` : ""}`
       : esc(G.noRating);
     const when = new Intl.DateTimeFormat({ru: "ru-RU", kk: "kk-KZ", en: "en-GB"}[state.lang] || "ru-RU",
       {day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Almaty"}).format(new Date(g.checked_at));
     const match = g.match_method === "catalog_id" ? t.catalog.match : g.match_method === "stored_id" ? G.matchManual : fmt(G.matchAuto, {m: g.match_distance_m});
     const url = /^https:\/\/2gis\.(kz|ru)\//.test(g.provider_url || "") ? g.provider_url : "";
     return `<div class="gis-head"><span class="badge gis">${esc(G.data)}</span> <b>${esc(g.provider_name)}</b></div>
-      ${g.address ? `<div class="meta">📍 ${esc(g.address)}</div>` : ""}
+      ${g.address ? `<div class="meta">${icon("pin")} ${esc(g.address)}</div>` : ""}
       <div>${rating}</div>
-      <div>🕘 <b>${esc(G.hours)}:</b> ${esc(gisHours(g))}</div>
-      ${special.length ? `<div>📅 <b>${esc(G.special)}:</b> ${esc(special.join("; "))}</div>` : ""}
+      <div>${icon("clock")} <b>${esc(G.hours)}:</b> ${esc(gisHours(g))}</div>
+      ${special.length ? `<div>${icon("calendar")} <b>${esc(G.special)}:</b> ${esc(special.join("; "))}</div>` : ""}
       ${g.schedule_note ? `<div class="meta">${esc(g.schedule_note)}</div>` : ""}
       <p class="meta">${esc(G.notNow)}${G.langNote ? " " + esc(G.langNote) : ""}</p>
-      <p class="src">${esc(match)} · ${esc(t.checked)} ${esc(when)}${url ? ` · <a href="${esc(url)}" target="_blank" rel="noopener">${esc(G.open)} ↗</a>` : ""}</p>`;
+      <p class="src">${esc(match)} · ${esc(t.checked)} ${esc(when)}${url ? ` · <a href="${esc(url)}" target="_blank" rel="noopener">${esc(G.open)} ${icon("ext")}</a>` : ""}</p>`;
   }
   function toggleGis(card, id, btn) {
     const box = card.querySelector(".gis-box"), open = box.hidden;
@@ -586,17 +602,17 @@
   const https = (u) => /^https:\/\//.test(u || "") ? u : "";
   function photosHtml(p) {
     const P = T().ph, photos = ((p && p.photos) || []).filter((x) => https(x.url));
-    if (!photos.length) return `<p class="ph-none">📷 ${esc(P.none)}</p>`;
+    if (!photos.length) return `<p class="ph-none">${icon("camera")} ${esc(P.none)}</p>`;
     const a = p.analysis;
     const chips = a ? [
-      P.light[a.lighting] && `☀️ ${P.light[a.lighting]}`,
-      P.kids[a.kids_area] && `🧸 ${P.kids[a.kids_area]}`,
-      a.seats ? `🪑 ${fmt(P.seats, {n: a.seats})}` : P.seating[a.seating] && `🪑 ${P.seating[a.seating]}`,
-      P.space[a.space] && `📐 ${P.space[a.space]}`,
-      a.decor && `🎨 ${a.decor}`,
-    ].filter(Boolean).map((x) => `<span class="tag">${esc(x)}</span>`).join("") : "";
+      P.light[a.lighting] && ["sun", P.light[a.lighting]],
+      P.kids[a.kids_area] && ["kids", P.kids[a.kids_area]],
+      a.seats ? ["seat", fmt(P.seats, {n: a.seats})] : P.seating[a.seating] && ["seat", P.seating[a.seating]],
+      P.space[a.space] && ["space", P.space[a.space]],
+      a.decor && ["leaf", a.decor],
+    ].filter(Boolean).map(([n, x]) => `<span class="tag">${icon(n)} ${esc(x)}</span>`).join("") : "";
     return `<div class="ph-strip">${photos.map((x) => `<a class="ph" href="${esc(https(x.page_url) || x.url)}" target="_blank" rel="noopener" title="${esc(photoCredit(x))}"><img src="${esc(x.url)}" alt="${esc(P.alt)}" loading="lazy" referrerpolicy="no-referrer"></a>`).join("")}</div>
-      ${a && a.summary ? `<div class="field ph-why"><b>📷 ${esc(P.title)}:</b> ${esc(a.summary)}</div>` : a ? "" : `<p class="src">${esc(P.noAnalysis)}</p>`}
+      ${a && a.summary ? `<div class="field ph-why">${icon("camera")} <b>${esc(P.title)}:</b> ${esc(a.summary)}</div>` : a ? "" : `<p class="src">${esc(P.noAnalysis)}</p>`}
       ${chips ? `<div class="tags">${chips}</div>` : ""}
       <p class="src">${esc(P.credit)}: ${[...new Set(photos.map(photoCredit))].map(esc).join("; ")}</p>`;
   }
@@ -616,21 +632,39 @@
     if (state.last === d && card.isConnected) box.innerHTML = photosHtml(state.photos[key]);
   }
 
+  // the signature: every pick on one walking-time scale that starts where the person stands
+  function timeRuler(recs) {
+    if (!recs.length) return "";
+    const t = T(), max = Math.max(...recs.map((r) => r.walk_min || 0));
+    const end = Math.max(10, Math.ceil(max * 1.12 / 5) * 5);
+    // stops keep their order by minutes; ones that are only a minute or two apart are spread so their labels never overlap
+    const order = recs.map((r, i) => ({r, i, x: (r.walk_min || 0) / end * 100})).sort((a, b) => a.x - b.x);
+    let prev = 3;
+    order.forEach((o) => { o.x = Math.max(o.x, prev + 19); prev = o.x; });
+    const over = order.length ? order[order.length - 1].x - 97 : 0;
+    if (over > 0) order.forEach((o) => { o.x -= over; });
+    const stops = order.sort((a, b) => a.i - b.i).map(({r, i, x}) =>
+      `<button type="button" class="ruler-stop" data-stop="${esc(r.poi_id)}" style="--x:${x.toFixed(1)}%;--k:${i}" aria-label="${esc(`${i + 1}. ${r.name}: ${r.walk_min} ${t.walk}`)}"><b>${i + 1}</b><span>${esc(r.walk_min)} ${esc(t.minutes)}</span></button>`).join("");
+    return `<div class="ruler" role="group" aria-label="${esc(fmt(t.rulerLabel || "", {list: recs.map((r, i) => `${i + 1} — ${r.walk_min} ${t.minutes}`).join(", ")}))}">
+      <div class="ruler-track"><span class="ruler-me" aria-hidden="true"></span><span class="ruler-fill" aria-hidden="true"></span>${stops}</div>
+      <div class="ruler-scale"><span>${esc(t.youAreHere)}</span><span>${esc(end)} ${esc(t.minutes)}</span></div></div>`;
+  }
+
   function considered(d) {
     const t = T(), c = d.considered || {}, rows = [];
-    const add = (icon, k, v) => { if (v) rows.push(`<li><span class="ic" aria-hidden="true">${icon}</span><span><b>${esc(k)}:</b> ${v}</span></li>`); };
+    const add = (n, k, v) => { if (v) rows.push(`<li>${icon(n)}<span><b>${esc(k)}${/:/.test(k) ? "" : ":"}</b> ${v}</span></li>`); };
     const w = c.weather && c.weather.temp_c !== undefined ? {...c.weather, simulated: !!state.lastWeather?.simulated, wind_ms: c.weather.wind_ms ?? (c.weather.wind_kmh ? c.weather.wind_kmh / 3.6 : 0)} : state.lastWeather;
-    if (FEAT.weather && w) add("🌤", t.weatherL, esc(weatherText(w)));
-    if (c.time) add("🕘", t.time, `${esc(c.target_time ? new Intl.DateTimeFormat({ru:"ru-RU",kk:"kk-KZ",en:"en-GB"}[state.lang] || "ru-RU", {weekday:"short",hour:"2-digit",minute:"2-digit",timeZone:"Asia/Almaty"}).format(new Date(c.target_time)) : c.time)}${c.time_simulated || c.time_shift ? " · " + esc(t.simulated) : ""}`);
-    if (c.radius_m) add("📍", t.radius, `${esc(c.radius_m)} ${esc(t.distance)}${c.radius_expanded ? " — " + esc(t.expanded) : ""} · ${esc(fmt(t.roundedTo, {m: c.location_rounded_to_m || 100}))}`);
+    if (FEAT.weather && w) add("cloud", t.weatherL, esc(weatherText(w)));
+    if (c.time) add("clock", t.time, `${esc(c.target_time ? new Intl.DateTimeFormat({ru:"ru-RU",kk:"kk-KZ",en:"en-GB"}[state.lang] || "ru-RU", {weekday:"short",hour:"2-digit",minute:"2-digit",timeZone:"Asia/Almaty"}).format(new Date(c.target_time)) : c.time)}${c.time_simulated || c.time_shift ? " · " + esc(t.simulated) : ""}`);
+    if (c.radius_m) add("radius", t.radius, `${esc(c.radius_m)} ${esc(t.distance)}${c.radius_expanded ? " — " + esc(t.expanded) : ""} · ${esc(fmt(t.roundedTo, {m: c.location_rounded_to_m || 100}))}`);
     const looked = (c.filters || []).filter((f) => !String(f).startsWith("exclude:")).map(codeLabel);
-    if (looked.length) add("🎯", t.lookedFor, esc(looked.join(", ")));
+    if (looked.length) add("search", t.lookedFor, esc(looked.join(", ")));
     // every place the count mentions is listed; the chosen ones are ticked
     const chosen = new Set((d.recommendations || []).map((r) => r.poi_id));
     const list = d.candidates || [];
-    if (list.length) add("📋", fmt(t.lookedAt, {n: list.length}), `<span class="cands-list">${list.map((x) =>
-      `<span class="cand${chosen.has(x.poi_id) ? " on" : ""}">${chosen.has(x.poi_id) ? "✓ " : ""}${esc(x.name)} · ${esc(x.distance_m)} ${esc(t.distance)}</span>`).join("")}</span>`);
-    return `<section class="card considered" id="consideredBox"><h3>🔎 ${esc(t.considered)}</h3><ul class="cons">${rows.join("")}</ul></section>`;
+    if (list.length) add("list", fmt(t.lookedAt, {n: list.length}), `<span class="cands-list">${list.map((x) =>
+      `<span class="cand${chosen.has(x.poi_id) ? " on" : ""}">${chosen.has(x.poi_id) ? icon("check") + " " : ""}${esc(x.name)} · ${esc(x.distance_m)} ${esc(t.distance)}</span>`).join("")}</span>`);
+    return `<section class="card considered" id="consideredBox"><h3>${esc(t.considered)}</h3><ul class="cons">${rows.join("")}</ul></section>`;
   }
 
   // ---------- mini-route (extra): computed in the browser, the backend is not touched ----------
@@ -659,19 +693,19 @@
     const geo = await osrmLine([start, ...plan.order, start]);
     if (state.last !== d || !$("#routeBox")) return;
     if (routeLine) map.removeLayer(routeLine);
-    routeLine = L.polyline(geo.line, {color: "#123D32", weight: 4, dashArray: geo.osrm ? null : "8 8", opacity: .85}).addTo(map);
-    map.fitBounds(routeLine.getBounds(), {padding: [40, 40]});
+    routeLine = L.polyline(geo.line, {color: "#00708A", weight: 5, dashArray: geo.osrm ? null : "8 8", lineCap: "round", opacity: .9}).addTo(map);
+    fitTo(routeLine.getBounds());
     const pts = plan.order.map((p) => `${p.lon}%2C${p.lat}`).join("%7C");
     const gis = `https://2gis.kz/astana/directions/tab/pedestrian/points/%7C${pts}?m=${plan.order[0].lon}%2C${plan.order[0].lat}%2F15`;
     const last = plan.order[plan.order.length - 1];
     const way = plan.order.slice(0, -1).map((p) => `${p.lat},${p.lon}`).join("%7C");
     const google = `https://www.google.com/maps/dir/?api=1&destination=${last.lat},${last.lon}&travelmode=walking${way ? "&waypoints=" + way : ""}`;
-    const steps = plan.order.map((p, i) => `<li>${esc(p.name)} — 🚶 ${plan.legs[i]} + ⏱ ${plan.stays[i]} ${esc(t.minutes)}</li>`).join("");
-    $("#routeBox").innerHTML = `<div class="card route"><h3>${esc(t.routeTitle)}: ${plan.total} / ${plan.budget} ${esc(t.minutes)} ${plan.fits ? "✓" : "⚠"}</h3>
-      <ol class="meta">${steps}<li>↩ ${plan.back} ${esc(t.minutes)}</li></ol>
+    const steps = plan.order.map((p, i) => `<li>${esc(p.name)} — ${icon("walk")} ${plan.legs[i]} + ${icon("clock")} ${plan.stays[i]} ${esc(t.minutes)}</li>`).join("");
+    $("#routeBox").innerHTML = `<div class="card route"><h3>${esc(t.routeTitle)}: ${plan.total} / ${plan.budget} ${esc(t.minutes)} ${icon(plan.fits ? "check" : "info")}</h3>
+      <ol class="meta">${steps}<li>${icon("walk")} ${plan.back} ${esc(t.minutes)}</li></ol>
       <p class="meta">${esc(geo.osrm ? t.routeOsrm : t.routeStraight)}</p>
-      <div class="actions"><a class="btn small" target="_blank" rel="noopener" href="${esc(gis)}">🗺 ${esc(t.route2gis)}</a>
-      <a class="btn small" target="_blank" rel="noopener" href="${esc(google)}">🧭 ${esc(t.routeGoogle)}</a></div></div>`;
+      <div class="actions"><a class="btn small" target="_blank" rel="noopener" href="${esc(gis)}">${icon("map")} ${esc(t.route2gis)}</a>
+      <a class="btn small" target="_blank" rel="noopener" href="${esc(google)}">${icon("nav")} ${esc(t.routeGoogle)}</a></div></div>`;
   }
 
   // ---------- start ----------
