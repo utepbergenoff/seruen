@@ -1,4 +1,287 @@
 {
+  "candidates": [
+    {
+      "poi_id": "osm_node_6408271985",
+      "name": "CrepeCafe",
+      "category": "coffee",
+      "distance_m": 183,
+      "walk_min": 4,
+      "score": 0.445429,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_node_10798946230",
+      "name": "Selfie",
+      "category": "food",
+      "distance_m": 366,
+      "walk_min": 7,
+      "score": 0.437536,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_node_13230394599",
+      "name": "Leto Cafe",
+      "category": "food",
+      "distance_m": 590,
+      "walk_min": 11,
+      "score": 0.430195,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_node_2826184438",
+      "name": "Лигалайф",
+      "category": "night",
+      "distance_m": 333,
+      "walk_min": 6,
+      "score": 0.421825,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_node_8595205064",
+      "name": "Пинта",
+      "category": "night",
+      "distance_m": 490,
+      "walk_min": 9,
+      "score": 0.403854,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_node_10564988185",
+      "name": "Degirmen",
+      "category": "coffee",
+      "distance_m": 241,
+      "walk_min": 5,
+      "score": 0.400227,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    }
+  ],
+  "excluded": [
+    {
+      "poi_id": "osm_way_258818063",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 30,
+      "walk_min": 1,
+      "score": 0.365398,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_230401645",
+      "name": "Бәйтерек",
+      "category": "viewpoint",
+      "distance_m": 46,
+      "walk_min": 1,
+      "score": 0.441161,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_258818059",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 46,
+      "walk_min": 1,
+      "score": 0.361398,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_258818060",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 70,
+      "walk_min": 2,
+      "score": 0.355398,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_1490254180",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 80,
+      "walk_min": 2,
+      "score": 0.352898,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_258818058",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 82,
+      "walk_min": 2,
+      "score": 0.352398,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_1490254195",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 92,
+      "walk_min": 2,
+      "score": 0.349898,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_258818062",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 105,
+      "walk_min": 2,
+      "score": 0.346648,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_1490254182",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 113,
+      "walk_min": 2,
+      "score": 0.344648,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_258818061",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 122,
+      "walk_min": 3,
+      "score": 0.342398,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_1490254194",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 123,
+      "walk_min": 3,
+      "score": 0.342148,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_1490254183",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 145,
+      "walk_min": 3,
+      "score": 0.336648,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_1422579165",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 157,
+      "walk_min": 3,
+      "score": 0.333648,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_1422579166",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 164,
+      "walk_min": 3,
+      "score": 0.331898,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_1490254191",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 178,
+      "walk_min": 4,
+      "score": 0.328398,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_1422579164",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 190,
+      "walk_min": 4,
+      "score": 0.325398,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_1422579163",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 194,
+      "walk_min": 4,
+      "score": 0.324398,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_230358855",
+      "name": "Қазақстан Республикасының Ұлттық академиялық кітапханасы",
+      "category": "library",
+      "distance_m": 218,
+      "walk_min": 4,
+      "score": 0.2625,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1422579161",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 222,
+      "walk_min": 4,
+      "score": 0.317398,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    },
+    {
+      "poi_id": "osm_way_1422579162",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 226,
+      "walk_min": 4,
+      "score": 0.316398,
+      "reasons": [],
+      "excluded_because": "night_safety_unconfirmed"
+    }
+  ],
+  "excluded_count": 1205,
   "mode": "no_ai",
   "recommendations": [
     {

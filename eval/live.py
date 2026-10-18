@@ -79,6 +79,8 @@ async def run(args):
         source='eval/scenarios_spec.json', queries=len(rows), passed=sum(not x['issues'] for x in rows),
         modes=dict(Counter(x['mode'] for x in rows)), mean_ms=round(statistics.mean(x['elapsed_ms'] for x in rows),1),
         max_ms=max(x['elapsed_ms'] for x in rows), mean_cached_ms=round(statistics.mean(x['cached_ms'] for x in rows),1),
+        max_cached_ms=max(x['cached_ms'] for x in rows),
+        cached_within_1s=sum(x['cached_ms'] < 1000 for x in rows),
         cached_count=sum(x['cached_mode']=='cached' for x in rows), cases=rows,
         cors_origin=cors.headers.get('access-control-allow-origin'), places_status=disabled.status_code,
         manual_mean=None, notes=['Synthetic scenario locations only. Human relevance scores are still required.',

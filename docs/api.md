@@ -4,7 +4,7 @@
 
 База локально: `http://127.0.0.1:8000`. JSON, UTF-8; расстояния в метрах, длительности в целых минутах. Все времена с часовым поясом, расчёт в `Asia/Almaty`.
 
-Публичная база: `https://seruen-backend-f36d.onrender.com`, [Swagger](https://seruen-backend-f36d.onrender.com/docs). Сервис Render Free, с 18.10.2026 проверена конфигурация — `data_kind=real`, 1 251 место, режимы `no_ai`/`cached`. Текущую версию проверять через `/health`; сведения о развёртывании — в [handoff.md](handoff.md). CORS разрешает `https://seruen-astana.netlify.app`, `http://localhost:5173`, `http://127.0.0.1:5173`, `http://localhost:3000`; методы GET/POST/OPTIONS и заголовок Content-Type. Публичный origin проверен после перезапуска: [cors_verification.json](cors_verification.json). Ключ ИИ фронту не передавать.
+Публичная база: `https://seruen-backend-f36d.onrender.com`, [Swagger](https://seruen-backend-f36d.onrender.com/docs). Сервис Render Free, с 18.10.2026 проверена конфигурация — `data_kind=real`, 1 251 место, режимы `ai`/`no_ai`/`cached`. Текущую версию проверять через `/health`; сведения о развёртывании — в [handoff.md](handoff.md). CORS разрешает `https://seruen-astana.netlify.app`, `http://localhost:5173`, `http://127.0.0.1:5173`, `http://localhost:3000`; методы GET/POST/OPTIONS и заголовок Content-Type. Публичный origin проверен после перезапуска: [cors_verification.json](cors_verification.json). Ключ ИИ фронту не передавать.
 
 ## POST /recommend
 
@@ -93,3 +93,7 @@
 Фронт отправляет Content-Type: application/json. CORS по явному CORS_ORIGINS, локально разрешены порты 5173 и 3000. Cookies не нужны. Не включать wildcard для рабочего фронта без необходимости.
 
 Бэкенд не пишет запросы и координаты в логи и на диск; ключ кеша — SHA-256 от округлённой локации, запроса, контекста, окна 30 минут, версии данных и режима. В значениях кеша только карточки мест. Ответы имеют Cache-Control: no-store. В Gemini при наличии ключа уходят текст, контекст, округлённая локация и кандидаты, без идентификаторов пользователей. Политику хранения у хостинга и Google нужно рассматривать отдельно от логов приложения.
+
+### Диагностика исходного ответа
+
+`/recommend` возвращает `candidates` (до 10 записей, именно использованных при этом ответе), `excluded` (до 20 ближайших исключённых) и `excluded_count` (общее число). Панель использует их вместо нового поиска `/candidates`, который мог отличаться после уточнения намерения Gemini. В кеше сохраняется контекст исходного ответа.

@@ -31,3 +31,35 @@ def test_offline_frontend_demos_match_backend():
     import json
     from backend.config import ROOT
     assert json.loads((ROOT / 'frontend/scenarios.json').read_text(encoding='utf-8')) == scenarios()
+
+
+@pytest.mark.asyncio
+async def test_generated_description_is_not_sent_as_verified_fact(service, req, monkeypatch):
+    from backend.generate import Gemini
+    captured = {}
+    intent, _, search = service.inspect(req)
+    hit = search.hits[0]
+    hit.poi = hit.poi.model_copy(update={'description_source': 'generated', 'description': 'Unverified invented amenity'})
+    provider = Gemini(service.settings)
+
+    async def capture(system, payload, schema):
+        captured.update(payload)
+        return {'recommendations': [{'poi_id': hit.poi.poi_id, 'why': 'A nearby option',
+                  'what_to_do': 'Check visitor details', 'time_to_spend_min': 20}]}
+
+    monkeypatch.setattr(provider, 'structured', capture)
+    await provider.generate(req, intent, [hit])
+    assert captured['candidates'][0]['description'] == ''
+    assert captured['candidates'][0]['description_source'] == 'generated'
+
+
+@pytest.mark.parametrize('scenario', scenarios(), ids=lambda s: s['id'])
+def test_response_contains_the_actual_candidate_pool(client, scenario):
+    data = client.post('/recommend', json=scenario['request']).json()
+    pool = {c['poi_id'] for c in data['candidates']}
+    assert 1 <= len(pool) <= 10
+    assert all(c['poi_id'] in pool for c in data['recommendations'])
+    assert all(c['excluded_because'] is None for c in data['candidates'])
+    assert len(data['excluded']) <= 20
+    assert data['excluded_count'] >= len(data['excluded'])
+    assert all(c['excluded_because'] for c in data['excluded'])

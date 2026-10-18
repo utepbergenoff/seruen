@@ -1,112 +1,34 @@
-# Seruen — project status & to-do (18.10.2026, ~12:30 Astana)
+# Серуен — текущий статус после аудита 18.10.2026
 
-Living note for the team. Owner: Yerlan. Backend details: [real_data_integration.md](real_data_integration.md),
-[handoff.md](handoff.md), APIs: [api_integrations.md](api_integrations.md); Heroku plan: PR #5 / `docs/heroku.md`.
+Канонический разбор исходного ТЗ и A1–D8: [spec_audit.md](spec_audit.md). Исторические JSON-отчёты сохраняют результаты своих дат; не следует считать их текущей версией.
 
----
+- Основной код, новые данные Ерлана (PR #8) и оба обновления интерфейса объединены в `main` через PR #9.
+- Бэкенд: https://seruen-backend-f36d.onrender.com, Render **Free**, 1 251 реальное место, BM25 + LSA, Gemini `gemini-3.5-flash-lite`.
+- Сайт: https://seruen-astana.netlify.app. Исправления аудита публикует **Алихан**; у Томирис нет доступа к Netlify. [Передача](frontend/AUDIT_HANDOFF.md).
+- Ключ Gemini — отдельный бесплатный проект Томирис, секрет только в Render. Локальный `.env` не создавался. Наличие ключа в `/health` не заменяет живой тест ответа.
+- Google Places: 175 сопоставленных ID. Рейтинги и часы **выключены**. Платный биллинг не подключаем. Google ID не доказывает выполнение A3.
+- Heroku PR #5 — необязательная подготовка, не активный бесплатный деплой. Render продолжает работать.
 
-## 1. The big picture in plain words
+## Измеряемые проверки
 
-```
- [Frontend]  --request-->  [Backend]  --reads-->  [Data: list of places]
-  Alikhan                   Tomiris                 Yerlan
-  frontend/ (Netlify)       backend/ (Render)       data/poi.json — 1 251 real places of Astana
-```
+197 Python-тест и 21 тестов интерфейса/маршрутов; Ruff. Два набора по 30 запросов без ИИ проходят на реальных данных. Чистая установка Python 3.12, тесты, офлайн-пересборка данных, переиндексация и запуск HTTP проверены отдельно. При отсутствии ключа пересборка сохраняет 1 251 место, но заменяет Gemini-описания шаблонами; готовый снимок в Git содержит 807 AI-описаний.
 
-| Part | Where it lives | State |
-|---|---|---|
-| Frontend | https://seruen-astana.netlify.app · code in `frontend/` (PR #2, merged) | ✅ |
-| Backend | https://seruen-backend-f36d.onrender.com (`/docs`, `/health`) | ✅ live on **real data** (`/health` → `poi_count: 1251, data_kind: real`) |
-| Data | `data/poi.json` (contract) + `data/poi_full.json` (all fields) | ✅ in `main` (PR #1, #3, #4) |
+Полный публичный прогон Gemini: `eval/live/report.json` после завершения проверки; каждый ответ имеет фактический режим `ai`/`no_ai`/`cached`. Человеческая релевантность не выводится из числа успешных HTTP-ответов.
 
-All 6 scenarios were checked on the live backend with real data (18.10): 1–3 relevant cards each; S2 (child) only
-playgrounds/parks; S6 at 23:00 only places open at night + safety note.
+## Что ещё сделать команде
 
-**AI is live (18.10, Tomiris, PR #7):** `gemini-3.5-flash-lite` on Render; 5/6 demo answers in `mode=ai`, S1 falls
-back safely. Google ratings/hours via `place_id` exist (PR #6, `GET /places/{poi_id}/details`) but are **off** until the
-Google quota is confirmed by the project owner (Yerlan).
+| Владелец | Следующий результат |
+|---|---|
+| Алихан | Опубликовать `frontend/` из main, проверить реальные Android/iPhone и PWA, записать видео, проверить мешающий Netlify badge |
+| Все трое | Оценить 30 сохранённых ответов по шкале 1–5; цель среднего ≥4.2 пока не подтверждена |
+| Ерлан | Уточнить точный дедлайн формы; подготовить финальные PDF сценариев/этики и презентацию; две репетиции |
+| Ерлан | Независимо воспроизвести README в чистой папке; проверить доступ жюри к репозиторию/сайту/документу/видео; отправить форму |
+| Поток A | A3 ≥60% со вторым источником и A4 ≥80% описаний целевых достопримечательностей не закрыты; не увеличивать платные квоты без нового решения |
 
----
+## Данные
 
-## 2. GitHub — how we work
+1 251 POI, 12 категорий, 270 расписаний OSM (бэкенд понимает 268), 64 записи о доступности, 22 описания Wikipedia, 807 описаний Gemini по тегам и 422 шаблона. 181 исходная запись отсеяна конвейером. Нельзя называть дату выгрузки проверкой места на месте.
 
-- `main` = the shared, always-working version (default branch). Work in `feat/...` → **PR into `main`** → a
-  teammate runs it → merge. Nobody pushes straight to `main`. Never commit `.env` or keys.
-- Merged: #1 data pipeline, #2 frontend, #3 real-data integration, #4 real-data deployment checks.
-- Open: **#5** Heroku preparation (Tomiris) — waits for the Heroku student credits; Render stays live until Heroku
-  is verified. Then Alikhan switches the API address (`python scripts/set_api_url.py <heroku-url>`).
-- This branch: `feat/data-a3-gemini` — AI descriptions + more Google matches (see section 6).
+Работаем `feat/* → PR → main`. Ключи не коммитим. Автоматические проверки не заменяют ручную оценку, реальные телефоны и материалы сдачи.
 
----
-
-## 3. Open items for teammates
-
-**Tomiris**
-- «Что я учёл → Время: Sun 01:04» — the weekday in `considered.time` comes from the backend in English, also in the
-  RU/KZ interface.
-- Full eval of the 30 answers with AI (`eval/run.py --ai`) + the 3-person 1–5 rating — still open.
-- `tests/test_real_integration.py` pins the snapshot counts (Google matches now 175; will change once more when A3 is
-  finished).
-
-**Alikhan**
-- Turn off the "Powered by Netlify" badge (covers the chips on a phone) — before recording the video.
-- Screenshots of the 6 scenarios (phone + laptop) on real data for the document (D4); `scripts/screenshots.py`.
-- Video (D6) on real data.
-
----
-
-## 4. Yerlan's to-do (in order)
-
-| # | What | When | Notes |
-|---|---|---|---|
-| 1 | Find out the **exact closing time of the submission form (19.10)** → post in chat | ASAP | Everything on Monday depends on it |
-| 2 | Activate Heroku student credits | today | Tomiris's PR #5 is ready |
-| 3 | Confirm Google quota/billing so Tomiris can turn on live ratings/hours (PR #6); decide Gemini budget (section 5) | today | |
-| 4 | Finish A3: last 61 Google calls | after next reset (~12:00 Astana 19.10) or after raising the daily limit to 300 | Claude runs `python -m pipeline.enrich` + rebuild |
-| 5 | D5 presentation (12 slides, ≤ 6.5 min) | today evening | |
-| 6 | D4 document: real answers, screenshots, eval numbers | after screenshots + eval | Draft: `docs/scenarios_and_ethics.md` |
-| 7 | D7 clean-folder check: `git clone` → README in order → tests → app opens | Mon | Windows (+ Mac/Linux if possible) |
-| 8 | D8 form: 4 links (repo, presentation, document, video), check access from another account | ≥ 3 h before closing | screenshot to chat |
-| 9 | Rehearse pitch twice with a timer | Mon evening | I speak, Alikhan demos, Tomiris answers |
-
----
-
-## 5. APIs, quotas and money
-
-| API | Used by | When it is called | Limit we hit |
-|---|---|---|---|
-| Google Places (New) | data pipeline (`pipeline/enrich.py`, Nearby Search) **and**, if switched on, the backend (Place Details per card, PR #6) | pipeline: once when collecting data; backend details: **off** for now | Nearby: ~100 requests/day (default); total needed **272**, done **211** (cached). Place Details: 1 000 free/month, then paid |
-| Gemini | data pipeline (descriptions, once) **and** the backend (every user question, if a key is set) | backend: ~2 calls per question | free tier ≈ 20 requests/day |
-
-- Google Places stays free (5 000 calls/month free; we need 272 once). We store **only Google's place ID** —
-  Google's terms forbid storing ratings/hours, so the real data has no ★.
-- If the backend Gemini key is on the free tier, judges can run it out after a few dozen questions; the app then
-  falls back to "без ИИ" automatically (it never breaks). Turning on live Google details adds ~1 call per card shown.
-- Recommended: a **separate Google Cloud project** for the backend key, billing on, **budget alert $5**, daily
-  request cap ~1 000. Estimated cost: gemini-2.5-flash ≈ $0.002 per question → ~500 questions ≈ $1.
-  Key only in Render/Heroku settings, never in git.
-- Render Free sleeps after 15 min (first request ~1 min). Heroku Basic (student credits) doesn't sleep. Until then:
-  open `/health` and run `scripts/warm_cache.py` before the video and judging.
-
----
-
-## 6. Data — honest numbers (for slides / jury questions)
-
-From `data/quality_report.md` (rebuilt 18.10):
-- **1 251 places**, 12 categories (only 1 coworking and 2 "unusual" — OpenStreetMap has almost none in Astana).
-- Opening hours known for **22 %** (100 % of them parsed) → others show "unknown — check before visiting".
-- Wheelchair data for **5 %**.
-- **100 % have a description:** 22 from Wikipedia (each checked to be about the right place), 807 written by Gemini
-  from the place's tags (checked: no hype words, no invented numbers, must name the place), 422 templates
-  (mostly unnamed playgrounds/squares). All generated ones are labelled `description_source = generated`.
-- Google place ID for **175** places (14 %, partial run).
-- 181 records dropped (no name 104, duplicates 74, junk 3).
-- Tests: **185 passing** (backend + data + API integrations).
-
-## 7. Where things are
-
-- My stream plan: `yerlan.md`; full team plan: `TA.pdf` (both private, not in git).
-- Data format: `docs/data.md`. Draft document D4: `docs/scenarios_and_ethics.md`.
-- Rebuild data: `python -m pipeline.run` (no keys needed). Full re-collect: `python -m pipeline.run --fresh`.
-  After rebuilding data: `python scripts/reindex.py` (search index).
-- Keys only in `.env` (never committed): `GEMINI_API_KEY`, `GOOGLE_PLACES_API_KEY`.
+Итог живого прогона: **30/30** структурных проверок, **21 ai + 9 no_ai**, средний ответ **3,18 с**, средний кеш **0,48 с**; 27/30 повторов быстрее секунды. [Полный отчёт](./../eval/live/report.md). Ручные оценки не проведены.

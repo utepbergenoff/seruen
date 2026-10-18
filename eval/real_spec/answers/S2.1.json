@@ -1,4 +1,261 @@
 {
+  "candidates": [
+    {
+      "poi_id": "osm_way_1449322330",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 94,
+      "walk_min": 3,
+      "score": 0.438786,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_way_1449322354",
+      "name": "Fame City",
+      "category": "kids",
+      "distance_m": 53,
+      "walk_min": 2,
+      "score": 0.395086,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_way_37884583",
+      "name": "Ғашықтар саябағы",
+      "category": "park",
+      "distance_m": 401,
+      "walk_min": 9,
+      "score": 0.345243,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_way_1470780026",
+      "name": "Дубовая аллея",
+      "category": "park",
+      "distance_m": 444,
+      "walk_min": 10,
+      "score": 0.260014,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    }
+  ],
+  "excluded": [
+    {
+      "poi_id": "osm_way_1449317872",
+      "name": "Movenpick",
+      "category": "food",
+      "distance_m": 15,
+      "walk_min": 1,
+      "score": 0.29194,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_way_1449322329",
+      "name": "Конвой",
+      "category": "viewpoint",
+      "distance_m": 22,
+      "walk_min": 1,
+      "score": 0.285056,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_way_1449301315",
+      "name": "Starbucks",
+      "category": "coffee",
+      "distance_m": 35,
+      "walk_min": 1,
+      "score": 0.283871,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_way_1449322340",
+      "name": "Электронды көліктер",
+      "category": "viewpoint",
+      "distance_m": 43,
+      "walk_min": 1,
+      "score": 0.277472,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_way_1449317875",
+      "name": "Ozyurt",
+      "category": "food",
+      "distance_m": 53,
+      "walk_min": 2,
+      "score": 0.278643,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_way_460703779",
+      "name": "Хан Шатыр",
+      "category": "shopping",
+      "distance_m": 56,
+      "walk_min": 2,
+      "score": 0.44936,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_way_1449295053",
+      "name": "Cups coffee",
+      "category": "coffee",
+      "distance_m": 64,
+      "walk_min": 2,
+      "score": 0.272889,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_way_1449301293",
+      "name": "Bambino",
+      "category": "food",
+      "distance_m": 64,
+      "walk_min": 2,
+      "score": 0.271118,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_way_1449322339",
+      "name": "Динопарк",
+      "category": "viewpoint",
+      "distance_m": 72,
+      "walk_min": 2,
+      "score": 0.267,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_way_1449322338",
+      "name": "Ұшатын автобус",
+      "category": "viewpoint",
+      "distance_m": 79,
+      "walk_min": 2,
+      "score": 0.264472,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_way_1449317691",
+      "name": "Лепим и варим",
+      "category": "coffee",
+      "distance_m": 87,
+      "walk_min": 2,
+      "score": 0.38545,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_way_1449322335",
+      "name": "Gold Mine Coaster",
+      "category": "viewpoint",
+      "distance_m": 87,
+      "walk_min": 2,
+      "score": 0.261583,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_way_1449317673",
+      "name": "Chaplin Cinemas",
+      "category": "culture",
+      "distance_m": 89,
+      "walk_min": 2,
+      "score": 0.604907,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_way_1449322336",
+      "name": "Pop Up",
+      "category": "viewpoint",
+      "distance_m": 89,
+      "walk_min": 2,
+      "score": 0.260861,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_way_1449322337",
+      "name": "НЛО",
+      "category": "viewpoint",
+      "distance_m": 96,
+      "walk_min": 3,
+      "score": 0.258333,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_node_4958412863",
+      "name": "Zur Sultan",
+      "category": "viewpoint",
+      "distance_m": 291,
+      "walk_min": 7,
+      "score": 0.202917,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_node_13577080723",
+      "name": "KAL'BI meat house",
+      "category": "food",
+      "distance_m": 334,
+      "walk_min": 8,
+      "score": 0.295389,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_node_13333371893",
+      "name": "Coffee Boom",
+      "category": "coffee",
+      "distance_m": 339,
+      "walk_min": 8,
+      "score": 0.174444,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_node_13333409377",
+      "name": "Махтумкули Фраги",
+      "category": "viewpoint",
+      "distance_m": 360,
+      "walk_min": 8,
+      "score": 0.163,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    },
+    {
+      "poi_id": "osm_node_13340050452",
+      "name": "Хатико",
+      "category": "viewpoint",
+      "distance_m": 452,
+      "walk_min": 10,
+      "score": 0.129811,
+      "reasons": [],
+      "excluded_because": "not_child_friendly"
+    }
+  ],
+  "excluded_count": 1241,
   "mode": "no_ai",
   "recommendations": [
     {

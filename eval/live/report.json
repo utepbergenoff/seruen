@@ -1,0 +1,315 @@
+{
+  "checked_at": "2026-10-18T08:14:20.049873+00:00",
+  "url": "https://seruen-backend-f36d.onrender.com",
+  "health": {
+    "status": "ok",
+    "mode_available": [
+      "no_ai",
+      "ai"
+    ],
+    "data_snapshot_date": "2026-10-17",
+    "poi_count": 1251,
+    "data_kind": "real",
+    "retrieval_mode": "bm25+lsa",
+    "mock": false,
+    "google_places": {
+      "configured": true,
+      "details_enabled": false,
+      "ids_probe": "ok"
+    }
+  },
+  "source": "eval/scenarios_spec.json",
+  "queries": 30,
+  "passed": 30,
+  "modes": {
+    "no_ai": 9,
+    "ai": 21
+  },
+  "mean_ms": 3184.4,
+  "max_ms": 6977.0,
+  "mean_cached_ms": 479.5,
+  "cached_count": 30,
+  "cases": [
+    {
+      "id": "S1.1",
+      "mode": "no_ai",
+      "cards": 2,
+      "issues": [],
+      "elapsed_ms": 4131.9,
+      "cached_mode": "cached",
+      "cached_ms": 295.3
+    },
+    {
+      "id": "S1.2",
+      "mode": "ai",
+      "cards": 2,
+      "issues": [],
+      "elapsed_ms": 4261.1,
+      "cached_mode": "cached",
+      "cached_ms": 267.0
+    },
+    {
+      "id": "S1.3",
+      "mode": "no_ai",
+      "cards": 2,
+      "issues": [],
+      "elapsed_ms": 4346.3,
+      "cached_mode": "cached",
+      "cached_ms": 366.5
+    },
+    {
+      "id": "S1.4",
+      "mode": "ai",
+      "cards": 1,
+      "issues": [],
+      "elapsed_ms": 3583.1,
+      "cached_mode": "cached",
+      "cached_ms": 242.7
+    },
+    {
+      "id": "S1.5",
+      "mode": "no_ai",
+      "cards": 2,
+      "issues": [],
+      "elapsed_ms": 2230.0,
+      "cached_mode": "cached",
+      "cached_ms": 289.7
+    },
+    {
+      "id": "S2.1",
+      "mode": "ai",
+      "cards": 2,
+      "issues": [],
+      "elapsed_ms": 3045.1,
+      "cached_mode": "cached",
+      "cached_ms": 412.7
+    },
+    {
+      "id": "S2.2",
+      "mode": "ai",
+      "cards": 2,
+      "issues": [],
+      "elapsed_ms": 2946.5,
+      "cached_mode": "cached",
+      "cached_ms": 272.7
+    },
+    {
+      "id": "S2.3",
+      "mode": "ai",
+      "cards": 2,
+      "issues": [],
+      "elapsed_ms": 3272.1,
+      "cached_mode": "cached",
+      "cached_ms": 239.1
+    },
+    {
+      "id": "S2.4",
+      "mode": "ai",
+      "cards": 2,
+      "issues": [],
+      "elapsed_ms": 2809.5,
+      "cached_mode": "cached",
+      "cached_ms": 401.6
+    },
+    {
+      "id": "S2.5",
+      "mode": "ai",
+      "cards": 2,
+      "issues": [],
+      "elapsed_ms": 3339.8,
+      "cached_mode": "cached",
+      "cached_ms": 304.1
+    },
+    {
+      "id": "S3.1",
+      "mode": "ai",
+      "cards": 2,
+      "issues": [],
+      "elapsed_ms": 3927.2,
+      "cached_mode": "cached",
+      "cached_ms": 476.8
+    },
+    {
+      "id": "S3.2",
+      "mode": "ai",
+      "cards": 1,
+      "issues": [],
+      "elapsed_ms": 3572.1,
+      "cached_mode": "cached",
+      "cached_ms": 337.5
+    },
+    {
+      "id": "S3.3",
+      "mode": "ai",
+      "cards": 1,
+      "issues": [],
+      "elapsed_ms": 3374.4,
+      "cached_mode": "cached",
+      "cached_ms": 1139.5
+    },
+    {
+      "id": "S3.4",
+      "mode": "no_ai",
+      "cards": 3,
+      "issues": [],
+      "elapsed_ms": 2818.7,
+      "cached_mode": "cached",
+      "cached_ms": 1194.4
+    },
+    {
+      "id": "S3.5",
+      "mode": "no_ai",
+      "cards": 3,
+      "issues": [],
+      "elapsed_ms": 1212.3,
+      "cached_mode": "cached",
+      "cached_ms": 409.0
+    },
+    {
+      "id": "S4.1",
+      "mode": "ai",
+      "cards": 1,
+      "issues": [],
+      "elapsed_ms": 4350.5,
+      "cached_mode": "cached",
+      "cached_ms": 1458.2
+    },
+    {
+      "id": "S4.2",
+      "mode": "ai",
+      "cards": 1,
+      "issues": [],
+      "elapsed_ms": 6977.0,
+      "cached_mode": "cached",
+      "cached_ms": 353.2
+    },
+    {
+      "id": "S4.3",
+      "mode": "no_ai",
+      "cards": 3,
+      "issues": [],
+      "elapsed_ms": 1224.1,
+      "cached_mode": "cached",
+      "cached_ms": 482.6
+    },
+    {
+      "id": "S4.4",
+      "mode": "ai",
+      "cards": 1,
+      "issues": [],
+      "elapsed_ms": 4144.0,
+      "cached_mode": "cached",
+      "cached_ms": 358.9
+    },
+    {
+      "id": "S4.5",
+      "mode": "ai",
+      "cards": 1,
+      "issues": [],
+      "elapsed_ms": 3445.2,
+      "cached_mode": "cached",
+      "cached_ms": 391.7
+    },
+    {
+      "id": "S5.1",
+      "mode": "no_ai",
+      "cards": 2,
+      "issues": [],
+      "elapsed_ms": 2112.1,
+      "cached_mode": "cached",
+      "cached_ms": 389.8
+    },
+    {
+      "id": "S5.2",
+      "mode": "no_ai",
+      "cards": 2,
+      "issues": [],
+      "elapsed_ms": 1016.4,
+      "cached_mode": "cached",
+      "cached_ms": 385.5
+    },
+    {
+      "id": "S5.3",
+      "mode": "no_ai",
+      "cards": 2,
+      "issues": [],
+      "elapsed_ms": 3007.2,
+      "cached_mode": "cached",
+      "cached_ms": 298.7
+    },
+    {
+      "id": "S5.4",
+      "mode": "ai",
+      "cards": 1,
+      "issues": [],
+      "elapsed_ms": 2516.8,
+      "cached_mode": "cached",
+      "cached_ms": 584.7
+    },
+    {
+      "id": "S5.5",
+      "mode": "ai",
+      "cards": 2,
+      "issues": [],
+      "elapsed_ms": 3017.3,
+      "cached_mode": "cached",
+      "cached_ms": 381.4
+    },
+    {
+      "id": "S6.1",
+      "mode": "ai",
+      "cards": 1,
+      "issues": [],
+      "elapsed_ms": 2802.1,
+      "cached_mode": "cached",
+      "cached_ms": 398.7
+    },
+    {
+      "id": "S6.2",
+      "mode": "ai",
+      "cards": 1,
+      "issues": [],
+      "elapsed_ms": 3097.7,
+      "cached_mode": "cached",
+      "cached_ms": 393.8
+    },
+    {
+      "id": "S6.3",
+      "mode": "ai",
+      "cards": 2,
+      "issues": [],
+      "elapsed_ms": 2851.6,
+      "cached_mode": "cached",
+      "cached_ms": 245.3
+    },
+    {
+      "id": "S6.4",
+      "mode": "ai",
+      "cards": 2,
+      "issues": [],
+      "elapsed_ms": 3348.4,
+      "cached_mode": "cached",
+      "cached_ms": 837.5
+    },
+    {
+      "id": "S6.5",
+      "mode": "ai",
+      "cards": 1,
+      "issues": [],
+      "elapsed_ms": 2750.5,
+      "cached_mode": "cached",
+      "cached_ms": 777.5
+    }
+  ],
+  "cors_origin": "https://seruen-astana.netlify.app",
+  "places_status": 503,
+  "manual_mean": null,
+  "notes": [
+    "Synthetic scenario locations only. Human relevance scores are still required.",
+    "Latency includes network; mode=ai is counted only when the public response actually says ai.",
+    "Intent correctness of the live Gemini JSON is not exposed and is not inferred from card counts."
+  ],
+  "max_cached_ms": 1458.2,
+  "cached_within_1s": 27,
+  "tested_commit": "3aae89233611efdd3dde31cc97872e5ab15b310f"
+}

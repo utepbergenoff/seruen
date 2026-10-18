@@ -16,7 +16,7 @@
 ## Places: готовый серверный контракт
 
 `GET /places/{poi_id}/details?lang=ru` (также `en`, `kk`; для `kk` пока возвращаются часы на русском с `language=ru`).
-Принимаются только `poi_id` из нашей базы с сохранённым `google_place_id`. 125 из 1251 мест имеют такую привязку.
+Принимаются только `poi_id` из нашей базы с сохранённым `google_place_id`. 175 из 1251 мест имеют такую привязку.
 Возвращаются `rating`, `rating_count`, `open_now`, `current_weekday_hours`, `regular_weekday_hours`, `business_status`,
 `checked_at`, `google_maps_url` и `attributions`. Отсутствующие рейтинг и статус — `null`, а не ноль или «закрыто».
 `open_now` относится к реальному моменту `checked_at`, **не** к времени симуляции в рекомендациях.

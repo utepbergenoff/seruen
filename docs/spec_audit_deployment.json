@@ -1,0 +1,35 @@
+{
+  "/health": 200,
+  "/docs": 200,
+  "/openapi.json": 200,
+  "/scenarios": 200,
+  "cors_GET": true,
+  "cors_POST": true,
+  "untrusted_origin_denied": true,
+  "invalid_request": 422,
+  "outside_astana_refused": true,
+  "paid_places_disabled": true,
+  "health": {
+    "status": "ok",
+    "mode_available": [
+      "no_ai",
+      "ai"
+    ],
+    "data_snapshot_date": "2026-10-17",
+    "poi_count": 1251,
+    "data_kind": "real",
+    "retrieval_mode": "bm25+lsa",
+    "mock": false,
+    "google_places": {
+      "configured": true,
+      "details_enabled": false,
+      "ids_probe": "ok"
+    }
+  },
+  "deployment": {
+    "commit": "3aae89233611efdd3dde31cc97872e5ab15b310f",
+    "id": "dep-dba7q93ncjis73chveag",
+    "status": "live",
+    "plan": "free"
+  }
+}
