@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Build the local index into the slug, so restarting a dyno needs no API calls.
+export OPENBLAS_NUM_THREADS=1
+export OMP_NUM_THREADS=1
+python scripts/reindex.py
