@@ -132,6 +132,8 @@ async def test_2gis_place_reuses_photos_of_the_same_place_in_our_list(settings, 
     ai = FakeAI(ANSWER)
     photos = make(settings, poi, {"cafe": COMMONS}, ai)
     near = {"name": "Test Cafe, кофейня", "lat": poi.lat + 0.0005, "lon": poi.lon, "category": "coffee"}
+    verified = poi.model_copy(update={"poi_id": "2gis_70000001", **near})
+    photos.catalog_poi = lambda pid: verified if pid == verified.poi_id else None
     result = await photos.details("2gis_70000001", PhotoRequest(query="кофе", near=near))
     assert result.poi_id == "2gis_70000001" and result.status == "ok" and len(result.photos) == 1
     far = {**near, "name": "Other Place", "lat": poi.lat + 0.01, "category": "park"}
@@ -139,3 +141,30 @@ async def test_2gis_place_reuses_photos_of_the_same_place_in_our_list(settings, 
     assert (await photos.details("2gis_70000003", PhotoRequest())).status == "no_photos"
     with pytest.raises(PlacesError):
         await photos.details("2gis_x", PhotoRequest(near=near))
+
+
+@pytest.mark.parametrize("name", ["Bistro Beta", "Test Cafe Premium", "Test", "Кофейня"])
+async def test_nearby_category_or_partial_brand_does_not_prove_photo_identity(settings, poi, name):
+    ai = FakeAI(ANSWER)
+    photos = make(settings, poi, {"cafe": COMMONS}, ai)
+    remote = poi.model_copy(update={"poi_id": "2gis_70000001", "name": name, "lat": poi.lat + .0001})
+    photos.catalog_poi = lambda _: remote
+    assert (await photos.details(remote.poi_id, PhotoRequest())).status == "no_photos"
+    assert not ai.calls
+
+
+async def test_client_cannot_assign_local_photos_to_unknown_remote_id(settings, poi):
+    ai = FakeAI(ANSWER)
+    photos = make(settings, poi, {"cafe": COMMONS}, ai)
+    ask = PhotoRequest(near={k: getattr(poi, k) for k in ("name", "lat", "lon", "category")})
+    assert (await photos.details("2gis_70000001", ask)).status == "no_photos"
+    assert not ai.calls
+
+
+async def test_ambiguous_chain_branches_reject_photos_even_if_only_one_has_photos(settings, poi):
+    ai = FakeAI(ANSWER)
+    photos = make(settings, poi, {"cafe": COMMONS}, ai)
+    photos.pois["other_branch"] = poi.model_copy(update={"poi_id": "other_branch", "lat": poi.lat + .0005})
+    photos.catalog_poi = lambda _: poi
+    assert (await photos.details("2gis_70000001", PhotoRequest())).status == "no_photos"
+    assert not ai.calls

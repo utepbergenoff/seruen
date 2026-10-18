@@ -38,7 +38,8 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
         app.state.twogis = TwoGis(settings, service.dataset.pois, twogis_transport)
         app.state.discovery = Discovery(app.state.twogis, service)
         app.state.photos = Photos(settings, service.dataset.pois, photos_transport,
-                                  photos_ai or getattr(service.provider, "structured", None) and service.provider)
+                                  photos_ai or getattr(service.provider, "structured", None) and service.provider,
+                                  catalog_poi=app.state.discovery.cached_poi)
         await app.state.places.probe()
         logger.info(
             json.dumps(

@@ -65,6 +65,35 @@ def test_catalog_places_not_in_local_db_are_returned_and_paginated(enabled):
         assert "synthetic-private-key" not in r.text
 
 
+def test_catalog_walk_filters_indoor_rubrics_and_supplies_verified_photo_identity(enabled):
+    items = [place(1, name="Chaplin", rubrics=[{"name": "Кинотеатры"}]),
+             place(2, name="NU Park", rubrics=[{"name": "Парки культуры и отдыха"}]),
+             place(3, name="Музей", rubrics=[{"name": "Музеи"}])]
+    with TestClient(create_app(enabled, twogis_transport=transport(items))) as c:
+        answer = c.post("/recommend", json={**ASK, "query": "Хочу прогуляться"}).json()
+        assert [p["name"] for p in answer["recommendations"]] == ["NU Park"]
+        assert [p["name"] for p in answer["nearby_places"]] == ["NU Park"]
+        discovery = c.app.state.discovery
+        pid = answer["recommendations"][0]["poi_id"]
+        assert c.app.state.photos.catalog_poi(pid).name == "NU Park"
+        recorded, poi = discovery.photo_pois[pid]
+        discovery.photo_pois[pid] = (recorded - 301, poi)
+        assert discovery.cached_poi(pid) is None
+
+
+def test_live_eval_accepts_verified_catalog_candidates_but_not_invented_ids(enabled):
+    from backend.schemas import RecommendResponse
+    from eval.live import grounded_ids
+
+    with TestClient(create_app(enabled, twogis_transport=transport())) as c:
+        answer = RecommendResponse.model_validate(c.post("/recommend", json=ASK).json())
+        ids = grounded_ids(answer, {"local-only"})
+        assert {p.poi_id for p in answer.recommendations} <= ids
+        assert "local-only" not in ids and "2gis_invented" not in ids
+        answer.nearby_places[0].eligible = False
+        assert answer.nearby_places[0].poi_id not in grounded_ids(answer, set())
+
+
 @pytest.mark.parametrize("code,expected", [(403, "twogis_access_denied"), (429, "twogis_quota_exceeded"),
                                           (500, "twogis_unavailable")])
 def test_provider_failure_never_substitutes_local_pois(enabled, code, expected):
@@ -238,12 +267,21 @@ def test_gemini_selects_new_catalog_place_without_replacing_its_explanation(enab
 
 def test_gemini_failure_keeps_catalog_and_marks_fallback(enabled):
     enabled.gemini_api_key = 'synthetic-ai-key'
-    with TestClient(create_app(enabled, provider=CatalogGemini(True), twogis_transport=transport())) as c:
+    ai = CatalogGemini(True)
+    with TestClient(create_app(enabled, provider=ai, twogis_transport=transport())) as c:
         d = c.post('/recommend', json=ASK).json()
         assert d['mode'] == 'no_ai' and len(d['nearby_places']) == 7
         assert d['recommendations'] and d['source_error'] is None
         assert any('ИИ' in note for note in d['notes'])
         assert 'private provider' not in str(d)
+        assert c.post('/recommend', json=ASK).json()['mode'] == 'no_ai'
+        assert ai.calls == 1  # immediate retries do not consume another free API request
+        cache = c.app.state.discovery.ai_cache
+        key = next(iter(cache))
+        cache[key] = (cache[key][0] - 31, None)
+        ai.broken = False
+        assert c.post('/recommend', json=ASK).json()['mode'] == 'ai'
+        assert ai.calls == 2  # fallback cannot suppress AI recovery indefinitely
 
 
 def test_coffee_chains_cafe_rubrics_and_closed_places_remain_visible(enabled):
