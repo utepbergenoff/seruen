@@ -77,7 +77,9 @@ h2 { font-size: 21px; font-weight: 700; letter-spacing: -.005em; margin-bottom: 
 #map { position: absolute; inset: 0; }
 .leaflet-container { background: var(--beige); font-family: var(--font); }
 .leaflet-tile-pane { filter: saturate(.82) contrast(.97); }
-.panel { overflow-y: auto; padding: 18px 20px 32px; display: flex; flex-direction: column; gap: 14px; }
+/* bottom padding: Netlify's free plan pins a "Powered by Netlify" badge to the bottom-right corner;
+   the extra space lets every button scroll above it */
+.panel { overflow-y: auto; padding: 18px 20px 84px; display: flex; flex-direction: column; gap: 14px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
 .block { padding: 18px; }
 .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -221,7 +223,7 @@ table.cands { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-
 @media (max-width: 860px) {
   .layout { display: block; height: auto; }
   .map-wrap { height: 42vh; min-height: 260px; border-right: 0; border-bottom: 1px solid var(--line); }
-  .panel { overflow: visible; padding: 14px 14px 30px; }
+  .panel { overflow: visible; padding: 14px 14px 90px; }
   .tagline { display: none; }
   .top { padding: 10px 14px; position: static; flex-wrap: nowrap; gap: 8px; }
   .top-actions { flex-wrap: nowrap; gap: 6px; }
