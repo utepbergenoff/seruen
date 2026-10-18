@@ -28,11 +28,15 @@ def rule_intent(request):
     )
     if child:
         categories = ["kids", "park", "culture"]
-    if not categories and re.search(r"прогул|прогуля|пройтись|подыш|walk|серуен", q):
-        categories = ["park", "viewpoint", "culture", "unusual"]
+    walking = bool(re.search(r"прогул|прогуля|пройтись|подыш|walk|серуен|\bпарк|\bpark|сквер", q))
+    indoor_visit = bool(re.search(r"музей|museum|мұражай|кино|cinema|театр|theat|галере|gallery|в помещении|indoors", q))
+    if walking and not indoor_visit and (not categories or child):
+        tags.append("outdoor_walk")
+        if not categories:
+            categories = ["park", "viewpoint", "culture", "unusual"]
     if not child and re.search(r"необыч|нестандарт|скрыт|unusual|hidden|ерекше|надоели", q):
         categories = ["culture", "viewpoint", "unusual"]
-    if not categories and re.search(r"музей|museum", q):
+    if not categories and indoor_visit:
         categories = ["culture"]
     if not categories and re.search(r"поесть|еда|food|eat|тамақ", q):
         categories = ["food"]
@@ -78,7 +82,7 @@ def rule_intent(request):
         )
     )
     domain = re.search(
-        r"прогул|прогуля|пройтись|подыш|рядом|сходить|посмотр|коф|кафе|ноут|музей|парк|тихо|розет|ноч|вечер|мест|час|минут|вылет|аэропорт|транзит|ребен|дет|доч|необыч|walk|near|place|cafe|coffee|museum|quiet|socket|night|hour|minute|flight|airport|child|kid|unusual|бала|сағат|қайда|серуен|ұшақ|көруге",
+        r"прогул|прогуля|пройтись|подыш|рядом|сходить|посмотр|коф|кафе|ноут|музей|мұражай|кино|cinema|театр|theat|галере|gallery|парк|park|сквер|тихо|розет|ноч|вечер|мест|час|минут|вылет|аэропорт|транзит|ребен|дет|доч|необыч|walk|near|place|cafe|coffee|museum|quiet|socket|night|hour|minute|flight|airport|child|kid|unusual|бала|сағат|қайда|серуен|ұшақ|көруге",
         q,
     )
     unrelated = unrelated or bool(q.strip() and not domain)

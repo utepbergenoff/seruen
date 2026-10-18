@@ -155,8 +155,24 @@ class Discovery:
         self.provider, self.service = provider, service
         self.pages, self.cursors = OrderedDict(), OrderedDict()
         self.ai_cache = OrderedDict()
+        self.photo_pois = OrderedDict()
         self.lock = asyncio.Lock()
         self.ai_lock = asyncio.Lock()
+
+    def remember_poi(self, poi):
+        # Provider-verified identity for photos. Same short TTL as catalogue pages;
+        # no persistent catalogue, user coordinates or extra provider requests.
+        self.photo_pois[poi.poi_id] = (time.monotonic(), poi)
+        self.photo_pois.move_to_end(poi.poi_id)
+        while len(self.photo_pois) > 320:
+            self.photo_pois.popitem(last=False)
+
+    def cached_poi(self, poi_id):
+        saved = self.photo_pois.get(poi_id)
+        if saved and time.monotonic() - saved[0] < TTL:
+            return saved[1]
+        self.photo_pois.pop(poi_id, None)
+        return None
 
     def active(self):
         s = self.provider.settings
@@ -208,7 +224,9 @@ class Discovery:
         try:
             async with self.ai_lock:
                 cached = self.ai_cache.get(cache_key)
-                if cached and time.monotonic() - cached[0] < TTL:
+                if cached and cached[1] is None and time.monotonic() - cached[0] < 30:
+                    return fallback, "no_ai", set(), "ai_unavailable"
+                if cached and cached[1] is not None and time.monotonic() - cached[0] < TTL:
                     generated = cached[1]
                 else:
                     async with asyncio.timeout(settings.ai_timeout_s):
@@ -224,7 +242,11 @@ class Discovery:
             ai_ids = {d.poi_id for d in accepted}
             return accepted + drafts([h for h in hits if h.poi.poi_id not in ai_ids], intent), "ai", ai_ids, "none"
         except Exception as exc:
-            self.ai_cache.pop(cache_key, None)
+            # A retry click must not hammer an exhausted free quota; allow recovery after 30 s.
+            self.ai_cache[cache_key] = (time.monotonic(), None)
+            self.ai_cache.move_to_end(cache_key)
+            while len(self.ai_cache) > 64:
+                self.ai_cache.popitem(last=False)
             self.service.metrics["ai_errors"] += 1
             safe_codes = {"missing_key", "invalid_model", "provider_http_error", "provider_oversized",
                           "provider_incomplete", "provider_timeout", "provider_invalid_response",
@@ -282,6 +304,7 @@ class Discovery:
                         continue
                     if poi and poi.poi_id not in seen:
                         pois[poi.poi_id], items[poi.poi_id] = poi, item
+                        self.remember_poi(poi)
                 more = bool(result.get("items")) and page * PAGE_SIZE < total
                 page += 1
                 if not more:
@@ -297,8 +320,6 @@ class Discovery:
                 poi, item = pois[card.poi_id], items[card.poi_id]
                 address = item.get("address_name")
                 card.facts_source, card.address = "2gis", address[:1000] if isinstance(address, str) else None
-                if card.why_source != "ai":
-                    card.why = msg["why"]
                 card.links["2gis"] = poi.description_url
             # Browsing includes closed or otherwise ineligible places with an explicit reason.
             # Hard filters continue to apply to recommendations and Gemini's candidate list.

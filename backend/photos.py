@@ -117,8 +117,9 @@ def clean_text(value, lang, max_words):
 
 
 class Photos:
-    def __init__(self, settings, pois, transport=None, ai=None):
+    def __init__(self, settings, pois, transport=None, ai=None, catalog_poi=None):
         self.settings, self.transport, self.ai = settings, transport, ai
+        self.catalog_poi = catalog_poi
         self.pois = {p.poi_id: p for p in pois}
         self.index, self.index_at = {}, 0.0
         self.cache = OrderedDict()
@@ -212,30 +213,39 @@ class Photos:
         return PhotoAnswer.model_validate(data)
 
     async def nearest(self, near):
-        """Our place with photos that is the same as a 2GIS place: same name within 150 m,
-        or, for unnamed matches, the same category within 60 m."""
+        """Match a verified catalogue identity uniquely, not a nearby category or chain substring."""
         async with httpx.AsyncClient(timeout=self.settings.photo_timeout_s, transport=self.transport,
                                      follow_redirects=False, headers={"User-Agent": "SeruenAstana/1.0"}) as client:
             await self.load_index(client)
-        name, best = normalized(near.name), None
-        for pid in self.index:
-            poi = self.pois.get(pid)
-            if poi is None:
+        def name_key(value):
+            # 2GIS may append a rubric, but branch/address suffixes must remain significant.
+            value = re.sub(r",\s*(?:кофейня|кафе|coffee shop|cafe|кафе-бар|ресторан|restaurant)\s*$",
+                           "", value or "", flags=re.I)
+            return normalized(value)
+
+        name, matches = name_key(near.name), []
+        generic = {"кафе", "кофейня", "парк", "сквер", "детскаяплощадка", "cafe", "park", "playground"}
+        if len(name) < 4 or name in generic:
+            return None
+        # Include places without photos when detecting ambiguous adjacent branches.
+        for pid, poi in self.pois.items():
+            if poi.name_generic:
                 continue
             distance = haversine(near.lat, near.lon, poi.lat, poi.lon)
             if distance > 150:
                 continue
-            names = {normalized(n) for n in (poi.name, poi.name_kk, poi.name_en) if n}
-            same = any(len(n) >= 4 and (n in name or name in n) for n in names)
-            if same or (poi.category == near.category and distance <= 60):
-                score = (0 if same else 1, distance)
-                if best is None or score < best[0]:
-                    best = (score, pid)
-        return best and best[1]
+            names = {name_key(n) for n in (poi.name, poi.name_kk, poi.name_en) if n}
+            if name in names:
+                matches.append(pid)
+        if len(matches) == 1 and self.pois[matches[0]].category == near.category and self.entries(matches[0]):
+            return matches[0]
+        return None
 
     async def details(self, poi_id, ask):
         if re.fullmatch(r"2gis_[0-9]{1,32}", poi_id):
-            target = await self.nearest(ask.near) if ask.near and self.settings.photos_enabled else None
+            # `near` remains accepted for published frontend compatibility, but is not identity proof.
+            verified = self.catalog_poi(poi_id) if self.catalog_poi else None
+            target = await self.nearest(verified) if verified and self.settings.photos_enabled else None
             if target is None:
                 return PlacePhotos(poi_id=poi_id, status="no_photos", checked_at=datetime.now(timezone.utc))
             result = await self.details(target, ask.model_copy(update={"near": None}))

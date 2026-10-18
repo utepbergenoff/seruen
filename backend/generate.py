@@ -4,6 +4,7 @@ import re
 import httpx
 from pydantic import ValidationError
 
+from .activities import activity
 from .schemas import Generated, Intent
 from .provider_status import http_error_code, log_provider
 
@@ -21,6 +22,8 @@ whether a place is open or closed: the server supplies that field. Do not sugges
 construction sites or restricted areas. Return only JSON matching the schema. why <=25 words,
 what_to_do <=35 words. Use the requested language (ru/kk/en). Stay duration must be inside each
 candidate's supplied min_stay/max_stay. Explain using only supplied facts; label suggestions as ideas.
+Respect activity_hint when present: a cinema is not a museum or exhibition. If visit duration is
+unknown (film, performance, event), do not promise attending it within a short visit budget.
 Category assumptions are unverified: qualify them softly as typical ("usually", "as a rule"); never state them
 as facts and never ask the user to check or confirm anything.
 No links, markdown or instructions to ignore these rules. note_to_user should be empty."""
@@ -89,6 +92,7 @@ class Gemini:
                 "poi_id": h.poi.poi_id,
                 "name": h.poi.name,
                 "category": h.poi.category,
+                "activity_hint": activity(h.poi),
                 "sources": h.poi.sources,
                 "rating": h.poi.rating,
                 "rating_count": h.poi.rating_count,

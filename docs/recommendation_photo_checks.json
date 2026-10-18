@@ -1,0 +1,258 @@
+{
+  "python_tests": 302,
+  "frontend_tests": 32,
+  "ruff": "passed",
+  "technical": {
+    "queries": 30,
+    "responses_with_cards": 30,
+    "four_parts": 30,
+    "within_budget": 78,
+    "cards": 78,
+    "invented_ids": 0,
+    "unsupported_open_claims": 0,
+    "intent_correct": 30,
+    "data_kind": "real",
+    "provenance": "Draft fixtures based on team plan v2.1, NOT Erlan final scenarios",
+    "mode": "no_ai",
+    "actual_modes": [
+      "no_ai"
+    ],
+    "mean_response_ms": 10.928,
+    "max_response_ms": 18.801,
+    "mean_cached_ms": 11.085,
+    "cached_scenarios": 6,
+    "mean_retrieval_ms": 10.522,
+    "max_retrieval_ms": 17.92,
+    "privacy_pass": true,
+    "manual_mean": null,
+    "invented_ids_rejected": 0,
+    "invalid_drafts_rejected": 0,
+    "ai_errors": 0
+  },
+  "scenario_spec": {
+    "source": "eval/scenarios_spec.json",
+    "mode": "no_ai",
+    "data_kind": "real",
+    "poi_count": 1251,
+    "retrieval_mode": "bm25+lsa",
+    "queries": 30,
+    "passed": 30,
+    "cases": [
+      {
+        "id": "S1.1",
+        "cards": 2,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S1.2",
+        "cards": 2,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S1.3",
+        "cards": 2,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S1.4",
+        "cards": 2,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S1.5",
+        "cards": 2,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S2.1",
+        "cards": 3,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S2.2",
+        "cards": 3,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S2.3",
+        "cards": 3,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S2.4",
+        "cards": 3,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S2.5",
+        "cards": 3,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S3.1",
+        "cards": 2,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S3.2",
+        "cards": 2,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S3.3",
+        "cards": 2,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S3.4",
+        "cards": 2,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S3.5",
+        "cards": 2,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S4.1",
+        "cards": 3,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S4.2",
+        "cards": 3,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S4.3",
+        "cards": 3,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S4.4",
+        "cards": 3,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S4.5",
+        "cards": 1,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S5.1",
+        "cards": 2,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S5.2",
+        "cards": 2,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S5.3",
+        "cards": 2,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S5.4",
+        "cards": 2,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S5.5",
+        "cards": 2,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S6.1",
+        "cards": 3,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S6.2",
+        "cards": 3,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S6.3",
+        "cards": 3,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S6.4",
+        "cards": 3,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      },
+      {
+        "id": "S6.5",
+        "cards": 3,
+        "error": "none",
+        "issues": [],
+        "category_relaxed": false
+      }
+    ],
+    "notes": [
+      "Fixed scenario times evaluated with simulate=true; preset labels removed from API payload.",
+      "S5 max_total_min applies to walk/visit/return before the 60-minute airport reserve.",
+      "This checks explicit structural expectations, not human relevance, live AI or facilities on site."
+    ]
+  }
+}

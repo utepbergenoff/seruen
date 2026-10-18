@@ -2,6 +2,7 @@ import math
 from collections import Counter
 from dataclasses import dataclass
 
+from .activities import outdoor_walk_place
 from .embeddings import Embeddings, poi_text, tokenize
 from .geo import default_stay, haversine, radius_for, speed, walk_minutes
 from .hours import open_status
@@ -96,6 +97,8 @@ class Retriever:
                 elif intent.companions == "child" and (p.adult_only or p.category == "night" or not p.kid_friendly):
                     reason = "not_child_friendly"
                 elif intent.categories and p.category not in intent.categories:
+                    reason = "category_mismatch"
+                elif "outdoor_walk" in intent.tags and not outdoor_walk_place(p):
                     reason = "category_mismatch"
                 elif request.context.accessibility and p.wheelchair != "yes":
                     reason = "accessibility_unconfirmed"

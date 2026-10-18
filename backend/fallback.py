@@ -1,3 +1,4 @@
+from .activities import activity
 from .schemas import Draft
 
 WHY = {
@@ -27,9 +28,24 @@ ACTIONS = {
         "Қоғамдық жолдармен серуендеп, сол жолмен қайтыңыз.",
     ),
     "culture": (
-        "Осмотрите доступную экспозицию; билеты и программу уточните на месте.",
-        "Explore the available exhibition; check tickets and the programme on arrival.",
-        "Қолжетімді көрмені қараңыз; билет пен бағдарламаны сол жерде нақтылаңыз.",
+        "Уточните формат посещения, билеты и программу заранее; выбирайте занятие в пределах доступного времени.",
+        "Check visitor access, tickets and the programme beforehand; choose an activity within your available time.",
+        "Келу шарттарын, билет пен бағдарламаны алдын ала нақтылаңыз; уақыт шегіне сай іс таңдаңыз.",
+    ),
+    "cinema": (
+        "Посмотрите афишу; выбирайте сеанс, только если фильм и дорога укладываются в ваше время.",
+        "Check showtimes; choose a screening only if the film and return journey fit your available time.",
+        "Афишаны қараңыз; фильм мен барып-қайту уақыты жеткілікті болса ғана сеанс таңдаңыз.",
+    ),
+    "theatre": (
+        "Проверьте афишу, билеты и длительность спектакля; учитывайте время на обратную дорогу.",
+        "Check the programme, tickets and performance duration; allow time for the return journey.",
+        "Афишаны, билетті және қойылым ұзақтығын тексеріңіз; қайту уақытын ескеріңіз.",
+    ),
+    "museum": (
+        "Осмотрите доступную экспозицию; билеты и программу уточните заранее.",
+        "Explore the available exhibition; check tickets and the programme beforehand.",
+        "Қолжетімді көрмені қараңыз; билет пен бағдарламаны алдын ала нақтылаңыз.",
     ),
     "library": (
         "Почитайте или поработайте; условия посещения уточните у сотрудников.",
@@ -49,7 +65,13 @@ def drafts(hits, intent):
     index = {"ru": 0, "en": 1, "kk": 2}[intent.lang]
     for hit in hits[:3]:
         why = WHY[intent.lang]
-        if intent.companions == "child":
+        if "outdoor_walk" in intent.tags:
+            why = (
+                f"Для прогулки на воздухе: {hit.candidate.walk_min} мин пешком и {hit.stay} мин на месте; обратная дорога учтена.",
+                f"For an outdoor walk: {hit.candidate.walk_min} min on foot and {hit.stay} min there; return time is included.",
+                f"Серуенге: жаяу {hit.candidate.walk_min} минут, сол жерде {hit.stay} минут; қайту уақыты ескерілген.",
+            )[index]
+        elif intent.companions == "child":
             why = (
                 "В базе отмечено как подходящее для детей; время с дорогой укладывается в бюджет.",
                 "Marked child-friendly in the dataset; the visit and return fit your time budget.",
@@ -77,7 +99,7 @@ def drafts(hits, intent):
                 )
             why = " ".join(parts) or why
         action = ACTIONS.get(
-            hit.poi.category,
+            activity(hit.poi) or hit.poi.category,
             (
                 "Осмотрите место с общедоступной территории; детали посещения уточните заранее.",
                 "Explore from public areas; check visitor details beforehand.",
