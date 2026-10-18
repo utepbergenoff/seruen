@@ -69,6 +69,19 @@ async def test_no_photos_means_no_ai_call(settings, poi):
     assert result.status == "no_photos" and not result.photos and not ai.calls
 
 
+async def test_commons_thumbnail_host_is_loaded_and_analyzed_without_allowing_lookalikes(settings, poi):
+    thumb = {**COMMONS[0], "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Garden.jpg/960px-Garden.jpg"}
+    bad_urls = ["https://thumb.wikimedia.org.evil.example/a.jpg", "http://thumb.wikimedia.org/a.jpg",
+                "https://thumb.wikimedia.org@evil.example/a.jpg"]
+    entries = [thumb] + [{"url": url, "source": "commons"} for url in bad_urls]
+    seen, ai = [], FakeAI(ANSWER)
+    result = await make(settings, poi, {"cafe": entries}, ai, seen).details("cafe", PhotoRequest())
+    assert result.status == "ok" and result.analysis_source == "gemini"
+    assert [p.url for p in result.photos] == [thumb["url"]]
+    assert seen == [INDEX, thumb["url"]]
+    assert len(ai.calls) == 1 and len(ai.calls[0]["images"]) == 1
+
+
 async def test_street_views_only_are_not_shown(settings, poi):
     answer = {**ANSWER, "photos": [{"index": 0, "shows_place": False}, {"index": 1, "shows_place": False}]}
     result = await make(settings, poi, {"cafe": COMMONS}, FakeAI(answer)).details("cafe", PhotoRequest())
