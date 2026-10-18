@@ -34,6 +34,11 @@ test('all eight features use real server shapes and preserve offline/privacy bou
   const replan=calls.find(c=>c.path==='/plans/recalculate');
   assert.ok(replan.body.remaining_time_min>0 && replan.body.previous.schema_version===1);
   assert.equal(replan.body.previous.finish_mode,'destination');
+  assert.equal(replan.body.keep_stops,true);
+  // Strict cost/atmosphere filters leave no extra break: the server refuses safely.
+  assert.equal(replan.status,409);
+  assert.ok(w.SeruenFeatures.walk.plan.server.stops.some(s=>s.poi_id==='team_coffee'));
+  assert.ok($('#walk [data-ch="cold"]'));
 
   b.click('#walkSave'); await until(()=>w.SeruenFeatures.mine.walks.length===1);
   const stored=(await w.SeruenStore.allWalks())[0];
@@ -48,7 +53,7 @@ test('all eight features use real server shapes and preserve offline/privacy bou
     coords:{lat:51.128,lon:71.43},favorite:true,note:'My own note',offline_allowed:false});
   const bookmark=await w.SeruenStore.getPlace('2gis_7000001');
   assert.equal(bookmark.name,undefined);assert.equal(bookmark.coords,undefined);assert.equal(bookmark.note,'My own note');
-  assert.ok(calls.every(c=>c.status===200),JSON.stringify(calls.filter(c=>c.status!==200)));
+  assert.ok(calls.every(c=>c.status===200 || (c.path==='/plans/recalculate' && c.status===409)),JSON.stringify(calls.filter(c=>c.status!==200)));
   for(const path of ['/health','/recommend','/comfort/search','/atmosphere/examples','/plans/build','/plans/recalculate','/plans/export','/plans/refresh']) {
     assert.ok(calls.some(c=>c.path===path),path);
   }

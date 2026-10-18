@@ -10,7 +10,8 @@
       "comfort": 1,
       "cost": 1,
       "atmosphere": 1,
-      "plan_export": 1
+      "plan_export": 1,
+      "nearby_break": 1
     },
     "feature_contract_version": 2
   },

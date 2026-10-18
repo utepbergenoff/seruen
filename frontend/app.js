@@ -27,6 +27,7 @@
     loc: {...ASTANA, source: "map"}, locKind: "center", locating: false, locVersion: 0, requestVersion: 0, preset: null,
     presets: [], scenarios: [], last: null, lastReq: null, lastWeather: null,
     showCands: false, extraCands: null, chipCtx: {}, apiMode: null, gis: {}, photos: {}, photoPending: {}, features: {},
+    selectedPlaceId: null, mapMode: null, mapError: false,
   };
   if (!FEAT.languages && !params.get("lang")) state.lang = "ru";
   const T = () => window.I18N[state.lang] || window.I18N.ru;
@@ -36,9 +37,46 @@
   const map = L.map("map", {zoomControl: true}).setView([state.loc.lat, state.loc.lon], 15);
   const fitTo = (bounds, opts = {}) => map.fitBounds(bounds, {padding: [48, 48], ...opts});
   const showAt = (latlng, zoom) => map.setView(latlng, zoom);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  }).addTo(map);
+  let baseTiles = [], tileVersion = 0;
+  function renderMapControls() {
+    $("#mapMode").value = state.mapMode;
+    $("#mapNotice").hidden = !state.mapError && state.mapMode === "streets";
+    $("#mapNotice").textContent = state.mapError ? T().mapLayerError : T().mapSatelliteHint;
+    const mode = window.SeruenTheme?.mode || "system";
+    $("#themeBtn").textContent = "◐ " + T().themeModes[mode];
+    $("#themeBtn").title = T().themeSwitch;
+    $("#themeBtn").setAttribute("aria-label", T().themeSwitch + ": " + T().themeModes[mode]);
+  }
+  function setMapMode(mode) {
+    if (!["streets", "satellite", "hybrid"].includes(mode)) mode = "streets";
+    const version = ++tileVersion; let errors = 0;
+    baseTiles.forEach(l => map.removeLayer(l)); baseTiles = [];
+    state.mapMode = mode; state.mapError = false;
+    store.set("seruen_map_mode", mode); $("#map").dataset.mode = mode;
+    const add = (url, options) => {
+      const tile = L.tileLayer(url, {maxZoom: 19, ...options});
+      tile.on("tileerror", () => {
+        if (version !== tileVersion) return;
+        if (++errors >= 3 && mode !== "streets") setMapMode("streets");
+        state.mapError = true; renderMapControls();
+      });
+      baseTiles.push(tile); tile.addTo(map);
+    };
+    const osm = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+    if (mode === "streets") add("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {attribution: osm});
+    else {
+      // EOX's public non-commercial layer: no key, billing account or offline tile download.
+      const root = "https://tiles.maps.eox.at/wmts/1.0.0/";
+      add(root + "s2cloudless-2025_3857/default/g/{z}/{y}/{x}.jpg", {maxNativeZoom: 14,
+        attribution: '<a href="https://cloudless.eox.at">EOxCloudless</a> by <a href="https://eox.at">EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2025) · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA</a>'});
+      if (mode === "hybrid") add(root + "overlay_bright_3857/default/g/{z}/{y}/{x}.png", {maxNativeZoom: 14,
+        attribution: osm + ' · <a href="https://maps.eox.at">EOX::Maps</a> / MapServer'});
+    }
+    renderMapControls();
+  }
+  $("#mapMode").addEventListener("change", e => setMapMode(e.target.value));
+  $("#themeBtn").addEventListener("click", () => { window.SeruenTheme?.cycle(); renderMapControls(); });
+  setMapMode(store.get("seruen_map_mode", "streets"));
   const meIcon = () => L.divIcon({className: "", iconSize: [22, 22], iconAnchor: [11, 11], html: '<div class="me"></div>'});
   const me = L.marker([state.loc.lat, state.loc.lon], {draggable: true, zIndexOffset: 1000, keyboard: true, icon: meIcon()}).addTo(map);
   me.bindTooltip(T().youAreHere, {permanent: true, direction: "top", offset: [0, -14], className: "me-label"});
@@ -48,6 +86,9 @@
   const fixSize = () => map.invalidateSize();
   window.addEventListener("load", fixSize);
   if (window.ResizeObserver) new ResizeObserver(fixSize).observe($("#map"));
+  if (window.ResizeObserver) new ResizeObserver(entries => {
+    document.documentElement.style.setProperty("--header-h", entries[0].target.getBoundingClientRect().height + "px");
+  }).observe($(".top"));
   setTimeout(fixSize, 300);
   const layer = L.layerGroup().addTo(map);
   let routeLine = null;
@@ -72,6 +113,7 @@
     $$("[data-i18n-placeholder]").forEach((el) => { el.placeholder = t[el.dataset.i18nPlaceholder]; });
     $$(".lang button").forEach((b) => b.classList.toggle("on", b.dataset.lang === state.lang));
     me.setTooltipContent(t.youAreHere);
+    renderMapControls();
     renderChips(); renderScenarioMenu(); renderScenarioStrip(); renderModeBadge(); renderLocLine();
     if (ext.onLang) ext.onLang();
     const gb = $("#geoBtn"); if (gb) { gb.title = t.myLocation; gb.setAttribute("aria-label", t.myLocation); }
@@ -270,7 +312,11 @@
     const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), timeoutMs);
     try {
       const r = await fetch(API + path, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body), signal: ctrl.signal});
-      if (!r.ok) throw new Error("HTTP " + r.status);
+      if (!r.ok) {
+        const error = new Error("HTTP " + r.status); error.status = r.status;
+        try { error.code = (await r.json())?.error?.code; } catch { /* non-JSON error */ }
+        throw error;
+      }
       return await r.json();
     } finally { clearTimeout(timer); }
   }
@@ -302,7 +348,7 @@
       }
       state.lastWeather = body.context.weather ? {...body.context.weather, simulated: simulatedWeather} : null;
       state.lastReq = body; state.extraCands = null; state.showCands = false;
-      state.last = data;
+      state.last = data; state.selectedPlaceId = null;
       $("#status").innerHTML = "";
       render(data);
       $("#results").scrollIntoView({behavior: "smooth", block: "start"});
@@ -401,6 +447,44 @@
   }
 
   // ---------- rendering ----------
+  let selectedCardHome = null;
+  function selectPlace(id, focus = true) {
+    const overview = $("#resultsOverview"), selection = $("#placeSelection"), detail = $("#selectedPlaceCard");
+    if (!overview || !selection) return;
+    // Move the actual recommendation, preserving photos, notes and event handlers.
+    if (selectedCardHome?.isConnected && detail.firstElementChild) selectedCardHome.replaceWith(detail.firstElementChild);
+    selectedCardHome = null; detail.innerHTML = "";
+    const p = [...(state.last?.recommendations || []), ...(state.last?.nearby_places || [])].find(p => p.poi_id === id);
+    const card = $$("#resultsOverview .rec").find(el => el.dataset.id === id);
+    if (!p || (!card && !(state.last?.nearby_places || []).some(p => p.poi_id === id))) id = null;
+    state.selectedPlaceId = id;
+    overview.hidden = !!id; selection.hidden = !id;
+    if (!id) {
+      if (focus) { overview.scrollIntoView({block: "start", behavior: "smooth"}); overview.focus({preventScroll: true}); }
+      return;
+    }
+    if (card) {
+      selectedCardHome = document.createComment("selected place position");
+      card.before(selectedCardHome); detail.appendChild(card);
+    } else {
+      const t = T(), nav = links(p);
+      detail.innerHTML = `<article class="card block catalog-detail" data-id="${esc(id)}">
+        <p class="src">${esc(t.catalogSelection)}</p><h3>${esc(p.name)}</h3>
+        <p class="meta">${esc(catLabel(p.category))}${p.rating ? ` · ${icon("star")} ${esc(p.rating)}` : ""}</p>
+        ${p.address ? `<p>${esc(p.address)}</p>` : ""}
+        <p>${esc(p.distance_m)} ${esc(t.distance)}${p.walk_min != null ? ` · ${esc(p.walk_min)} ${esc(t.walk)}` : ""}</p>
+        ${p.open_status ? statusPill(p.open_status) : ""}
+        ${p.eligible === false ? `<p class="msg warn">${esc(t.catalog.filtered)} ${esc(codeLabel(p.excluded_because))}</p>` : ""}
+        <div class="actions"><a class="btn" href="${esc(nav.gisPlace)}" target="_blank" rel="noopener">${esc(t.openIn2gis)}</a>
+        ${FEAT.mapLinks ? `<a class="btn" href="${esc(nav.gis)}" target="_blank" rel="noopener">${esc(t.route2gis)}</a>` : ""}
+        ${FEAT.twogis ? `<button type="button" class="btn" id="selectedGis" aria-expanded="false" aria-controls="selectedGisBox">${esc(t.gisBtn)}</button>` : ""}</div>
+        <div class="gis-box" id="selectedGisBox" hidden></div></article>`;
+      $("#selectedGis")?.addEventListener("click", e => toggleGis(detail.firstElementChild, id, e.currentTarget));
+    }
+    $("#selectedPlaceActions").innerHTML = ext.selectedPlaceActions ? ext.selectedPlaceActions(p) : "";
+    if (ext.onPlaceSelected) ext.onPlaceSelected(p, state.last);
+    if (focus) { selection.scrollIntoView({block: "start", behavior: "smooth"}); $("#backToPlaces").focus({preventScroll: true}); }
+  }
   function render(d) {
     if (ext.filterAnswer) d = ext.filterAnswer(d);
     const t = T();
@@ -467,7 +551,8 @@
       const from = state.lastReq ? state.lastReq.location : state.loc;
       if (L.polyline) L.polyline([[from.lat, from.lon], [r.coords.lat, r.coords.lon]], {color: "#00AFCA", weight: 3, dashArray: "1 8", lineCap: "round", opacity: .95, interactive: false}).addTo(layer);
       markers[r.poi_id] = L.marker([r.coords.lat, r.coords.lon], {icon: pinIcon, title: r.name}).addTo(layer)
-        .bindPopup(`<b>${i + 1}. ${esc(r.name)}</b><br>${esc(r.distance_m)} ${esc(t.distance)} · ${esc(r.walk_min)} ${esc(t.walk)}`);
+        .bindPopup(`<b>${i + 1}. ${esc(r.name)}</b><br>${esc(r.distance_m)} ${esc(t.distance)} · ${esc(r.walk_min)} ${esc(t.walk)}`)
+        .on("click", () => selectPlace(r.poi_id));
     });
     if (FEAT.route && !state.features.plan_export && recs.length >= 2) html += `<button type="button" id="routeBtn" class="btn">${icon("route")} ${esc(t.buildRoute)}</button><div id="routeBox"></div>`;
     if (nearby.length) {
@@ -481,7 +566,8 @@
         if (!markers[p.poi_id]) {
           const dotIcon = L.divIcon({className: "", iconSize: [24,24], iconAnchor: [12,12], html: '<div class="pin dot"><b>•</b></div>'});
           markers[p.poi_id] = L.marker([p.coords.lat, p.coords.lon], {icon: dotIcon, title:p.name}).addTo(layer)
-            .bindPopup(`<b>${esc(p.name)}</b><br>${esc(p.distance_m)} ${esc(t.distance)}`);
+            .bindPopup(`<b>${esc(p.name)}</b><br>${esc(p.distance_m)} ${esc(t.distance)}`)
+            .on("click", () => selectPlace(p.poi_id));
         }
       });
       html += '</section>';
@@ -490,13 +576,19 @@
     if (ext.resultsBottom) html += ext.resultsBottom(d);
     html += considered(d);
     html += `<p class="foot">${icon("info")} ${esc(d.disclaimer || t.disclaimerShort)}</p>`;
-    $("#results").innerHTML = html;
+    selectedCardHome = null;
+    $("#results").innerHTML = `<div id="resultsOverview" tabindex="-1">${html}</div>
+      <section id="placeSelection" hidden aria-label="${esc(t.selectedPlace)}">
+      <button type="button" id="backToPlaces" class="btn">${icon("back")} ${esc(t.backToPlaces)}</button>
+      <div id="selectedPlaceCard"></div><div id="selectedPlaceActions"></div></section>`;
+    $("#backToPlaces").addEventListener("click", () => selectPlace(null));
 
     const mapped = nearby.length ? nearby : recs;
-    if (mapped.length) fitTo(L.latLngBounds([[state.loc.lat, state.loc.lon], ...mapped.map((r) => [r.coords.lat, r.coords.lon])]), {maxZoom: 16});
+    if (mapped.length && !state.selectedPlaceId) fitTo(L.latLngBounds([[state.loc.lat, state.loc.lon], ...mapped.map((r) => [r.coords.lat, r.coords.lon])]), {maxZoom: 16});
     $$("[data-nearby]").forEach(el => el.addEventListener("click", () => {
       const marker = markers[el.dataset.nearby];
       if (marker) {showAt(marker.getLatLng(), 16); marker.openPopup();}
+      selectPlace(el.dataset.nearby, false);
       if (window.matchMedia("(max-width: 860px)").matches) $("#map").scrollIntoView({behavior:"smooth"});
     }));
     $$(".rec").forEach((el) => {
@@ -504,6 +596,7 @@
       const focus = () => {
         const m = markers[id]; if (m) { showAt(m.getLatLng(), Math.max(map.getZoom(), 16)); m.openPopup(); }
         $$(".rec").forEach((x) => x.classList.toggle("active", x === el));
+        selectPlace(id, false);
         if (window.matchMedia("(max-width: 860px)").matches) $("#map").scrollIntoView({behavior: "smooth"});
       };
       el.addEventListener("click", (e) => { if (!e.target.closest("a,button,.gis-box")) focus(); });
@@ -517,11 +610,13 @@
       $$(".rec").forEach((x) => x.classList.toggle("active", x === el));
       if (el) el.scrollIntoView({behavior: "smooth", block: "start"});
       if (m) { showAt(m.getLatLng(), Math.max(map.getZoom(), 16)); m.openPopup(); }
+      selectPlace(b.dataset.stop, false);
     }));
     const np = $("#nextPlacesBtn"); if (np) np.addEventListener("click", askNext);
     const rb = $("#routeBtn"); if (rb) rb.addEventListener("click", buildRoute);
     if (FEAT.photos) recs.forEach((r) => loadPhotos(r, d));
     if (ext.afterRender) ext.afterRender(d);
+    if (state.selectedPlaceId) selectPlace(state.selectedPlaceId, false);
   }
 
   // ---------- 2GIS rating and hours (extra): asked only when the button is pressed, never for every card ----------

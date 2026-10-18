@@ -61,6 +61,7 @@ class ReplanRequest(Model):
     completed_ids: list[Id] = Field(default_factory=list, max_length=5)
     poi_id: str | None = Field(default=None, min_length=1, max_length=120)
     reserve_min: int = Field(default=5, ge=0, le=120)
+    keep_stops: bool = False  # Opt-in nearby break; old clients keep their replacement contract.
 
     @model_validator(mode="after")
     def reason_context(self):
