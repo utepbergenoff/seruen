@@ -608,9 +608,12 @@
       P.space[a.space] && `📐 ${P.space[a.space]}`,
       a.decor && `🎨 ${a.decor}`,
     ].filter(Boolean).map((x) => `<span class="tag">${esc(x)}</span>`).join("") : "";
+    // when the AI sentence was rejected by the server's checks, say the same facts in one plain sentence
+    const facts = a ? [P.light[a.lighting], a.seats ? fmt(P.seats, {n: a.seats}) : P.seating[a.seating], P.space[a.space], P.kids[a.kids_area]].filter(Boolean).join(", ") : "";
+    const why = a ? a.summary || (facts && facts[0].toUpperCase() + facts.slice(1) + ".") : "";
     return `<div class="ph-strip">${photos.map((x) => `<a class="ph" href="${esc(https(x.page_url) || x.url)}" target="_blank" rel="noopener" title="${esc(photoCredit(x))}"><img src="${esc(x.url)}" alt="${esc(P.alt)}" loading="lazy" referrerpolicy="no-referrer"></a>`).join("")}</div>
-      ${a && a.summary ? `<div class="field ph-why"><b>📷 ${esc(P.title)}:</b> ${esc(a.summary)}</div>` : a ? "" : `<p class="src">${esc(P.noAnalysis)}</p>`}
-      ${chips ? `<div class="tags">${chips}</div>` : ""}
+      ${a && why ? `<div class="field ph-why"><b>📷 ${esc(P.title)}:</b> ${esc(why)}</div>` : a ? "" : `<p class="src">${esc(P.noAnalysis)}</p>`}
+      ${chips && a.summary ? `<div class="tags">${chips}</div>` : ""}
       <p class="src">${esc(P.credit)}: ${[...new Set(photos.map(photoCredit))].map(esc).join("; ")}</p>`;
   }
   async function loadPhotos(r, d) {

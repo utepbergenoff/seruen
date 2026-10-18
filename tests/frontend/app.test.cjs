@@ -225,3 +225,13 @@ test('provider quota error preserves the accumulated catalog for retry',async t=
   assert.match(b.w.document.querySelector('#nearbyPlaces').textContent,/Espresso Day/);
   assert.equal(b.w.document.querySelector('#nextPlacesBtn').disabled,false);
 });
+
+test('photo facts become a plain sentence when the AI sentence is missing',async t=>{
+  const pic={url:'https://upload.wikimedia.org/a.jpg',page_url:'https://commons.wikimedia.org/wiki/File:A.jpg',author:'Ann',license:'CC0',source:'commons'};
+  const b=await withCards(t,null,()=>json({poi_id:'p1',photos:[pic],status:'ok',analysis_source:'gemini',checked_at:'2026-10-18T09:00:00Z',
+    analysis:{lighting:'natural',kids_area:'no',seats:null,seating:'unknown',space:'large',decor:'',summary:''}}));
+  await tick();await tick();
+  const box=b.w.document.querySelector('.rec .photos');
+  assert.match(box.textContent,/По фото: Много дневного света, просторно, детской зоны не видно\./);
+  assert.equal(box.querySelectorAll('.tag').length,0);
+});
