@@ -17,13 +17,13 @@ def poi():
     return POI(poi_id="cafe", name="Test Cafe", lat=51.128, lon=71.43, category="coffee")
 
 
-def transport(places, seen=None):
+def transport(places, seen=None, names=None):
     def handler(request):
         url = str(request.url)
         if seen is not None:
             seen.append(url)
         if url == INDEX:
-            return httpx.Response(200, json={"version": 1, "places": places})
+            return httpx.Response(200, json={"version": 1, "places": places, "names": names or {}})
         return httpx.Response(200, content=JPEG, headers={"content-type": "image/jpeg"})
     return httpx.MockTransport(handler)
 
@@ -168,3 +168,29 @@ async def test_ambiguous_chain_branches_reject_photos_even_if_only_one_has_photo
     photos.catalog_poi = lambda _: poi
     assert (await photos.details("2gis_70000001", PhotoRequest())).status == "no_photos"
     assert not ai.calls
+
+
+@pytest.mark.parametrize("ours, theirs, category", [
+    ("Бәйтерек", "Монумент-Бәйтерек", "viewpoint"),
+    ("Fame City", "Fame City, игровой центр", "kids"),
+    ("Хан Шатыр", "Хан Шатыр, торгово-развлекательный центр", "shopping"),
+])
+async def test_one_of_a_kind_places_match_despite_2gis_descriptors(settings, ours, theirs, category):
+    ai = FakeAI(ANSWER)
+    place = POI(poi_id="ours", name=ours, lat=51.128, lon=71.43, category=category)
+    photos = make(settings, place, {"ours": COMMONS}, ai)
+    remote = place.model_copy(update={"poi_id": "2gis_70000001", "name": theirs, "lat": place.lat + .0004})
+    photos.catalog_poi = lambda _: remote
+    assert (await photos.details(remote.poi_id, PhotoRequest())).status == "ok"
+    other = remote.model_copy(update={"category": "coffee" if category != "coffee" else "park"})
+    photos.catalog_poi = lambda _: other
+    assert (await photos.details("2gis_70000002", PhotoRequest())).status == "no_photos"
+
+
+async def test_2gis_russian_name_matches_the_osm_russian_name_of_our_place(settings):
+    ai = FakeAI(ANSWER)
+    place = POI(poi_id="park", name="Ғашықтар саябағы", lat=51.128, lon=71.43, category="park")
+    settings.gemini_api_key = "synthetic-test-key"
+    photos = Photos(settings, [place], transport({"park": COMMONS}, names={"park": ["Парк влюбленных"]}), ai)
+    photos.catalog_poi = lambda _: place.model_copy(update={"poi_id": "2gis_7", "name": "Парк влюблённых"})
+    assert (await photos.details("2gis_7", PhotoRequest())).status == "ok"

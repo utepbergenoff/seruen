@@ -116,12 +116,18 @@ def clean_text(value, lang, max_words):
     return value
 
 
+# descriptive words 2GIS adds to one-of-a-kind places; never brand words
+DESCRIPTORS = {"монумент", "монументі", "памятник", "ескерткіш", "ескерткіші", "мемориал", "мемориалы", "парк", "саябақ",
+               "саябағы", "сквер", "сквері", "музей", "мұражай", "мұражайы", "театр", "театры", "кинотеатр", "трц", "тц",
+               "торговый", "торгово", "развлекательный", "центр", "игровой", "комплекс", "кешені", "арка", "фонтан"}
+
+
 class Photos:
     def __init__(self, settings, pois, transport=None, ai=None, catalog_poi=None):
         self.settings, self.transport, self.ai = settings, transport, ai
         self.catalog_poi = catalog_poi
         self.pois = {p.poi_id: p for p in pois}
-        self.index, self.index_at = {}, 0.0
+        self.index, self.index_at, self.names = {}, 0.0, {}
         self.cache = OrderedDict()
         self.lock, self.slots = asyncio.Lock(), asyncio.Semaphore(2)
         self.calls, self.day, self.day_calls = deque(), None, 0
@@ -140,9 +146,13 @@ class Photos:
         try:
             response = await client.get(self.settings.photo_index_url)
             if response.status_code == 200 and len(response.content) < 5_000_000:
-                places = response.json().get("places", {})
+                body = response.json()
+                places, names = body.get("places", {}), body.get("names", {})
                 if isinstance(places, dict):
                     self.index, self.index_at = places, time.monotonic()
+                    # other names of the same place (Russian, Kazakh, English) from OpenStreetMap
+                    self.names = {k: [n for n in v if isinstance(n, str)][:6] for k, v in names.items()
+                                  if isinstance(v, list)} if isinstance(names, dict) else {}
         except (httpx.HTTPError, ValueError, AttributeError):
             log_provider("photo_index", "unavailable")
         return self.index
@@ -217,11 +227,20 @@ class Photos:
         async with httpx.AsyncClient(timeout=self.settings.photo_timeout_s, transport=self.transport,
                                      follow_redirects=False, headers={"User-Agent": "SeruenAstana/1.0"}) as client:
             await self.load_index(client)
+        # Cafes, restaurants and bars keep exact names: neighbouring branches and brand variants are common.
+        # Landmarks, parks, theatres, malls and play centres are one of a kind, so 2GIS's descriptive words
+        # ("Монумент-Бәйтерек", "Fame City, игровой центр") are dropped before comparing. Distance, category,
+        # a single match and Gemini's photo check still decide.
+        loose = near.category not in ("coffee", "food", "night")
+
         def name_key(value):
             # 2GIS may append a rubric, but branch/address suffixes must remain significant.
             value = re.sub(r",\s*(?:кофейня|кафе|coffee shop|cafe|кафе-бар|ресторан|restaurant)\s*$",
                            "", value or "", flags=re.I)
-            return normalized(value)
+            if loose:
+                words = re.findall(r"[^\W_]+", value.split(",")[0].casefold())
+                value = " ".join(w for w in words if w not in DESCRIPTORS)
+            return normalized(value.replace("ё", "е").replace("Ё", "Е"))
 
         name, matches = name_key(near.name), []
         generic = {"кафе", "кофейня", "парк", "сквер", "детскаяплощадка", "cafe", "park", "playground"}
@@ -234,7 +253,7 @@ class Photos:
             distance = haversine(near.lat, near.lon, poi.lat, poi.lon)
             if distance > 150:
                 continue
-            names = {name_key(n) for n in (poi.name, poi.name_kk, poi.name_en) if n}
+            names = {name_key(n) for n in (poi.name, poi.name_kk, poi.name_en, *self.names.get(pid, [])) if n}
             if name in names:
                 matches.append(pid)
         if len(matches) == 1 and self.pois[matches[0]].category == near.category and self.entries(matches[0]):
