@@ -113,6 +113,12 @@ async def test_ai_failure_keeps_only_team_photos(settings, poi):
     assert [p.url for p in result.photos] == ["https://seruen-astana.netlify.app/img/places/cafe-1.jpg"]
 
 
+async def test_quota_failure_is_not_a_negative_photo_verdict(settings, poi):
+    photos = make(settings, poi, {"cafe": COMMONS}, FakeAI(error=AIError("provider_cooldown")))
+    result = await photos.details("cafe", PhotoRequest())
+    assert result.status == "ai_unavailable" and result.photos == [] and result.analysis is None
+
+
 async def test_unsafe_claims_and_wrong_language_are_dropped(settings, poi):
     answer = {**ANSWER, "summary": "Кафе открыто до 23:00, есть розетки.", "decor": "cozy wooden style"}
     result = await make(settings, poi, {"cafe": COMMONS}, FakeAI(answer)).details("cafe", PhotoRequest(lang="ru"))
