@@ -152,6 +152,10 @@ class ComfortView(Model):
     source_url: str
     checked_at: date
     verified: bool
+    distance_m: int = 0
+    walk_min: int = 0
+    indoor: bool = False
+    open_status: OpenStatus | None = None
 
 
 class OfflineRequest(Model):

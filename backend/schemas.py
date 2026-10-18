@@ -77,6 +77,8 @@ class Preferences(Model):
     winter_mode: bool = False
     expense_mode: Literal["any", "free_only", "no_required_purchase"] = "any"
     atmosphere_example_id: str | None = Field(default=None, min_length=1, max_length=120)
+    atmosphere_profile: Literal["light_cafe", "green_inside", "spacious_inside", "green_walk"] | None = None
+    atmosphere_verified_only: bool = False
 
     @field_validator("exclude_poi_ids", "visited_poi_ids")
     @classmethod
@@ -114,6 +116,9 @@ class AtmosphereMatch(Model):
     source: Literal["manual", "gemini", "none"] = "none"
     checked_at: date | None = None
     photo_ids: list[str] = Field(default_factory=list)
+    requested_features: list[str] = Field(default_factory=list)
+    unconfirmed_features: list[str] = Field(default_factory=list)
+    status: Literal["confirmed", "partial", "unknown", "not_requested"] = "not_requested"
 
 
 class RecommendRequest(Correlated):
@@ -347,7 +352,7 @@ class Health(Model):
     feature_contract_version: int = 2
     features: dict[str, int] = Field(default_factory=lambda: {
         "replan": 1, "end_point": 1, "constraints": 1, "comfort": 1,
-        "cost": 1, "atmosphere": 1, "plan_export": 1, "nearby_break": 1,
+        "cost": 1, "atmosphere": 1, "atmosphere_profiles": 1, "comfort_breaks": 1, "plan_export": 1, "nearby_break": 1,
         "city_history": 1, "meet_halfway": 1, "winter_plan": 1,
     })
 

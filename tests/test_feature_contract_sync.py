@@ -20,7 +20,7 @@ def test_health_announces_agreed_contract(api):
     health = api.get('/health').json()
     assert health['feature_contract_version'] == 2
     assert set(health['features']) == {'replan', 'end_point', 'constraints', 'comfort', 'cost', 'atmosphere',
-                                       'plan_export', 'nearby_break', 'city_history', 'meet_halfway', 'winter_plan'}
+                                       'plan_export', 'nearby_break', 'city_history', 'meet_halfway', 'winter_plan', 'atmosphere_profiles', 'comfort_breaks'}
 
 
 def test_request_id_echo_does_not_split_recommendation_cache(api):

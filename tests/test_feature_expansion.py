@@ -48,7 +48,7 @@ def expanded(settings, tmp_path):
         "poi_identity_links.json": [{"canonical_id": "team_coffee", "aliases": ["2gis_7000001"],
                                      "evidence": evidence()}],
         "atmosphere_catalog.json": [{"example_id": "bright-reference", "poi_id": "team_coffee",
-            "title": "Synthetic bright room", "features": ["natural_light", "visible_seating"],
+            "title": "Synthetic bright room", "features": ["indoor", "natural_light", "visible_seating"],
             "analysis_source": "manual", "analysis_version": "test-v1", "evidence": evidence(),
             "photos": [{"photo_id": "photo-1", "url": "https://example.org/synthetic.jpg",
                         "content_sha256": "a" * 64, "license": "synthetic-test", "attribution": "TEST ONLY",
@@ -439,7 +439,10 @@ def test_nearby_break_preserves_all_stops_and_original_finish(api, reason):
     assert new['fits']
     assert [s['poi_id'] for s in new['stops']][1:] == previous['remaining_ids']
     assert new['stops'][0]['poi_id'] not in previous['remaining_ids']
-    assert places[new['stops'][0]['poi_id']].indoor
+    if reason == 'cold':
+        assert places[new['stops'][0]['poi_id']].indoor
+    else:
+        assert new['stops'][0]['poi_id'] == 'team_bench'
     assert new['state']['finish'] == previous['finish']
     assert new['state']['finish_mode'] == previous['finish_mode']
     assert new['legs'][0]['walk_min'] <= 5

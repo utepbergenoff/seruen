@@ -6,7 +6,7 @@ const until = async fn => { for (let i=0;i<150;i++) {if(fn()) return;await new P
 test('all eight features use real server shapes and preserve offline/privacy boundaries', async t => {
   const calls=[];
   const b=await boot(t,{live:process.env.SERUEN_TEST_URL,calls}), w=b.w, $=s=>w.document.querySelector(s);
-  try { await until(()=>$('#finishField') && $('#atmosField [data-atmos="bright-reference"]')); }
+  try { await until(()=>$('#finishField') && $('#atmosField [data-mood="light_cafe"]')); }
   catch(e) { throw new Error(JSON.stringify({calls,features:w.SeruenApp.state.features,atmos:$('#atmosField')?.innerHTML}),{cause:e}); }
   w.SeruenApp.state.loc={lat:51.128,lon:71.430,source:'map'};
   $('#query').value='Хочу кофе'; $('#budgetAuto').checked=false; $('#budget').value='90';
@@ -21,7 +21,7 @@ test('all eight features use real server shapes and preserve offline/privacy bou
 
   b.click('[data-comfort="toilet"]'); await until(()=>calls.some(c=>c.path==='/comfort/search'));
   const ns=$('#noSpend'); ns.value='strict'; ns.dispatchEvent(new w.Event('change'));
-  b.click('#atmosField [data-atmos="bright-reference"]'); b.click('#goBtn');
+  b.click('#atmosField [data-mood="light_cafe"]'); b.click('#goBtn');
   await until(()=>!$('#goBtn').disabled && w.SeruenApp.state.lastReq.preferences?.expense_mode==='free_only');
   assert.deepEqual(w.SeruenApp.state.last.recommendations.map(r=>r.poi_id),['team_coffee']);
   assert.match($('.rec').textContent,/Бесплатно/);

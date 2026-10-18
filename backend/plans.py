@@ -220,7 +220,7 @@ class Planner:
         if not payload.stop_ids:
             def priority(p):
                 detour = haversine(req.location.lat, req.location.lon, p.lat, p.lon) + haversine(p.lat, p.lon, finish.lat, finish.lon)
-                visual = self.features.match(p.poi_id, prefs.atmosphere_example_id, now.date())
+                visual = self.features.match(p.poi_id, prefs.atmosphere_example_id, now.date(), prefs.atmosphere_profile)
                 return (-semantics.get(p.poi_id, 0) - .2 * len(visual.matched_features) + detour / 10000, p.poi_id)
             candidates.sort(key=priority)
         chosen, seen = [], set()
@@ -365,6 +365,8 @@ class Planner:
         req.context.time_budget_min = payload.remaining_time_min
         if payload.keep_stops and payload.reason in ("cold", "tired"):
             return await self.nearby_break(payload, req, completed, skipped, reserve)
+        if payload.keep_stops and payload.reason == "add_stop":
+            return await self.insert_break(payload, req, completed, skipped, reserve, payload.poi_id)
         if payload.reason == "cold":
             req.preferences.indoor_only = True
             req.preferences.max_walk_min = min(req.preferences.max_walk_min or 120, 5)
@@ -399,6 +401,10 @@ class Planner:
         if not remaining or len(remaining) >= 5:
             raise PlanError("no_replacement_found", 409)
         nearby = req.model_copy(deep=True)
+        nearby.preferences.atmosphere_example_id = None
+        nearby.preferences.atmosphere_profile = None
+        nearby.preferences.atmosphere_verified_only = False
+        nearby.preferences.preferred_categories = []
         nearby.preferences.indoor_only = True
         nearby.preferences.max_walk_min = min(nearby.preferences.max_walk_min or 120, 5)
         nearby.preferences.exclude_poi_ids = list(dict.fromkeys([
@@ -409,23 +415,50 @@ class Planner:
                         "en": "warm indoor place"}.get(req.context.lang, "warm indoor place")
         # The next rest stop must be close to the person, even when the original finish is far away.
         nearby.end = None
+        # When tired, a real public bench is a useful first choice; never infer benches from parks.
+        if payload.reason == "tired" and not req.preferences.indoor_only:
+            benches = sorted((r for r in self.features.comfort.values() if r.kind == "bench"
+                and r.access == "public" and self.features.verified(r.evidence, datetime.now(ALMATY).date(), 30)),
+                key=lambda r: haversine(req.location.lat, req.location.lon, r.poi.lat, r.poi.lon))
+            for bench in benches[:3]:
+                if haversine(req.location.lat, req.location.lon, bench.poi.lat, bench.poi.lon) > 300:
+                    continue
+                try:
+                    return await self.insert_break(payload, req, completed, skipped, reserve, bench.poi.poi_id)
+                except PlanError:
+                    continue
         candidate = await self.build(PlanRequest(request=nearby, origin=req.location,
             completed_ids=completed, skipped_ids=skipped, reserve_min=reserve, max_stops=1), use_current_time=True)
         if not candidate.fits or not candidate.stops:
             raise PlanError("no_replacement_found", 409)
-        pause_id = candidate.stops[0].poi_id
+        return await self.insert_break(payload, req, completed, skipped, reserve, candidate.stops[0].poi_id)
+
+    async def insert_break(self, payload, req, completed, skipped, reserve, pause_id):
+        state = payload.previous
+        remaining = [p for p in state.remaining_ids if p not in completed and p not in skipped]
+        if not remaining or len(remaining) >= 5 or pause_id in remaining + completed + skipped:
+            raise PlanError("no_replacement_found", 409)
+        original_preferences = req.preferences.model_copy(deep=True)
+        # An emergency rest need not match the café's decor. Keep budget, exclusions and safety filters.
+        req = req.model_copy(deep=True)
+        req.preferences.atmosphere_example_id = None
+        req.preferences.atmosphere_profile = None
+        req.preferences.atmosphere_verified_only = False
+        req.preferences.preferred_categories = []
         required = [pause_id, *remaining]
         result = await self.build(PlanRequest(request=req, origin=state.origin,
             finish_mode=state.finish_mode, destination=state.finish, stop_ids=required,
             completed_ids=completed, skipped_ids=skipped, reserve_min=reserve, max_stops=len(required)),
             use_current_time=True)
         if (not result.fits or [p.poi_id for p in result.stops] != required
-                or not result.legs or result.legs[0].walk_min > nearby.preferences.max_walk_min):
+                or not result.legs or result.legs[0].walk_min > min(req.preferences.max_walk_min or 120, 5 if payload.reason == "cold" else 10)):
             raise PlanError("no_replacement_found", 409)
+        result.state.preferences = original_preferences
+        result.applied_preferences = original_preferences
         result.change_codes = [payload.reason, "nearby_break_keeps_stops"]
-        result.notes.insert(0, {"ru": "Предложена остановка в помещении. Прежние остановки и финиш сохранены; проверьте условия посещения.",
-            "en": "Suggested an indoor break. All remaining stops and the finish are kept; check visit conditions.",
-            "kk": "Жабық орында аялдау ұсынылды. Бұрынғы аялдамалар мен соңғы нүкте сақталды; кіру шарттарын тексеріңіз."
+        result.notes.insert(0, {"ru": "Предложена остановка рядом. Прежние остановки и финиш сохранены; проверьте условия доступа.",
+            "en": "Suggested a nearby break. All remaining stops and the finish are kept; check access conditions.",
+            "kk": "Жақын жерде аялдау ұсынылды. Бұрынғы аялдамалар мен соңғы нүкте сақталды; кіру шарттарын тексеріңіз."
             }.get(req.context.lang, "Indoor break suggested; remaining stops and finish kept."))
         return result
 
@@ -456,7 +489,10 @@ class Planner:
                                       coords=Coords(lat=record.poi.lat, lon=record.poi.lon), kind=record.kind,
                                       access=record.access, distance_to_route_m=math.ceil(distance), floor=record.floor,
                                       note=record.evidence.note, source_url=str(record.evidence.source_url),
-                                      checked_at=record.evidence.checked_at, verified=verified))
+                                      checked_at=record.evidence.checked_at, verified=verified,
+                                      distance_m=math.ceil(haversine(payload.location.lat, payload.location.lon, record.poi.lat, record.poi.lon)),
+                                      walk_min=math.ceil(haversine(payload.location.lat, payload.location.lon, record.poi.lat, record.poi.lon) * 1.3 / 60),
+                                      indoor=record.poi.indoor, open_status=open_status(record.poi, datetime.now(ALMATY))))
         return sorted(result, key=lambda r: (r.distance_to_route_m, r.poi_id))[:50]
 
     async def export(self, payload):
