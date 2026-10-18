@@ -26,7 +26,7 @@
     lang: params.get("lang") || store.get("seruen_lang", "ru"),
     loc: {...ASTANA, source: "map"}, locKind: "center", locating: false, locVersion: 0, requestVersion: 0, preset: null,
     presets: [], scenarios: [], last: null, lastReq: null, lastWeather: null,
-    showCands: false, extraCands: null, chipCtx: {}, apiMode: null, gis: {}, photos: {}, features: {},
+    showCands: false, extraCands: null, chipCtx: {}, apiMode: null, gis: {}, photos: {}, photoPending: {}, features: {},
   };
   if (!FEAT.languages && !params.get("lang")) state.lang = "ru";
   const T = () => window.I18N[state.lang] || window.I18N.ru;
@@ -291,7 +291,7 @@
       if (version !== state.requestVersion) return;
       // a 2GIS answer that lists nearby places or can load more is kept: the person sees them on the map
       if (data.source === "2gis" && !(data.recommendations || []).length
-          && (data.source_error || (!(data.nearby_places || []).length && !data.next_cursor))) {
+          && (data.source_error || body.preferences?.atmosphere_example_id || (!(data.nearby_places || []).length && !data.next_cursor))) {
         const local = await postJSON("/recommend", {...body, source: "local"});
         if (version !== state.requestVersion) return;
         if ((local.recommendations || []).length || data.source_error) {
@@ -623,7 +623,11 @@
     if (!state.photos[key]) {
       box.innerHTML = `<div class="loading"><div class="spinner"></div>${esc(T().ph.loading)}</div>`;
       // POST keeps the request text out of URLs; one answer per place and request, kept for this page
-      try { state.photos[key] = await postJSON(`/places/${encodeURIComponent(r.poi_id)}/photos`, ask, 40000); }
+      try {
+        if (!state.photoPending[key]) state.photoPending[key] = postJSON(`/places/${encodeURIComponent(r.poi_id)}/photos`, ask, 40000)
+          .finally(() => { delete state.photoPending[key]; });
+        state.photos[key] = await state.photoPending[key];
+      }
       catch { state.photos[key] = null; }
     }
     if (state.last === d && card.isConnected) box.innerHTML = photosHtml(state.photos[key]);

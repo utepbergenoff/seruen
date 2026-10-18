@@ -193,6 +193,12 @@ class FeatureData:
         for row in self.examples(today):
             if self.canonical(row.poi_id) != self.canonical(poi_id):
                 continue
+            # A shared generic tag must not turn an outdoor facade into an indoor match.
+            if any(f in example.features and f not in row.features for f in ("indoor", "outdoor")):
+                continue
+            if ("bright" in example.features and "dim" in row.features
+                    or "dim" in example.features and "bright" in row.features):
+                continue
             overlap = sorted(set(example.features) & set(row.features))
             if len(overlap) > len(best.matched_features):
                 best = AtmosphereMatch(matched_features=overlap, source=row.analysis_source,

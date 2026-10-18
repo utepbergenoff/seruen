@@ -68,11 +68,17 @@ def register_features(app):
     async def feature_status(request: Request):
         service = request.app.state.service
         data = service.features
+        today = datetime.now(ALMATY).date()
         return {"schema_version": 1, "gamification": False, "server_history": False,
                 "routing_enabled": service.settings.routing_enabled,
                 "data": {"comfort_points": len(data.comfort), "visit_conditions": len(data.conditions),
                          "atmosphere_examples": len(data.examples(datetime.now(ALMATY).date())),
                          "licensed_places": len(data.owned)},
+                "ready": {"comfort_points": sum(data.verified(r.evidence, today, 30) for r in data.comfort.values()),
+                          "visit_conditions": sum(data.condition(pid, today).kind != "unknown" for pid in data.conditions),
+                          "atmosphere_examples": len(data.examples(today)),
+                          "offline_places": sum(data.can_export(pid, today) for pid in data.owned)},
+                "identity_aliases": sum(pid != canonical for pid, canonical in data.identities.items()),
                 "data_fingerprint": data.fingerprint,
                 "endpoints": ["/plans/build", "/plans/recalculate", "/plans/export", "/plans/refresh",
                               "/comfort/search", "/atmosphere/examples", "/places/identities"]}

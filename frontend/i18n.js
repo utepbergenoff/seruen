@@ -380,3 +380,12 @@ Object.assign(window.I18N.kk.x, {
   exportNeedsOnline: "Серуенді тексеріп сақтау үшін серверге қосылу керек.",
   providerBookmark: "Каталогтағы орын", unavailableAtmosphere: "Атмосфера мысалдары дайындалып жатыр.",
 });
+Object.assign(window.I18N.ru.x.feat, {natural_light:"естественный свет",dim:"приглушённый свет",small_space:"небольшое пространство",
+  visible_seating:"видимые места для сидения",modern:"современный стиль",traditional:"традиционный стиль",
+  unusual_architecture:"необычная архитектура",outdoor:"на улице",indoor:"в помещении"});
+Object.assign(window.I18N.en.x.feat, {natural_light:"natural light",dim:"dim light",small_space:"small space",
+  visible_seating:"visible seating",modern:"modern style",traditional:"traditional style",
+  unusual_architecture:"unusual architecture",outdoor:"outdoors",indoor:"indoors"});
+Object.assign(window.I18N.kk.x.feat, {natural_light:"табиғи жарық",dim:"бәсең жарық",small_space:"шағын кеңістік",
+  visible_seating:"көрінетін отыратын орындар",modern:"заманауи стиль",traditional:"дәстүрлі стиль",
+  unusual_architecture:"ерекше сәулет",outdoor:"далада",indoor:"ғимарат ішінде"});

@@ -221,7 +221,11 @@
     const x = X();
     if (kind === "format") { el.querySelector(".nope-format").hidden = false; return; }
     if (kind === "format-ok") { const c = el.querySelector(".nope-format select").value; if (!cons.exclude_categories.includes(c)) cons.exclude_categories.push(c); return A.ask(); }
-    if (kind === "far") { cons.max_distance_m = Math.max(150, Math.round(((d.considered && d.considered.radius_m) || r.distance_m) * 0.6 / 50) * 50); return A.ask(); }
+    if (kind === "far") {
+      cons.max_distance_m = Math.max(50, Math.floor(Math.min(cons.max_distance_m || Infinity, r.distance_m) * 0.6 / 50) * 50);
+      if (!cons.exclude_ids.includes(r.poi_id)) cons.exclude_ids.push(r.poi_id);
+      return A.ask();
+    }
     if (kind === "been") { await keep(r, {visited_at: Date.now()}); if (!cons.exclude_ids.includes(r.poi_id)) cons.exclude_ids.push(r.poi_id); return A.ask(); }
     if (kind === "free") { cons.no_spend = "strict"; syncSpend(); return A.ask(); }
     if (kind === "other") {
@@ -620,7 +624,7 @@
   }
 
   // ---------- wiring ----------
-  ext.onHealth = () => { mountSpend(); mountFinish(); mountAtmosphere(); if (walk) renderWalk(); };
+  ext.onHealth = () => { mountSpend(); mountFinish(); mountAtmosphere(); A.rerender(); if (walk) renderWalk(); };
   ext.onLang = () => { renderFinish(); renderAtmosphere(); renderMine(); renderWalk(); };
   // app.js has already started when this file runs, so wire up now
   function ready() {

@@ -98,6 +98,19 @@ def test_offline_flag_requires_owned_rights(api):
     assert result['recommendations'] and result['recommendations'][0]['offline_allowed'] is False
 
 
+@pytest.mark.parametrize('wanted,opposite', [('indoor', 'outdoor'), ('outdoor', 'indoor'), ('bright', 'dim')])
+def test_atmosphere_does_not_match_a_contradictory_scene(api, wanted, opposite):
+    data = api.app.state.service.features
+    reference = data.atmosphere['bright-reference']
+    reference.features = ['visible_seating', wanted]
+    other = reference.model_copy(deep=True, update={'example_id': 'opposite', 'poi_id': 'team_second',
+                                                   'features': ['visible_seating', opposite]})
+    data.atmosphere['opposite'] = other
+    assert not data.match('team_second', 'bright-reference', reference.evidence.checked_at).matched_features
+    result = post(api, '/recommend', {**ASK, 'preferences': {'atmosphere_example_id': 'bright-reference'}})
+    assert [p['poi_id'] for p in result['recommendations']] == ['team_coffee']
+
+
 def test_actual_frontend_forms_against_fastapi(expanded):
     """Use the real browser scripts and real API over loopback, not matching mocks."""
     assert shutil.which('node') and (ROOT / 'node_modules/jsdom').exists(), 'Run npm ci before this integration test'

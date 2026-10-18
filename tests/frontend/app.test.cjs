@@ -102,6 +102,13 @@ async function withCards(t, twogis, photos) {
   b.requests[0].resolve(json({...answer('cards'),recommendations:[rec('p1','Coffee BOOM'),rec('p2','Drinkit')]}));await tick();
   return b;
 }
+test('rerendering while photos load shares the pending request instead of spending the quota twice', async t => {
+  const pendingPhotos=pending(), b=await withCards(t,()=>json(gisAnswer),()=>pendingPhotos.promise);
+  assert.equal(b.photos.length,2);
+  b.w.SeruenApp.rerender(); b.w.SeruenApp.rerender(); await tick();
+  assert.equal(b.photos.length,2);
+  pendingPhotos.resolve(json({photos:[],status:'no_photos'})); await tick();
+});
 test('2GIS is asked only on the button, once per place, and its text is escaped',async t=>{
   const b=await withCards(t,()=>json(gisAnswer));
   assert.equal(b.gis.length,0);
@@ -229,6 +236,27 @@ const FX = JSON.parse(fs.readFileSync('tests/frontend/fixtures/feature_examples.
 const withFeatures = {healthData: FX.health_with_features, atmos: FX.atmosphere_examples, comfort: FX.comfort, build: FX.build_ok, export: FX.export_ok};
 const settle = async () => { for (let i = 0; i < 6; i++) await tick(); };
 
+test('late health enables features on cards already rendered during server wake-up', async t => {
+  const health=pending(), b=await boot(t,{...withFeatures,health});
+  b.click('#goBtn'); await tick(); b.requests[0].resolve(json(FX.recommend_normal)); await settle();
+  assert.equal(b.w.document.querySelector('#startWalkBtn'),null);
+  health.resolve(json(FX.health_with_features)); await settle();
+  assert.ok(b.w.document.querySelector('#startWalkBtn'));
+  assert.ok(b.w.document.querySelector('.rec [data-nope="far"]'));
+  assert.equal(b.w.document.querySelector('#routeBtn'),null);
+});
+
+test('atmosphere falls back to reviewed local places when the 2GIS browse list has no matching card', async t => {
+  const b=await boot(t,withFeatures); await settle();
+  b.w.SeruenFeatures.setAtmosphere('greenery'); b.click('#goBtn'); await tick();
+  b.requests[0].resolve(json({...answer('no match'),source:'2gis',nearby_places:[{poi_id:'2gis_1',eligible:false}]}));
+  await settle(); assert.equal(b.requests.length,2);
+  assert.equal(b.requests[1].body.source,'local');
+  assert.equal(b.requests[1].body.preferences.atmosphere_example_id,'greenery');
+  b.requests[1].resolve(json(FX.recommend_normal)); await settle();
+  assert.equal(b.w.document.querySelectorAll('.rec').length,3);
+});
+
 test('no coins, chest or +10 anywhere, in all three languages', async t => {
   const b = await boot(t); b.click('#goBtn'); await tick();
   b.requests[0].resolve(json({...answer('x'), recommendations: [rec('p1', 'Парк')]})); await settle();
@@ -318,6 +346,8 @@ test('new server: finish, atmosphere, no-spend and "too far" travel as contract 
   assert.match(cards[0].textContent, /до финиша 7 мин/); assert.match(cards[0].textContent, /прибытие ≈11:32 \(оценка\)/);
   b.click('.rec [data-nope="far"]'); await tick();
   assert.ok(b.requests[1].body.preferences.max_distance_m > 0);
+  assert.ok(b.requests[1].body.preferences.max_distance_m < FX.recommend_normal.recommendations[0].distance_m);
+  assert.ok(b.requests[1].body.preferences.exclude_poi_ids.includes(FX.recommend_normal.recommendations[0].poi_id));
   b.requests[1].resolve(json(FX.recommend_empty)); await settle();
   const res = b.w.document.querySelector('#results').textContent;
   assert.match(res, /Учитываю:/); assert.match(res, /Отменить/);

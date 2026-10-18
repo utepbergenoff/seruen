@@ -85,6 +85,9 @@ class Planner:
             intent, query = search_intent(request)
             if request.preferences.preferred_categories:
                 query = QUERIES[request.preferences.preferred_categories[0]]
+            elif request.preferences.indoor_only:
+                # Generic "warm place" text is not a business name in the catalogue.
+                query = QUERIES["coffee"]
             # Search near the trip corridor rather than apply round-trip filters to a one-way plan.
             center = Location(lat=(request.location.lat + destination.lat) / 2,
                               lon=(request.location.lon + destination.lon) / 2)

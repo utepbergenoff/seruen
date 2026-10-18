@@ -1,1 +1,498 @@
-{"version": 1, "items": []}
+{
+ "version": 1,
+ "items": [
+  {
+   "poi": {
+    "poi_id": "team_comfort_mega_warm",
+    "name": "Mega Silk Way — согреться",
+    "lat": 51.08903,
+    "lon": 71.40731,
+    "category": "shopping",
+    "indoor": true,
+    "opening_hours_raw": "Mo-Su 10:00-22:00",
+    "hours_source": "osm",
+    "sources": [
+     "osm"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/499328514",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "ТРЦ, часы из OSM. Ожидается свободный вход в часы работы; не проверено на месте."
+   },
+   "offline_allowed": true,
+   "license": "ODbL-1.0",
+   "attribution": "© OpenStreetMap contributors",
+   "kind": "warming",
+   "access": "unknown",
+   "floor": null
+  },
+  {
+   "poi": {
+    "poi_id": "team_comfort_mega_toilet",
+    "name": "Mega Silk Way — туалет",
+    "lat": 51.08903,
+    "lon": 71.40731,
+    "category": "shopping",
+    "indoor": true,
+    "opening_hours_raw": "Mo-Su 10:00-22:00",
+    "hours_source": "osm",
+    "sources": [
+     "osm"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/499328514",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "OSM: toilets=yes для здания, этаж и условия доступа не указаны."
+   },
+   "offline_allowed": true,
+   "license": "ODbL-1.0",
+   "attribution": "© OpenStreetMap contributors",
+   "kind": "toilet",
+   "access": "unknown",
+   "floor": null
+  },
+  {
+   "poi": {
+    "poi_id": "team_comfort_drinkit_mega_toilet",
+    "name": "Drinkit (Mega Silk Way) — туалет",
+    "lat": 51.08908,
+    "lon": 71.40609,
+    "category": "coffee",
+    "indoor": true,
+    "opening_hours_raw": "Mo-Su 08:00-22:00",
+    "hours_source": "osm",
+    "sources": [
+     "osm"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/node/14275682079",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "OSM: toilets=yes у кофейни, level=0. Вероятно только для гостей — не проверено."
+   },
+   "offline_allowed": true,
+   "license": "ODbL-1.0",
+   "attribution": "© OpenStreetMap contributors",
+   "kind": "toilet",
+   "access": "unknown",
+   "floor": "0"
+  },
+  {
+   "poi": {
+    "poi_id": "team_comfort_lrt_universitet_toilet",
+    "name": "LRT «Университет» — туалет",
+    "lat": 51.08881,
+    "lon": 71.40276,
+    "category": "shopping",
+    "indoor": false,
+    "opening_hours_raw": null,
+    "hours_source": "none",
+    "sources": [
+     "osm"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/1531992955",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "OSM: toilets=yes у станции LRT. Неизвестно, нужен ли проездной билет."
+   },
+   "offline_allowed": true,
+   "license": "ODbL-1.0",
+   "attribution": "© OpenStreetMap contributors",
+   "kind": "toilet",
+   "access": "unknown",
+   "floor": null
+  },
+  {
+   "poi": {
+    "poi_id": "team_comfort_expo_bench_1",
+    "name": "Скамейка у площади EXPO",
+    "lat": 51.088829,
+    "lon": 71.415567,
+    "category": "park",
+    "indoor": false,
+    "opening_hours_raw": null,
+    "hours_source": "none",
+    "sources": [
+     "osm"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/node/14091000688",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "OSM: скамейка без спинки и подлокотников (группа из 6)."
+   },
+   "offline_allowed": true,
+   "license": "ODbL-1.0",
+   "attribution": "© OpenStreetMap contributors",
+   "kind": "bench",
+   "access": "public",
+   "floor": null
+  },
+  {
+   "poi": {
+    "poi_id": "team_comfort_expo_bench_2",
+    "name": "Скамейка у площади EXPO (вторая)",
+    "lat": 51.088909,
+    "lon": 71.415475,
+    "category": "park",
+    "indoor": false,
+    "opening_hours_raw": null,
+    "hours_source": "none",
+    "sources": [
+     "osm"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/node/14091000690",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "OSM: скамейка без спинки и подлокотников."
+   },
+   "offline_allowed": true,
+   "license": "ODbL-1.0",
+   "attribution": "© OpenStreetMap contributors",
+   "kind": "bench",
+   "access": "public",
+   "floor": null
+  },
+  {
+   "poi": {
+    "poi_id": "team_comfort_khan_warm",
+    "name": "Хан Шатыр — согреться",
+    "lat": 51.13213,
+    "lon": 71.40283,
+    "category": "shopping",
+    "indoor": true,
+    "opening_hours_raw": "Mo-Su,PH 10:00-23:00",
+    "hours_source": "osm",
+    "sources": [
+     "osm"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/460703779",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "ТРЦ, часы из OSM. Ожидается свободный вход; не проверено на месте."
+   },
+   "offline_allowed": true,
+   "license": "ODbL-1.0",
+   "attribution": "© OpenStreetMap contributors",
+   "kind": "warming",
+   "access": "unknown",
+   "floor": null
+  },
+  {
+   "poi": {
+    "poi_id": "team_comfort_khan_toilet_0",
+    "name": "Хан Шатыр — туалет, 0 этаж",
+    "lat": 51.13271,
+    "lon": 71.40327,
+    "category": "shopping",
+    "indoor": true,
+    "opening_hours_raw": "Mo-Su,PH 10:00-23:00",
+    "hours_source": "osm",
+    "sources": [
+     "osm"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/1449295070",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "OSM: indoor=room, level=0."
+   },
+   "offline_allowed": true,
+   "license": "ODbL-1.0",
+   "attribution": "© OpenStreetMap contributors",
+   "kind": "toilet",
+   "access": "unknown",
+   "floor": "0"
+  },
+  {
+   "poi": {
+    "poi_id": "team_comfort_khan_toilet_1",
+    "name": "Хан Шатыр — туалет, 1 этаж (доступный)",
+    "lat": 51.13282,
+    "lon": 71.40463,
+    "category": "shopping",
+    "indoor": true,
+    "opening_hours_raw": "Mo-Su,PH 10:00-23:00",
+    "hours_source": "osm",
+    "sources": [
+     "osm"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/1449301380",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "OSM: level=1, wheelchair=yes."
+   },
+   "offline_allowed": true,
+   "license": "ODbL-1.0",
+   "attribution": "© OpenStreetMap contributors",
+   "kind": "toilet",
+   "access": "unknown",
+   "floor": "1"
+  },
+  {
+   "poi": {
+    "poi_id": "team_comfort_khan_toilet_2",
+    "name": "Хан Шатыр — туалет, 2 этаж (доступный)",
+    "lat": 51.13287,
+    "lon": 71.40473,
+    "category": "shopping",
+    "indoor": true,
+    "opening_hours_raw": "Mo-Su,PH 10:00-23:00",
+    "hours_source": "osm",
+    "sources": [
+     "osm"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/1449317684",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "OSM: level=2, wheelchair=yes."
+   },
+   "offline_allowed": true,
+   "license": "ODbL-1.0",
+   "attribution": "© OpenStreetMap contributors",
+   "kind": "toilet",
+   "access": "unknown",
+   "floor": "2"
+  },
+  {
+   "poi": {
+    "poi_id": "team_comfort_khan_toilet_4",
+    "name": "Хан Шатыр — туалет, 4 этаж (Fame City)",
+    "lat": 51.13214,
+    "lon": 71.4038,
+    "category": "shopping",
+    "indoor": true,
+    "opening_hours_raw": "Mo-Su,PH 10:00-23:00",
+    "hours_source": "osm",
+    "sources": [
+     "osm"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/1449322333",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "OSM: level=4, этаж парка Fame City."
+   },
+   "offline_allowed": true,
+   "license": "ODbL-1.0",
+   "attribution": "© OpenStreetMap contributors",
+   "kind": "toilet",
+   "access": "unknown",
+   "floor": "4"
+  },
+  {
+   "poi": {
+    "poi_id": "team_comfort_keruen_warm",
+    "name": "Керуен — согреться",
+    "lat": 51.128257,
+    "lon": 71.425375,
+    "category": "shopping",
+    "indoor": true,
+    "opening_hours_raw": null,
+    "hours_source": "none",
+    "sources": [
+     "osm"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/108096984",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "ТРК, часы работы в OSM не указаны. Не проверено."
+   },
+   "offline_allowed": true,
+   "license": "ODbL-1.0",
+   "attribution": "© OpenStreetMap contributors",
+   "kind": "warming",
+   "access": "unknown",
+   "floor": null
+  },
+  {
+   "poi": {
+    "poi_id": "team_comfort_nurzhol_toilet",
+    "name": "Туалет у бульвара Нуржол",
+    "lat": 51.12751,
+    "lon": 71.43435,
+    "category": "park",
+    "indoor": false,
+    "opening_hours_raw": "Mo-Su 08:00-24:00",
+    "hours_source": "osm",
+    "sources": [
+     "osm"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/node/5040418122",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "OSM: amenity=toilets, правка 2018 года — может быть устаревшей. Плата не указана."
+   },
+   "offline_allowed": true,
+   "license": "ODbL-1.0",
+   "attribution": "© OpenStreetMap contributors",
+   "kind": "toilet",
+   "access": "unknown",
+   "floor": null
+  },
+  {
+   "poi": {
+    "poi_id": "team_comfort_drinkit_nurzhol_toilet",
+    "name": "Drinkit (у Нуржол) — туалет",
+    "lat": 51.13029,
+    "lon": 71.42901,
+    "category": "coffee",
+    "indoor": false,
+    "opening_hours_raw": null,
+    "hours_source": "none",
+    "sources": [
+     "osm"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/node/14100100182",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "OSM: toilets=yes у кофейни. Вероятно только для гостей — не проверено."
+   },
+   "offline_allowed": true,
+   "license": "ODbL-1.0",
+   "attribution": "© OpenStreetMap contributors",
+   "kind": "toilet",
+   "access": "unknown",
+   "floor": null
+  },
+  {
+   "poi": {
+    "poi_id": "team_comfort_nurzhol_bench_1",
+    "name": "Скамейка на бульваре Нуржол",
+    "lat": 51.128538,
+    "lon": 71.429866,
+    "category": "park",
+    "indoor": false,
+    "opening_hours_raw": null,
+    "hours_source": "none",
+    "sources": [
+     "osm"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/node/13900933271",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "OSM: со спинкой и подлокотниками, 4 места."
+   },
+   "offline_allowed": true,
+   "license": "ODbL-1.0",
+   "attribution": "© OpenStreetMap contributors",
+   "kind": "bench",
+   "access": "public",
+   "floor": null
+  },
+  {
+   "poi": {
+    "poi_id": "team_comfort_nurzhol_bench_2",
+    "name": "Скамейка на бульваре Нуржол (вторая)",
+    "lat": 51.128466,
+    "lon": 71.431134,
+    "category": "park",
+    "indoor": false,
+    "opening_hours_raw": null,
+    "hours_source": "none",
+    "sources": [
+     "osm"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/node/13900933282",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "OSM: со спинкой и подлокотниками, 4 места."
+   },
+   "offline_allowed": true,
+   "license": "ODbL-1.0",
+   "attribution": "© OpenStreetMap contributors",
+   "kind": "bench",
+   "access": "public",
+   "floor": null
+  },
+  {
+   "poi": {
+    "poi_id": "team_comfort_nurzhol_bench_3",
+    "name": "Скамейка у Нуржол (запад)",
+    "lat": 51.126925,
+    "lon": 71.424605,
+    "category": "park",
+    "indoor": false,
+    "opening_hours_raw": null,
+    "hours_source": "none",
+    "sources": [
+     "osm"
+    ],
+    "last_checked": "2026-10-19"
+   },
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/node/12853583909",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "OSM: деревянная, со спинкой и подлокотниками."
+   },
+   "offline_allowed": true,
+   "license": "ODbL-1.0",
+   "attribution": "© OpenStreetMap contributors",
+   "kind": "bench",
+   "access": "public",
+   "floor": null
+  }
+ ]
+}
