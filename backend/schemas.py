@@ -212,6 +212,7 @@ class Recommendation(Model):
     walk_min: int = Field(ge=0)
     why: str = Field(min_length=1)
     why_source: Literal["ai", "template"]
+    selection_source: Literal["ai", "rules"] = "rules"
     time_to_spend_min: int = Field(ge=1)
     what_to_do: str = Field(min_length=1)
     what_to_do_source: Literal["ai", "template"]

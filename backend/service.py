@@ -5,7 +5,7 @@ from datetime import timedelta
 
 from .cache import ResponseCache
 from .feature_data import FeatureData, apply_feedback, relaxation_options, feedback_note
-from .fallback import drafts
+from .fallback import drafts, explanation
 from .generate import AIError, Gemini, validate_drafts
 from .geo import budget_for, haversine, in_astana, target_time, speed, walk_minutes
 from .intent import merge_intent, rule_intent
@@ -185,6 +185,9 @@ class RecommendationService:
             if stay <= 0:
                 continue
             budget = budget_for(c.walk_min, stay, search.reserve, hit.to_end)
+            condition = self.features.condition(p.poi_id, now.date())
+            visual = self.features.match(p.poi_id, request.preferences.atmosphere_example_id, now.date())
+            why, todo = explanation(hit, request, intent, budget, condition, visual, search.category_relaxed)
             google = maps_url(p)
             links = (
                 {}
@@ -200,11 +203,12 @@ class RecommendationService:
                     coords=Coords(lat=p.lat, lon=p.lon),
                     distance_m=c.distance_m,
                     walk_min=c.walk_min,
-                    why=draft.why,
-                    why_source=source,
+                    why=why,
+                    why_source="template",
+                    selection_source="ai" if source == "ai" else "rules",
                     time_to_spend_min=stay,
-                    what_to_do=draft.what_to_do,
-                    what_to_do_source=source,
+                    what_to_do=todo,
+                    what_to_do_source="template",
                     open_status=hit.status,
                     description_source=p.description_source,
                     description=p.description,
@@ -216,8 +220,8 @@ class RecommendationService:
                     rating=p.rating,
                     rating_count=p.rating_count,
                     budget_breakdown=budget,
-                    visit_condition=self.features.condition(p.poi_id, now.date()),
-                    atmosphere_match=self.features.match(p.poi_id, request.preferences.atmosphere_example_id, now.date()),
+                    visit_condition=condition,
+                    atmosphere_match=visual,
                     arrival_estimate=now + timedelta(minutes=budget.total_min-search.reserve) if request.end else None,
                     offline_allowed=self.features.can_export(p.poi_id, now.date()) and not p.poi_id.startswith("2gis_"),
                 )
