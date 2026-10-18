@@ -61,6 +61,60 @@
         }
       }
     },
+    "/places/{poi_id}/details": {
+      "get": {
+        "summary": "Place Details",
+        "operationId": "place_details_places__poi_id__details_get",
+        "parameters": [
+          {
+            "name": "poi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Poi Id"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "ru",
+                "kk",
+                "en"
+              ],
+              "type": "string",
+              "default": "ru",
+              "title": "Lang"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlaceDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/scenarios": {
       "get": {
         "summary": "Get Scenarios",
@@ -351,6 +405,35 @@
   },
   "components": {
     "schemas": {
+      "Attribution": {
+        "properties": {
+          "provider": {
+            "type": "string",
+            "maxLength": 500,
+            "title": "Provider"
+          },
+          "provider_uri": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider Uri"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "provider"
+        ],
+        "title": "Attribution"
+      },
       "Budget": {
         "properties": {
           "walk_there_min": {
@@ -650,6 +733,16 @@
           "mock": {
             "type": "boolean",
             "title": "Mock"
+          },
+          "google_places": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlacesStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "additionalProperties": false,
@@ -768,6 +861,141 @@
           "checked_at"
         ],
         "title": "OpenStatus"
+      },
+      "PlaceDetails": {
+        "properties": {
+          "poi_id": {
+            "type": "string",
+            "title": "Poi Id"
+          },
+          "google_place_id": {
+            "type": "string",
+            "title": "Google Place Id"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "default": "google_maps"
+          },
+          "language": {
+            "type": "string",
+            "title": "Language"
+          },
+          "checked_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Checked At"
+          },
+          "rating": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 5.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating"
+          },
+          "rating_count": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating Count"
+          },
+          "open_now": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Open Now"
+          },
+          "current_weekday_hours": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 7,
+            "title": "Current Weekday Hours"
+          },
+          "regular_weekday_hours": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 7,
+            "title": "Regular Weekday Hours"
+          },
+          "business_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Business Status"
+          },
+          "google_maps_url": {
+            "type": "string",
+            "title": "Google Maps Url"
+          },
+          "attributions": {
+            "items": {
+              "$ref": "#/components/schemas/Attribution"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Attributions"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "poi_id",
+          "google_place_id",
+          "language",
+          "checked_at",
+          "google_maps_url"
+        ],
+        "title": "PlaceDetails"
+      },
+      "PlacesStatus": {
+        "properties": {
+          "configured": {
+            "type": "boolean",
+            "title": "Configured"
+          },
+          "details_enabled": {
+            "type": "boolean",
+            "title": "Details Enabled"
+          },
+          "ids_probe": {
+            "type": "string",
+            "title": "Ids Probe"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "configured",
+          "details_enabled",
+          "ids_probe"
+        ],
+        "title": "PlacesStatus"
       },
       "RecommendRequest": {
         "properties": {
