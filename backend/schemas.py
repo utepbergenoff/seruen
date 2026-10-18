@@ -80,6 +80,7 @@ class POI(Model):
     tags: list[str] = Field(default_factory=list)
     tags_inferred: list[str] = Field(default_factory=list)
     google_place_id: str | None = Field(default=None, max_length=255)
+    twogis_place_id: str | None = Field(default=None, pattern=r"^[0-9]{1,32}$")
     description_url: str | None = None
     description: str = Field(default="", max_length=2000)
     description_source: Literal["wikipedia", "source", "generated"] = "source"
@@ -229,6 +230,14 @@ class Health(Model):
     retrieval_mode: str
     mock: bool
     google_places: PlacesStatus | None = None
+    twogis: "TwoGisStatus | None" = None
+
+
+class TwoGisStatus(Model):
+    configured: bool
+    enabled: bool
+    last_status: str
+    photos_supported: bool = False
 
 
 class Draft(Model):
