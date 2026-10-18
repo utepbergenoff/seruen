@@ -261,3 +261,26 @@ table.cands { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-
   .tile:hover img, .scard:hover img { transform: none; }
   .spinner { animation-duration: 2s; }
 }
+
+/* card details folded away, photos of the place, compact "what I considered" */
+.more { border-top: 1px solid var(--line); padding-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+.more > summary { cursor: pointer; color: var(--muted); font-size: 13px; font-weight: 600; list-style: none; }
+.more > summary::-webkit-details-marker { display: none; }
+.more > summary::after { content: " ▾"; }
+.more[open] > summary::after { content: " ▴"; }
+.more[open] { gap: 8px; }
+.photos { display: flex; flex-direction: column; gap: 6px; }
+.photos:empty { display: none; }
+.ph-strip { display: flex; gap: 6px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 2px; }
+.ph { flex: 0 0 auto; width: 148px; height: 104px; border-radius: 8px; overflow: hidden; scroll-snap-align: start; background: var(--beige); }
+.ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ph-why { font-size: 14px; }
+.ph-none { margin: 0; color: var(--muted); font-size: 13px; }
+.photos .src { margin: 0; }
+.cons { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 13.5px; }
+.cons li { display: flex; gap: 8px; align-items: flex-start; }
+.cons .ic { width: 20px; flex: 0 0 20px; text-align: center; }
+.cands-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+.cand { font-size: 12px; background: var(--ivory); border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; color: var(--muted); }
+.cand.on { background: var(--sage); border-color: #C9D6C3; color: var(--forest); font-weight: 600; }
+@media (max-width: 860px) { .ph { width: 132px; height: 96px; } }

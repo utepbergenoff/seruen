@@ -59,7 +59,7 @@ def run_scenarios(ctx, label: str) -> None:
         for i in range(n):
             c = cards.nth(i)
             for sel, what in ((".num", "number"), ("h3", "name"), (".meta", "metres/minutes"), (".status-pill", "status"),
-                              (".bar-cap", "budget line"), (".badge.db", "from-database badge")):
+                              (".why", "why"), ("details.more .bar-cap", "budget line under More")):
                 if c.locator(sel).count() == 0:
                     missing.append(f"card {i + 1}: {what}")
             text = c.inner_text()
@@ -67,10 +67,23 @@ def run_scenarios(ctx, label: str) -> None:
                 missing.append(f"card {i + 1}: distance")
             if c.locator(".field").count() < 3:
                 missing.append(f"card {i + 1}: why / what to do / time on site")
-            if c.locator(".badge.ai, .badge.tpl").count() < 2:
-                missing.append(f"card {i + 1}: source badges")
+            if c.locator("details.more .src").count() < 2:
+                missing.append(f"card {i + 1}: sources under More")
+            if c.locator(".badge.ai, .badge.tpl, .badge.db").count():
+                missing.append(f"card {i + 1}: AI/template badges on the card face")
         check(f"{label} {sid}: all card fields", not missing, "; ".join(missing[:4]))
         check(f"{label} {sid}: 'What I considered' panel", page.locator("#consideredBox").count() == 1)
+        said = re.search(r"Рассмотрено мест: (\d+)", page.inner_text("#consideredBox"))
+        listed = page.locator("#consideredBox .cand").count()
+        check(f"{label} {sid}: every counted candidate is listed", not said or int(said.group(1)) == listed,
+              f"said {said and said.group(1)}, listed {listed}")
+        try:
+            page.wait_for_function("() => [...document.querySelectorAll('.rec .photos')].every(b => b.querySelector('.ph-strip, .ph-none'))",
+                                   timeout=60000)
+            check(f"{label} {sid}: photo area answered on every card", True,
+                  f"{page.locator('.rec .ph-strip').count()} with photos")
+        except Exception:
+            check(f"{label} {sid}: photo area answered on every card", False, "still loading after 60 s")
         if page.locator("#candBtn").count():
             page.click("#candBtn")
             page.wait_for_selector("table.cands", timeout=10000)
@@ -141,6 +154,30 @@ def main() -> int:
         page.click('.rec >> nth=0 >> [data-act="gis"]')
         page.click('.rec >> nth=0 >> [data-act="gis"]')
         check("2GIS block: asked once, reopening uses the answer", len(gis_calls) == 1, f"{len(gis_calls)} requests")
+        page.close()
+        # photos block: a fake answer, so it is checked even where no free photos exist
+        page = laptop.new_page()
+        photo = {"url": "https://seruen-astana.netlify.app/img/hero-baiterek-night.jpg",
+                 "page_url": "https://commons.wikimedia.org/", "author": "Тест <b>автор</b>", "license": "CC BY-SA 4.0",
+                 "source": "commons"}
+        page.route("**/places/*/photos", lambda route: route.fulfill(status=200, content_type="application/json", body=json.dumps({
+            "poi_id": "x", "photos": [photo, photo], "status": "ok", "analysis_source": "gemini", "checked_at": "2026-10-18T09:00:00Z",
+            "analysis": {"lighting": "natural", "kids_area": "yes", "seats": 30, "seating": "many", "space": "large",
+                         "decor": "дерево", "summary": "Светлый просторный зал с детским уголком."}})))
+        page.goto(f"{BASE}/?scenario=S2&at={DAY}{THEME}")
+        page.wait_for_selector(".rec .ph-strip img", timeout=30000)
+        box = page.locator(".rec >> nth=0 >> .photos")
+        text = box.inner_text()
+        check("photos block: strip, reason from photos, facts, credit",
+              box.locator("img").count() == 2 and "По фото: Светлый просторный зал" in text and "есть детская зона" in text
+              and "около 30 мест" in text and "Тест <b>автор</b>" in text, text[:120])
+        page.locator(".rec >> nth=0 >> .ph img >> nth=0").scroll_into_view_if_needed()
+        try:  # photos load lazily, when they come into view
+            page.wait_for_function("() => { const i = document.querySelector('.rec .ph img'); return i && i.complete && i.naturalWidth > 0; }",
+                                   timeout=15000)
+            check("photos block: images really load", True)
+        except Exception:
+            check("photos block: images really load", False, "first photo did not load in 15 s")
         page.close()
         # location detected automatically on open (simulated position near Expo)
         ctx = browser.new_context(viewport={"width": 390, "height": 844}, permissions=["geolocation"],

@@ -9,7 +9,7 @@ const answer = name => ({mode:'no_ai', recommendations:[], notes:[name], safety:
 async function boot(t, opts = {}) {
   const dom = new JSDOM(fs.readFileSync('frontend/index.html','utf8'), {url:'https://example.test/',runScripts:'outside-only'});
   t.after(() => dom.window.close());
-  const w=dom.window, requests=[], gps={}, gis=[];
+  const w=dom.window, requests=[], gps={}, gis=[], photos=[];
   w.matchMedia=()=>({matches:false});
   w.HTMLElement.prototype.scrollIntoView=()=>{};
   w.SERUEN_CONFIG={API_URL:'https://api.example.test',FEATURES:{weather:false}};
@@ -27,11 +27,12 @@ async function boot(t, opts = {}) {
     if(url.endsWith('/health')) return opts.health ? opts.health.promise : json({mode_available:['no_ai']});
     if(url.endsWith('/recommend')) {const p=pending();requests.push({body:JSON.parse(options.body),...p});return p.promise;}
     if(url.includes('/2gis')) {gis.push(url);return opts.twogis(url);}
+    if(url.endsWith('/photos')) {photos.push({url,body:JSON.parse(options.body)});return opts.photos?opts.photos(url):json({poi_id:'x',photos:[],status:'no_photos',checked_at:'2026-10-18T09:00:00Z'});}
     throw Error('Unexpected request '+url);
   };
   for(const file of ['i18n.js','route.js','app.js']) w.eval(fs.readFileSync('frontend/'+file,'utf8'));
   await tick(); await tick();
-  return {w,requests,gps,gis,click:s=>w.document.querySelector(s).click()};
+  return {w,requests,gps,gis,photos,click:s=>w.document.querySelector(s).click()};
 }
 test('shell and six demos stay usable while backend health is pending', async t=>{
   const b=await boot(t,{health:pending()});
@@ -69,14 +70,17 @@ test('all three UI languages render without missing labels',async t=>{
   for(const lang of ['en','kk','ru']) {b.click(`[data-lang="${lang}"]`);assert.equal(b.w.document.documentElement.lang,lang);assert.ok(b.w.document.querySelector('#goBtn').textContent);}
 });
 
-test('candidate panel stays usable with a city-sized exclusion list',async t=>{
+test('what-I-considered lists every place it counts, even with a city-sized exclusion list',async t=>{
   const b=await boot(t);b.click('#goBtn');await tick();
-  const a=answer('Candidates');a.considered.candidates_found=1;
-  a.candidates=[{name:'Place',category:'park',distance_m:100,score:.8}];
+  const a=answer('Candidates');a.considered.candidates_found=6;
+  a.candidates=Array.from({length:6},(_,n)=>({poi_id:'c'+n,name:'Place '+n,category:'park',distance_m:100+n,score:.8}));
   a.excluded=Array.from({length:1250},(_,n)=>({name:'Excluded '+n,category:'park',distance_m:n+1,excluded_because:'closed'}));
-  b.requests[0].resolve(json(a));await tick();b.click('#candBtn');await tick();
-  assert.equal(b.w.document.querySelectorAll('.cands tr').length,22);
-  assert.match(b.w.document.querySelector('#consideredBox').textContent,/20\/1250/);
+  b.requests[0].resolve(json(a));await tick();
+  const box=b.w.document.querySelector('#consideredBox');
+  assert.equal(box.querySelectorAll('.cand').length,6);
+  assert.match(box.textContent,/Рассмотрено мест: 6/);
+  assert.doesNotMatch(box.textContent,/Excluded/);
+  assert.equal(b.w.document.querySelector('#candBtn'),null);
 });
 
 for (const choice of ['alone','group','child']) {
@@ -96,8 +100,8 @@ const gisAnswer = {poi_id:'p1',twogis_place_id:'70000001',source:'2gis',provider
   checked_at:'2026-10-18T09:00:00Z',match_method:'exact_name_nearby',match_distance_m:12,rating:4.6,rating_count:321,rating_scope:'organization',
   weekly_hours:['Mon','Tue','Wed','Thu','Fri'].map(day=>({day,intervals:[{start:'08:00',end:'22:00'}]})),special_hours:[],is_24x7:false,
   schedule_note:null,open_now:null,provider_url:'https://2gis.kz/astana/firm/70000001',attribution:'Данные 2ГИС',photos_supported:false};
-async function withCards(t, twogis) {
-  const b=await boot(t,{twogis});b.click('#goBtn');await tick();
+async function withCards(t, twogis, photos) {
+  const b=await boot(t,{twogis,photos});b.click('#goBtn');await tick();
   b.requests[0].resolve(json({...answer('cards'),recommendations:[rec('p1','Coffee BOOM'),rec('p2','Drinkit')]}));await tick();
   return b;
 }
@@ -130,14 +134,34 @@ test('2GIS failures: no match is final, a timeout offers retry, the card stays',
   assert.match(c1.querySelector('h3').textContent,/Coffee BOOM/);
 });
 
-test('cards the code added after an AI pick are labelled, pure AI or pure template answers are not',async t=>{
+test('card face has no AI or template labels; the More fold keeps what-to-do, time there and sources',async t=>{
   const b=await boot(t);b.click('#goBtn');await tick();
   const ai={...rec('p1','Fame City'),why_source:'ai',what_to_do_source:'ai'};
   b.requests[0].resolve(json({...answer('mixed'),mode:'ai',recommendations:[ai,rec('p2','Сквер'),rec('p3','Парк')]}));await tick();
-  const badges=[...b.w.document.querySelectorAll('.rec h3')].map(h=>/добавлено кодом/.test(h.textContent));
-  assert.deepEqual(badges,[false,true,true]);
-  b.click('#goBtn');await tick();
-  b.requests[1].resolve(json({...answer('plain'),recommendations:[rec('p2','Сквер'),rec('p3','Парк')]}));await tick();
-  assert.equal(b.w.document.querySelectorAll('.rec').length,2);
-  assert.doesNotMatch(b.w.document.querySelector('#results').textContent,/добавлено кодом/);
+  const cards=[...b.w.document.querySelectorAll('.rec')];
+  for(const c of cards){
+    assert.equal(c.querySelectorAll('.badge.ai,.badge.tpl,.badge.db').length,0);
+    assert.match(c.querySelector('.why').textContent,/Почему: w/);
+    assert.doesNotMatch([...c.children].filter(x=>!x.matches('details')).map(x=>x.textContent).join(' '),/Что делать|На месте/);
+    assert.match(c.querySelector('details.more').textContent,/Что делать: d.*На месте: ~30/s);
+  }
+  assert.match(cards[0].querySelector('.more').textContent,/текст написал ИИ/);
+  assert.match(cards[1].querySelector('.more').textContent,/место добавлено кодом/);
+});
+
+test('photos: strip, photo reason and facts per card; no photos says so; text stays out of URLs',async t=>{
+  const pic={url:'https://upload.wikimedia.org/a.jpg',page_url:'https://commons.wikimedia.org/wiki/File:A.jpg',author:'Ann <b>X</b>',license:'CC BY-SA 4.0',source:'commons'};
+  const b=await withCards(t,null,url=>url.includes('/p1/')
+    ? json({poi_id:'p1',photos:[pic,{...pic,url:'http://insecure.example/x.jpg'}],status:'ok',analysis_source:'gemini',checked_at:'2026-10-18T09:00:00Z',
+        analysis:{lighting:'natural',kids_area:'no',seats:24,seating:'some',space:'medium',decor:'дерево и растения',summary:'Большие окна и около 24 мест.'}})
+    : json({poi_id:'p2',photos:[],status:'no_photos',checked_at:'2026-10-18T09:00:00Z'}));
+  await tick();await tick();
+  assert.equal(b.photos.length,2);
+  assert.match(b.photos[0].url,/\/places\/p1\/photos$/);assert.equal(b.photos[0].body.lang,'ru');
+  const [c1,c2]=b.w.document.querySelectorAll('.rec');
+  assert.equal(c1.querySelectorAll('.ph img').length,1);
+  assert.match(c1.querySelector('.photos').textContent,/По фото: Большие окна и около 24 мест\./);
+  assert.match(c1.querySelector('.photos').textContent,/много дневного света.*детской зоны не видно.*около 24 мест.*средний размер.*дерево и растения/s);
+  assert.match(c1.querySelector('.photos').textContent,/Ann <b>X<\/b>, CC BY-SA 4\.0/);
+  assert.match(c2.querySelector('.photos').textContent,/Фото этого места пока нет/);
 });
