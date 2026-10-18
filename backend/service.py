@@ -1,6 +1,5 @@
 import asyncio
 import math
-from urllib.parse import urlencode
 
 
 from .cache import ResponseCache
@@ -9,6 +8,8 @@ from .generate import AIError, Gemini, validate_drafts
 from .geo import budget_for, in_astana, target_time
 from .intent import merge_intent, rule_intent
 from .loader import load_pois
+from .provider_status import log_provider
+from .places import maps_url
 from .retrieval import Retriever, SearchResult
 from .safety import message, safety_notes
 from .schemas import Considered, Coords, Recommendation, RecommendResponse
@@ -94,7 +95,15 @@ class RecommendationService:
                         mode = "ai"
                     else:
                         result_drafts = []
-            except Exception:
+            except Exception as exc:
+                # Keep the public contract stable; diagnostics contain only bounded codes.
+                safe_codes = {"missing_key", "invalid_model", "provider_http_error", "provider_oversized",
+                              "provider_incomplete", "provider_timeout", "provider_invalid_response",
+                              "all_drafts_rejected"}
+                code = exc.code if isinstance(exc, AIError) and exc.code in safe_codes else (
+                    "deadline_exceeded" if isinstance(exc, TimeoutError) else "invalid_or_unexpected_response"
+                )
+                log_provider("gemini", code)
                 self.metrics["ai_errors"] += 1
                 # Deterministic fallback restarts from rules, not a partially completed AI intent.
                 intent, now, search = self.inspect(request, rules, current)
@@ -103,6 +112,8 @@ class RecommendationService:
         response = self.assemble(request, intent, now, search, result_drafts, mode, intent_source, error)
         if use_cache:
             ttl = 1800 - (now.timestamp() % 1800)
+            if error == "ai_unavailable":
+                ttl = min(ttl, 30)  # Recover promptly after a transient provider outage.
             self.cache.put(key, response, ttl)
         return response, error
 
@@ -119,7 +130,7 @@ class RecommendationService:
             if stay <= 0:
                 continue
             budget = budget_for(c.walk_min, stay, search.reserve)
-            google = "https://www.google.com/maps/search/?" + urlencode({"api": 1, "query": f"{p.lat},{p.lon}"})
+            google = maps_url(p)
             links = (
                 {}
                 if self.settings.data_kind == "sample"

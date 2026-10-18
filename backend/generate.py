@@ -4,6 +4,7 @@ import re
 import httpx
 
 from .schemas import Generated, Intent
+from .provider_status import http_error_code, log_provider
 
 
 class AIError(Exception):
@@ -50,6 +51,7 @@ class Gemini:
             ) as client:
                 response = await client.post(url, headers={"x-goog-api-key": self.settings.gemini_api_key}, json=body)
                 if response.status_code != 200:
+                    log_provider("gemini", http_error_code(response))
                     raise AIError("provider_http_error")
                 if len(response.content) > 100_000:
                     raise AIError("provider_oversized")
