@@ -248,15 +248,16 @@ class CatalogGemini:
                   time_to_spend_min=480, what_to_do='Можно взять кофе и отдохнуть.')])
 
 
-def test_gemini_selects_new_catalog_place_without_replacing_its_explanation(enabled):
+def test_gemini_selects_catalog_place_with_grounded_final_explanation(enabled):
     enabled.gemini_api_key = 'synthetic-ai-key'
     ai = CatalogGemini()
     with TestClient(create_app(enabled, provider=ai, twogis_transport=transport())) as c:
         d = c.post('/recommend', json=ASK).json()
         assert d['mode'] == 'ai' and len(ai.received) == 7
         assert d['recommendations'][0]['poi_id'] == ai.received[-1].poi.poi_id
-        assert d['recommendations'][0]['why'] == 'Близкое кафе подходит для короткой остановки.'
-        assert d['recommendations'][0]['why_source'] == 'ai'
+        assert '120 мин' in d['recommendations'][0]['why']
+        assert d['recommendations'][0]['why_source'] == 'template'
+        assert d['recommendations'][0]['selection_source'] == 'ai'
         assert all(p['facts_source']=='2gis' and p['poi_id']!='invented' for p in d['recommendations'])
         assert all(p['budget_breakdown']['total_min'] <= 120 for p in d['recommendations'])
         assert c.app.state.service.metrics['invented_ids_rejected'] == 1

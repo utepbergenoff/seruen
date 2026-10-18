@@ -422,7 +422,7 @@
     if (!recs.length) html += `<div class="card empty"><div class="big">${icon("nav")}</div><h3>${esc(t.emptyTitle)}</h3><p class="meta">${esc(t.emptyHint)}</p></div>`;
 
     // the AI may pick fewer than three places; the backend then adds the next best checked ones with template texts
-    const mixed = recs.some((r) => r.why_source === "ai");
+    const mixed = recs.some((r) => (r.selection_source || r.why_source) === "ai");
     recs.forEach((r, i) => {
       const L2 = links(r);
       const b = cardBudget(r, d);
@@ -431,7 +431,8 @@
       // the card face stays short; what the spec also asks for (what to do, time there, sources) sits under "More"
       const realDesc = r.description && !/^generated/.test(r.description_source || "");
       const desc = !realDesc ? "" : `<div class="desc">${esc(r.description)} <span class="src">(${r.description_url && /^https:\/\/(?:[a-z-]+\.)?wikipedia\.org\//i.test(r.description_url) ? `<a href="${esc(r.description_url)}" target="_blank" rel="noopener">${esc(t.descSrc[r.description_source] || r.description_source)}</a>` : esc(t.descSrc[r.description_source] || r.description_source || "")})</span></div>`;
-      const picked = r.why_source === "ai" ? t.pickAi : mixed ? t.pickCode : t.pickTpl;
+      const picked = r.selection_source ? (r.selection_source === "ai" ? t.pickAiGrounded : t.pickRulesGrounded)
+        : r.why_source === "ai" ? t.pickAi : mixed ? t.pickCode : t.pickTpl;
       const acc = r.accessibility && r.accessibility !== "unknown" ? t.accessL[r.accessibility] : t.accessL.unknown;
       html += `<article class="card rec" data-id="${esc(r.poi_id)}" tabindex="0" aria-label="${esc(r.name)}" style="--i:${i}">
         <div class="rec-title"><span class="num">${i + 1}</span><div class="rec-name">

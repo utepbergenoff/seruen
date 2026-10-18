@@ -13,7 +13,7 @@
       "context": {
         "time_budget_min": 120,
         "companions": "alone",
-        "now": "2026-10-18T14:00:00+05:00",
+        "now": "2026-10-19T14:00:00+05:00",
         "simulate": true,
         "lang": "auto"
       }
@@ -34,7 +34,7 @@
       "context": {
         "time_budget_min": 60,
         "companions": "child",
-        "now": "2026-10-18T14:00:00+05:00",
+        "now": "2026-10-19T14:00:00+05:00",
         "simulate": true,
         "lang": "auto"
       }
@@ -55,7 +55,7 @@
       "context": {
         "time_budget_min": 60,
         "companions": "alone",
-        "now": "2026-10-18T14:00:00+05:00",
+        "now": "2026-10-19T14:00:00+05:00",
         "simulate": true,
         "lang": "auto"
       }
@@ -76,7 +76,7 @@
       "context": {
         "time_budget_min": 120,
         "companions": "alone",
-        "now": "2026-10-18T14:00:00+05:00",
+        "now": "2026-10-19T14:00:00+05:00",
         "simulate": true,
         "lang": "auto"
       }
@@ -97,7 +97,7 @@
       "context": {
         "time_budget_min": 120,
         "companions": "alone",
-        "now": "2026-10-18T14:00:00+05:00",
+        "now": "2026-10-19T14:00:00+05:00",
         "simulate": true,
         "lang": "auto"
       }
@@ -118,7 +118,7 @@
       "context": {
         "time_budget_min": 120,
         "companions": "alone",
-        "now": "2026-10-18T23:00:00+05:00",
+        "now": "2026-10-19T23:00:00+05:00",
         "simulate": true,
         "lang": "auto"
       }
