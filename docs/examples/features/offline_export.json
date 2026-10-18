@@ -1,0 +1,97 @@
+{
+  "fixture": "SYNTHETIC TEST DATA, NOT REAL VENUES",
+  "method": "POST",
+  "path": "/plans/export",
+  "request": {
+    "schema_version": 1,
+    "plan": {
+      "request": {
+        "location": {
+          "lat": 51.128,
+          "lon": 71.43
+        },
+        "query": "Хочу кофе",
+        "source": "local",
+        "context": {
+          "time_budget_min": 90,
+          "now": "2026-10-18T15:00:00+05:00",
+          "simulate": true,
+          "lang": "ru"
+        }
+      },
+      "stop_ids": [
+        "team_coffee",
+        "team_second"
+      ]
+    }
+  },
+  "http_status": 200,
+  "response": {
+    "schema_version": 1,
+    "saved_at": "2026-10-18T18:55:21.672986Z",
+    "status": "saved",
+    "stops": [
+      {
+        "poi_id": "team_coffee",
+        "name": "SYNTHETIC team_coffee",
+        "coords": {
+          "lat": 51.129,
+          "lon": 71.43
+        },
+        "category": "coffee",
+        "stay_min": 20,
+        "sources": [
+          "synthetic-test"
+        ],
+        "checked_at": "2026-10-18",
+        "license": "synthetic-test",
+        "attribution": "TEST ONLY"
+      },
+      {
+        "poi_id": "team_second",
+        "name": "SYNTHETIC team_second",
+        "coords": {
+          "lat": 51.13,
+          "lon": 71.43
+        },
+        "category": "coffee",
+        "stay_min": 20,
+        "sources": [
+          "synthetic-test"
+        ],
+        "checked_at": "2026-10-18",
+        "license": "synthetic-test",
+        "attribution": "TEST ONLY"
+      }
+    ],
+    "omitted_ids": [],
+    "contains_full_route": true,
+    "budget": {
+      "available_min": 90,
+      "walking_min": 8,
+      "visiting_min": 40,
+      "reserve_min": 5,
+      "total_min": 53,
+      "spare_min": 37
+    },
+    "origin": {
+      "lat": 51.128,
+      "lon": 71.43,
+      "precision_m": 100,
+      "source": "preset"
+    },
+    "finish": {
+      "lat": 51.128,
+      "lon": 71.43,
+      "precision_m": 100,
+      "source": "preset"
+    },
+    "warning_codes": [
+      "snapshot_not_current",
+      "offline_map_not_included"
+    ],
+    "notes": [
+      "Сохранённый снимок может устареть. После подключения обновите часы и условия; карта офлайн не включена."
+    ]
+  }
+}

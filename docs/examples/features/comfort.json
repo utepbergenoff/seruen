@@ -1,0 +1,30 @@
+{
+  "fixture": "SYNTHETIC TEST DATA, NOT REAL VENUES",
+  "method": "POST",
+  "path": "/comfort/search",
+  "request": {
+    "location": {
+      "lat": 51.128,
+      "lon": 71.43
+    }
+  },
+  "http_status": 200,
+  "response": [
+    {
+      "poi_id": "team_bench",
+      "name": "SYNTHETIC team_bench",
+      "coords": {
+        "lat": 51.129,
+        "lon": 71.43
+      },
+      "kind": "bench",
+      "access": "public",
+      "distance_to_route_m": 112,
+      "floor": null,
+      "note": "Synthetic test record",
+      "source_url": "https://example.org/synthetic-evidence",
+      "checked_at": "2026-10-18",
+      "verified": true
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "$defs": {
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "source_url": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Source Url",
+          "type": "string"
+        },
+        "checked_at": {
+          "format": "date",
+          "title": "Checked At",
+          "type": "string"
+        },
+        "verification": {
+          "enum": [
+            "verified",
+            "unverified",
+            "conflicting"
+          ],
+          "title": "Verification",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "field_visit",
+            "official_source",
+            "licensed_source",
+            "team_review"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "note": {
+          "default": "",
+          "maxLength": 800,
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_url",
+        "checked_at",
+        "verification",
+        "method"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "IdentityRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "canonical_id": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Canonical Id",
+          "type": "string"
+        },
+        "aliases": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Aliases",
+          "type": "array"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        }
+      },
+      "required": [
+        "canonical_id",
+        "aliases",
+        "evidence"
+      ],
+      "title": "IdentityRecord",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 1,
+      "default": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/$defs/IdentityRecord"
+      },
+      "maxItems": 5000,
+      "title": "Items",
+      "type": "array"
+    }
+  },
+  "required": [
+    "items"
+  ],
+  "title": "IdentityRecordFile",
+  "type": "object"
+}

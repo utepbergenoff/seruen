@@ -69,6 +69,23 @@ async def test_no_photos_means_no_ai_call(settings, poi):
     assert result.status == "no_photos" and not result.photos and not ai.calls
 
 
+async def test_analysis_cache_invalidates_when_photo_bytes_change(settings, poi):
+    ai = FakeAI(ANSWER)
+    body = [JPEG]
+    def handler(request):
+        if str(request.url) == INDEX:
+            return httpx.Response(200, json={"places": {"cafe": COMMONS[:1]}})
+        return httpx.Response(200, content=body[0], headers={"content-type": "image/jpeg"})
+    settings.gemini_api_key = "synthetic-test-key"
+    photos = Photos(settings, [poi], httpx.MockTransport(handler), ai)
+    await photos.details("cafe", PhotoRequest())
+    await photos.details("cafe", PhotoRequest())
+    assert len(ai.calls) == 1
+    body[0] = JPEG + b"changed"
+    await photos.details("cafe", PhotoRequest())
+    assert len(ai.calls) == 2
+
+
 async def test_commons_thumbnail_host_is_loaded_and_analyzed_without_allowing_lookalikes(settings, poi):
     thumb = {**COMMONS[0], "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Garden.jpg/960px-Garden.jpg"}
     bad_urls = ["https://thumb.wikimedia.org.evil.example/a.jpg", "http://thumb.wikimedia.org/a.jpg",

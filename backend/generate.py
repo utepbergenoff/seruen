@@ -5,6 +5,7 @@ import httpx
 from pydantic import ValidationError
 
 from .activities import activity
+from .ai_budget import AIBudget
 from .schemas import Generated, Intent
 from .provider_status import http_error_code, log_provider
 
@@ -35,12 +36,14 @@ class Gemini:
     def __init__(self, settings, transport=None):
         self.settings = settings
         self.transport = transport
+        self.budget = AIBudget(settings)
 
     async def structured(self, system, payload, schema, images=(), timeout=None):
         if not self.settings.gemini_api_key:
             raise AIError("missing_key")
         if not re.fullmatch(r"[a-zA-Z0-9._-]+", self.settings.gemini_model):
             raise AIError("invalid_model")
+        await self.budget.acquire(optional=bool(images))
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.settings.gemini_model}:generateContent"
         body = {
             "systemInstruction": {"parts": [{"text": system}]},
@@ -59,6 +62,8 @@ class Gemini:
             ) as client:
                 response = await client.post(url, headers={"x-goog-api-key": self.settings.gemini_api_key}, json=body)
                 if response.status_code != 200:
+                    if response.status_code == 429:
+                        self.budget.rate_limited()
                     log_provider("gemini", http_error_code(response))
                     raise AIError("provider_http_error")
                 if len(response.content) > 100_000:
@@ -116,6 +121,16 @@ class Gemini:
             "response_language": LANGUAGE_NAMES[intent.lang],
             "candidates": candidates,
         }
+        features = getattr(self, "feature_data", None)
+        if features:
+            from .geo import target_time
+            today = target_time(request, intent).date()
+            for row, hit in zip(candidates, hits):
+                row["visit_condition"] = features.condition(hit.poi.poi_id, today).model_dump(mode="json")
+                row["visual_match"] = features.match(hit.poi.poi_id, request.preferences.atmosphere_example_id,
+                                                     today).model_dump(mode="json")
+            # Do not send a person's history to Gemini; only constraints relevant to these candidates.
+            payload["preferences"] = request.preferences.model_dump(exclude={"visited_poi_ids", "exclude_poi_ids"})
         system = SYSTEM + """ All explanation/action text must be in response_language, even when
 the venue name is in another language. If requested facilities are absent from the supplied facts,
 say that their availability is unknown; still suggest a suitable nearby category using known facts.

@@ -1,0 +1,142 @@
+{
+  "fixture": "SYNTHETIC TEST DATA, NOT REAL VENUES",
+  "method": "POST",
+  "path": "/plans/build",
+  "request": {
+    "request": {
+      "location": {
+        "lat": 51.128,
+        "lon": 71.43
+      },
+      "query": "Хочу кофе",
+      "source": "local",
+      "context": {
+        "time_budget_min": 90,
+        "now": "2026-10-18T15:00:00+05:00",
+        "simulate": true,
+        "lang": "ru"
+      },
+      "preferences": {
+        "exclude_poi_ids": [
+          "team_coffee",
+          "team_second"
+        ]
+      }
+    },
+    "stop_ids": [
+      "team_coffee",
+      "team_second"
+    ]
+  },
+  "http_status": 200,
+  "response": {
+    "schema_version": 1,
+    "status": "no_matches",
+    "fits": true,
+    "stops": [],
+    "legs": [
+      {
+        "from_id": "start",
+        "to_id": "finish",
+        "distance_m": 0,
+        "walk_min": 0,
+        "source": "distance_estimate"
+      }
+    ],
+    "budget": {
+      "available_min": 90,
+      "walking_min": 0,
+      "visiting_min": 0,
+      "reserve_min": 5,
+      "total_min": 5,
+      "spare_min": 85
+    },
+    "state": {
+      "schema_version": 1,
+      "created_at": "2026-10-18T18:55:21.674821Z",
+      "origin": {
+        "lat": 51.128,
+        "lon": 71.43,
+        "precision_m": 100,
+        "source": "preset"
+      },
+      "finish_mode": "return",
+      "finish": {
+        "lat": 51.128,
+        "lon": 71.43,
+        "precision_m": 100,
+        "source": "preset"
+      },
+      "remaining_ids": [],
+      "completed_ids": [],
+      "skipped_ids": [],
+      "preferences": {
+        "exclude_poi_ids": [
+          "team_coffee",
+          "team_second"
+        ],
+        "visited_poi_ids": [],
+        "exclude_visited": false,
+        "preferred_categories": [],
+        "max_walk_min": null,
+        "indoor_only": false,
+        "expense_mode": "any",
+        "atmosphere_example_id": null
+      },
+      "exclude_categories": []
+    },
+    "departure_at": "2026-10-18T15:00:00+05:00",
+    "estimated_arrival_at": "2026-10-18T15:00:00+05:00",
+    "routing_source": "distance_estimate",
+    "routing_error": null,
+    "geometry": [
+      [
+        71.43,
+        51.128
+      ],
+      [
+        71.43,
+        51.128
+      ]
+    ],
+    "exclusions": [
+      {
+        "poi_id": "team_coffee",
+        "reason": "completed_or_skipped"
+      },
+      {
+        "poi_id": "team_second",
+        "reason": "completed_or_skipped"
+      }
+    ],
+    "notes": [
+      "Минуты — оценка; расчёт не гарантирует время прибытия или доступность проходов.",
+      "Подходящих остановок нет. Ограничения сохранены; можно изменить время или фильтры."
+    ],
+    "warning_codes": [
+      "estimated_arrival",
+      "plan_not_navigation",
+      "street_route_unavailable"
+    ],
+    "applied_preferences": {
+      "exclude_poi_ids": [
+        "team_coffee",
+        "team_second"
+      ],
+      "visited_poi_ids": [],
+      "exclude_visited": false,
+      "preferred_categories": [],
+      "max_walk_min": null,
+      "indoor_only": false,
+      "expense_mode": "any",
+      "atmosphere_example_id": null
+    },
+    "change_codes": [],
+    "relaxation_options": [
+      "restore_excluded_places"
+    ],
+    "data_kind": "sample",
+    "source": "local",
+    "source_error": null
+  }
+}

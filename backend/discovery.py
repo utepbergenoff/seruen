@@ -11,6 +11,7 @@ from collections import OrderedDict
 from datetime import datetime, timezone
 
 from .fallback import drafts
+from .feature_data import apply_feedback
 from .generate import AIError, validate_drafts
 from .geo import haversine, in_astana, radius_for, speed, target_time
 from .hours import open_status
@@ -258,7 +259,11 @@ class Discovery:
             return fallback, "no_ai", set(), "ai_unavailable"
 
     async def recommend(self, request, current=None):
+        request = apply_feedback(request)
         intent, query = search_intent(request)
+        if request.preferences.preferred_categories:
+            intent.categories = request.preferences.preferred_categories.copy()
+            query = QUERIES[intent.categories[0]]
         # A cafe/restaurant that 2GIS finds for coffee is a valid candidate too.
         # Keep its real category; do not relabel all such businesses as coffee shops.
         if "coffee" in intent.categories and "food" not in intent.categories:
@@ -309,7 +314,7 @@ class Discovery:
                 page += 1
                 if not more:
                     break
-            retriever = Retriever(Dataset(list(pois.values()), "2gis", 0, 0), None)
+            retriever = Retriever(Dataset(list(pois.values()), "2gis", 0, 0), None, self.service.features)
             search = retriever.search(request, intent, now, self.service.settings.airport_reserve_min, diversify=False)
             search.mode = "2gis"
             selected, mode, ai_ids, ai_error = await self.choose(key, request, intent, search.hits)
@@ -325,12 +330,13 @@ class Discovery:
             # Hard filters continue to apply to recommendations and Gemini's candidate list.
             all_candidates = [h.candidate for h in search.hits] + search.excluded
             for candidate in sorted(all_candidates, key=lambda c: (c.distance_m, c.poi_id)):
-                if candidate.excluded_because in ("category_mismatch", "excluded_category"):
+                if candidate.excluded_because in ("category_mismatch", "excluded_category", "excluded_place",
+                                                   "already_visited", "preferred_category_mismatch"):
                     continue
                 poi, item = pois[candidate.poi_id], items[candidate.poi_id]
                 address = item.get("address_name")
                 response.nearby_places.append(CatalogPlace(
-                    poi_id=poi.poi_id, name=poi.name, category=poi.category,
+                    poi_id=poi.poi_id, canonical_id=self.service.features.canonical(poi.poi_id), name=poi.name, category=poi.category,
                     coords=Coords(lat=poi.lat, lon=poi.lon), distance_m=candidate.distance_m,
                     walk_min=candidate.walk_min, address=address[:1000] if isinstance(address, str) else None,
                     rating=poi.rating, rating_count=poi.rating_count, open_status=open_status(poi, now),

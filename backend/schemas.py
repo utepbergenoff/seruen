@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from typing import Literal
 
-from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator, model_validator
 
 Category = Literal[
     "coffee",
@@ -62,12 +62,71 @@ class Context(Model):
         return ["shopping" if x == "mall" else x for x in value] if isinstance(value, list) else value
 
 
+class Preferences(Model):
+    exclude_poi_ids: list[str] = Field(default_factory=list, max_length=200)
+    visited_poi_ids: list[str] = Field(default_factory=list, max_length=200)
+    exclude_visited: bool = False
+    preferred_categories: list[Category] = Field(default_factory=list, max_length=12)
+    max_walk_min: int | None = Field(default=None, ge=1, le=120)
+    indoor_only: bool = False
+    expense_mode: Literal["any", "free_only", "no_required_purchase"] = "any"
+    atmosphere_example_id: str | None = Field(default=None, min_length=1, max_length=120)
+
+    @field_validator("exclude_poi_ids", "visited_poi_ids")
+    @classmethod
+    def bounded_ids(cls, value):
+        if any(not x or len(x) > 120 for x in value):
+            raise ValueError("invalid_poi_id")
+        return list(dict.fromkeys(value))
+
+
+class Feedback(Model):
+    reason: Literal["too_far", "already_visited", "different_place", "wrong_type", "no_expense"]
+    poi_id: str | None = Field(default=None, min_length=1, max_length=120)
+    category: Category | None = None
+    max_walk_min: int | None = Field(default=None, ge=1, le=120)
+
+    @model_validator(mode="after")
+    def required_context(self):
+        if self.reason in ("already_visited", "different_place") and not self.poi_id:
+            raise ValueError("poi_id_required")
+        if self.reason == "wrong_type" and not self.category:
+            raise ValueError("category_required")
+        return self
+
+
+class VisitConditionView(Model):
+    kind: Literal["free", "optional_purchase", "paid", "unknown"] = "unknown"
+    note: str = ""
+    source_url: str | None = None
+    checked_at: date | None = None
+    verification: Literal["verified", "unverified", "conflicting", "stale", "unknown"] = "unknown"
+
+
+class AtmosphereMatch(Model):
+    matched_features: list[str] = Field(default_factory=list)
+    source: Literal["manual", "gemini", "none"] = "none"
+    checked_at: date | None = None
+    photo_ids: list[str] = Field(default_factory=list)
+
+
 class RecommendRequest(Model):
     location: Location
     query: str = Field(default="", max_length=1000)
     context: Context = Field(default_factory=Context)
     source: Literal["auto", "local", "2gis"] = "auto"
     cursor: str | None = Field(default=None, max_length=100)
+    preferences: Preferences = Field(default_factory=Preferences)
+    feedback: Feedback | None = None
+
+    @model_validator(mode="after")
+    def feedback_capacity(self):
+        if self.feedback and self.feedback.reason in ("different_place", "already_visited"):
+            ids = (self.preferences.exclude_poi_ids if self.feedback.reason == "different_place"
+                   else self.preferences.visited_poi_ids)
+            if self.feedback.poi_id not in ids and len(ids) >= 200:
+                raise ValueError("too_many_exclusions")
+        return self
 
 
 class POI(Model):
@@ -138,6 +197,7 @@ class Budget(Model):
 
 class Recommendation(Model):
     poi_id: str
+    canonical_id: str | None = None
     name: str
     category: Category
     coords: Coords
@@ -161,6 +221,8 @@ class Recommendation(Model):
     rating: float | None
     rating_count: int | None
     budget_breakdown: Budget
+    visit_condition: VisitConditionView = Field(default_factory=VisitConditionView)
+    atmosphere_match: AtmosphereMatch = Field(default_factory=AtmosphereMatch)
 
     @field_validator("why", "what_to_do")
     @classmethod
@@ -204,6 +266,7 @@ class Candidate(Model):
 
 class CatalogPlace(Model):
     poi_id: str
+    canonical_id: str | None = None
     name: str
     category: Category
     coords: Coords
@@ -237,6 +300,9 @@ class RecommendResponse(Model):
     source_error: str | None = None
     nearby_places: list[CatalogPlace] = Field(default_factory=list, max_length=30)
     catalog_total: int | None = Field(default=None, ge=0)
+    applied_preferences: Preferences = Field(default_factory=Preferences)
+    change_codes: list[str] = Field(default_factory=list)
+    relaxation_options: list[str] = Field(default_factory=list)
 
 
 class PlacesStatus(Model):

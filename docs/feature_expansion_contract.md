@@ -1,0 +1,140 @@
+# Серуен: контракт восьми функций, версия 1
+
+Совместимое расширение API. База: `https://seruen-backend-f36d.onrender.com`.
+Точные типы и ограничения: `/openapi.json`, интерактивная проверка: `/docs`.
+Рабочие примеры на **синтетических данных**, включая обычный, пустой и ошибочный ответ: [examples/features](examples/features/).
+Форматы для Ерлана: [feature_data_handoff.md](feature_data_handoff.md).
+
+## Интеграция для Алихана
+
+1. Старый `/recommend` остаётся рабочим. Новые необязательные поля описаны ниже.
+2. Карточки — варианты выбора. Последовательную прогулку рассчитывать через `/plans/build`; показывать серверные `legs`, `budget`, `fits`, предупреждения и финиш. Не складывать независимые бюджеты карточек.
+3. Передавать возвращённый `state` в `/plans/recalculate`, новую текущую точку и **оставшееся** время. Выполненные остановки — только из `state.remaining_ids`.
+4. Историю, избранное, заметки и снимки предпочтений хранить в браузере. На сервер отправлять только необходимые ID и ограничения, без заметок. Для отмены вернуть предыдущий снимок `preferences` и `context.exclude_categories`, убрать `feedback`.
+5. Показывать `unknown`, `verification`, дату и источник. Кнопка ослабления фильтра требует действия пользователя; сервер фильтры сам не снимает.
+6. F4/F5/F7 и полный экспорт F6 требуют новых данных Ерлана. Пустые ответы — штатное состояние, не ошибка сети. `/features/status` показывает количество загруженных записей. Новые API не создают монет, сундуков или аккаунтов.
+
+## F3, F5, F7, F8: общий запрос рекомендаций
+
+```json
+{
+  "location": {"lat": 51.128, "lon": 71.430, "source": "map"},
+  "query": "Хочу кофе",
+  "source": "auto",
+  "context": {"time_budget_min": 90, "lang": "ru"},
+  "preferences": {
+    "exclude_poi_ids": [], "visited_poi_ids": [], "exclude_visited": false,
+    "preferred_categories": [], "max_walk_min": 10, "indoor_only": false,
+    "expense_mode": "any", "atmosphere_example_id": null
+  }
+}
+```
+
+`source`: `auto` использует 2ГИС при включённом каталоге, `local` — локальные данные, `2gis` — каталог. Сбой явно выбранного 2ГИС не маскируется местами из другой базы. Поиск ограничен квотой и областью поиска, не является полной выгрузкой 2ГИС.
+
+`exclude_poi_ids` и `visited_poi_ids`: до 200 уникальных ID длиной до 120 символов. При переполнении возвращается 422; старые исключения не удаляются. `max_walk_min`: 1–120 минут до отдельной остановки; общий предел прогулки — `context.time_budget_min`. `preferred_categories` — категории существующего контракта; пустой массив не добавляет ограничение. Исключение категорий остаётся в `context.exclude_categories`.
+
+`expense_mode`: `any`, `free_only` (только подтверждённое `free`), `no_required_purchase` (`free` либо `optional_purchase`). Цена не выводится из категории, рейтинга или отсутствия данных. Записи старше 30 дней, конфликтующие и неподтверждённые имеют `kind=unknown` и не проходят строгие фильтры.
+
+Необязательный `feedback`:
+
+| reason | Дополнительные поля | Действие |
+|---|---|---|
+| `too_far` | `max_walk_min` необязательно, по умолчанию 5 | Сократить предел ходьбы |
+| `already_visited` | `poi_id` обязательно | Добавить в посещённые и включить исключение |
+| `different_place` | `poi_id` обязательно | Исключить конкретное место |
+| `wrong_type` | `category` обязательно | Добавить категорию в исключения |
+| `no_expense` | — | Включить `no_required_purchase` |
+
+Дополнения к ответу `/recommend`: `applied_preferences`, `change_codes`, `relaxation_options` и короткая локализованная заметка. Карточка содержит `canonical_id`, `visit_condition` (kind, note, source_url, checked_at, verification), `atmosphere_match` (matched_features, source, checked_at, photo_ids).
+Ограничения действуют до ранжирования, для локальных и 2ГИС-кандидатов; кандидат не возвращается через подтверждённый другой ID. История — заявление пользователя, не доказательство физического визита.
+
+## F1–F2: маршрут и пересчёт
+
+`POST /plans/build`:
+
+```json
+{
+  "request": {
+    "location": {"lat": 51.128, "lon": 71.430},
+    "query": "Прогулка", "source": "local",
+    "context": {"time_budget_min": 90, "lang": "ru"}
+  },
+  "finish_mode": "destination",
+  "destination": {"lat": 51.132, "lon": 71.435},
+  "stop_ids": [], "completed_ids": [], "skipped_ids": [],
+  "reserve_min": 5, "max_stops": 3
+}
+```
+
+`finish_mode=return` (по умолчанию) возвращает к `origin`, по умолчанию равному текущей точке. Для `destination` финиш обязателен. Пустой `stop_ids` выбирает остановки автоматически; непустой список задаёт порядок до 5 доверенных ID. `max_stops`: 1–5. Не передавать длительности, названия или координаты остановок — сервер читает свои данные/2ГИС. Удобства добавляются по их `poi_id`.
+
+Ответ `PlanResponse`:
+
+- `status`: `ok`, `partial` (часть явно выбранных остановок исключена), `impossible`, `no_matches`, `unavailable`, `refused`.
+- `fits`: весь выданный маршрут помещается в бюджет и проходит проверки. Для `no_matches` может быть true для дороги к финишу, но остановок нет. `fits=false` и `do_not_start_plan` запрещают показывать план готовым к прогулке.
+- `budget`: available_min, walking_min, visiting_min, reserve_min, total_min, spare_min. `total=walking+visiting+reserve`. Перед вылетом запас минимум 60 минут. Запас не включён в `estimated_arrival_at`.
+- `stops`: ID и canonical_id, координаты, название/категория, arrival_at, departure_at, stay_min, open_status, visit_condition, atmosphere_match, sources.
+- `legs`: from_id/to_id (`start`/`finish` либо ID), distance_m, walk_min, source.
+- `routing_source`: `osrm_foot` либо `distance_estimate`. Пешеходные расстояния берутся с существующего публичного OSRM; минуты считают с темпом пользователя, ребёнка/зимы. Резервный расчёт — расстояние по прямой × 1.3. Это оценка, не гарантия прохода/прибытия. `geometry` — массив `[lon,lat]`. `routing_error` сообщает о недоступности/локальном ограничении.
+- `state`: schema_version=1, created_at, origin, finish_mode, finish, remaining_ids, completed_ids, skipped_ids, preferences, exclude_categories.
+- `exclusions`: ID и причина, `notes`, `warning_codes`, `source`, `source_error`, `data_kind`, applied_preferences/change_codes/relaxation_options.
+
+Расписание проверяется на всём интервале посещения каждой остановки. Неизвестное расписание остаётся неизвестным. План учитывает ребёнка, доступность, ночное время, погоду, расходы и лимиты ходьбы. Никакой режим не гарантирует безопасность пути.
+
+`POST /plans/recalculate`: `request`, предыдущий `state` в поле `previous`, `reason`, `remaining_time_min` (5–480), `completed_ids` (новые выполненные, до 5), `poi_id` при необходимости, `reserve_min` (по умолчанию 5).
+
+| reason | Поведение |
+|---|---|
+| `less_time`, `refresh` | Пересчитать оставшиеся остановки |
+| `cold` | Искать помещение с переходами до 5 минут |
+| `tired` | Переходы до 5 минут |
+| `closed`, `busy` | Исключить `poi_id` из текущего плана, подобрать замену |
+| `skip` | Исключить `poi_id`, сохранить остальные остановки |
+| `add_stop` | Добавить `poi_id`, перепроверить полный бюджет |
+
+Точка начала — новая `request.location`, финиш сохраняется из `previous`. Если `preferences` или `context.exclude_categories` отсутствуют, берётся предыдущее значение; явное пустое значение снимает соответствующее ограничение. Пересчёт начинается сейчас, не повторяет «завтра» из старого текста. Состояние старше 24 часов отклоняется: 409 `stale_plan`, нужно заново построить план. Настоящие координаты не сохраняются в постоянной истории сервера.
+
+## F4: удобства
+
+`POST /comfort/search`:
+
+```json
+{"location":{"lat":51.128,"lon":71.430},"route_points":[],"kinds":["toilet","warming"],"radius_m":500,"public_only":false,"verified_only":true}
+```
+
+`kinds`: warming/toilet/bench/water/entrance. `route_points`: до 20 точек линии маршрута в формате `{lat,lon}` (не `[lon,lat]`). Передавать точки вдоль фактического маршрута; между ними расстояние считается до отрезка. Пустой список означает поиск вокруг location. Радиус 50–2000 м, максимум 50 результатов.
+Ответ — массив `{poi_id,name,coords,kind,access,distance_to_route_m,floor,note,source_url,checked_at,verified}`. Пустой массив допустим. `verified` требует подтверждения не старше 30 дней. `access`: public/customers_only/paid/unknown. Непроверенное удобство можно увидеть с `verified_only=false`, но сервер не включит его в план как подтверждённую остановку.
+
+## F6: сохранение на устройстве
+
+`POST /plans/export`: `{ "schema_version":1, "plan": <запрос /plans/build> }`.
+Сервер заново рассчитывает план. Экспортирует только собственные записи с проверенными правами и `offline_allowed=true`; каталог 2ГИС и сторонние фотографии автоматически не копируются.
+Ответ `OfflinePlan`: schema_version=1, saved_at, status (saved/not_exportable/revalidation_failed), stops, omitted_ids, contains_full_route, budget, origin, finish, warning_codes, notes.
+Для каждого stop: poi_id/name/coords/category/stay_min/sources/checked_at/license/attribution из разрешённой собственной записи. Если сохранена лишь часть остановок, `contains_full_route=false`, budget/origin/finish=null: показывать отдельные сохранённые места, а не полный офлайн-маршрут. Фото и карта не включены. Сохранять снимок в браузере, разрешать удаление.
+
+`POST /plans/refresh`: `{ "saved": <OfflinePlan>, "request": <RecommendRequest>, "reserve_min":5 }`. Обновляет только ID сохранённых мест из доверенных источников, игнорирует старые клиентские названия, координаты и длительности. Для частичного снимка задать финиш через новый `/plans/build`. Старые часы не показывать актуальными. Неизвестная версия формата → 422.
+
+## F7: атмосфера фото
+
+`GET /atmosphere/examples`: `{schema_version:1,status:"ready"|"awaiting_data",examples:[...]}`.
+Каждый пример содержит example_id, poi_id, title, features, photos с лицензией/авторством/хешем, analysis_source (manual/gemini), analysis_version, evidence. Выбранный example_id передать в `preferences.atmosphere_example_id`.
+Подбор идёт по пересечению проверенных видимых признаков. Источник `manual` подписывать «по размеченным фото», `gemini` — «по ранее проверенному анализу». Это не живой анализ загрузки пользователя. По фото не выводятся тишина, Wi-Fi, розетки, свободные столики, часы работы или безопасность. Произвольная загрузка фото не входит в выпуск.
+Существующий API анализа фото сохраняется; кеш анализа теперь зависит от содержимого фото, схемы/промпта и запроса. Общий лимит Gemini оставляет часть запросов для рекомендаций. При недоступном ИИ размеченные признаки продолжают работать без обращения к Gemini.
+
+## F8: идентичность
+
+`POST /places/identities`: `{ "poi_ids": ["ID из ответа"] }` → `{schema_version:1,identities:[{poi_id,canonical_id,verified_link}]}`.
+Связь источников только из проверенной таблицы Ерлана; одинаковое название не доказывает один филиал. Неизвестный ID возвращается как собственный canonical_id, verified_link=false. Клиент может сохранять оба ID; предпочтения и посещения не отправляются Gemini целиком. API не хранит пользовательскую историю/аккаунты.
+
+## Ошибки, нагрузка, эксплуатация
+
+Структурные ошибки → 422 в прежнем формате валидации приложения. Ошибки новых операций → `{"error":{"code":"..."}}`: 404 poi_not_found/atmosphere_example_unavailable; 409 stale_plan; 422 outside_astana/duplicate_or_too_many_stops/completion_not_in_plan/stop_not_in_plan/too_many_exclusions/empty_saved_plan. Ошибки провайдера при построении плана → status=unavailable, source_error, fits=false. Ничего не принимать за пустой успешный подбор без проверки status.
+
+Новые endpoint-ы используют существующий CORS и JSON Content-Type; размеры списков и текста ограничены схемами. GET/POST с опубликованного Netlify разрешены. Точные запросы, координаты и заметки не печатаются в прикладные логи. Планы не пишутся в файлы или БД сервера; временный кеш запросов/каталога сохраняет прежние ограничения.
+
+Новых платных сервисов, ключей, БД и пакетов нет. `FEATURE_DATA_DIR=data`; `ROUTING_ENABLED=true` по умолчанию при запуске из окружения (false отключает OSRM). Не более одного обращения OSRM в секунду на процесс, таймаут 3 секунды, при отказе — явная оценка. Лимит Gemini: 12 запросов/минуту, 400/сутки на процесс, фото оставляют 2/минуту и 100/сутки основным запросам, HTTP 429 включает паузу 60 секунд. Эти лимиты сбрасываются при рестарте и не заменяют квоты бесплатного аккаунта провайдера; тарифы автоматически не меняются. 2ГИС использует существующую ограниченную квоту и кеш.
+
+## Проверка и границы приёмки
+
+Автоматические сценарии: `tests/test_feature_expansion.py`, кеш фото — `tests/test_photos.py`. Новые реальные данные пока не получены. Успешные серверные проверки не равны приёмке интерфейса: Алихан подключает новые endpoint-ы, Ерлан добавляет проверенные записи, после этого команда проходит пользовательские сценарии на сайте.

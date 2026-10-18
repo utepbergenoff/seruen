@@ -1,0 +1,487 @@
+{
+  "$defs": {
+    "ComfortRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "poi": {
+          "$ref": "#/$defs/POI"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        },
+        "offline_allowed": {
+          "default": false,
+          "title": "Offline Allowed",
+          "type": "boolean"
+        },
+        "license": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "License",
+          "type": "string"
+        },
+        "attribution": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Attribution",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "warming",
+            "toilet",
+            "bench",
+            "water",
+            "entrance"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "access": {
+          "default": "unknown",
+          "enum": [
+            "public",
+            "customers_only",
+            "paid",
+            "unknown"
+          ],
+          "title": "Access",
+          "type": "string"
+        },
+        "floor": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Floor"
+        }
+      },
+      "required": [
+        "poi",
+        "evidence",
+        "license",
+        "attribution",
+        "kind"
+      ],
+      "title": "ComfortRecord",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "source_url": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Source Url",
+          "type": "string"
+        },
+        "checked_at": {
+          "format": "date",
+          "title": "Checked At",
+          "type": "string"
+        },
+        "verification": {
+          "enum": [
+            "verified",
+            "unverified",
+            "conflicting"
+          ],
+          "title": "Verification",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "field_visit",
+            "official_source",
+            "licensed_source",
+            "team_review"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "note": {
+          "default": "",
+          "maxLength": 800,
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_url",
+        "checked_at",
+        "verification",
+        "method"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "POI": {
+      "additionalProperties": false,
+      "properties": {
+        "poi_id": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Poi Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 2,
+          "title": "Name",
+          "type": "string"
+        },
+        "name_kk": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name Kk"
+        },
+        "name_en": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name En"
+        },
+        "name_generic": {
+          "default": false,
+          "title": "Name Generic",
+          "type": "boolean"
+        },
+        "lat": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lon",
+          "type": "number"
+        },
+        "category": {
+          "enum": [
+            "coffee",
+            "food",
+            "park",
+            "kids",
+            "culture",
+            "viewpoint",
+            "shopping",
+            "sport",
+            "night",
+            "unusual",
+            "library",
+            "cowork"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "tags_inferred": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags Inferred",
+          "type": "array"
+        },
+        "google_place_id": {
+          "anyOf": [
+            {
+              "maxLength": 255,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Google Place Id"
+        },
+        "twogis_place_id": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9]{1,32}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Twogis Place Id"
+        },
+        "description_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description Url"
+        },
+        "description": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Description",
+          "type": "string"
+        },
+        "description_source": {
+          "default": "source",
+          "enum": [
+            "wikipedia",
+            "source",
+            "generated"
+          ],
+          "title": "Description Source",
+          "type": "string"
+        },
+        "opening_hours_raw": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Opening Hours Raw"
+        },
+        "hours_source": {
+          "default": "none",
+          "enum": [
+            "2gis",
+            "osm",
+            "none"
+          ],
+          "title": "Hours Source",
+          "type": "string"
+        },
+        "hours_conflict": {
+          "default": false,
+          "title": "Hours Conflict",
+          "type": "boolean"
+        },
+        "phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Phone"
+        },
+        "website": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Website"
+        },
+        "rating": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rating"
+        },
+        "rating_count": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rating Count"
+        },
+        "popularity": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Popularity",
+          "type": "number"
+        },
+        "wheelchair": {
+          "default": "unknown",
+          "enum": [
+            "yes",
+            "limited",
+            "no",
+            "unknown"
+          ],
+          "title": "Wheelchair",
+          "type": "string"
+        },
+        "kid_friendly": {
+          "default": false,
+          "title": "Kid Friendly",
+          "type": "boolean"
+        },
+        "adult_only": {
+          "default": false,
+          "title": "Adult Only",
+          "type": "boolean"
+        },
+        "indoor": {
+          "default": false,
+          "title": "Indoor",
+          "type": "boolean"
+        },
+        "sources": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "last_checked": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Checked"
+        },
+        "chain": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Chain"
+        },
+        "temporary": {
+          "default": false,
+          "title": "Temporary",
+          "type": "boolean"
+        },
+        "event_start": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Start"
+        },
+        "event_end": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event End"
+        },
+        "event_source": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Source"
+        }
+      },
+      "required": [
+        "poi_id",
+        "name",
+        "lat",
+        "lon",
+        "category"
+      ],
+      "title": "POI",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 1,
+      "default": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/$defs/ComfortRecord"
+      },
+      "maxItems": 5000,
+      "title": "Items",
+      "type": "array"
+    }
+  },
+  "required": [
+    "items"
+  ],
+  "title": "ComfortRecordFile",
+  "type": "object"
+}

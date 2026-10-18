@@ -1,0 +1,107 @@
+{
+  "$defs": {
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "source_url": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Source Url",
+          "type": "string"
+        },
+        "checked_at": {
+          "format": "date",
+          "title": "Checked At",
+          "type": "string"
+        },
+        "verification": {
+          "enum": [
+            "verified",
+            "unverified",
+            "conflicting"
+          ],
+          "title": "Verification",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "field_visit",
+            "official_source",
+            "licensed_source",
+            "team_review"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "note": {
+          "default": "",
+          "maxLength": 800,
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_url",
+        "checked_at",
+        "verification",
+        "method"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "VisitConditionRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "poi_id": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Poi Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "free",
+            "optional_purchase",
+            "paid",
+            "unknown"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        }
+      },
+      "required": [
+        "poi_id",
+        "kind",
+        "evidence"
+      ],
+      "title": "VisitConditionRecord",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 1,
+      "default": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/$defs/VisitConditionRecord"
+      },
+      "maxItems": 5000,
+      "title": "Items",
+      "type": "array"
+    }
+  },
+  "required": [
+    "items"
+  ],
+  "title": "VisitConditionRecordFile",
+  "type": "object"
+}

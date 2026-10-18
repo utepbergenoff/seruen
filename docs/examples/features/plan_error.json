@@ -1,0 +1,30 @@
+{
+  "fixture": "SYNTHETIC TEST DATA, NOT REAL VENUES",
+  "method": "POST",
+  "path": "/plans/build",
+  "request": {
+    "request": {
+      "location": {
+        "lat": 51.128,
+        "lon": 71.43
+      },
+      "query": "Хочу кофе",
+      "source": "local",
+      "context": {
+        "time_budget_min": 90,
+        "now": "2026-10-18T15:00:00+05:00",
+        "simulate": true,
+        "lang": "ru"
+      }
+    },
+    "stop_ids": [
+      "no-such-place"
+    ]
+  },
+  "http_status": 404,
+  "response": {
+    "error": {
+      "code": "poi_not_found"
+    }
+  }
+}
