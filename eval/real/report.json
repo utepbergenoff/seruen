@@ -13,12 +13,12 @@
   "actual_modes": [
     "no_ai"
   ],
-  "mean_response_ms": 10.536,
-  "max_response_ms": 19.235,
-  "mean_cached_ms": 12.244,
+  "mean_response_ms": 12.087,
+  "max_response_ms": 41.337,
+  "mean_cached_ms": 10.921,
   "cached_scenarios": 6,
-  "mean_retrieval_ms": 10.731,
-  "max_retrieval_ms": 17.441,
+  "mean_retrieval_ms": 10.988,
+  "max_retrieval_ms": 23.667,
   "privacy_pass": true,
   "manual_mean": null,
   "invented_ids_rejected": 0,

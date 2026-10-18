@@ -492,6 +492,53 @@
             "type": "integer",
             "title": "Time Budget Min"
           },
+          "effective_budget_min": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Effective Budget Min",
+            "default": 0
+          },
+          "reserve_min": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Reserve Min",
+            "default": 0
+          },
+          "walk_speed_m_per_min": {
+            "type": "integer",
+            "title": "Walk Speed M Per Min",
+            "default": 75
+          },
+          "street_factor": {
+            "type": "number",
+            "title": "Street Factor",
+            "default": 1.3
+          },
+          "companions": {
+            "type": "string",
+            "enum": [
+              "alone",
+              "child",
+              "group"
+            ],
+            "title": "Companions",
+            "default": "alone"
+          },
+          "time_simulated": {
+            "type": "boolean",
+            "title": "Time Simulated",
+            "default": false
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kk",
+              "en"
+            ],
+            "title": "Lang",
+            "default": "ru"
+          },
           "filters": {
             "items": {
               "type": "string"
@@ -1191,6 +1238,11 @@
             ],
             "title": "Description Source"
           },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
           "description_url": {
             "anyOf": [
               {
@@ -1201,6 +1253,25 @@
               }
             ],
             "title": "Description Url"
+          },
+          "sources": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Sources"
+          },
+          "last_checked": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Checked"
           },
           "accessibility": {
             "type": "string",

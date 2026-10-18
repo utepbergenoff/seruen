@@ -14,5 +14,5 @@ window.SERUEN_CONFIG = {
   },
 
   // Route line geometry. The public OSRM demo server; if it fails we draw straight lines.
-  OSRM_URL: "https://router.project-osrm.org",
+  OSRM_URL: "https://routing.openstreetmap.de/routed-foot",
 };

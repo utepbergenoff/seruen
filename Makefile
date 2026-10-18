@@ -19,9 +19,9 @@ eval:
 # --- data pipeline (stream A): rebuild data/poi.json + data/quality_report.md ---
 # from raw files in data/raw/ (no keys, no network)
 data:
-	$(PYTHON) -m pipeline.run
+	.venv/bin/python -m pipeline.run
 # full re-collection: OSM + Google place_id + Wikipedia (+ Gemini if GEMINI_API_KEY is set)
 data-fresh:
-	$(PYTHON) -m pipeline.run --fresh
+	.venv/bin/python -m pipeline.run --fresh
 test-data:
-	$(PYTHON) -m pytest -q tests/test_hours.py tests/test_enrich.py tests/test_wiki.py tests/test_dedupe.py tests/test_describe.py
+	.venv/bin/python -m pytest -q tests/test_hours.py tests/test_enrich.py tests/test_wiki.py tests/test_dedupe.py tests/test_describe.py

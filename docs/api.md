@@ -1,6 +1,6 @@
 # Серуен API v0.1
 
-Владелец: Томирис. Основано на приложении А плана команды v2.1 и персональном плане потока B. Контракт подготовлен и проверен кодом; подтверждение Алихана ещё не получено. OpenAPI: `/openapi.json`, интерактивная проверка: `/docs`.
+Владелец: Томирис. Основано на приложении А плана команды v2.1 и персональном плане потока B. Контракт проверен кодом; Алихан подтвердил совместимость на шести сценариях. OpenAPI: `/openapi.json`, интерактивная проверка: `/docs`.
 
 База локально: `http://127.0.0.1:8000`. JSON, UTF-8; расстояния в метрах, длительности в целых минутах. Все времена с часовым поясом, расчёт в `Asia/Almaty`.
 
@@ -57,11 +57,15 @@
 | open_status | state: open / likely_open / unknown / closed; confidence: high / medium / low; hours, source, checked_at допускают null там, где данных нет. |
 | facts_source / description_source | poi_db / wikipedia, source или generated. Вычисляемые расстояния получены из координат базы; provenance описан ниже. |
 | accessibility | yes / limited / no / unknown. |
+| description / sources / last_checked | Описание с явным description_source; источники записи и дата снимка. generated не является подтверждённым фактом. |
 | links | 2gis и google для настоящих данных. В сэмпле `{}`, чтобы не вести к выдуманным местам. |
 | rating / rating_count | Число либо null; отсутствие рейтинга не превращается в ноль. |
 | recommendations[].budget_breakdown | walk_there_min + stay_min + walk_back_min + reserve_min = total_min. |
 | budget_breakdown | Повторяет бюджет **первой альтернативы**; null, если карточек нет. |
 | considered | Точность входа, радиус, факт расширения, бюджет, фильтры, время, число допустимых кандидатов до ограничения разнообразия, погода, retrieval_mode, intent_source, target_time. |
+| considered.effective_budget_min / reserve_min | Бюджет прогулки без аэропортового резерва / сам резерв. Мини-маршрут использует effective_budget_min; карточка альтернативы — полный time_budget_min. |
+| considered.walk_speed_m_per_min / street_factor | Фактическая скорость с учётом ребёнка/зимы и коэффициент 1,3. |
+| considered.lang / companions / time_simulated | Язык ответа, состав группы, признак симуляции. time локализован, target_time — ISO. |
 | notes / safety | Массивы сообщений на выбранном языке; показывать пользователю. |
 | route | null; построение составного маршрута вне B1–B12. |
 | disclaimer | Показывать всегда. |

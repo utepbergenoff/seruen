@@ -1,71 +1,128 @@
 [
   {
     "id": "S1",
-    "title": {
-      "ru": "Тихое место с кофе и розеткой",
-      "en": "Quiet place with coffee and a socket",
-      "kk": "Кофе мен розеткасы бар тыныш жер"
+    "title": "Кофе и работа",
+    "request": {
+      "location": {
+        "lat": 51.089,
+        "lon": 71.417,
+        "precision_m": 100,
+        "source": "preset"
+      },
+      "query": "Хочу поработать с ноутбуком пару часов, нужно тихое место с кофе и розеткой",
+      "context": {
+        "time_budget_min": 120,
+        "companions": "alone",
+        "now": "2026-10-18T14:00:00+05:00",
+        "simulate": true,
+        "lang": "auto"
+      }
     },
-    "preset": "expo",
-    "query": "Хочу поработать с ноутбуком пару часов, нужно тихое место с кофе и розеткой",
-    "context": {}
+    "data_kind": "sample"
   },
   {
     "id": "S2",
-    "title": {
-      "ru": "С ребёнком, есть час",
-      "en": "With a child, one hour",
-      "kk": "Баламен, бір сағат"
+    "title": "С ребёнком",
+    "request": {
+      "location": {
+        "lat": 51.133,
+        "lon": 71.404,
+        "precision_m": 100,
+        "source": "preset"
+      },
+      "query": "Я с ребёнком, есть час. Куда сходить рядом?",
+      "context": {
+        "time_budget_min": 60,
+        "companions": "child",
+        "now": "2026-10-18T14:00:00+05:00",
+        "simulate": true,
+        "lang": "auto"
+      }
     },
-    "preset": "khan",
-    "query": "Я с ребёнком, есть час. Куда сходить рядом?",
-    "context": {}
+    "data_kind": "sample"
   },
   {
     "id": "S3",
-    "title": {
-      "ru": "Прогулка 30–60 минут",
-      "en": "A 30-60 minute walk",
-      "kk": "30–60 минут серуен"
+    "title": "Короткая прогулка",
+    "request": {
+      "location": {
+        "lat": 51.089,
+        "lon": 71.403,
+        "precision_m": 100,
+        "source": "preset"
+      },
+      "query": "Я возле Mega Silk Way, хочу прогуляться 30–60 минут",
+      "context": {
+        "time_budget_min": 60,
+        "companions": "alone",
+        "now": "2026-10-18T14:00:00+05:00",
+        "simulate": true,
+        "lang": "auto"
+      }
     },
-    "preset": "mega",
-    "query": "Я возле Mega Silk Way, хочу прогуляться 30–60 минут",
-    "context": {}
+    "data_kind": "sample"
   },
   {
     "id": "S4",
-    "title": {
-      "ru": "Необычное на 1–2 часа (пример из ТЗ)",
-      "en": "Something unusual for 1-2 hours (task example)",
-      "kk": "1–2 сағатқа ерекше нәрсе"
+    "title": "Необычное у Экспо",
+    "request": {
+      "location": {
+        "lat": 51.089,
+        "lon": 71.417,
+        "precision_m": 100,
+        "source": "preset"
+      },
+      "query": "Я у здания Экспо 2017, хочу что-то необычное на 1–2 часа, пешком",
+      "context": {
+        "time_budget_min": 120,
+        "companions": "alone",
+        "now": "2026-10-18T14:00:00+05:00",
+        "simulate": true,
+        "lang": "auto"
+      }
     },
-    "preset": "expo",
-    "query": "Я у здания Экспо 2017, хочу что-то необычное на 1–2 часа, пешком",
-    "context": {}
+    "data_kind": "sample"
   },
   {
     "id": "S5",
-    "title": {
-      "ru": "Турист, 2 часа до вылета",
-      "en": "Tourist, 2 hours before a flight",
-      "kk": "Турист, ұшаққа дейін 2 сағат"
+    "title": "Перед вылетом",
+    "request": {
+      "location": {
+        "lat": 51.128,
+        "lon": 71.43,
+        "precision_m": 100,
+        "source": "preset"
+      },
+      "query": "Я турист, у меня 2 часа перед вылетом, что посмотреть поблизости?",
+      "context": {
+        "time_budget_min": 120,
+        "companions": "alone",
+        "now": "2026-10-18T14:00:00+05:00",
+        "simulate": true,
+        "lang": "auto"
+      }
     },
-    "preset": "nurly",
-    "query": "Я турист, у меня 2 часа перед вылетом, что посмотреть поблизости?",
-    "context": {}
+    "data_kind": "sample"
   },
   {
     "id": "S6",
-    "title": {
-      "ru": "Ночная активность (23:00)",
-      "en": "Something to do at night (23:00)",
-      "kk": "Түнгі демалыс (23:00)"
+    "title": "Ночная прогулка",
+    "request": {
+      "location": {
+        "lat": 51.128,
+        "lon": 71.43,
+        "precision_m": 100,
+        "source": "preset"
+      },
+      "query": "Ищу необычную ночную активность на последние пару часов",
+      "context": {
+        "time_budget_min": 120,
+        "companions": "alone",
+        "now": "2026-10-18T23:00:00+05:00",
+        "simulate": true,
+        "lang": "auto"
+      }
     },
-    "preset": "baiterek",
-    "query": "Ищу необычную ночную активность на последние пару часов",
-    "context": {
-      "now": "2026-10-17T23:00:00+05:00",
-      "simulate": true
-    }
+    "data_kind": "sample"
   }
 ]

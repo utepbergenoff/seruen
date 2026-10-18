@@ -18,11 +18,10 @@
   };
   const params = new URLSearchParams(location.search);
   const ASTANA = {lat: 51.128, lon: 71.43};
-  const STAY = {coffee: 30, food: 40, park: 25, kids: 30, culture: 45, sight: 15, viewpoint: 20, shopping: 30, sport: 45, night: 45, work: 60};
 
   const state = {
     lang: params.get("lang") || store.get("seruen_lang", "ru"),
-    loc: {...ASTANA, source: "map"}, locKind: "center", locating: false, preset: null,
+    loc: {...ASTANA, source: "map"}, locKind: "center", locating: false, locVersion: 0, requestVersion: 0, preset: null,
     presets: [], scenarios: [], last: null, lastReq: null, lastWeather: null,
     showCands: false, extraCands: null, chipCtx: {}, apiMode: null,
   };
@@ -51,7 +50,8 @@
 
   // source goes to the backend (gps | map | preset); locKind is only for the line under the title
   function setLoc(lat, lon, source, presetId, pan = true, kind = null) {
-    state.loc = {lat, lon, source};
+    state.locVersion++; state.locating = false; clearTimeout(state.locTimer);
+    state.loc = {lat: round3(lat), lon: round3(lon), source};
     state.preset = presetId;
     state.locKind = kind || source;
     me.setLatLng([lat, lon]);
@@ -189,10 +189,11 @@
     const ctx = {lang: "auto", mode: "walk", companions: $("#companions").value, accessibility: $("#access").checked};
     if (!$("#budgetAuto").checked) ctx.time_budget_min = +$("#budget").value;
     if ($("#whenSel").value === "other" && $("#whenAt").value) { ctx.now = $("#whenAt").value + ":00+05:00"; ctx.simulate = true; }
+    Object.assign(ctx, state.chipCtx);
     const w = await weatherForRequest();
     state.lastWeather = w;  // the full object (with "simulated") stays here for the panel
     if (w) ctx.weather = {temp_c: w.temp_c, wind_ms: w.wind_ms, precip_mm: w.precip_mm};  // exactly the contract fields
-    return Object.assign(ctx, state.chipCtx);
+    return ctx;
   }
 
   // ---------- location: detected automatically when the page opens ----------
@@ -206,8 +207,9 @@
     $("#locLine").textContent = text;
   }
   function locate() {
-    const msg = $("#geoMsg");
+    const msg = $("#geoMsg"), version = ++state.locVersion;
     const fail = (text) => {
+      if (version !== state.locVersion) return;
       state.locating = false;
       if (state.locKind !== "gps" && state.locKind !== "map" && !state.preset) setLoc(ASTANA.lat, ASTANA.lon, "map", null, true, "center");
       msg.textContent = text; msg.hidden = false; renderLocLine();
@@ -218,6 +220,7 @@
     clearTimeout(state.locTimer);
     state.locTimer = setTimeout(() => { if (state.locating) fail(T().geoTimeout); }, 15000);
     navigator.geolocation.getCurrentPosition((pos) => {
+      if (version !== state.locVersion || !state.locating) return;
       clearTimeout(state.locTimer);
       state.locating = false;
       const lat = round3(pos.coords.latitude), lon = round3(pos.coords.longitude);  // rounded right away
@@ -227,6 +230,7 @@
       }
       setLoc(lat, lon, "gps", null);
     }, (err) => {
+      if (version !== state.locVersion || !state.locating) return;
       clearTimeout(state.locTimer);
       // 1 = permission denied, 2 = position unavailable (often: browser not allowed in macOS/Windows settings), 3 = timeout
       fail(err && err.code === 1 ? T().geoDenied : err && err.code === 3 ? T().geoTimeout : T().geoUnavailable);
@@ -260,21 +264,25 @@
   }
 
   async function ask() {
+    const version = ++state.requestVersion;
     $("#status").innerHTML = `<div class="loading" role="status"><div class="spinner"></div>${esc(T().loading)}</div>`;
     $("#goBtn").disabled = true;
     try {
       const body = {location: {lat: round3(state.loc.lat), lon: round3(state.loc.lon), precision_m: 100, source: state.loc.source},
         query: $("#query").value.trim(), context: await context()};
-      state.lastReq = body; state.extraCands = null; state.showCands = false;
+      if (version !== state.requestVersion) return;
       const data = await postJSON("/recommend", body);
+      if (version !== state.requestVersion) return;
+      state.lastReq = body; state.extraCands = null; state.showCands = false;
       state.last = data;
       $("#status").innerHTML = "";
       render(data);
       if (window.matchMedia("(max-width: 860px)").matches) $("#results").scrollIntoView({behavior: "smooth", block: "start"});
     } catch (err) {
+      if (version !== state.requestVersion) return;
       $("#status").innerHTML = `<p class="msg err">${esc(T().serverDown)} <button type="button" class="btn small" id="retryBtn">${esc(T().retry)}</button></p>`;
       $("#retryBtn").addEventListener("click", ask);
-    } finally { $("#goBtn").disabled = false; }
+    } finally { if (version === state.requestVersion) $("#goBtn").disabled = false; }
   }
 
   // ---------- helpers for contract fields ----------
@@ -287,7 +295,7 @@
   };
   const srcName = (s) => T().srcNames[s] || s;
   function cardBudget(r, d) {
-    const total = (d.considered && (d.considered.effective_budget_min || d.considered.time_budget_min)) ||
+    const total = (d.considered && d.considered.time_budget_min) ||
       (d.budget_breakdown && d.budget_breakdown.budget_min) || 60;
     const own = r.budget || r.budget_breakdown;
     if (own) {
@@ -321,7 +329,7 @@
   function budgetBar(b) {
     const t = T(), tot = Math.max(b.budget_min || b.total_min, b.total_min);
     const pc = (x) => (100 * x / tot).toFixed(1) + "%";
-    const line = fmt(t.budgetLine, {a: b.walk_there_min, b: b.stay_min, c: b.walk_back_min, t: b.total_min, B: b.budget_min});
+    const line = fmt(t.budgetLine, {a: b.walk_there_min, b: b.stay_min, c: b.walk_back_min, r: b.reserve_min || 0, t: b.total_min, B: b.budget_min});
     return `<div class="bar" aria-hidden="true"><span class="w" style="width:${pc(b.walk_there_min)}"></span><span class="s" style="width:${pc(b.stay_min)}"></span><span class="w" style="width:${pc(b.walk_back_min)}"></span></div>
       <div class="bar-cap">${esc(line)} ${b.total_min <= b.budget_min ? "✓" : "⚠"}${b.spare_min > 0 ? ` · ${esc(t.spare)} ${b.spare_min} ${esc(t.minutes)}` : ""}</div>`;
   }
@@ -421,7 +429,7 @@
     const d = state.last;
     // backend may put candidates into /recommend; otherwise ask /candidates (POST: coordinates stay out of URLs)
     if (state.showCands && !(d.candidates && d.candidates.length) && !state.extraCands) {
-      try { state.extraCands = await postJSON("/candidates", state.lastReq); } catch { state.extraCands = {candidates: [], excluded: []}; }
+      try { const extra = await postJSON("/candidates", state.lastReq); if (state.last !== d) return; state.extraCands = extra; } catch { if (state.last !== d) return; state.extraCands = {candidates: [], excluded: []}; }
     }
     // redraw only the panel, so markers and the route line stay on the map
     $("#consideredBox").outerHTML = considered(d);
@@ -442,10 +450,10 @@
       const eff = c.effective_budget_min || c.time_budget_min;
       let v = eff ? `${esc(eff)} ${esc(t.minutes)}` : "";
       if (c.effective_budget_min && c.time_budget_min && c.effective_budget_min !== c.time_budget_min) v += ` (${esc(c.time_budget_min)} − ${esc(c.time_budget_min - c.effective_budget_min)})`;
-      if (bb) v += ` · ${esc(fmt(t.budgetLine, {a: bb.walk_there_min, b: bb.stay_min, c: bb.walk_back_min, t: bb.total_min, B: bb.budget_min || eff || ""}))}`;
+      if (bb) v += ` · ${esc(fmt(t.budgetLine, {a: bb.walk_there_min, b: bb.stay_min, c: bb.walk_back_min, r: bb.reserve_min || 0, t: bb.total_min, B: c.time_budget_min || bb.budget_min || eff || ""}))}`;
       add(t.budgetL, v);
     }
-    if (c.time) add(t.time, `${esc(c.time)}${c.time_simulated || c.time_shift ? " · " + esc(t.simulated) : ""}`);
+    if (c.time) add(t.time, `${esc(c.target_time ? new Intl.DateTimeFormat({ru:"ru-RU",kk:"kk-KZ",en:"en-GB"}[state.lang] || "ru-RU", {weekday:"short",hour:"2-digit",minute:"2-digit",timeZone:"Asia/Almaty"}).format(new Date(c.target_time)) : c.time)}${c.time_simulated || c.time_shift ? " · " + esc(t.simulated) : ""}`);
     if (c.goal || (c.categories && c.categories.length)) add(t.goal, `${esc(c.goal || "")}${c.categories && c.categories.length ? " → " + esc(c.categories.join(", ")) : ""}${c.tags && c.tags.length ? " · " + esc(c.tags.join(", ")) : ""}`);
     if (c.filters && c.filters.length) add(t.filters, esc(c.filters.map(codeLabel).join("; ")));
     if (c.walk_speed_m_per_min) add(t.speed, `${esc(c.walk_speed_m_per_min)} ${esc(t.mPerMin)} × ${esc(c.street_factor || 1.3)}`);
@@ -469,40 +477,12 @@
   }
 
   // ---------- mini-route (extra): computed in the browser, the backend is not touched ----------
-  const hav = (a, b) => {
-    const R = 6371000, r = Math.PI / 180, dp = (b.lat - a.lat) * r, dl = (b.lon - a.lon) * r;
-    const x = Math.sin(dp / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dl / 2) ** 2;
-    return 2 * R * Math.asin(Math.sqrt(x));
-  };
-  function planRoute(start, places, budget, speed) {
-    // 3 places of different categories with the best scores (cards are already the best per category)
-    const pool = [], cats = new Set();
-    for (const p of places) { if (pool.length < 3 && !cats.has(p.category)) { pool.push(p); cats.add(p.category); } }
-    for (const p of places) { if (pool.length < 3 && !pool.includes(p)) pool.push(p); }
-    let order = [], cur = start, todo = [...pool];
-    while (todo.length) { todo.sort((a, b) => hav(cur, a) - hav(cur, b)); const n = todo.shift(); order.push(n); cur = n; }
-    const walk = (a, b) => Math.max(1, Math.ceil(hav(a, b) * 1.3 / speed));
-    for (;;) {
-      const legs = []; let c = start;
-      order.forEach((p) => { legs.push(walk(c, p)); c = p; });
-      const back = walk(c, start);
-      const walking = legs.reduce((a, b) => a + b, 0) + back;
-      let stays = order.map((p) => STAY[p.category] || 25);
-      const room = budget - walking;
-      if (walking + stays.reduce((a, b) => a + b, 0) > budget && room >= 10 * order.length) {
-        const k = room / stays.reduce((a, b) => a + b, 0);
-        stays = stays.map((s) => Math.max(10, Math.floor(s * k)));
-      }
-      const total = walking + stays.reduce((a, b) => a + b, 0);
-      if (total <= budget || order.length <= 1) return {order, legs, back, stays, walking, total, budget, fits: total <= budget};
-      order = order.slice(0, -1);
-    }
-  }
+  const {hav, planRoute} = window.SeruenRoute;
   async function osrmLine(points) {
     try {
       const coords = points.map((p) => `${p.lon},${p.lat}`).join(";");
       const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), 4000);
-      const r = await fetch(`${CFG.OSRM_URL || "https://router.project-osrm.org"}/route/v1/foot/${coords}?overview=full&geometries=geojson`, {signal: ctrl.signal});
+      const r = await fetch(`${CFG.OSRM_URL || "https://routing.openstreetmap.de/routed-foot"}/route/v1/foot/${coords}?overview=full&geometries=geojson`, {signal: ctrl.signal});
       clearTimeout(timer);
       const j = await r.json();
       if (j.code !== "Ok") throw new Error(j.code);
@@ -517,8 +497,10 @@
     const start = {lat: state.lastReq.location.lat, lon: state.lastReq.location.lon};
     const places = d.recommendations.map((r) => ({poi_id: r.poi_id, name: r.name, category: r.category, lat: r.coords.lat, lon: r.coords.lon}));
     const plan = planRoute(start, places, budget, speed);
+    if (!plan.fits) { $("#routeBox").innerHTML = `<p class="msg warn">${esc(t.routeNoBudget)}</p>`; return; }
     $("#routeBox").innerHTML = `<div class="loading"><div class="spinner"></div>${esc(t.loading)}</div>`;
     const geo = await osrmLine([start, ...plan.order, start]);
+    if (state.last !== d || !$("#routeBox")) return;
     if (routeLine) map.removeLayer(routeLine);
     routeLine = L.polyline(geo.line, {color: "#123D32", weight: 4, dashArray: geo.osrm ? null : "8 8", opacity: .85}).addTo(map);
     map.fitBounds(routeLine.getBounds(), {padding: [40, 40]});
@@ -536,13 +518,17 @@
   }
 
   // ---------- start ----------
-  async function getJSON(url) { const r = await fetch(url); if (!r.ok) throw new Error(r.status); return r.json(); }
+  async function getJSON(url, timeoutMs = 12000) {
+    const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    try { const r = await fetch(url, {signal: ctrl.signal}); if (!r.ok) throw new Error(r.status); return await r.json(); }
+    finally { clearTimeout(timer); }
+  }
   async function init() {
+    applyLang(); // Labels and inputs must work even while Render wakes up.
     if (!FEAT.languages) $(".lang").hidden = true;
     if (!FEAT.weather) $("#weatherField").hidden = true;
     try { state.presets = await getJSON("presets.json"); } catch { state.presets = []; }
-    try { state.scenarios = await getJSON(API + "/scenarios"); } catch { state.scenarios = []; }
-    if (!state.scenarios.length) { try { state.scenarios = await getJSON("scenarios.json"); } catch { /* menu stays empty */ } }
+    try { state.scenarios = await getJSON("scenarios.json"); } catch { state.scenarios = []; }
     // accept both {"query": "text"} and {"query": {"q": "text"}} from the backend
     state.scenarios = state.scenarios.map((x) => {
       const req = x.request || {};
@@ -555,13 +541,6 @@
       }
       return {...x, preset, location: loc, query, context: req.context || x.context || {}};
     });
-    try {
-      const h = await getJSON(API + "/health");
-      const avail = h.mode_available || [];
-      state.apiMode = h.ai === "gemini" || avail.includes("ai") ? "ai" : h.ai === "no_ai" || avail.includes("no_ai") ? "no_ai" : (h.mode || null);
-      const snap = h.data_snapshot || h.data_snapshot_date, places = h.places || h.poi_count;
-      if (snap) $("#snapshot").textContent = `· ${T().snapshot}: ${snap}${places ? " (" + places + ")" : ""}`;
-    } catch { $("#status").innerHTML = `<p class="msg err">${esc(T().serverDown)}</p>`; }
     applyLang();
     // where the person is: a preset from the link (demos), else detect automatically
     const p0 = state.presets.find((x) => x.id === params.get("preset"));
@@ -573,6 +552,16 @@
     }
     if (params.get("scenario")) runScenario(params.get("scenario").toUpperCase());
     else if (params.get("chip") !== null) $$("#chips button")[+params.get("chip")]?.click();
+    void (async () => {
+    try {
+      const h = await getJSON(API + "/health");
+      const avail = h.mode_available || [];
+      state.apiMode = h.ai === "gemini" || avail.includes("ai") ? "ai" : h.ai === "no_ai" || avail.includes("no_ai") ? "no_ai" : (h.mode || null);
+      const snap = h.data_snapshot || h.data_snapshot_date, places = h.places || h.poi_count;
+      if (snap) $("#snapshot").textContent = `· ${T().snapshot}: ${snap}${places ? " (" + places + ")" : ""}`;
+      renderModeBadge(state.last ? state.last.mode : null);
+    } catch { /* Recommendation requests provide their own retry state. */ }
+    })();
     if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
       navigator.serviceWorker.register("sw.js").catch(() => {});
     }

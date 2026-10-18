@@ -5,7 +5,7 @@ import math
 from .cache import ResponseCache
 from .fallback import drafts
 from .generate import AIError, Gemini, validate_drafts
-from .geo import budget_for, in_astana, target_time
+from .geo import budget_for, in_astana, target_time, speed
 from .intent import merge_intent, rule_intent
 from .loader import load_pois
 from .provider_status import log_provider
@@ -13,6 +13,15 @@ from .places import maps_url
 from .retrieval import Retriever, SearchResult
 from .safety import message, safety_notes
 from .schemas import Considered, Coords, Recommendation, RecommendResponse
+
+
+def display_time(now, lang):
+    weekdays = {
+        "ru": ("пн", "вт", "ср", "чт", "пт", "сб", "вс"),
+        "kk": ("дс", "сс", "ср", "бс", "жм", "сб", "жс"),
+        "en": ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
+    }
+    return f"{weekdays[lang][now.weekday()]} {now:%H:%M}"
 
 
 class RecommendationService:
@@ -70,7 +79,7 @@ class RecommendationService:
                 and cached.recommendations
             ):
                 cached.mode = "cached"
-                cached.considered.time = exact.strftime("%a %H:%M")
+                cached.considered.time = display_time(exact, rules.lang)
                 cached.considered.target_time = exact
                 return cached, "none"
         intent, now, search = self.inspect(request, rules, current)
@@ -151,7 +160,10 @@ class RecommendationService:
                     what_to_do_source="ai" if mode == "ai" else "template",
                     open_status=hit.status,
                     description_source=p.description_source,
+                    description=p.description,
                     description_url=p.description_url,
+                    sources=p.sources,
+                    last_checked=p.last_checked,
                     accessibility=p.wheelchair,
                     links=links,
                     rating=p.rating,
@@ -202,8 +214,14 @@ class RecommendationService:
                 radius_m=math.floor(search.radius),
                 radius_expanded=search.expanded,
                 time_budget_min=intent.time_budget_min,
+                effective_budget_min=max(0, intent.time_budget_min - search.reserve),
+                reserve_min=search.reserve,
+                walk_speed_m_per_min=speed(request, intent, now),
+                companions=intent.companions,
+                time_simulated=bool(request.context.simulate and request.context.now),
+                lang=intent.lang,
                 filters=filters,
-                time=now.strftime("%a %H:%M"),
+                time=display_time(now, intent.lang),
                 target_time=now,
                 candidates_found=search.found,
                 weather=request.context.weather,

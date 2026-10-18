@@ -25,7 +25,13 @@
       },
       "facts_source": "poi_db",
       "description_source": "generated",
+      "description": "Место культуры \"Chaplin Cinema\" работает допоздна.",
       "description_url": null,
+      "sources": [
+        "osm",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
       "accessibility": "unknown",
       "links": {
         "2gis": "https://2gis.kz/astana/geo/71.40973,51.0883192",
@@ -65,7 +71,13 @@
       },
       "facts_source": "poi_db",
       "description_source": "generated",
+      "description": "NU Park является парком или сквером.",
       "description_url": null,
+      "sources": [
+        "osm",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
       "accessibility": "unknown",
       "links": {
         "2gis": "https://2gis.kz/astana/geo/71.3994394,51.0872699",
@@ -105,7 +117,12 @@
       },
       "facts_source": "poi_db",
       "description_source": "generated",
+      "description": "Сквер по данным OpenStreetMap.",
       "description_url": null,
+      "sources": [
+        "osm"
+      ],
+      "last_checked": "2026-10-17",
       "accessibility": "unknown",
       "links": {
         "2gis": "https://2gis.kz/astana/geo/71.3994992,51.0921362",
@@ -134,13 +151,20 @@
     "radius_m": 865,
     "radius_expanded": false,
     "time_budget_min": 60,
+    "effective_budget_min": 60,
+    "reserve_min": 0,
+    "walk_speed_m_per_min": 75,
+    "street_factor": 1.3,
+    "companions": "alone",
+    "time_simulated": true,
+    "lang": "ru",
     "filters": [
       "category:park",
       "category:viewpoint",
       "category:culture",
       "category:unusual"
     ],
-    "time": "Sun 17:30",
+    "time": "вс 17:30",
     "candidates_found": 4,
     "weather": null,
     "retrieval_mode": "bm25+lsa",

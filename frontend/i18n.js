@@ -2,6 +2,7 @@
 // a native speaker should review them before the final submission.
 window.I18N = {
   ru: {
+    routeNoBudget: "Маршрут с возвращением не укладывается в бюджет. Выберите одно ближайшее место или увеличьте время.",
     geoTimeout: "Не дождался геолокации. Разрешите доступ (значок в адресной строке) и нажмите ◎ на карте — или просто перетащите точку.",
     geoUnavailable: "Браузер не смог определить место. На Mac: Системные настройки → Конфиденциальность и безопасность → Службы геолокации → включите для браузера, затем нажмите ◎ на карте. Пока точка в центре Астаны — её можно перетащить.",
     heroTitle: "Астана — город, который хочется исследовать",
@@ -66,7 +67,7 @@ window.I18N = {
     fromDb: "из базы", aiIdea: "идея ИИ", template: "по шаблону из данных",
     route2gis: "2GIS", routeGoogle: "Google Maps", onMap: "На карте",
     visited: "Я здесь был(а)", visitedDone: "Отмечено",
-    budgetLine: "{a} туда + {b} там + {c} обратно = {t} мин ≤ {B}",
+    budgetLine: "{a} туда + {b} там + {c} обратно + {r} запас = {t} мин ≤ {B}",
     fits: "укладывается", spare: "запас",
     considered: "Что я учёл",
     showCands: "Показать кандидатов", hideCands: "Скрыть кандидатов",
@@ -90,6 +91,7 @@ window.I18N = {
     weekday: ["пн","вт","ср","чт","пт","сб","вс"],
   },
   en: {
+    routeNoBudget: "The round trip does not fit your budget. Choose one nearby place or allow more time.",
     geoTimeout: "No answer from location yet. Allow access (icon in the address bar) and press ◎ on the map — or just drag the point.",
     geoUnavailable: "The browser couldn't find your position. On a Mac: System Settings → Privacy & Security → Location Services → turn it on for your browser, then press ◎ on the map. For now the point is in the centre of Astana — you can drag it.",
     heroTitle: "Astana — a city worth exploring",
@@ -154,7 +156,7 @@ window.I18N = {
     fromDb: "from database", aiIdea: "AI idea", template: "template from data",
     route2gis: "2GIS", routeGoogle: "Google Maps", onMap: "On map",
     visited: "I've been here", visitedDone: "Marked",
-    budgetLine: "{a} there + {b} on site + {c} back = {t} min ≤ {B}",
+    budgetLine: "{a} there + {b} on site + {c} back + {r} reserve = {t} min ≤ {B}",
     fits: "fits", spare: "spare",
     considered: "What I considered",
     showCands: "Show candidates", hideCands: "Hide candidates",
@@ -178,6 +180,7 @@ window.I18N = {
     weekday: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
   },
   kk: {
+    routeNoBudget: "Барып-қайту уақыт шегіне сыймайды. Жақын бір орынды таңдаңыз немесе уақытты көбейтіңіз.",
     geoTimeout: "Геолокация жауап бермеді. Рұқсат беріңіз (мекенжай жолағындағы белгі) және картадағы ◎ батырмасын басыңыз — немесе нүктені жылжытыңыз.",
     geoUnavailable: "Браузер орныңызды анықтай алмады. Mac-та: Жүйе параметрлері → Құпиялылық және қауіпсіздік → Геолокация қызметтері → браузер үшін қосыңыз, содан кейін картадағы ◎ батырмасын басыңыз. Әзірге нүкте Астана орталығында — оны жылжытуға болады.",
     heroTitle: "Астана — зерттегің келетін қала",
@@ -242,7 +245,7 @@ window.I18N = {
     fromDb: "дерекқордан", aiIdea: "ЖИ идеясы", template: "деректер бойынша үлгі",
     route2gis: "2GIS", routeGoogle: "Google Maps", onMap: "Картада",
     visited: "Мен осында болдым", visitedDone: "Белгіленді",
-    budgetLine: "{a} бару + {b} орында + {c} қайту = {t} мин ≤ {B}",
+    budgetLine: "{a} бару + {b} орында + {c} қайту + {r} қор = {t} мин ≤ {B}",
     fits: "сыяды", spare: "қор",
     considered: "Нені ескердім",
     showCands: "Үміткерлерді көрсету", hideCands: "Үміткерлерді жасыру",
