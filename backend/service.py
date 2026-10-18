@@ -173,7 +173,7 @@ class RecommendationService:
         for draft in selected:
             if len(cards) == 3:
                 break
-            # ai_ids=None keeps the old meaning: in AI mode every card was written by the AI.
+            # ai_ids=None keeps the old meaning: in AI mode every card was selected by the AI.
             source = "ai" if mode == "ai" and (ai_ids is None or draft.poi_id in ai_ids) else "template"
             hit = lookup.get(draft.poi_id)
             if not hit:

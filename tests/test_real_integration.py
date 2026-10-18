@@ -110,7 +110,7 @@ def test_public_scenarios_label_matches_real_dataset(real_service):
         assert all(s["data_kind"] == "real" for s in client.get("/scenarios").json())
 
 
-async def test_inferred_sockets_are_qualified_in_template(real_service):
+async def test_inferred_sockets_are_explicitly_unconfirmed(real_service):
     poi = next(p for p in real_service.dataset.pois if p.category == "library" and "розетки" in p.tags_inferred)
     request = RecommendRequest(
         location={"lat": poi.lat, "lon": poi.lon},
@@ -124,7 +124,8 @@ async def test_inferred_sockets_are_qualified_in_template(real_service):
     result, _ = await real_service.recommend(request, use_cache=False)
     for card in result.recommendations:
         if card.poi_id == poi.poi_id:
-            assert "Обычно" in card.why and "уточните" in card.why
+            assert "Не подтверждены: тишина, розетки" in card.why
+            assert "Обычно" not in card.why
             break
     else:
         pytest.fail("Nearby matching library missing")

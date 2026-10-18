@@ -101,7 +101,7 @@ def test_candidates_get_and_post_same(client, request_data):
             "lon": 71.417,
             "query": request_data["query"],
             "time_budget_min": 120,
-            "now": "2026-10-18T14:00:00+05:00",
+            "now": request_data["context"]["now"],
             "simulate": "true",
         },
     ).json()

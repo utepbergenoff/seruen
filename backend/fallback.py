@@ -89,6 +89,12 @@ VISUAL = {
 
 def action(hit, intent):
     index = {'ru': 0, 'en': 1, 'kk': 2}[intent.lang]
+    if set(intent.tags) & {'wifi', 'sockets'} and hit.poi.category in ('coffee', 'library', 'cowork'):
+        return (
+            'Перед работой уточните Wi-Fi, розетки и свободные места; условия посещения — у сотрудников.',
+            'Before working, check Wi-Fi, sockets and available seating; ask staff about visitor rules.',
+            'Жұмыс алдында Wi-Fi, розеткалар мен бос орынды тексеріңіз; келу шарттарын қызметкерлерден сұраңыз.',
+        )[index]
     result = ACTIONS.get(activity(hit.poi) or hit.poi.category, (
         'Осмотрите место с общедоступной территории; детали посещения уточните заранее.',
         'Explore from public areas; check visitor details beforehand.',
