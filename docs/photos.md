@@ -9,6 +9,9 @@
    - `"source": "commons"` — свободные фото Wikimedia Commons, снятые рядом с местом
      (`python scripts/commons_photos.py`, только парки, смотровые, культура, детские, спорт, ТРЦ).
    - `"source": "team"` — фото команды. Скрипт их не трогает.
+   - Фото Commons лежат копиями на самом сайте (`frontend/img/places/c/`, до 3 на место, 640 px):
+     `python scripts/host_photos.py`. Render не всегда может скачать фото с Wikimedia,
+     а с нашего сайта — всегда. Автор, лицензия и страница Commons остаются в списке.
 2. Сайт после ответа просит `POST /places/{poi_id}/photos` с `{lang, query, companions}` для каждой карточки
    (POST: текст запроса не попадает в адрес и логи).
 3. Сервер берёт до 4 фото (только с `upload.wikimedia.org`, `thumb.wikimedia.org` и адреса сайта), отправляет их в Gemini

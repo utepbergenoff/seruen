@@ -190,3 +190,14 @@ test('photos: strip, photo reason and facts per card; no photos says so; text st
   assert.match(c1.querySelector('.photos').textContent,/Ann <b>X<\/b>, CC BY-SA 4\.0/);
   assert.match(c2.querySelector('.photos').textContent,/Фото этого места пока нет/);
 });
+
+test('answers come from the checked database with AI; the 2GIS catalog only from its own button',async t=>{
+  const b=await boot(t);b.click('#goBtn');await tick();
+  assert.equal(b.requests[0].body.source,'local');
+  b.requests[0].resolve(json({...answer('local'),recommendations:[rec('p1','Drinkit')]}));await tick();
+  b.click('#catalogBtn');await tick();
+  assert.equal(b.requests[1].body.source,'2gis');assert.equal(b.requests[1].body.cursor,undefined);
+  b.requests[1].resolve(json({...answer('catalog'),source:'2gis',recommendations:[rec('2gis_1','Coffee BOOM')]}));await tick();
+  assert.match(b.w.document.querySelector('#results').textContent,/Coffee BOOM/);
+  assert.equal(b.w.document.querySelector('#catalogBtn'),null);
+});

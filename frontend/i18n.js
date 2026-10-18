@@ -2,7 +2,7 @@
 // a native speaker should review them before the final submission.
 window.I18N = {
   ru: {
-    catalog: {source: "Места из 2ГИС", next: "Следующие места", match: "Место получено напрямую из каталога 2ГИС"},
+    catalog: {source: "Места из 2ГИС", next: "Следующие места", more: "Искать ещё в 2ГИС", match: "Место получено напрямую из каталога 2ГИС"},
     gisBtn: "Рейтинг и часы 2ГИС",
     gis: {data: "Данные 2ГИС", loading: "Спрашиваю 2ГИС…", reviews: "отзывов", noRating: "Рейтинга в 2ГИС нет",
       scope: {branch: "оценка этого филиала", organization: "оценка всей сети, не обязательно этого филиала"},
@@ -117,7 +117,7 @@ window.I18N = {
     weekday: ["пн","вт","ср","чт","пт","сб","вс"],
   },
   en: {
-    catalog: {source: "Places from 2GIS", next: "Next places", match: "Place obtained directly from the 2GIS catalog"},
+    catalog: {source: "Places from 2GIS", next: "Next places", more: "Search more in 2GIS", match: "Place obtained directly from the 2GIS catalog"},
     gisBtn: "2GIS rating & hours",
     gis: {data: "2GIS data", loading: "Asking 2GIS…", reviews: "reviews", noRating: "No rating in 2GIS",
       scope: {branch: "rating of this branch", organization: "rating of the whole chain, not necessarily this branch"},
@@ -233,7 +233,7 @@ window.I18N = {
     weekday: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
   },
   kk: {
-    catalog: {source: "2ГИС орындары", next: "Келесі орындар", match: "Орын 2ГИС каталогынан тікелей алынды"},
+    catalog: {source: "2ГИС орындары", next: "Келесі орындар", more: "2ГИС-те тағы іздеу", match: "Орын 2ГИС каталогынан тікелей алынды"},
     gisBtn: "2ГИС рейтингі мен кестесі",
     gis: {data: "2ГИС деректері", loading: "2ГИС-тен сұрап жатырмын…", reviews: "пікір", noRating: "2ГИС-те рейтинг жоқ",
       scope: {branch: "осы филиалдың бағасы", organization: "бүкіл желінің бағасы, міндетті түрде осы филиалдікі емес"},

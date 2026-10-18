@@ -5,7 +5,9 @@ Only categories that are usually photographed from outside are searched: Commons
 next to cafes, not their interiors, so cafes get photos from the team instead (entries with
 "source": "team" are kept as they are). Gemini later checks that a photo really shows the place.
 
-    python scripts/commons_photos.py            # about 15 minutes, polite to the Commons API
+    python scripts/commons_photos.py            # about 30 minutes, polite to the Commons API
+    python scripts/commons_photos.py --by-name  # only add photos found by the place's name (named landmarks)
+    python scripts/host_photos.py               # then copy them onto the website
 """
 import html
 import json
@@ -65,6 +67,47 @@ def photos_near(poi):
     return result
 
 
+def photos_by_name(poi):
+    # the nearest photos often show the street next to a landmark; its name finds the landmark itself
+    name = poi.get("name_en") or poi["name"]
+    data = query({"action": "query", "generator": "search", "gsrsearch": f'"{name}" Astana filetype:bitmap',
+                  "gsrnamespace": 6, "gsrlimit": 5, "prop": "imageinfo", "iiprop": "url|extmetadata",
+                  "iiurlwidth": 800, "iiextmetadatafilter": "Artist|LicenseShortName"})
+    pages = sorted((data.get("query") or {}).get("pages", []), key=lambda p: p.get("index", 0))
+    result = []
+    for page in pages:
+        info = (page.get("imageinfo") or [{}])[0]
+        if IMAGE.search(page.get("title", "")) and info.get("thumburl"):
+            meta = info.get("extmetadata") or {}
+            result.append({"url": info["thumburl"], "page_url": info.get("descriptionurl"),
+                           "author": text(meta, "Artist"), "license": text(meta, "LicenseShortName"),
+                           "source": "commons"})
+    return result[:3]
+
+
+def by_name():
+    pois = [p for p in json.loads((ROOT / "data/poi.json").read_text())
+            if p["category"] in RADIUS and not p.get("name_generic") and len(p["name"]) > 3]
+    data = json.loads(OUT.read_text())
+    places, added = data["places"], 0
+    for poi in pois:
+        try:
+            found = photos_by_name(poi)
+        except Exception as exc:
+            print(f"skip {poi['poi_id']}: {exc}", file=sys.stderr)
+            found = []
+        known = {x.get("page_url") for x in places.get(poi["poi_id"], [])}
+        new = [x for x in found if x["page_url"] not in known]
+        if new:
+            team = [x for x in places.get(poi["poi_id"], []) if x.get("source") == "team"]
+            rest = [x for x in places.get(poi["poi_id"], []) if x.get("source") != "team"]
+            places[poi["poi_id"]] = team + new + rest
+            added += len(new)
+        time.sleep(1.2)
+    OUT.write_text(json.dumps(data, ensure_ascii=False, indent=0))
+    print(f"name search: {added} photos added for {len(pois)} named places")
+
+
 def main():
     pois = [p for p in json.loads((ROOT / "data/poi.json").read_text()) if p["category"] in RADIUS]
     old = json.loads(OUT.read_text()) if OUT.exists() else {"places": {}}
@@ -87,4 +130,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    by_name() if "--by-name" in sys.argv else main()
