@@ -346,7 +346,7 @@ class Health(Model):
     feature_contract_version: int = 2
     features: dict[str, int] = Field(default_factory=lambda: {
         "replan": 1, "end_point": 1, "constraints": 1, "comfort": 1,
-        "cost": 1, "atmosphere": 1, "plan_export": 1,
+        "cost": 1, "atmosphere": 1, "plan_export": 1, "nearby_break": 1,
     })
 
 

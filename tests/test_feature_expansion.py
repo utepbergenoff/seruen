@@ -405,3 +405,79 @@ def test_catalog_filter_and_aliases_apply_before_ai(expanded):
         # Same provider ID resolves via the prepared identity map for strict free filtering.
         result = post(c, "/recommend", {**ASK, "source": "2gis", "preferences": {"expense_mode": "free_only"}})
         assert result["recommendations"][0]["canonical_id"] == "team_coffee"
+
+
+@pytest.mark.parametrize('reason', ['cold', 'tired'])
+def test_empty_replan_is_not_a_successful_replacement(api, reason):
+    old = post(api, '/plans/build', plan())
+    previous = copy.deepcopy(old['state'])
+    request = copy.deepcopy(ASK)
+    request['preferences'] = {'exclude_poi_ids': list(api.app.state.service.features.pois)}
+    response = api.post('/plans/recalculate', json={'request': request, 'previous': previous,
+        'reason': reason, 'remaining_time_min': 60})
+    assert response.status_code == 409
+    assert response.json() == {'error': {'code': 'no_replacement_found'}}
+    assert previous == old['state'] and old['stops']
+
+
+def test_build_selected_destination_does_not_substitute_first_recommendation(api):
+    result = post(api, '/plans/build', plan(stop_ids=['team_second'], max_stops=1))
+    assert result['fits'] and result['status'] == 'ok'
+    assert [s['poi_id'] for s in result['stops']] == ['team_second']
+    assert result['legs'][0]['to_id'] == 'team_second'
+    assert result['state']['remaining_ids'] == ['team_second']
+
+
+@pytest.mark.parametrize('reason', ['cold', 'tired'])
+def test_nearby_break_preserves_all_stops_and_original_finish(api, reason):
+    places = api.app.state.service.features.pois
+    places['team_pause'] = places['team_coffee'].model_copy(update={'poi_id': 'team_pause', 'lat': 51.1283})
+    old = post(api, '/plans/build', plan(request={**ASK, 'context': {**ASK['context'], 'time_budget_min': 150}}))
+    previous = copy.deepcopy(old['state'])
+    new = post(api, '/plans/recalculate', {'request': ASK, 'previous': previous,
+        'reason': reason, 'remaining_time_min': 150, 'keep_stops': True})
+    assert new['fits']
+    assert [s['poi_id'] for s in new['stops']][1:] == previous['remaining_ids']
+    assert new['stops'][0]['poi_id'] not in previous['remaining_ids']
+    assert places[new['stops'][0]['poi_id']].indoor
+    assert new['state']['finish'] == previous['finish']
+    assert new['state']['finish_mode'] == previous['finish_mode']
+    assert new['legs'][0]['walk_min'] <= 5
+    assert new['applied_preferences'] == previous['preferences']
+    assert previous == old['state']
+
+
+def test_nearby_break_cannot_trade_away_destination_to_fit_budget(api):
+    places = api.app.state.service.features.pois
+    places['team_pause'] = places['team_coffee'].model_copy(update={'poi_id': 'team_pause', 'lat': 51.1283})
+    old = post(api, '/plans/build', plan())
+    r = api.post('/plans/recalculate', json={'request': ASK, 'previous': old['state'],
+        'reason': 'cold', 'remaining_time_min': old['budget']['total_min'], 'keep_stops': True})
+    assert r.status_code == 409
+    assert r.json()['error']['code'] == 'no_replacement_found'
+
+
+def test_explicit_catalog_selection_changes_inferred_category_but_keeps_hard_filters(api):
+    result = post(api, '/plans/build', plan(stop_ids=['team_park'], max_stops=1))
+    assert [s['poi_id'] for s in result['stops']] == ['team_park']
+    req = {**ASK, 'preferences': {'indoor_only': True}}
+    result = post(api, '/plans/build', plan(request=req, stop_ids=['team_park'], max_stops=1))
+    assert not result['stops']
+    assert any(e['reason'] == 'indoor_required' for e in result['exclusions'])
+
+
+def test_cold_break_keeps_a_distant_mall_destination_instead_of_replacing_it(api):
+    places = api.app.state.service.features.pois
+    places['team_mall'] = places['team_coffee'].model_copy(update={
+        'poi_id': 'team_mall', 'lat': 51.136, 'category': 'shopping', 'name': 'SYNTHETIC MALL'})
+    destination = {'lat': 51.136, 'lon': 71.430, 'source': 'map'}
+    request = {**ASK, 'query': 'Хочу погулять в ТРЦ', 'context': {**ASK['context'], 'time_budget_min': 180}}
+    old = post(api, '/plans/build', plan(request=request, stop_ids=['team_mall'],
+        finish_mode='destination', destination=destination))
+    assert old['fits'], {k: old[k] for k in ['status', 'exclusions', 'notes', 'budget']}
+    assert old['legs'][0]['walk_min'] > 5
+    new = post(api, '/plans/recalculate', {'request': request, 'previous': old['state'],
+        'reason': 'cold', 'remaining_time_min': 180, 'keep_stops': True})
+    assert new['fits'] and new['stops'][-1]['poi_id'] == 'team_mall'
+    assert len(new['stops']) == 2 and new['legs'][0]['walk_min'] <= 5
+    assert new['state']['finish'] == old['state']['finish']

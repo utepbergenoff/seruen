@@ -6,6 +6,7 @@
   <title>Серуен — прогулки по Астане</title>
   <meta name="description" content="ИИ-помощник по прогулкам в Астане: 1–3 места рядом с честным «почему», временем и планом.">
   <meta name="theme-color" content="#00708A">
+  <script src="theme.js"></script>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -68,6 +69,7 @@
       </div>
     </a>
     <nav class="top-actions">
+      <button id="themeBtn" class="btn ghost" type="button"></button>
       <div class="dropdown">
         <button id="scenariosBtn" class="btn ghost" aria-haspopup="true" aria-expanded="false"><span data-i18n="scenarios"></span> ▾</button>
         <div id="scenariosMenu" class="menu" role="menu" hidden></div>
@@ -84,6 +86,15 @@
   <main class="layout">
     <section class="map-wrap" aria-label="Map">
       <div id="map"></div>
+      <div class="map-tools">
+        <label for="mapMode" data-i18n="mapView"></label>
+        <select id="mapMode">
+          <option value="streets" data-i18n="mapStreets"></option>
+          <option value="satellite" data-i18n="mapSatellite"></option>
+          <option value="hybrid" data-i18n="mapHybrid"></option>
+        </select>
+        <p id="mapNotice" class="meta" role="status" hidden></p>
+      </div>
     </section>
 
     <section class="panel">

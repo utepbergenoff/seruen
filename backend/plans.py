@@ -110,7 +110,7 @@ class Planner:
             return result, "2gis"
         return [p for pid, p in self.features.pois.items() if pid not in self.features.comfort], "local"
 
-    def rejection(self, poi, req, intent, arrival, departure, walking):
+    def rejection(self, poi, req, intent, arrival, departure, walking, explicit=False):
         if req.preferences.max_distance_m is not None and haversine(
                 req.location.lat, req.location.lon, poi.lat, poi.lon) > req.preferences.max_distance_m:
             return "distance_limit"
@@ -128,12 +128,14 @@ class Planner:
         if intent.companions == "child" and (poi.adult_only or poi.category == "night" or not poi.kid_friendly):
             return "not_child_friendly"
         if not comfort:
-            allowed = req.preferences.preferred_categories or intent.categories
+            # A person may explicitly pick a catalog place outside the inferred search category.
+            # Explicit preference filters, child/accessibility checks and schedules still apply.
+            allowed = req.preferences.preferred_categories or ([] if explicit else intent.categories)
             if "coffee" in allowed:
                 allowed = list(set(allowed) | {"food"})
             if allowed and poi.category not in allowed:
                 return "category_mismatch"
-            if "outdoor_walk" in intent.tags and not outdoor_walk_place(poi):
+            if not explicit and "outdoor_walk" in intent.tags and not outdoor_walk_place(poi):
                 return "category_mismatch"
         if req.context.accessibility and poi.wheelchair != "yes":
             return "accessibility_unconfirmed"
@@ -191,6 +193,10 @@ class Planner:
         if req.feedback:
             notes.append(text("changed", intent.lang))
         refusal = self.service.refusal(req, intent)
+        if refusal == "unrelated" and payload.stop_ids:
+            # A verified explicit place ID is sufficient intent for building a route.
+            # Unsafe requests and points outside Astana still refuse normally.
+            refusal = None
         source_error, candidates = None, []
         if refusal:
             notes.append(message(refusal, intent.lang))
@@ -233,7 +239,7 @@ class Planner:
             est = self.router.estimate([req.location, *[Coords(lat=p.lat, lon=p.lon) for p, _ in trial], finish], walking_speed)
             arrival = now + timedelta(minutes=sum(est.minutes[:-1]) + sum(s for _, s in chosen))
             departure = arrival + timedelta(minutes=stay)
-            reason = self.rejection(poi, req, intent, arrival, departure, est.minutes[-2])
+            reason = self.rejection(poi, req, intent, arrival, departure, est.minutes[-2], explicit=bool(payload.stop_ids))
             if not reason and prefs.max_walk_min is not None and est.minutes[-1] > prefs.max_walk_min:
                 reason = "finish_walk_limit"
             if not reason and sum(est.minutes) + sum(s for _, s in trial) + reserve > available:
@@ -251,7 +257,7 @@ class Planner:
             for i, (poi, stay) in enumerate(chosen):
                 arrival = cursor + timedelta(minutes=routed.minutes[i])
                 departure = arrival + timedelta(minutes=stay)
-                reason = self.rejection(poi, req, intent, arrival, departure, routed.minutes[i])
+                reason = self.rejection(poi, req, intent, arrival, departure, routed.minutes[i], explicit=bool(payload.stop_ids))
                 if reason:
                     invalid.append(poi.poi_id)
                     excluded.append(PlanExclusion(poi_id=poi.poi_id, reason=reason))
@@ -271,7 +277,7 @@ class Planner:
         for i, (poi, stay) in enumerate(chosen):
             arrival = cursor + timedelta(minutes=routed.minutes[i])
             departure = arrival + timedelta(minutes=stay)
-            invalid_final |= bool(self.rejection(poi, req, intent, arrival, departure, routed.minutes[i]))
+            invalid_final |= bool(self.rejection(poi, req, intent, arrival, departure, routed.minutes[i], explicit=bool(payload.stop_ids)))
             stops.append(PlanStop(poi_id=poi.poi_id, canonical_id=self.features.canonical(poi.poi_id), name=poi.name, category=poi.category,
                                   coords=Coords(lat=poi.lat, lon=poi.lon), arrival_at=arrival,
                                   departure_at=departure, stay_min=stay, open_status=open_status(poi, arrival),
@@ -357,6 +363,8 @@ class Planner:
         if len(completed) > 200 or len(skipped) > 200:
             raise PlanError("too_many_exclusions")
         req.context.time_budget_min = payload.remaining_time_min
+        if payload.keep_stops and payload.reason in ("cold", "tired"):
+            return await self.nearby_break(payload, req, completed, skipped, reserve)
         if payload.reason == "cold":
             req.preferences.indoor_only = True
             req.preferences.max_walk_min = min(req.preferences.max_walk_min or 120, 5)
@@ -376,8 +384,49 @@ class Planner:
                                               finish_mode=state.finish_mode, destination=state.finish,
                                               stop_ids=remaining, completed_ids=completed, skipped_ids=skipped,
                                               reserve_min=reserve, max_stops=5), use_current_time=True)
+        # A fitting return leg without stops is not a replacement walking plan.
+        # Older clients accept no_matches as success and would erase the current walk.
+        if result.status == "no_matches":
+            raise PlanError("no_replacement_found", 409)
         result.change_codes = [payload.reason]
         result.notes.insert(0, text("changed", rule_intent(req).lang))
+        return result
+
+    async def nearby_break(self, payload, req, completed, skipped, reserve):
+        """Suggest one nearby indoor break without losing any uncompleted stop or finish."""
+        state = payload.previous
+        remaining = [p for p in state.remaining_ids if p not in completed and p not in skipped]
+        if not remaining or len(remaining) >= 5:
+            raise PlanError("no_replacement_found", 409)
+        nearby = req.model_copy(deep=True)
+        nearby.preferences.indoor_only = True
+        nearby.preferences.max_walk_min = min(nearby.preferences.max_walk_min or 120, 5)
+        nearby.preferences.exclude_poi_ids = list(dict.fromkeys([
+            *nearby.preferences.exclude_poi_ids, *remaining]))
+        if len(nearby.preferences.exclude_poi_ids) > 200:
+            raise PlanError("too_many_exclusions")
+        nearby.query = {"ru": "тёплое место рядом", "kk": "жылы жабық орын қайда",
+                        "en": "warm indoor place"}.get(req.context.lang, "warm indoor place")
+        # The next rest stop must be close to the person, even when the original finish is far away.
+        nearby.end = None
+        candidate = await self.build(PlanRequest(request=nearby, origin=req.location,
+            completed_ids=completed, skipped_ids=skipped, reserve_min=reserve, max_stops=1), use_current_time=True)
+        if not candidate.fits or not candidate.stops:
+            raise PlanError("no_replacement_found", 409)
+        pause_id = candidate.stops[0].poi_id
+        required = [pause_id, *remaining]
+        result = await self.build(PlanRequest(request=req, origin=state.origin,
+            finish_mode=state.finish_mode, destination=state.finish, stop_ids=required,
+            completed_ids=completed, skipped_ids=skipped, reserve_min=reserve, max_stops=len(required)),
+            use_current_time=True)
+        if (not result.fits or [p.poi_id for p in result.stops] != required
+                or not result.legs or result.legs[0].walk_min > nearby.preferences.max_walk_min):
+            raise PlanError("no_replacement_found", 409)
+        result.change_codes = [payload.reason, "nearby_break_keeps_stops"]
+        result.notes.insert(0, {"ru": "Предложена остановка в помещении. Прежние остановки и финиш сохранены; проверьте условия посещения.",
+            "en": "Suggested an indoor break. All remaining stops and the finish are kept; check visit conditions.",
+            "kk": "Жабық орында аялдау ұсынылды. Бұрынғы аялдамалар мен соңғы нүкте сақталды; кіру шарттарын тексеріңіз."
+            }.get(req.context.lang, "Indoor break suggested; remaining stops and finish kept."))
         return result
 
     async def refresh(self, payload):

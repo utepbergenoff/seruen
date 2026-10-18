@@ -6,16 +6,21 @@ const json = data => ({ok:true,json:async()=>data});
 async function boot(t, opts = {}) {
   const dom = new JSDOM(fs.readFileSync('frontend/index.html','utf8'), {url:'https://example.test/',runScripts:'outside-only'});
   t.after(() => dom.window.close());
-  const w=dom.window, requests=[], gps={}, gis=[], photos=[], replans=[], comforts=[];
+  const w=dom.window, requests=[], gps={}, gis=[], photos=[], replans=[], comforts=[], builds=[], tiles=[], lines=[];
   if (opts.live) w.AbortController = AbortController;
-  w.matchMedia=()=>({matches:false});
+  const media={matches:!!opts.darkSystem,addEventListener:(_, cb)=>{media.change=cb;}};
+  w.matchMedia=q=>q.includes('prefers-color-scheme') ? media : {matches:false};
+  for(const [k,v] of Object.entries(opts.storage||{})) w.localStorage.setItem(k,JSON.stringify(v));
   w.HTMLElement.prototype.scrollIntoView=()=>{};
   w.SERUEN_CONFIG={API_URL:'https://api.example.test',FEATURES:{weather:false}};
   Object.defineProperty(w,'isSecureContext',{value:true});
   Object.defineProperty(w.navigator,'geolocation',{value:{getCurrentPosition:(ok,fail)=>Object.assign(gps,{ok,fail})}});
-  const map={setView(){return this;},on(){return this;},getZoom(){return 15;},invalidateSize(){},fitBounds(){},removeLayer(){}};
-  w.L={map:()=>map,tileLayer:()=>({addTo(){}}),divIcon:x=>x,
-    marker:()=>({addTo(){return this;},bindTooltip(){return this;},bindPopup(){return this;},getLatLng(){return [51.13,71.43];},openPopup(){},on(){return this;},setLatLng(){},setTooltipContent(){}}),
+  const layers=new Set();
+  const map={setView(){return this;},on(){return this;},getZoom(){return 15;},invalidateSize(){},fitBounds(){},removeLayer(l){layers.delete(l);}};
+  const events=()=>{const handlers={};return {on(e,cb){handlers[e]=cb;return this;},fire(e,payload={}){handlers[e]?.(payload);return this;}};};
+  w.L={map:()=>map,tileLayer:(url,options)=>{const l={url,options,...events(),addTo(){layers.add(this);return this;}};tiles.push(l);return l;},divIcon:x=>x,
+    marker:(coords)=>({...events(),addTo(){return this;},bindTooltip(){return this;},bindPopup(){return this;},getLatLng(){return coords;},openPopup(){},setLatLng(){},setTooltipContent(){}}),
+    polyline:(coords,options)=>{const l={coords,options,addTo(target){if(target===map)layers.add(this);return this;}};lines.push(l);return l;},
     layerGroup:()=>({addTo(){return this;},clearLayers(){}}),latLngBounds:x=>x,
     Control:{extend:cfg=>class{addTo(){w.document.body.appendChild(cfg.onAdd());}}},
     DomUtil:{create:(tag,cl)=>{const el=w.document.createElement(tag);el.className=cl;return el;}},
@@ -33,7 +38,7 @@ async function boot(t, opts = {}) {
     if(url.endsWith('/plans/recalculate')) {const p=pending();replans.push({body:JSON.parse(options.body),...p});return p.promise;}
     if(url.endsWith('/comfort/search')) {comforts.push(JSON.parse(options.body));return json(opts.comfort||[]);}
     if(url.endsWith('/atmosphere/examples')) return json(opts.atmos||[]);
-    if(url.endsWith('/plans/build')) return json(opts.build);
+    if(url.endsWith('/plans/build')) {builds.push(JSON.parse(options.body));return opts.buildResponse ? opts.buildResponse.promise : json(opts.build);}
     if(url.endsWith('/plans/export')) return json(opts.export);
     if(url.endsWith('/plans/refresh')) return json(opts.refresh || opts.build);
     if(url.endsWith('/recommend')) {const p=pending();requests.push({body:JSON.parse(options.body),...p});return p.promise;}
@@ -41,9 +46,9 @@ async function boot(t, opts = {}) {
     if(url.endsWith('/photos')) {photos.push({url,body:JSON.parse(options.body)});return opts.photos?opts.photos(url):json({poi_id:'x',photos:[],status:'no_photos',checked_at:'2026-10-18T09:00:00Z'});}
     throw Error('Unexpected request '+url);
   };
-  for(const file of ['storage.js','i18n.js','route.js','app.js','features.js']) w.eval(fs.readFileSync('frontend/'+file,'utf8'));
+  for(const file of ['theme.js','storage.js','i18n.js','route.js','app.js','features.js']) w.eval(fs.readFileSync('frontend/'+file,'utf8'));
   await tick(); await tick();
-  return {w,requests,gps,gis,photos,replans,comforts,click:s=>w.document.querySelector(s).click()};
+  return {w,requests,gps,gis,photos,replans,comforts,builds,tiles,lines,layers,media,click:s=>w.document.querySelector(s).click()};
 }
 
 module.exports = {boot};

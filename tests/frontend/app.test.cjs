@@ -432,3 +432,18 @@ test('AI selection and factual explanation have separate labels, with a privacy 
   assert.match(card,/объяснение составлено из данных и расчёта/);
   assert.match(b.w.document.querySelector('#privacyHint').textContent,/Gemini/);
 });
+
+for (const change of ['cold', 'tired']) {
+  test(`empty ${change} response never erases the current walk or its line`, async t => {
+    const b=await boot(t,withFeatures); await settle();
+    const plan=b.w.SeruenFeatures.planView(FX.build_ok,{location:{lat:51.128,lon:71.43},query:'coffee',context:{lang:'ru',time_budget_min:90}});
+    b.w.SeruenFeatures.startWalk(plan,null); await settle();
+    const before=JSON.stringify(b.w.SeruenFeatures.walk.plan);
+    b.click(`#walk [data-ch="${change}"]`); await tick();
+    b.replans[0].resolve(json({...FX.replan_ok,fits:true,status:'no_matches',stops:[],geometry:[],notes:['Нет подходящих остановок']}));
+    await settle();
+    assert.equal(JSON.stringify(b.w.SeruenFeatures.walk.plan),before);
+    assert.match(b.w.document.querySelector('#walkMsg').textContent,/прежний маршрут/);
+    assert.ok(b.w.document.querySelector('#walk [data-ch="cold"]'));
+  });
+}

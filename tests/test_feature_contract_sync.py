@@ -19,7 +19,7 @@ from test_feature_expansion import api as api, expanded as expanded
 def test_health_announces_agreed_contract(api):
     health = api.get('/health').json()
     assert health['feature_contract_version'] == 2
-    assert set(health['features']) == {'replan', 'end_point', 'constraints', 'comfort', 'cost', 'atmosphere', 'plan_export'}
+    assert set(health['features']) == {'replan', 'end_point', 'constraints', 'comfort', 'cost', 'atmosphere', 'plan_export', 'nearby_break'}
 
 
 def test_request_id_echo_does_not_split_recommendation_cache(api):
@@ -77,14 +77,16 @@ def test_cold_is_a_supported_request_in_all_languages(api, lang):
 
 def test_replan_preserves_child_accessibility_reserve_and_text_exclusions(api):
     req = {**ASK, 'query': 'кофе с ребенком, без ТРЦ, до вылета',
+           'preferences': {'preferred_categories': ['coffee']},
            'context': {**ASK['context'], 'time_budget_min': 180, 'accessibility': True}}
     old = post(api, '/plans/build', plan(request=req))
     state = old['state']
     assert state['companions'] == 'child' and state['accessibility'] and state['reserve_min'] == 60
     assert 'shopping' in state['exclude_categories']
+    # Leave enough for a visit plus the preserved 60-minute airport reserve.
     result = post(api, '/plans/recalculate', {'request': {**ASK, 'query': 'warm place'},
-        'previous': state, 'reason': 'cold', 'remaining_time_min': 90})
-    assert result['status'] != 'refused'
+        'previous': state, 'reason': 'cold', 'remaining_time_min': 150})
+    assert result['status'] in ('ok', 'partial') and result['stops']
     assert result['state']['companions'] == 'child' and result['state']['accessibility']
     assert result['budget']['reserve_min'] == 60 and 'shopping' in result['state']['exclude_categories']
 
