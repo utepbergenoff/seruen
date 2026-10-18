@@ -415,3 +415,10 @@ test('comfort points are asked near the plan and stay off the main recommendatio
   assert.ok(b.comforts[0].location);
   assert.equal(b.w.document.querySelectorAll('.rec').length, 3);
 });
+
+test('photo quota failure is shown as unavailable analysis, not missing photos', async t => {
+  const b = await withCards(t, () => json(gisAnswer), () => json({photos: [], status: 'ai_unavailable'}));
+  const text = b.w.document.querySelector('.rec .photos').textContent;
+  assert.ok(text.includes(b.w.SeruenApp.T().ph.noAnalysis));
+  assert.ok(!text.includes(b.w.SeruenApp.T().ph.none));
+});

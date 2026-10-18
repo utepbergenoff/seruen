@@ -599,7 +599,7 @@
   const https = (u) => /^https:\/\//.test(u || "") ? u : "";
   function photosHtml(p) {
     const P = T().ph, photos = ((p && p.photos) || []).filter((x) => https(x.url));
-    if (!photos.length) return `<p class="ph-none">${icon("camera")} ${esc(P.none)}</p>`;
+    if (!photos.length) return `<p class="ph-none">${icon("camera")} ${esc(!p || p.status === "ai_unavailable" ? P.noAnalysis : P.none)}</p>`;
     const a = p.analysis;
     const chips = a ? [
       P.light[a.lighting] && ["sun", P.light[a.lighting]],

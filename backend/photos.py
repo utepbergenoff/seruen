@@ -308,7 +308,7 @@ class Photos:
             self.last_status = code
             log_provider("gemini_photos", code)
             # without the check only the team's own photos are safe to show
-            return PlacePhotos(poi_id=poi_id, photos=team, status="ai_unavailable" if team else "not_relevant",
+            return PlacePhotos(poi_id=poi_id, photos=team, status="ai_unavailable",
                                checked_at=now)
         if answer is None:
             return PlacePhotos(poi_id=poi_id, status="no_photos", checked_at=now)
