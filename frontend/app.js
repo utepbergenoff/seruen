@@ -89,7 +89,9 @@
       const c = T().chips[+b.dataset.i];
       $("#query").value = c[1];
       state.chipCtx = {...(c[2] || {})};
-      if (c[2] && c[2].companions) $("#companions").value = c[2].companions;
+      // "with a child" from a tile applies to that tile only: the next tile goes back to the person's own choice
+      if (c[2] && c[2].companions) { $("#companions").value = c[2].companions; state.compFromTile = true; }
+      else if (state.compFromTile) { $("#companions").value = "alone"; state.compFromTile = false; }
       ask();
     }));
   }
@@ -140,6 +142,7 @@
     else if (!params.get("at")) { $("#whenSel").value = "now"; $("#whenAt").hidden = true; }
     else { $("#whenSel").value = "other"; $("#whenAt").hidden = false; $("#whenAt").value = params.get("at").slice(0, 16); }
     $("#companions").value = ctx.companions || "alone";
+    state.compFromTile = $("#companions").value !== "alone";  // set by the scenario, not by the person
     if (!ctx.time_budget_min) $("#budgetAuto").checked = true;
     state.chipCtx = {};
     ask();
@@ -252,7 +255,11 @@
 
   // ---------- request ----------
   $("#askForm").addEventListener("submit", (e) => { e.preventDefault(); ask(); });
-  $("#query").addEventListener("input", () => { state.chipCtx = {}; });
+  $("#query").addEventListener("input", () => {
+    state.chipCtx = {};
+    if (state.compFromTile) { $("#companions").value = "alone"; state.compFromTile = false; }
+  });
+  $("#companions").addEventListener("change", () => { state.compFromTile = false; });  // the person's own choice stays
 
   async function postJSON(path, body, timeoutMs = 20000) {
     const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), timeoutMs);
