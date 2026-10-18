@@ -18,7 +18,7 @@ python scripts/validate_feature_data.py
 | comfort_points.json | То же + kind (warming/toilet/bench/water/entrance), access (public/customers_only/paid/unknown), floor (строка/null) |
 | visit_conditions.json | poi_id, kind (free/optional_purchase/paid/unknown), evidence |
 | poi_identity_links.json | canonical_id, aliases (1–10), evidence |
-| atmosphere_catalog.json | example_id, poi_id, title, features, photos, evidence, analysis_source (manual/gemini), analysis_version |
+| atmosphere_catalog.json | example_id, poi_id, title, titles (ru/kk/en), features, photos, evidence, analysis_source (manual/gemini), analysis_version |
 
 Общий `evidence`: source_url (публичная ссылка на основание/отчёт проверки), checked_at (YYYY-MM-DD), verification (verified/unverified/conflicting), method (field_visit/official_source/licensed_source/team_review), note (до 800 символов). Не ставить verified без проверки. Не публиковать личные адреса, номера участников и внутренние секреты.
 
@@ -44,6 +44,8 @@ python scripts/validate_feature_data.py
 canonical_id должен существовать в исходной базе или собственных местах. aliases — другие проверенные ID того же физического филиала (включая `2gis_*`). Нужен evidence.verification=verified. Группы не пересекаются; цепочки/циклы запрещены. Проверять координаты, адрес и филиал вручную, одного совпадения названия недостаточно. Так посещённое место не вернётся под ID другого источника.
 
 ## Атмосфера
+
+`title` — обязательное резервное название (1–200 символов); `titles` — переводы `{ "ru":"…", "kk":"…", "en":"…" }`, каждый 1–200 символов. Казахские названия и тексты кнопок нужно проверить носителю языка. Пустой titles допустим, но интерфейс тогда использует title.
 
 Разрешены только видимые признаки: natural_light, bright, dim, greenery, open_space, small_space, visible_seating, modern, traditional, unusual_architecture, outdoor, indoor. Один или несколько признаков, без выводов о Wi-Fi/тишине/свободных местах/часах. Записи привязаны к существующему месту или его проверенному alias. Подтверждение не старше 90 дней.
 

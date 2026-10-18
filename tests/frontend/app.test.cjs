@@ -1,39 +1,11 @@
 const {test} = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const {JSDOM} = require('jsdom');
 const tick = () => new Promise(r => setImmediate(r));
 const pending = () => {let resolve; const promise = new Promise(r => resolve = r); return {promise, resolve};};
 const json = (data) => ({ok: true, json: async () => data});
 const answer = name => ({mode:'no_ai', recommendations:[], notes:[name], safety:[], considered:{time_budget_min:60,candidates_found:0}, disclaimer:'test'});
-async function boot(t, opts = {}) {
-  const dom = new JSDOM(fs.readFileSync('frontend/index.html','utf8'), {url:'https://example.test/',runScripts:'outside-only'});
-  t.after(() => dom.window.close());
-  const w=dom.window, requests=[], gps={}, gis=[], photos=[];
-  w.matchMedia=()=>({matches:false});
-  w.HTMLElement.prototype.scrollIntoView=()=>{};
-  w.SERUEN_CONFIG={API_URL:'https://api.example.test',FEATURES:{weather:false}};
-  Object.defineProperty(w,'isSecureContext',{value:true});
-  Object.defineProperty(w.navigator,'geolocation',{value:{getCurrentPosition:(ok,fail)=>Object.assign(gps,{ok,fail})}});
-  const map={setView(){return this;},on(){return this;},getZoom(){return 15;},invalidateSize(){},fitBounds(){},removeLayer(){}};
-  w.L={map:()=>map,tileLayer:()=>({addTo(){}}),divIcon:x=>x,
-    marker:()=>({addTo(){return this;},bindTooltip(){return this;},bindPopup(){return this;},getLatLng(){return [51.13,71.43];},openPopup(){},on(){return this;},setLatLng(){},setTooltipContent(){}}),
-    layerGroup:()=>({addTo(){return this;},clearLayers(){}}),latLngBounds:x=>x,
-    Control:{extend:cfg=>class{addTo(){w.document.body.appendChild(cfg.onAdd());}}},
-    DomUtil:{create:(tag,cl)=>{const el=w.document.createElement(tag);el.className=cl;return el;}},
-    DomEvent:{disableClickPropagation(){},on:(el,event,cb)=>el.addEventListener(event,cb),stop:e=>e.stopPropagation()}};
-  w.fetch=async(url,options)=>{
-    if(url==='presets.json'||url==='scenarios.json') return json(JSON.parse(fs.readFileSync('frontend/'+url,'utf8')));
-    if(url.endsWith('/health')) return opts.health ? opts.health.promise : json({mode_available:['no_ai']});
-    if(url.endsWith('/recommend')) {const p=pending();requests.push({body:JSON.parse(options.body),...p});return p.promise;}
-    if(/\/2gis(\?|$)/.test(url)) {gis.push(url);return opts.twogis(url);}
-    if(url.endsWith('/photos')) {photos.push({url,body:JSON.parse(options.body)});return opts.photos?opts.photos(url):json({poi_id:'x',photos:[],status:'no_photos',checked_at:'2026-10-18T09:00:00Z'});}
-    throw Error('Unexpected request '+url);
-  };
-  for(const file of ['i18n.js','route.js','app.js']) w.eval(fs.readFileSync('frontend/'+file,'utf8'));
-  await tick(); await tick();
-  return {w,requests,gps,gis,photos,click:s=>w.document.querySelector(s).click()};
-}
+const {boot} = require('./helpers.cjs');
 test('shell and six demos stay usable while backend health is pending', async t=>{
   const b=await boot(t,{health:pending()});
   assert.match(b.w.document.querySelector('#goBtn').textContent,/Подобрать/);
@@ -250,4 +222,166 @@ test('the time ruler puts every pick at its walking minutes and opens its card',
   assert.ok(b.w.document.querySelectorAll('.rec')[1].classList.contains('active'));
   assert.equal(b.w.document.querySelectorAll('.rec .ic').length>0,true);
   assert.doesNotMatch(b.w.document.querySelector('#results').textContent,/[\u{1F300}-\u{1FAFF}]/u);
+});
+
+// ---------- the eight features (docs/feature_expansion_contract.md; examples in fixtures/feature_examples.json) ----------
+const FX = JSON.parse(fs.readFileSync('tests/frontend/fixtures/feature_examples.json','utf8'));
+const withFeatures = {healthData: FX.health_with_features, atmos: FX.atmosphere_examples, comfort: FX.comfort, build: FX.build_ok, export: FX.export_ok};
+const settle = async () => { for (let i = 0; i < 6; i++) await tick(); };
+
+test('no coins, chest or +10 anywhere, in all three languages', async t => {
+  const b = await boot(t); b.click('#goBtn'); await tick();
+  b.requests[0].resolve(json({...answer('x'), recommendations: [rec('p1', 'Парк')]})); await settle();
+  for (const lang of ['ru', 'en', 'kk']) {
+    b.click(`[data-lang="${lang}"]`); await tick();
+    const text = b.w.document.body.textContent;
+    assert.doesNotMatch(text, /\+10|🪙|Сундук|Chest|Сандық|монет|coins/i);
+  }
+  assert.equal(b.w.document.querySelector('#points'), null);
+  const i18n = fs.readFileSync('frontend/i18n.js', 'utf8');
+  assert.doesNotMatch(i18n, /pointsUnit|pointsHint/);
+});
+
+test('my places: marks, note and deletion stay on the device and survive a new answer', async t => {
+  const b = await boot(t); await settle(); b.click('#goBtn'); await tick();
+  b.requests[0].resolve(json({...answer('x'), recommendations: [rec('p1', 'Парк ЭКСПО')]})); await settle();
+  b.click('.rec [data-keep="want"]'); await settle();
+  b.click('.rec [data-keep="favorite"]'); await settle();
+  b.click('.rec [data-keep="note"]');
+  b.w.document.querySelector('.rec .note-box textarea').value = 'Скамейки у воды';
+  b.click('.rec [data-note="save"]'); await settle();
+  assert.equal(b.w.document.querySelector('.rec [data-keep="want"]').getAttribute('aria-pressed'), 'true');
+  b.click('#mineBtn'); await settle();
+  const mine = b.w.document.querySelector('#mine');
+  assert.ok(!mine.hidden); assert.match(mine.textContent, /Парк ЭКСПО/); assert.match(mine.textContent, /Скамейки у воды/);
+  assert.match(mine.textContent, /только на этом устройстве/);
+  b.click('#goBtn'); await tick();
+  b.requests[1].resolve(json({...answer('again'), recommendations: [rec('p1', 'Парк ЭКСПО')]})); await settle();
+  assert.equal(b.w.document.querySelector('.rec [data-keep="favorite"]').getAttribute('aria-pressed'), 'true');
+  b.click('#mine [data-mine-del="p1"]'); await settle();
+  assert.match(b.w.document.querySelector('#mine').textContent, /Пока пусто/);
+  // nothing personal ever leaves the device
+  assert.ok(b.requests.every(r => !JSON.stringify(r.body).includes('Скамейки')));
+});
+
+test('old visit marks move into my places as visits; clearing history removes everything', async t => {
+  const b = await boot(t);
+  b.w.localStorage.setItem('seruen_visited', JSON.stringify({p9: 1760000000000}));
+  b.w.localStorage.removeItem('seruen_store_migrated');
+  await b.w.SeruenStore.init();
+  assert.ok((await b.w.SeruenStore.getPlace('p9')).visited_at);
+  b.click('#mineBtn'); await settle();
+  b.w.SeruenFeatures.mine.places.set('p9', await b.w.SeruenStore.getPlace('p9'));
+  b.click('#mineClose'); b.click('#mineBtn'); await settle();
+  b.click('#clearAll'); await settle(); b.click('#clearYes'); await settle();
+  assert.equal(await b.w.SeruenStore.getPlace('p9'), undefined);
+  assert.equal(b.w.localStorage.getItem('seruen_visited'), null);
+});
+
+test('an old server never receives new fields', async t => {
+  const b = await boot(t); await settle();
+  b.w.SeruenFeatures.setFinish({lat: 51.13, lon: 71.44, source: 'map'});
+  b.w.SeruenFeatures.setAtmosphere('greenery');
+  b.click('#goBtn'); await tick();
+  const body = b.requests[0].body;
+  for (const k of ['end', 'constraints', 'atmosphere_id', 'request_id']) assert.equal(k in body, false, k);
+  assert.equal(b.w.document.querySelector('#finishField'), null);
+  assert.equal(b.w.document.querySelector('#atmosField'), null);
+});
+
+test('only new: without server support visited places are hidden here and counted', async t => {
+  const b = await boot(t); await settle(); b.click('#goBtn'); await tick();
+  b.requests[0].resolve(json({...answer('x'), recommendations: [rec('p1', 'Был'), rec('p2', 'Новое')]})); await settle();
+  b.click('.rec [data-keep="visited"]'); await settle();
+  b.click('#mineBtn'); await settle();
+  const box = b.w.document.querySelector('#onlyNew'); box.checked = true; box.dispatchEvent(new b.w.Event('change')); await tick();
+  b.requests[1].resolve(json({...answer('y'), recommendations: [rec('p1', 'Был'), rec('p2', 'Новое')]})); await settle();
+  assert.deepEqual([...b.w.document.querySelectorAll('.rec h3')].map(h => h.textContent.trim()), ['Новое']);
+  assert.match(b.w.document.querySelector('#results').textContent, /Скрыто посещённых мест: 1/);
+  assert.equal('constraints' in b.requests[1].body, false);
+});
+
+test('new server: finish, atmosphere, no-spend and "too far" travel as contract fields', async t => {
+  const b = await boot(t, withFeatures); await settle();
+  assert.ok(b.w.document.querySelector('#finishField')); assert.ok(b.w.document.querySelector('#atmosField'));
+  b.w.SeruenFeatures.setFinish({lat: 51.1301, lon: 71.4402, source: 'map'});
+  b.click('#atmosField [data-atmos="greenery"]');
+  const ns = b.w.document.querySelector('#noSpend'); ns.value = 'lenient'; ns.dispatchEvent(new b.w.Event('change'));
+  b.click('#goBtn'); await tick();
+  const body = b.requests[0].body;
+  assert.deepEqual(body.end, {lat: 51.13, lon: 71.44, precision_m: 100, source: 'map'});
+  assert.equal(body.preferences.atmosphere_example_id, 'greenery'); assert.equal(body.preferences.expense_mode, 'no_required_purchase'); assert.ok(body.request_id);
+  b.requests[0].resolve(json(FX.recommend_normal)); await settle();
+  const cards = b.w.document.querySelectorAll('.rec');
+  assert.match(cards[0].textContent, /Бесплатно/); assert.match(cards[1].textContent, /Платный вход/);
+  assert.match(cards[2].textContent, /Покупка по желанию/);
+  assert.match(cards[0].textContent, /до финиша 7 мин/); assert.match(cards[0].textContent, /прибытие ≈11:32 \(оценка\)/);
+  b.click('.rec [data-nope="far"]'); await tick();
+  assert.ok(b.requests[1].body.preferences.max_distance_m > 0);
+  b.requests[1].resolve(json(FX.recommend_empty)); await settle();
+  const res = b.w.document.querySelector('#results').textContent;
+  assert.match(res, /Учитываю:/); assert.match(res, /Отменить/);
+  b.click('[data-undo="max"]'); await tick();
+  assert.equal('max_distance_m' in (b.requests[2].body.preferences || {}), false);
+});
+
+test('"another place" replaces one card and keeps the others on the screen', async t => {
+  const b = await boot(t, withFeatures); await settle(); b.click('#goBtn'); await tick();
+  b.requests[0].resolve(json(FX.recommend_normal)); await settle();
+  b.w.document.querySelectorAll('.rec')[1].querySelector('[data-nope="other"]').click(); await tick();
+  assert.deepEqual(b.requests[1].body.preferences.exclude_poi_ids, ['osm_node_1','osm_node_2','osm_node_3']);
+  b.requests[1].resolve(json({...FX.recommend_normal, recommendations: [{...FX.recommend_normal.recommendations[0], poi_id: 'osm_node_9', name: 'Замена'}]})); await settle();
+  assert.deepEqual([...b.w.document.querySelectorAll('.rec h3')].map(h => h.textContent.trim()), ['Парк ЭКСПО', 'Замена', 'Discovery Coffee']);
+});
+
+test('impossible route shows the reason and "allow more time" re-asks with that budget', async t => {
+  const b = await boot(t, withFeatures); await settle(); b.click('#goBtn'); await tick();
+  b.requests[0].resolve(json(FX.recommend_route_impossible)); await settle();
+  assert.match(b.w.document.querySelector('#results').textContent, /не хватает времени/);
+  b.click('[data-more="75"]'); await tick();
+  assert.equal(b.requests[1].body.context.time_budget_min, 75);
+});
+
+test('save a walk, reopen it from my places with its date and the stale warning', async t => {
+  const b = await boot(t, withFeatures); await settle(); b.click('#goBtn'); await tick();
+  b.requests[0].resolve(json(FX.recommend_normal)); await settle();
+  b.click('#saveWalkBtn'); await settle();
+  assert.match(b.w.document.querySelector('#saveWalkMsg').textContent, /сохранена|не даёт сохранять/);  // jsdom has no IndexedDB
+  const walks = await b.w.SeruenStore.allWalks();
+  assert.equal(walks.length, 1); assert.equal(walks[0].version, 2); assert.equal(walks[0].stops.length, 2);
+  assert.equal('photos' in walks[0].stops[0], false);
+  b.click('#mineBtn'); await settle(); b.click('#mine [data-tab="walks"]'); await settle();
+  b.click('#mine [data-walk-open]'); await settle();
+  const panel = b.w.document.querySelector('#walk');
+  assert.ok(!panel.hidden); assert.match(panel.textContent, /Сохранено/); assert.match(panel.textContent, /могли измениться/);
+  assert.match(panel.textContent, /SYNTHETIC team_coffee/);
+});
+
+test('plans changed: the newest change wins, a failure keeps the plan, done stops stay done', async t => {
+  const b = await boot(t, withFeatures); await settle();
+  const plan = b.w.SeruenFeatures.planView(FX.build_ok, {location:{lat:51.128,lon:71.43},query:'coffee',context:{lang:'ru',time_budget_min:90}});
+  plan.stops[0].status = 'done';
+  b.w.SeruenFeatures.startWalk(plan, null); await settle();
+  b.click('#walk [data-ch="cold"]'); await tick();
+  b.click('#walk [data-ch="tired"]'); await tick();
+  assert.equal(b.replans.length, 2); assert.equal(b.replans[0].body.reason, 'cold');
+  b.replans[1].resolve(json(FX.replan_ok)); await settle();
+  b.replans[0].resolve(json({...FX.replan_ok, notes: ['OLD']})); await settle();
+  const panel = b.w.document.querySelector('#walk').textContent;
+  assert.match(panel, /Стало холоднее/); assert.doesNotMatch(panel, /OLD/);
+  assert.equal(b.w.SeruenFeatures.walk.plan.stops.find(s => s.poi_id === 'team_coffee').status, 'done');
+  b.click('#walk [data-ch="cold"]'); await tick();
+  b.replans[2].resolve({ok: false, status: 503, json: async () => FX.provider_failure.body}); await settle();
+  assert.match(b.w.document.querySelector('#walk').textContent, /план не изменился/);
+  assert.ok(b.w.SeruenFeatures.walk.plan.stops.length >= 2);
+});
+
+test('comfort points are asked near the plan and stay off the main recommendations', async t => {
+  const b = await boot(t, withFeatures); await settle(); b.click('#goBtn'); await tick();
+  b.requests[0].resolve(json(FX.recommend_normal)); await settle();
+  b.click('[data-comfort="toilet"]'); await settle();
+  assert.equal(b.comforts.length, 1); assert.deepEqual(b.comforts[0].kinds, ['toilet']);
+  assert.equal(b.comforts[0].route_points.length, 0);
+  assert.ok(b.comforts[0].location);
+  assert.equal(b.w.document.querySelectorAll('.rec').length, 3);
 });

@@ -52,7 +52,7 @@ def register_features(app):
     async def atmosphere_examples(request: Request):
         rows = request.app.state.service.features.examples(datetime.now(ALMATY).date())
         return {"schema_version": 1, "status": "ready" if rows else "awaiting_data", "examples": [
-            {"example_id": r.example_id, "poi_id": r.poi_id, "title": r.title, "features": r.features,
+            {"example_id": r.example_id, "poi_id": r.poi_id, "title": r.title, "titles": r.titles, "features": r.features,
              "photos": [p.model_dump(mode="json") for p in r.photos],
              "analysis_source": r.analysis_source, "analysis_version": r.analysis_version,
              "evidence": r.evidence.model_dump(mode="json")} for r in rows]}

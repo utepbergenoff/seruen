@@ -2,6 +2,8 @@
 // a native speaker should review them before the final submission.
 window.I18N = {
   ru: {
+    mine: "Мои места",
+    x: {"keepTitle": "Мои места", "deviceOnly": "Хранится только на этом устройстве и пропадёт при очистке данных браузера.", "want": "Хочу сходить", "visited": "Посетил(а)", "favorite": "Избранное", "note": "Заметка", "notePh": "Ваша заметка о месте", "noteSave": "Сохранить", "noteDelete": "Удалить заметку", "tabPlaces": "Места", "tabWalks": "Прогулки", "fAll": "Все", "fWant": "Хочу сходить", "fVisited": "Посетил(а)", "fFav": "Избранное", "onlyNew": "Показывать только новое", "hiddenVisited": "Скрыто посещённых мест: {n}", "showOnMap": "Показать на карте", "remove": "Удалить", "clearAll": "Очистить всю историю", "clearConfirm": "Удалить все отметки, заметки и сохранённые прогулки?", "yes": "Да, удалить", "no": "Отмена", "emptyPlaces": "Пока пусто. Отмечайте места на карточках: «Хочу сходить», «Посетил(а)», «Избранное».", "emptyWalks": "Сохранённых прогулок пока нет.", "storeBlocked": "Браузер не даёт сохранять данные на устройстве (например, приватный режим): отметки пропадут после закрытия вкладки.", "storeQuota": "На устройстве не хватило места — запись не сохранилась. Удалите старые прогулки.", "saveWalk": "Сохранить прогулку", "saved": "Прогулка сохранена на этом устройстве.", "savedAt": "Сохранено {d}", "open": "Открыть", "stale": "Часы работы и условия могли измениться после сохранения — проверьте перед выходом.", "offline": "Нет сети: показываю сохранённый план.", "backOnline": "Сеть есть.", "refresh": "Обновить сведения", "stops": "Остановки", "close": "Закрыть", "startWalk": "Начать прогулку", "activeWalk": "Прогулка", "remaining": "Осталось ≈{m} мин", "done": "Готово", "skip": "Пропустить", "chLess": "Осталось меньше времени", "chCold": "Замёрзли", "chTired": "Устали", "chClosed": "Здесь закрыто / нет мест", "lessHow": "Сколько минут у вас осталось?", "replanning": "Пересчитываю оставшуюся часть…", "replanFail": "Не получилось пересчитать — план не изменился. Попробуйте ещё раз.", "endWalk": "Закончить", "statusDone": "пройдено", "statusSkipped": "пропущено", "statusNext": "впереди", "finish": "Финиш", "finishBack": "Вернуться к началу", "finishOther": "Закончить в другой точке", "pickOnMap": "Выбрать на карте", "pickHint": "Нажмите на карту, чтобы поставить финиш", "finishLandmark": "или ориентир", "finishSet": "Финиш: {p}", "reset": "Сбросить", "arrival": "прибытие ≈{t} (оценка)", "toEnd": "до финиша {m} мин", "impossible": "Не получается уложиться: {r}", "needMin": "нужно ≈{m} мин", "sugMore": "Дать {m} мин", "sugFewer": "или меньше остановок", "reasonBudget": "не хватает времени", "reasonDistance": "финиш слишком далеко", "nope": "Не подходит?", "nFar": "Далеко", "nBeen": "Уже был(а)", "nFormat": "Не мой формат", "nFree": "Хочу без расходов", "nOther": "Другое место", "pickCategory": "Какой формат не подходит?", "active": "Учитываю:", "undo": "Отменить", "replacing": "Ищу замену…", "cMaxDist": "не дальше {m} м", "cExclude": "без {n} мест", "cCat": "без: {c}", "cFree": "без расходов", "relax": "Снять «{c}» (найдётся {n})", "comfort": "Удобства рядом", "kWarm": "Согреться", "kToilet": "Туалет", "kSit": "Присесть", "kWater": "Вода", "kEntrance": "Вход", "accFree": "свободный доступ", "accCustomers": "для посетителей", "accUnknown": "условия доступа неизвестны", "addStop": "Добавить остановку", "comfortNone": "Рядом с планом ничего не нашлось.", "costFree": "Бесплатно", "costOptional": "Покупка по желанию", "costPaid": "Платный вход", "costUnknown": "Условия неизвестны", "noSpend": "Без расходов", "noSpendOff": "не важно", "noSpendLenient": "можно без покупок", "noSpendStrict": "только подтверждённо бесплатно", "atmos": "По атмосфере", "atmosHint": "выберите фото — подберу места с похожими признаками", "atmosAny": "Без фото", "matched": "Совпало по фото: {f}", "srcManual": "ручная разметка", "srcAi": "анализ ИИ", "feat": {"bright": "светло", "greenery": "зелень", "open_space": "простор", "architecture": "необычная архитектура", "cozy": "уютно", "water": "вода"}},
     catalog: {source: "Места из 2ГИС", fallback: "2ГИС сейчас не ответил — показываю места из нашей проверенной базы.", fallbackEmpty: "В 2ГИС подходящих мест рядом не нашлось — показываю места из нашей проверенной базы.", next: "Загрузить ещё места", match: "Место получено напрямую из каталога 2ГИС", all: "Все найденные места рядом", hint: "На карте показаны все загруженные места. Выше — до трёх рекомендаций для вашего запроса.", filtered: "Не вошло в рекомендации:"},
     gisBtn: "Рейтинг и часы 2ГИС",
     gis: {data: "Данные 2ГИС", loading: "Спрашиваю 2ГИС…", reviews: "отзывов", noRating: "Рейтинга в 2ГИС нет",
@@ -42,7 +44,6 @@ window.I18N = {
     confidence: "уверенность", conf: {high: "высокая", medium: "средняя", low: "низкая"},
     openIn2gis: "Открыть карточку места в 2GIS", places: "мест", score: "балл", mPerMin: "м/мин",
     candsHint: "ИИ мог выбирать только из этого списка — выдумать место он не может.",
-    pointsHint: "Монеты за посещённые места. Хранятся только в этом браузере.",
     routeOsrm: "Линия — по улицам (OSRM), минуты — по формуле расстояние × 1,3 / скорость.",
     routeStraight: "Сервис маршрутов недоступен: линия по прямой, минуты — по формуле × 1,3.",
     tagline: "ИИ-помощник по прогулкам в Астане",
@@ -106,7 +107,6 @@ window.I18N = {
     descSrc: {wikipedia: "Википедия", osm: "OSM", generated_from_tags: "сгенерировано по тегам", source: "источник"},
     srcNames: {osm: "OSM", "2gis_archive_2026_02": "2GIS (архив, фев 2026)", wikipedia: "Википедия", google: "Google"},
     buildRoute: "Собрать маршрут", routeTitle: "Маршрут", routeOpen: "Открыть в Google Maps",
-    points: "Сундук", pointsUnit: "🪙",
     disclaimerShort: "Данные о местах могут устареть — проверяйте на месте.",
     snapshot: "Снимок данных",
     accessL: {yes: "доступно на коляске", limited: "частично доступно", no: "недоступно на коляске", unknown: "доступность: нет данных"},
@@ -117,6 +117,8 @@ window.I18N = {
     weekday: ["пн","вт","ср","чт","пт","сб","вс"],
   },
   en: {
+    mine: "My places",
+    x: {"keepTitle": "My places", "deviceOnly": "Kept only on this device; clearing browser data deletes it.", "want": "Want to go", "visited": "Been there", "favorite": "Favourite", "note": "Note", "notePh": "Your note about the place", "noteSave": "Save", "noteDelete": "Delete note", "tabPlaces": "Places", "tabWalks": "Walks", "fAll": "All", "fWant": "Want to go", "fVisited": "Been there", "fFav": "Favourites", "onlyNew": "Show only new places", "hiddenVisited": "Places you've been to, hidden: {n}", "showOnMap": "Show on the map", "remove": "Remove", "clearAll": "Clear all history", "clearConfirm": "Delete all marks, notes and saved walks?", "yes": "Yes, delete", "no": "Cancel", "emptyPlaces": "Nothing yet. Mark places on the cards: “Want to go”, “Been there”, “Favourite”.", "emptyWalks": "No saved walks yet.", "storeBlocked": "This browser does not allow saving on the device (private mode?): marks disappear when the tab closes.", "storeQuota": "The device ran out of space, so this was not saved. Delete old walks.", "saveWalk": "Save the walk", "saved": "Walk saved on this device.", "savedAt": "Saved {d}", "open": "Open", "stale": "Hours and conditions may have changed since it was saved — check before you go.", "offline": "No network: showing the saved plan.", "backOnline": "Network is back.", "refresh": "Refresh details", "stops": "Stops", "close": "Close", "startWalk": "Start the walk", "activeWalk": "Walk", "remaining": "≈{m} min left", "done": "Done", "skip": "Skip", "chLess": "Less time left", "chCold": "We're cold", "chTired": "We're tired", "chClosed": "Closed here / no seats", "lessHow": "How many minutes do you have left?", "replanning": "Re-planning the rest…", "replanFail": "Could not re-plan; the plan is unchanged. Try again.", "endWalk": "Finish", "statusDone": "done", "statusSkipped": "skipped", "statusNext": "ahead", "finish": "Finish", "finishBack": "Return to the start", "finishOther": "End somewhere else", "pickOnMap": "Pick on the map", "pickHint": "Tap the map to set the finish", "finishLandmark": "or a landmark", "finishSet": "Finish: {p}", "reset": "Reset", "arrival": "arrival ≈{t} (estimate)", "toEnd": "{m} min to the finish", "impossible": "It does not fit: {r}", "needMin": "needs ≈{m} min", "sugMore": "Allow {m} min", "sugFewer": "or fewer stops", "reasonBudget": "not enough time", "reasonDistance": "the finish is too far", "nope": "Not for me?", "nFar": "Too far", "nBeen": "Been there", "nFormat": "Not my kind of place", "nFree": "Without spending", "nOther": "Another place", "pickCategory": "Which kind doesn't fit?", "active": "Applied:", "undo": "Undo", "replacing": "Finding another…", "cMaxDist": "within {m} m", "cExclude": "{n} places left out", "cCat": "no: {c}", "cFree": "no spending", "relax": "Drop “{c}” ({n} would fit)", "comfort": "Comfort nearby", "kWarm": "Warm up", "kToilet": "Toilet", "kSit": "Sit down", "kWater": "Water", "kEntrance": "Entrance", "accFree": "free access", "accCustomers": "for customers", "accUnknown": "access conditions unknown", "addStop": "Add a stop", "comfortNone": "Nothing found near the plan.", "costFree": "Free", "costOptional": "Purchase optional", "costPaid": "Paid entry", "costUnknown": "Conditions unknown", "noSpend": "Without spending", "noSpendOff": "doesn't matter", "noSpendLenient": "no purchase needed", "noSpendStrict": "confirmed free only", "atmos": "By atmosphere", "atmosHint": "pick a photo and I'll find places with the same features", "atmosAny": "No photo", "matched": "Matches the photo: {f}", "srcManual": "manual tags", "srcAi": "AI analysis", "feat": {"bright": "bright", "greenery": "greenery", "open_space": "open space", "architecture": "unusual architecture", "cozy": "cosy", "water": "water"}},
     catalog: {source: "Places from 2GIS", fallback: "2GIS did not answer right now — showing places from our checked database.", fallbackEmpty: "2GIS found nothing suitable nearby — showing places from our checked database.", next: "Load more places", match: "Place obtained directly from the 2GIS catalog", all: "All nearby places found", hint: "The map shows all loaded places. Above are up to three recommendations for your request.", filtered: "Not recommended for this plan:"},
     gisBtn: "2GIS rating & hours",
     gis: {data: "2GIS data", loading: "Asking 2GIS…", reviews: "reviews", noRating: "No rating in 2GIS",
@@ -158,7 +160,6 @@ window.I18N = {
     confidence: "confidence", conf: {high: "high", medium: "medium", low: "low"},
     openIn2gis: "Open the place card in 2GIS", places: "places", score: "score", mPerMin: "m/min",
     candsHint: "The AI could only choose from this list — it can not make up a place.",
-    pointsHint: "Coins for visited places. Stored only in this browser.",
     routeOsrm: "Line follows streets (OSRM); minutes use the formula distance × 1.3 / speed.",
     routeStraight: "Routing service unavailable: straight line; minutes use the formula × 1.3.",
     tagline: "AI walking assistant for Astana",
@@ -222,7 +223,6 @@ window.I18N = {
     descSrc: {wikipedia: "Wikipedia", osm: "OSM", generated_from_tags: "generated from tags", source: "source"},
     srcNames: {osm: "OSM", "2gis_archive_2026_02": "2GIS (archive, Feb 2026)", wikipedia: "Wikipedia", google: "Google"},
     buildRoute: "Build a route", routeTitle: "Route", routeOpen: "Open in Google Maps",
-    points: "Chest", pointsUnit: "🪙",
     disclaimerShort: "Place data may be out of date — check on site.",
     snapshot: "Data snapshot",
     accessL: {yes: "wheelchair accessible", limited: "partly accessible", no: "not wheelchair accessible", unknown: "accessibility: no data"},
@@ -233,6 +233,8 @@ window.I18N = {
     weekday: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
   },
   kk: {
+    mine: "Менің орындарым",
+    x: {"keepTitle": "Менің орындарым", "deviceOnly": "Тек осы құрылғыда сақталады; браузер деректерін тазаласаңыз, өшеді.", "want": "Барғым келеді", "visited": "Болдым", "favorite": "Таңдаулы", "note": "Жазба", "notePh": "Орын туралы жазбаңыз", "noteSave": "Сақтау", "noteDelete": "Жазбаны өшіру", "tabPlaces": "Орындар", "tabWalks": "Серуендер", "fAll": "Барлығы", "fWant": "Барғым келеді", "fVisited": "Болдым", "fFav": "Таңдаулы", "onlyNew": "Тек жаңаларын көрсету", "hiddenVisited": "Барған орындар жасырылды: {n}", "showOnMap": "Картада көрсету", "remove": "Өшіру", "clearAll": "Бүкіл тарихты тазалау", "clearConfirm": "Барлық белгі, жазба және сақталған серуендерді өшіру керек пе?", "yes": "Иә, өшіру", "no": "Болдырмау", "emptyPlaces": "Әзірге бос. Карточкаларда белгілеңіз: «Барғым келеді», «Болдым», «Таңдаулы».", "emptyWalks": "Сақталған серуендер әзірге жоқ.", "storeBlocked": "Браузер құрылғыда сақтауға рұқсат бермейді (жеке режим?): белгілер қойынды жабылғанда жоғалады.", "storeQuota": "Құрылғыда орын жетпеді — жазба сақталмады. Ескі серуендерді өшіріңіз.", "saveWalk": "Серуенді сақтау", "saved": "Серуен осы құрылғыда сақталды.", "savedAt": "Сақталды: {d}", "open": "Ашу", "stale": "Сақталғаннан кейін жұмыс уақыты мен шарттар өзгеруі мүмкін — шығар алдында тексеріңіз.", "offline": "Желі жоқ: сақталған жоспарды көрсетемін.", "backOnline": "Желі бар.", "refresh": "Мәліметтерді жаңарту", "stops": "Аялдамалар", "close": "Жабу", "startWalk": "Серуенді бастау", "activeWalk": "Серуен", "remaining": "≈{m} мин қалды", "done": "Дайын", "skip": "Өткізу", "chLess": "Уақыт азырақ қалды", "chCold": "Тоңдық", "chTired": "Шаршадық", "chClosed": "Мұнда жабық / орын жоқ", "lessHow": "Сізде неше минут қалды?", "replanning": "Қалған бөлігін қайта есептеп жатырмын…", "replanFail": "Қайта есептеу мүмкін болмады — жоспар өзгерген жоқ. Қайталаңыз.", "endWalk": "Аяқтау", "statusDone": "өтілді", "statusSkipped": "өткізілді", "statusNext": "алда", "finish": "Мәре", "finishBack": "Бастаған жерге оралу", "finishOther": "Басқа нүктеде аяқтау", "pickOnMap": "Картадан таңдау", "pickHint": "Мәрені қою үшін картаны басыңыз", "finishLandmark": "немесе бағдар", "finishSet": "Мәре: {p}", "reset": "Тастау", "arrival": "жету ≈{t} (бағалау)", "toEnd": "мәреге дейін {m} мин", "impossible": "Сыймайды: {r}", "needMin": "≈{m} мин керек", "sugMore": "{m} мин беру", "sugFewer": "немесе аялдамаларды азайту", "reasonBudget": "уақыт жетпейді", "reasonDistance": "мәре тым алыс", "nope": "Сәйкес емес пе?", "nFar": "Алыс", "nBeen": "Болғанмын", "nFormat": "Менің форматым емес", "nFree": "Шығынсыз", "nOther": "Басқа орын", "pickCategory": "Қай формат сәйкес емес?", "active": "Ескеріп отырмын:", "undo": "Болдырмау", "replacing": "Басқасын іздеп жатырмын…", "cMaxDist": "{m} м-ден алыс емес", "cExclude": "{n} орынсыз", "cCat": "жоқ: {c}", "cFree": "шығынсыз", "relax": "«{c}» алып тастау ({n} табылады)", "comfort": "Жақын маңдағы ыңғайлылықтар", "kWarm": "Жылыну", "kToilet": "Дәретхана", "kSit": "Отыру", "kWater": "Су", "kEntrance": "Кіреберіс", "accFree": "еркін кіру", "accCustomers": "келушілерге", "accUnknown": "кіру шарттары белгісіз", "addStop": "Аялдама қосу", "comfortNone": "Жоспар маңынан ештеңе табылмады.", "costFree": "Тегін", "costOptional": "Сатып алу міндетті емес", "costPaid": "Кіру ақылы", "costUnknown": "Шарттары белгісіз", "noSpend": "Шығынсыз", "noSpendOff": "маңызды емес", "noSpendLenient": "сатып алмай-ақ", "noSpendStrict": "тек расталған тегін", "atmos": "Атмосфера бойынша", "atmosHint": "фото таңдаңыз — ұқсас белгілері бар орындарды табамын", "atmosAny": "Фотосыз", "matched": "Фото бойынша сәйкес: {f}", "srcManual": "қолмен белгіленген", "srcAi": "ЖИ талдауы", "feat": {"bright": "жарық", "greenery": "жасыл желек", "open_space": "кеңістік", "architecture": "ерекше сәулет", "cozy": "жайлы", "water": "су"}},
     catalog: {source: "2ГИС орындары", fallback: "2ГИС қазір жауап бермеді — біздің тексерілген базадағы орындарды көрсетемін.", fallbackEmpty: "2ГИС-те жақын жерде сай орын табылмады — біздің тексерілген базадағы орындарды көрсетемін.", next: "Тағы орындарды жүктеу", match: "Орын 2ГИС каталогынан тікелей алынды", all: "Маңайдан табылған барлық орындар", hint: "Картада жүктелген барлық орындар көрсетілген. Жоғарыда сұрауыңызға сай үшке дейін ұсыныс бар.", filtered: "Ұсынысқа кірмеді:"},
     gisBtn: "2ГИС рейтингі мен кестесі",
     gis: {data: "2ГИС деректері", loading: "2ГИС-тен сұрап жатырмын…", reviews: "пікір", noRating: "2ГИС-те рейтинг жоқ",
@@ -273,7 +275,6 @@ window.I18N = {
     confidence: "сенімділік", conf: {high: "жоғары", medium: "орташа", low: "төмен"},
     openIn2gis: "2GIS-те орын карточкасын ашу", places: "орын", score: "балл", mPerMin: "м/мин",
     candsHint: "ЖИ тек осы тізімнен таңдай алды — орынды ойдан шығара алмайды.",
-    pointsHint: "Барған орындар үшін тиындар. Тек осы браузерде сақталады.",
     routeOsrm: "Сызық көшелермен (OSRM), минуттар формуламен: қашықтық × 1,3 / жылдамдық.",
     routeStraight: "Маршрут сервисі қолжетімсіз: түзу сызық, минуттар формуламен × 1,3.",
     tagline: "Астанадағы серуенге арналған ЖИ-көмекші",
@@ -337,7 +338,6 @@ window.I18N = {
     descSrc: {wikipedia: "Уикипедия", osm: "OSM", generated_from_tags: "тегтерден жасалған", source: "дереккөз"},
     srcNames: {osm: "OSM", "2gis_archive_2026_02": "2GIS (мұрағат, ақп. 2026)", wikipedia: "Уикипедия", google: "Google"},
     buildRoute: "Маршрут құру", routeTitle: "Маршрут", routeOpen: "Google Maps-та ашу",
-    points: "Сандық", pointsUnit: "🪙",
     disclaimerShort: "Орындар туралы дерек ескіруі мүмкін — орнында тексеріңіз.",
     snapshot: "Деректер күні",
     accessL: {yes: "арбамен кіруге болады", limited: "ішінара қолжетімді", no: "арбамен кіру мүмкін емес", unknown: "қолжетімділік: дерек жоқ"},
@@ -348,3 +348,35 @@ window.I18N = {
     weekday: ["дс","сс","ср","бс","жм","сб","жс"],
   },
 };
+
+// Contract v2: honest empty/export states; Kazakh still needs the team's native review.
+Object.assign(window.I18N.ru.x, {
+  remaining: "Весь план: ≈{m} мин", srcAi: "по ранее проверенному анализу ИИ",
+  budgetToEnd: "{a} туда + {b} на месте + {c} до финиша + {r} запас = {t} мин ≤ {B}",
+  tooMany: "Слишком много исключённых мест (максимум 200). Измените фильтр посещений.",
+  planUnavailable: "План не проходит проверку времени или условий. Измените время, финиш или фильтры.",
+  notExportable: "У этих мест пока нет подтверждённых прав для офлайн-снимка. Можно сохранить личную отметку или заметку.",
+  partialExport: "Сохранена только часть разрешённых мест. Это список мест, не полный маршрут; рассчитайте его заново онлайн.",
+  exportNeedsOnline: "Для проверки и сохранения прогулки нужно подключение к серверу.",
+  providerBookmark: "Место из каталога", unavailableAtmosphere: "Примеры атмосферы ещё готовятся.",
+});
+Object.assign(window.I18N.en.x, {
+  remaining: "Whole plan: ≈{m} min", srcAi: "previously reviewed AI analysis",
+  budgetToEnd: "{a} there + {b} visit + {c} to finish + {r} reserve = {t} min ≤ {B}",
+  tooMany: "More than 200 excluded places. Change the visited-places filter.",
+  planUnavailable: "The plan does not meet the time or access constraints. Change the time, finish or filters.",
+  notExportable: "Offline rights for these places have not been confirmed. You can keep a personal mark or note.",
+  partialExport: "Only some licensed places were saved. This is a list, not a complete route; rebuild it online.",
+  exportNeedsOnline: "Connect to the server to check and save this walk.",
+  providerBookmark: "Catalog place", unavailableAtmosphere: "Atmosphere examples are being prepared.",
+});
+Object.assign(window.I18N.kk.x, {
+  remaining: "Толық жоспар: ≈{m} мин", srcAi: "бұрын тексерілген ЖИ талдауы бойынша",
+  budgetToEnd: "{a} бару + {b} орында + {c} мәреге + {r} қор = {t} мин ≤ {B}",
+  tooMany: "Алып тасталған орындар саны 200-ден асты. Барған орындар сүзгісін өзгертіңіз.",
+  planUnavailable: "Жоспар уақыт не кіру шарттарына сай емес. Уақытты, мәрені немесе сүзгілерді өзгертіңіз.",
+  notExportable: "Бұл орындарды офлайн сақтауға құқық расталмаған. Жеке белгі не жазба сақтауға болады.",
+  partialExport: "Рұқсат етілген орындардың бір бөлігі ғана сақталды. Бұл толық маршрут емес; желіде қайта есептеңіз.",
+  exportNeedsOnline: "Серуенді тексеріп сақтау үшін серверге қосылу керек.",
+  providerBookmark: "Каталогтағы орын", unavailableAtmosphere: "Атмосфера мысалдары дайындалып жатыр.",
+});

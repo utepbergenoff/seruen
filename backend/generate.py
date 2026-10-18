@@ -107,6 +107,7 @@ class Gemini:
                 "description_source": h.poi.description_source,
                 "distance_m": h.candidate.distance_m,
                 "walk_min": h.candidate.walk_min,
+                "walk_to_end_min": h.to_end,
                 "open_status": h.status.model_dump(mode="json"),
                 "min_stay": max(1, int(h.stay * 0.7)),
                 "max_stay": int(h.stay * 1.3),
@@ -119,6 +120,7 @@ class Gemini:
             "location": request.location.model_dump(),
             "intent": intent.model_dump(),
             "response_language": LANGUAGE_NAMES[intent.lang],
+            "finish_mode": "destination" if request.end else "return",
             "candidates": candidates,
         }
         features = getattr(self, "feature_data", None)

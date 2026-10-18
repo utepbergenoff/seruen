@@ -17,6 +17,7 @@ class Hit:
     candidate: Candidate
     status: OpenStatus
     stay: int
+    to_end: int | None = None
 
 
 @dataclass
@@ -69,12 +70,18 @@ class Retriever:
         walking_speed = speed(request, intent, now)
         night = now.hour >= 22 or now.hour < 6
         radius = radius_for(available, walking_speed, night)
+        if request.end:
+            # A one-way visit can lie outside the old round-trip circle.
+            radius = min(1000 if night else 5000, 2 * radius)
         weather = request.context.weather
         severe = weather is not None and (weather.temp_c <= -15 or weather.wind_ms >= 10)
         if severe:
             radius = min(radius, 500)
         semantics = self.relevance(" ".join([request.query, *intent.tags, *intent.categories]))
         max_radius = 500 if severe else 1000 if night else float("inf")
+        if request.preferences.max_distance_m is not None:
+            max_radius = min(max_radius, request.preferences.max_distance_m)
+            radius = min(radius, max_radius)
         # Nearby coffee/work visits have a 15-minute one-way walking limit (team scenario S1).
         if (set(intent.categories) & {"coffee", "library", "cowork"}
                 and set(intent.categories) <= {"coffee", "library", "cowork", "food"}):
@@ -91,7 +98,9 @@ class Retriever:
                 inferred = set(tokenize(" ".join(p.tags_inferred)))
                 matched = sorted(set(intent.tags) & tags)
                 reason = None
-                chosen_stay = min(stay, available - 2 * walk)
+                to_end = walk_minutes(haversine(p.lat, p.lon, request.end.lat, request.end.lon), walking_speed) if request.end else None
+                final_walk = walk if to_end is None else to_end
+                chosen_stay = min(stay, available - walk - final_walk)
                 min_stay = max(1, math.ceil(stay * 0.7)) if expanded else stay
                 feature_reason = self.features.constraint(p, request.preferences, walk, now.date()) if self.features else None
                 if feature_reason:
@@ -115,6 +124,10 @@ class Retriever:
                     reason = "event_unverified"
                 elif status.state == "closed":
                     reason = "closed"
+                elif request.preferences.max_walk_min is not None and final_walk > request.preferences.max_walk_min:
+                    reason = "finish_walk_limit"
+                elif request.end and final_walk > walk_minutes(500 if severe else 1000, walking_speed) and (severe or night):
+                    reason = "finish_walk_limit"
                 elif distance > current_radius:
                     reason = "out_of_radius"
                 elif chosen_stay < min_stay:
@@ -145,7 +158,7 @@ class Retriever:
                 if reason:
                     excluded.append(candidate)
                 else:
-                    hits.append(Hit(p, candidate, status, chosen_stay))
+                    hits.append(Hit(p, candidate, status, chosen_stay, to_end))
             hits.sort(key=lambda h: (-h.candidate.score, h.candidate.distance_m, h.poi.poi_id))
             return hits, excluded
 

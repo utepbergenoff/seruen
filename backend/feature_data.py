@@ -4,7 +4,7 @@ import hashlib
 import json
 from datetime import date
 from pathlib import Path
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import Field, HttpUrl, model_validator
 
@@ -72,6 +72,7 @@ class AtmosphereRecord(Model):
     example_id: str = Field(min_length=1, max_length=120)
     poi_id: str = Field(min_length=1, max_length=120)
     title: str = Field(min_length=1, max_length=200)
+    titles: dict[Literal["ru", "kk", "en"], Annotated[str, Field(min_length=1, max_length=200)]] = Field(default_factory=dict)
     features: list[VisualFeature] = Field(min_length=1, max_length=12)
     photos: list[AtmospherePhoto] = Field(min_length=1, max_length=4)
     evidence: Evidence
@@ -162,6 +163,10 @@ class FeatureData:
     def canonical(self, poi_id):
         return self.identities.get(poi_id, poi_id)
 
+    def can_export(self, poi_id, today):
+        record = self.owned.get(self.canonical(poi_id))
+        return bool(record and record.offline_allowed and self.verified(record.evidence, today))
+
     @staticmethod
     def verified(evidence, today, max_age=90):
         return evidence.verification == "verified" and 0 <= (today - evidence.checked_at).days <= max_age
@@ -244,6 +249,8 @@ def relaxation_options(preferences):
     result = []
     if preferences.max_walk_min:
         result.append("increase_walk_limit")
+    if preferences.max_distance_m:
+        result.append("increase_distance_limit")
     if preferences.indoor_only:
         result.append("allow_outdoor")
     if preferences.expense_mode != "any":

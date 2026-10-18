@@ -37,11 +37,11 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
     async def lifespan(app):
         app.state.service = RecommendationService(settings, provider)
         service = app.state.service
-        app.state.places = Places(settings, service.dataset.pois, places_transport)
-        app.state.twogis = TwoGis(settings, service.dataset.pois, twogis_transport)
+        app.state.places = Places(settings, list(service.features.pois.values()), places_transport)
+        app.state.twogis = TwoGis(settings, list(service.features.pois.values()), twogis_transport)
         app.state.discovery = Discovery(app.state.twogis, service)
         app.state.planner = Planner(service, app.state.discovery, routing_transport)
-        app.state.photos = Photos(settings, service.dataset.pois, photos_transport,
+        app.state.photos = Photos(settings, list(service.features.pois.values()), photos_transport,
                                   photos_ai or getattr(service.provider, "structured", None) and service.provider,
                                   catalog_poi=app.state.discovery.cached_poi)
         await app.state.places.probe()
@@ -145,6 +145,7 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
             response.considered.candidates_found,
             error,
         )
+        response.request_id = payload.request_id
         return response
 
     @app.get("/places/{poi_id}/details", response_model=PlaceDetails)
