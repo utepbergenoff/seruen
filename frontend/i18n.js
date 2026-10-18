@@ -2,6 +2,8 @@
 // a native speaker should review them before the final submission.
 window.I18N = {
   ru: {
+    geoTimeout: "Не дождался геолокации. Разрешите доступ (значок в адресной строке) и нажмите ◎ на карте — или просто перетащите точку.",
+    geoUnavailable: "Браузер не смог определить место. На Mac: Системные настройки → Конфиденциальность и безопасность → Службы геолокации → включите для браузера, затем нажмите ◎ на карте. Пока точка в центре Астаны — её можно перетащить.",
     heroTitle: "Астана — город, который хочется исследовать",
     heroText: "Скажите, чего хотите, — подберу 1–3 места рядом: с дорогой, временем и честным «почему».",
     scenariosTitle: "Готовые сценарии",
@@ -56,7 +58,7 @@ window.I18N = {
     ],
     loading: "Ищу места рядом…",
     serverDown: "Сервер недоступен — попробуйте ещё раз через минуту.",
-    geoDenied: "Не удалось определить местоположение — поставил точку в центр Астаны. Перетащите её на карте или нажмите ◎ на карте.",
+    geoDenied: "Доступ к геолокации запрещён. Разрешите его: значок слева от адреса сайта → «Геолокация» → «Разрешить», затем нажмите ◎ на карте. Пока точка в центре Астаны — её можно перетащить.",
     geoOutside: "Похоже, вы не в Астане — поставил точку в центр города. Перетащите её на карте.",
     emptyTitle: "Подходящих мест не нашёл",
     distance: "м", walk: "мин пешком",
@@ -88,6 +90,8 @@ window.I18N = {
     weekday: ["пн","вт","ср","чт","пт","сб","вс"],
   },
   en: {
+    geoTimeout: "No answer from location yet. Allow access (icon in the address bar) and press ◎ on the map — or just drag the point.",
+    geoUnavailable: "The browser couldn't find your position. On a Mac: System Settings → Privacy & Security → Location Services → turn it on for your browser, then press ◎ on the map. For now the point is in the centre of Astana — you can drag it.",
     heroTitle: "Astana — a city worth exploring",
     heroText: "Tell me what you'd like — I'll pick 1–3 places nearby, with the walk, the time and an honest “why”.",
     scenariosTitle: "Ready-made scenarios",
@@ -142,7 +146,7 @@ window.I18N = {
     ],
     loading: "Looking for places nearby…",
     serverDown: "The server is not responding — please try again in a minute.",
-    geoDenied: "Couldn't detect your location — the point is in the centre of Astana. Drag it on the map or press ◎ on the map.",
+    geoDenied: "Location access is blocked. Allow it: icon left of the site address → Location → Allow, then press ◎ on the map. For now the point is in the centre of Astana — you can drag it.",
     geoOutside: "Looks like you're not in Astana — the point is in the city centre. Drag it on the map.",
     emptyTitle: "Nothing suitable found",
     distance: "m", walk: "min walk",
@@ -174,6 +178,8 @@ window.I18N = {
     weekday: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
   },
   kk: {
+    geoTimeout: "Геолокация жауап бермеді. Рұқсат беріңіз (мекенжай жолағындағы белгі) және картадағы ◎ батырмасын басыңыз — немесе нүктені жылжытыңыз.",
+    geoUnavailable: "Браузер орныңызды анықтай алмады. Mac-та: Жүйе параметрлері → Құпиялылық және қауіпсіздік → Геолокация қызметтері → браузер үшін қосыңыз, содан кейін картадағы ◎ батырмасын басыңыз. Әзірге нүкте Астана орталығында — оны жылжытуға болады.",
     heroTitle: "Астана — зерттегің келетін қала",
     heroText: "Не қалайтыныңызды айтыңыз — жақын жерден 1–3 орынды жолымен, уақытымен және адал «неге» түсіндірмесімен ұсынамын.",
     scenariosTitle: "Дайын сценарийлер",
@@ -228,7 +234,7 @@ window.I18N = {
     ],
     loading: "Жақын жерлерді іздеп жатырмын…",
     serverDown: "Сервер жауап бермей тұр — бір минуттан соң қайталаңыз.",
-    geoDenied: "Орныңызды анықтау мүмкін болмады — нүкте Астана орталығында. Оны картада жылжытыңыз немесе картадағы ◎ батырмасын басыңыз.",
+    geoDenied: "Геолокацияға рұқсат жоқ. Рұқсат беріңіз: сайт мекенжайының сол жағындағы белгі → «Геолокация» → «Рұқсат ету», содан кейін картадағы ◎ батырмасын басыңыз. Әзірге нүкте Астана орталығында — оны жылжытуға болады.",
     geoOutside: "Сіз Астанада емес сияқтысыз — нүкте қала орталығында. Оны картада жылжытыңыз.",
     emptyTitle: "Лайықты орын табылмады",
     distance: "м", walk: "мин жаяу",

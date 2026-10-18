@@ -212,9 +212,13 @@
       if (state.locKind !== "gps" && state.locKind !== "map" && !state.preset) setLoc(ASTANA.lat, ASTANA.lon, "map", null, true, "center");
       msg.textContent = text; msg.hidden = false; renderLocLine();
     };
-    if (!navigator.geolocation || !window.isSecureContext) return fail(T().geoDenied);
+    if (!navigator.geolocation || !window.isSecureContext) return fail(T().geoUnavailable);
     state.locating = true; renderLocLine();
+    // if the permission prompt is ignored (or shown only as a small icon), do not wait forever
+    clearTimeout(state.locTimer);
+    state.locTimer = setTimeout(() => { if (state.locating) fail(T().geoTimeout); }, 15000);
     navigator.geolocation.getCurrentPosition((pos) => {
+      clearTimeout(state.locTimer);
       state.locating = false;
       const lat = round3(pos.coords.latitude), lon = round3(pos.coords.longitude);  // rounded right away
       if (lat < 51.0 || lat > 51.25 || lon < 71.25 || lon > 71.65) {
@@ -222,7 +226,11 @@
         msg.textContent = T().geoOutside; msg.hidden = false; return;
       }
       setLoc(lat, lon, "gps", null);
-    }, () => fail(T().geoDenied), {enableHighAccuracy: false, timeout: 10000, maximumAge: 60000});
+    }, (err) => {
+      clearTimeout(state.locTimer);
+      // 1 = permission denied, 2 = position unavailable (often: browser not allowed in macOS/Windows settings), 3 = timeout
+      fail(err && err.code === 1 ? T().geoDenied : err && err.code === 3 ? T().geoTimeout : T().geoUnavailable);
+    }, {enableHighAccuracy: false, timeout: 15000, maximumAge: 60000});
   }
   // "find me" button on the map (to detect again, e.g. after moving the point by hand)
   const LocateCtl = L.Control.extend({

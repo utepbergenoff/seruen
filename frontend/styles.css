@@ -97,7 +97,7 @@ h2 { font-size: 21px; font-weight: 700; letter-spacing: -.005em; margin-bottom: 
 .welcome h2 { color: var(--white); font-size: 27px; line-height: 1.15; margin-bottom: 6px; max-width: 460px;
   text-shadow: 0 1px 14px rgba(0, 0, 0, .35); }
 .welcome p { margin: 0; color: rgba(255, 255, 255, .88); font-size: 14px; max-width: 470px; }
-.has-results .welcome, .has-results .strip { display: none; }
+.has-results .strip { display: none; }
 
 /* quick requests as photo tiles */
 .chips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
