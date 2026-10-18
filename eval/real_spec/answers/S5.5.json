@@ -1,0 +1,121 @@
+{
+  "mode": "no_ai",
+  "recommendations": [
+    {
+      "poi_id": "osm_node_13948916190",
+      "name": "Қазақстан Теміржол тарихы Мұражайы",
+      "category": "culture",
+      "coords": {
+        "lat": 51.1122858,
+        "lon": 71.5316883
+      },
+      "distance_m": 423,
+      "walk_min": 8,
+      "why": "Сұралған санатқа сәйкес және уақыт шегіне сай келеді.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Қолжетімді көрмені қараңыз; билет пен бағдарламаны сол жерде нақтылаңыз.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.5316883,51.1122858",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1122858%2C71.5316883"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 8,
+        "stay_min": 30,
+        "walk_back_min": 8,
+        "reserve_min": 60,
+        "total_min": 106
+      }
+    },
+    {
+      "poi_id": "osm_node_13900933375",
+      "name": "Астана Арена",
+      "category": "viewpoint",
+      "coords": {
+        "lat": 51.1121947,
+        "lon": 71.5330269
+      },
+      "distance_m": 509,
+      "walk_min": 9,
+      "why": "Сұралған санатқа сәйкес және уақыт шегіне сай келеді.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Қоғамдық аумақтан тамашалаңыз; бару шарттарын алдын ала тексеріңіз.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.5330269,51.1121947",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1121947%2C71.5330269"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 9,
+        "stay_min": 30,
+        "walk_back_min": 9,
+        "reserve_min": 60,
+        "total_min": 108
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 8,
+    "stay_min": 30,
+    "walk_back_min": 8,
+    "reserve_min": 60,
+    "total_min": 106
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 865,
+    "radius_expanded": false,
+    "time_budget_min": 120,
+    "filters": [
+      "category:viewpoint",
+      "category:culture",
+      "category:park",
+      "category:coffee",
+      "category:unusual"
+    ],
+    "time": "Sun 16:00",
+    "candidates_found": 2,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "rules",
+    "target_time": "2026-10-18T16:00:00+05:00"
+  },
+  "notes": [
+    "Кейбір орындардың жұмыс уақыты белгісіз, барар алдында тексеріңіз.",
+    "Әуежайға жол үшін уақыт бөлінді; бұл шартты есеп, жол мен тіркелу уақытын тексеріңіз.",
+    "Астана уақытымен 18.10.2026 16:00 үшін демо: жұмыс уақыты мен қауіпсіздік осы уақытқа есептелген."
+  ],
+  "safety": [],
+  "route": null,
+  "disclaimer": "Орындар туралы мәлімет ескіруі мүмкін, барған кезде тексеріңіз. Жаяу жүру уақыты шамамен есептелген.",
+  "data_kind": "real",
+  "mock": false
+}

@@ -1,0 +1,162 @@
+{
+  "mode": "no_ai",
+  "recommendations": [
+    {
+      "poi_id": "osm_node_6408271985",
+      "name": "CrepeCafe",
+      "category": "coffee",
+      "coords": {
+        "lat": 51.1293821,
+        "lon": 71.4285934
+      },
+      "distance_m": 183,
+      "walk_min": 4,
+      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why_source": "template",
+      "time_to_spend_min": 60,
+      "what_to_do": "Выпейте кофе; перед заказом уточните наличие свободных мест.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Fr 08:00-00:00; Sa-Su 09:00-00:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4285934,51.1293821",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1293821%2C71.4285934"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 4,
+        "stay_min": 60,
+        "walk_back_min": 4,
+        "reserve_min": 0,
+        "total_min": 68
+      }
+    },
+    {
+      "poi_id": "osm_node_11162304905",
+      "name": "Атлас",
+      "category": "food",
+      "coords": {
+        "lat": 51.131615,
+        "lon": 71.4275325
+      },
+      "distance_m": 438,
+      "walk_min": 8,
+      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why_source": "template",
+      "time_to_spend_min": 60,
+      "what_to_do": "Сделайте перерыв на еду; меню уточните на месте.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Su-Sa 10:00-02:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4275325,51.131615",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.131615%2C71.4275325"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 8,
+        "stay_min": 60,
+        "walk_back_min": 8,
+        "reserve_min": 0,
+        "total_min": 76
+      }
+    },
+    {
+      "poi_id": "osm_node_10798946230",
+      "name": "Selfie",
+      "category": "food",
+      "coords": {
+        "lat": 51.1250293,
+        "lon": 71.4322305
+      },
+      "distance_m": 366,
+      "walk_min": 7,
+      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why_source": "template",
+      "time_to_spend_min": 60,
+      "what_to_do": "Сделайте перерыв на еду; меню уточните на месте.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Su 12:00-00:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4322305,51.1250293",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1250293%2C71.4322305"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 7,
+        "stay_min": 60,
+        "walk_back_min": 7,
+        "reserve_min": 0,
+        "total_min": 74
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 4,
+    "stay_min": 60,
+    "walk_back_min": 4,
+    "reserve_min": 0,
+    "total_min": 68
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 1000,
+    "radius_expanded": false,
+    "time_budget_min": 120,
+    "filters": [
+      "category:night",
+      "category:viewpoint",
+      "category:food",
+      "category:coffee",
+      "category:unusual",
+      "category:park"
+    ],
+    "time": "Sun 23:00",
+    "candidates_found": 46,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "rules",
+    "target_time": "2026-10-18T23:00:00+05:00"
+  },
+  "notes": [
+    "Демо-расчёт на 18.10.2026 23:00 по времени Астаны: часы работы и безопасность рассчитаны для этого времени."
+  ],
+  "safety": [
+    "Ночью выбирайте освещённые людные места; возвращайтесь на такси или транспорте."
+  ],
+  "route": null,
+  "disclaimer": "Данные о местах могут устареть — проверяйте на месте. Время пешком приблизительное.",
+  "data_kind": "real",
+  "mock": false
+}

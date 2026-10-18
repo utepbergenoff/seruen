@@ -1,0 +1,159 @@
+{
+  "mode": "no_ai",
+  "recommendations": [
+    {
+      "poi_id": "osm_way_1470780026",
+      "name": "Дубовая аллея",
+      "category": "park",
+      "coords": {
+        "lat": 51.135573,
+        "lon": 71.408849
+      },
+      "distance_m": 444,
+      "walk_min": 10,
+      "why": "В базе отмечено как подходящее для детей; время с дорогой укладывается в бюджет.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Прогуляйтесь по общедоступным дорожкам и вернитесь тем же путём.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.408849,51.135573",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.135573%2C71.408849"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 10,
+        "stay_min": 30,
+        "walk_back_min": 10,
+        "reserve_min": 0,
+        "total_min": 50
+      }
+    },
+    {
+      "poi_id": "osm_way_1449322330",
+      "name": "Детская площадка",
+      "category": "kids",
+      "coords": {
+        "lat": 51.1322703,
+        "lon": 71.403346
+      },
+      "distance_m": 94,
+      "walk_min": 3,
+      "why": "В базе отмечено как подходящее для детей; время с дорогой укладывается в бюджет.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Проведите время с ребёнком; проверьте возрастные ограничения на месте.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.403346,51.1322703",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1322703%2C71.403346"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 3,
+        "stay_min": 30,
+        "walk_back_min": 3,
+        "reserve_min": 0,
+        "total_min": 36
+      }
+    },
+    {
+      "poi_id": "osm_way_37884583",
+      "name": "Ғашықтар саябағы",
+      "category": "park",
+      "coords": {
+        "lat": 51.1314922,
+        "lon": 71.4092097
+      },
+      "distance_m": 401,
+      "walk_min": 9,
+      "why": "В базе отмечено как подходящее для детей; время с дорогой укладывается в бюджет.",
+      "why_source": "template",
+      "time_to_spend_min": 30,
+      "what_to_do": "Прогуляйтесь по общедоступным дорожкам и вернитесь тем же путём.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4092097,51.1314922",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1314922%2C71.4092097"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 9,
+        "stay_min": 30,
+        "walk_back_min": 9,
+        "reserve_min": 0,
+        "total_min": 48
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 10,
+    "stay_min": 30,
+    "walk_back_min": 10,
+    "reserve_min": 0,
+    "total_min": 50
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 692,
+    "radius_expanded": false,
+    "time_budget_min": 60,
+    "filters": [
+      "category:kids",
+      "category:park",
+      "category:culture",
+      "child_friendly"
+    ],
+    "time": "Sun 14:00",
+    "candidates_found": 10,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "rules",
+    "target_time": "2026-10-18T14:00:00+05:00"
+  },
+  "notes": [
+    "Часы работы одного места неизвестны — проверьте перед визитом.",
+    "Демо-расчёт на 18.10.2026 14:00 по времени Астаны: часы работы и безопасность рассчитаны для этого времени."
+  ],
+  "safety": [],
+  "route": null,
+  "disclaimer": "Данные о местах могут устареть — проверяйте на месте. Время пешком приблизительное.",
+  "data_kind": "real",
+  "mock": false
+}

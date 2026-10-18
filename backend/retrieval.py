@@ -73,6 +73,10 @@ class Retriever:
             radius = min(radius, 500)
         semantics = self.relevance(" ".join([request.query, *intent.tags, *intent.categories]))
         max_radius = 500 if severe else 1000 if night else float("inf")
+        # Nearby coffee/work visits have a 15-minute one-way walking limit (team scenario S1).
+        if intent.categories and set(intent.categories) <= {"coffee", "library", "cowork"}:
+            max_radius = min(max_radius, walking_speed * 15 / 1.3)
+            radius = min(radius, max_radius)
 
         def collect(current_radius, expanded):
             hits, excluded = [], []
@@ -81,6 +85,7 @@ class Retriever:
                 walk = walk_minutes(distance, walking_speed)
                 status = open_status(p, now)
                 tags = set(tokenize(" ".join(p.tags)))
+                inferred = set(tokenize(" ".join(p.tags_inferred)))
                 matched = sorted(set(intent.tags) & tags)
                 reason = None
                 chosen_stay = min(stay, available - 2 * walk)
@@ -110,7 +115,7 @@ class Retriever:
                     reason = "night_safety_unconfirmed"
                 tag_match = len(matched) / max(len(intent.tags), 1)
                 rank = score(semantic, distance, current_radius, p.popularity, status.state, tag_match)
-                reasons = [f"tag:{t}" for t in matched]
+                reasons = [f"inferred_tag:{t}" if t in inferred else f"tag:{t}" for t in matched]
                 if severe and p.indoor:
                     rank += 0.15
                     reasons.append("indoor_weather_priority")
@@ -141,7 +146,7 @@ class Retriever:
         found = len(hits)
         diversified, counts, chains = [], Counter(), set()
         for hit in hits:
-            chain = canonical_name(hit.poi.chain or hit.poi.name)
+            chain = hit.poi.poi_id if hit.poi.name_generic else canonical_name(hit.poi.chain or hit.poi.name)
             if counts[hit.poi.category] >= 2 or chain in chains:
                 continue
             diversified.append(hit)

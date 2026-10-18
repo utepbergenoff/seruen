@@ -963,6 +963,17 @@
             ],
             "title": "Description Source"
           },
+          "description_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description Url"
+          },
           "accessibility": {
             "type": "string",
             "enum": [

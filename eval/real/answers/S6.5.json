@@ -1,0 +1,163 @@
+{
+  "mode": "no_ai",
+  "recommendations": [
+    {
+      "poi_id": "osm_node_2826184438",
+      "name": "Лигалайф",
+      "category": "night",
+      "coords": {
+        "lat": 51.1296521,
+        "lon": 71.4339722
+      },
+      "distance_m": 333,
+      "walk_min": 6,
+      "why": "Matches the requested category and fits your time budget.",
+      "why_source": "template",
+      "time_to_spend_min": 60,
+      "what_to_do": "Explore from public areas; check visitor details beforehand.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "09:00-06:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4339722,51.1296521",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1296521%2C71.4339722"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 6,
+        "stay_min": 60,
+        "walk_back_min": 6,
+        "reserve_min": 0,
+        "total_min": 72
+      }
+    },
+    {
+      "poi_id": "osm_node_6408271985",
+      "name": "CrepeCafe",
+      "category": "coffee",
+      "coords": {
+        "lat": 51.1293821,
+        "lon": 71.4285934
+      },
+      "distance_m": 183,
+      "walk_min": 4,
+      "why": "Matches the requested category and fits your time budget.",
+      "why_source": "template",
+      "time_to_spend_min": 60,
+      "what_to_do": "Have a coffee; check seating before ordering.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Fr 08:00-00:00; Sa-Su 09:00-00:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4285934,51.1293821",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1293821%2C71.4285934"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 4,
+        "stay_min": 60,
+        "walk_back_min": 4,
+        "reserve_min": 0,
+        "total_min": 68
+      }
+    },
+    {
+      "poi_id": "osm_node_6404747238",
+      "name": "Ozen",
+      "category": "night",
+      "coords": {
+        "lat": 51.125008,
+        "lon": 71.4319065
+      },
+      "distance_m": 359,
+      "walk_min": 7,
+      "why": "Matches the requested category and fits your time budget.",
+      "why_source": "template",
+      "time_to_spend_min": 60,
+      "what_to_do": "Explore from public areas; check visitor details beforehand.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description_url": null,
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4319065,51.125008",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.125008%2C71.4319065"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 7,
+        "stay_min": 60,
+        "walk_back_min": 7,
+        "reserve_min": 0,
+        "total_min": 74
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 6,
+    "stay_min": 60,
+    "walk_back_min": 6,
+    "reserve_min": 0,
+    "total_min": 72
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 1000,
+    "radius_expanded": false,
+    "time_budget_min": 120,
+    "filters": [
+      "category:night",
+      "category:viewpoint",
+      "category:food",
+      "category:coffee",
+      "category:unusual",
+      "category:park"
+    ],
+    "time": "Sun 23:00",
+    "candidates_found": 46,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "rules",
+    "target_time": "2026-10-18T23:00:00+05:00"
+  },
+  "notes": [
+    "Some opening hours are unknown; check before visiting.",
+    "Demo for 18.10.2026 23:00 Astana time: opening hours and safety are evaluated for that time."
+  ],
+  "safety": [
+    "At night choose well-lit busy places; return by taxi or public transport."
+  ],
+  "route": null,
+  "disclaimer": "Place data may be outdated; verify locally. Walking times are estimates.",
+  "data_kind": "real",
+  "mock": false
+}

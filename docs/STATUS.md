@@ -1,5 +1,7 @@
 # Seruen — project status & to-do (18.10.2026, ~01:30)
 
+Backend integration update: see [real_data_integration.md](real_data_integration.md) and [handoff.md](handoff.md). The sections below retain Yerlan's pre-integration snapshot.
+
 Living note for the team. Owner: Yerlan. Update it when something changes.
 
 ---

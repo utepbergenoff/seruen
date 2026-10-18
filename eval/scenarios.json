@@ -628,7 +628,14 @@
         "companions": "alone",
         "time_budget_min": 120,
         "before_flight": true,
-        "when": "now"
+        "when": "now",
+        "categories": [
+          "viewpoint",
+          "culture",
+          "park",
+          "coffee",
+          "unusual"
+        ]
       }
     },
     {
@@ -653,7 +660,14 @@
         "companions": "alone",
         "time_budget_min": 120,
         "before_flight": true,
-        "when": "now"
+        "when": "now",
+        "categories": [
+          "viewpoint",
+          "culture",
+          "park",
+          "coffee",
+          "unusual"
+        ]
       }
     },
     {
@@ -678,7 +692,14 @@
         "companions": "alone",
         "time_budget_min": 120,
         "before_flight": true,
-        "when": "now"
+        "when": "now",
+        "categories": [
+          "viewpoint",
+          "culture",
+          "park",
+          "coffee",
+          "unusual"
+        ]
       }
     },
     {
@@ -703,7 +724,14 @@
         "companions": "alone",
         "time_budget_min": 120,
         "before_flight": true,
-        "when": "now"
+        "when": "now",
+        "categories": [
+          "viewpoint",
+          "culture",
+          "park",
+          "coffee",
+          "unusual"
+        ]
       }
     },
     {
@@ -728,7 +756,14 @@
         "companions": "alone",
         "time_budget_min": 120,
         "before_flight": true,
-        "when": "now"
+        "when": "now",
+        "categories": [
+          "viewpoint",
+          "culture",
+          "park",
+          "coffee",
+          "unusual"
+        ]
       }
     },
     {
@@ -753,7 +788,15 @@
         "companions": "alone",
         "time_budget_min": 120,
         "before_flight": false,
-        "when": "night"
+        "when": "night",
+        "categories": [
+          "night",
+          "viewpoint",
+          "food",
+          "coffee",
+          "unusual",
+          "park"
+        ]
       }
     },
     {
@@ -778,7 +821,15 @@
         "companions": "alone",
         "time_budget_min": 120,
         "before_flight": false,
-        "when": "night"
+        "when": "night",
+        "categories": [
+          "night",
+          "viewpoint",
+          "food",
+          "coffee",
+          "unusual",
+          "park"
+        ]
       }
     },
     {
@@ -803,7 +854,15 @@
         "companions": "alone",
         "time_budget_min": 120,
         "before_flight": false,
-        "when": "night"
+        "when": "night",
+        "categories": [
+          "night",
+          "viewpoint",
+          "food",
+          "coffee",
+          "unusual",
+          "park"
+        ]
       }
     },
     {
@@ -828,7 +887,15 @@
         "companions": "alone",
         "time_budget_min": 120,
         "before_flight": false,
-        "when": "night"
+        "when": "night",
+        "categories": [
+          "night",
+          "viewpoint",
+          "food",
+          "coffee",
+          "unusual",
+          "park"
+        ]
       }
     },
     {
@@ -853,7 +920,15 @@
         "companions": "alone",
         "time_budget_min": 120,
         "before_flight": false,
-        "when": "night"
+        "when": "night",
+        "categories": [
+          "night",
+          "viewpoint",
+          "food",
+          "coffee",
+          "unusual",
+          "park"
+        ]
       }
     }
   ]

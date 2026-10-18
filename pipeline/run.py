@@ -23,6 +23,7 @@ CONTRACT_FIELDS = (
     "poi_id", "name", "name_kk", "name_en", "lat", "lon", "category", "tags", "description",
     "description_source", "opening_hours_raw", "hours_source", "phone", "website", "rating",
     "rating_count", "popularity", "wheelchair", "kid_friendly", "adult_only", "indoor", "sources", "last_checked",
+    "name_generic", "tags_inferred", "google_place_id", "description_url",
 )
 
 
@@ -95,7 +96,7 @@ def build() -> None:
     }
     # data/poi.json = backend contract (backend/schemas.py POI, extra="forbid"): a plain list, contract fields only.
     # data/poi_full.json = everything (meta, google_place_id, tags_inferred, all wiki languages...).
-    contract = [{**{k: p.get(k) for k in CONTRACT_FIELDS}, "hours_source": p.get("hours_source") or "none"}
+    contract = [{**{k: p[k] for k in CONTRACT_FIELDS if k in p}, "hours_source": p.get("hours_source") or "none"}
                 for p in pois]
     POI_PATH.write_text(json.dumps(contract, ensure_ascii=False, indent=1), encoding="utf-8")
     FULL_PATH.write_text(json.dumps({"_meta": meta, "pois": pois}, ensure_ascii=False, indent=1), encoding="utf-8")

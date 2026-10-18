@@ -55,16 +55,27 @@ def drafts(hits, intent):
                 "Marked child-friendly in the dataset; the visit and return fit your time budget.",
                 "Деректе балаларға қолайлы деп белгіленген; барып-қайту уақыт шегіне сай.",
             )[index]
-        elif hit.candidate.reasons and any(r.startswith("tag:") for r in hit.candidate.reasons):
+        elif any(r.startswith(("tag:", "inferred_tag:")) for r in hit.candidate.reasons):
             labels = {
                 "quiet": ("тихо", "quiet", "тыныш"),
                 "sockets": ("розетки", "power sockets", "розеткалар"),
                 "wifi": ("Wi-Fi", "Wi-Fi", "Wi-Fi"),
             }
-            tags = ", ".join(
-                labels[r[4:]][index] for r in hit.candidate.reasons if r.startswith("tag:") and r[4:] in labels
-            )
-            why = ("По тегам в базе: ", "Dataset tags: ", "Деректегі белгілер: ")[index] + tags + "."
+            confirmed, inferred = [], []
+            for reason in hit.candidate.reasons:
+                kind, _, tag = reason.partition(":")
+                if tag in labels and kind in ("tag", "inferred_tag"):
+                    (inferred if kind == "inferred_tag" else confirmed).append(labels[tag][index])
+            parts = []
+            if confirmed:
+                parts.append(("По данным: ", "Recorded: ", "Дерек бойынша: ")[index] + ", ".join(confirmed) + ".")
+            if inferred:
+                parts.append(
+                    ("Обычно для этой категории: ", "Typical for this category: ", "Бұл санатта әдетте: ")[index]
+                    + ", ".join(inferred)
+                    + (" — уточните на месте.", " — confirm on arrival.", " — барған кезде нақтылаңыз.")[index]
+                )
+            why = " ".join(parts) or why
         action = ACTIONS.get(
             hit.poi.category,
             (

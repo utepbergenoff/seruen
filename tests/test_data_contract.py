@@ -13,4 +13,5 @@ def test_committed_poi_snapshot_loads_in_backend_without_rejections():
     expected = len(json.loads(path.read_text(encoding="utf-8")))
     dataset = load_pois(path)
     assert dataset.rejected == 0
-    assert len(dataset.pois) + dataset.duplicates == expected
+    assert dataset.duplicates == 0
+    assert len(dataset.pois) == expected == 1251
