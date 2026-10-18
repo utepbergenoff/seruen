@@ -201,6 +201,13 @@ test('answers search 2GIS first and fall back to the checked database when 2GIS 
   b.click('#goBtn');await tick();
   assert.equal(b.requests[2].body.source,undefined);
 });
+test('when 2GIS has nothing that fits, the checked database answers instead',async t=>{
+  const b=await boot(t);b.click('#goBtn');await tick();
+  b.requests[0].resolve(json({...answer('empty 2gis'),source:'2gis',recommendations:[]}));await tick();
+  assert.equal(b.requests[1].body.source,'local');
+  b.requests[1].resolve(json({...answer('local'),recommendations:[rec('p1','NU Park')]}));await tick();
+  assert.match(b.w.document.querySelector('#results').textContent,/В 2ГИС подходящих мест рядом не нашлось.*NU Park/s);
+});
 test('a 2GIS place asks photos with its own name and position, never the person\'s',async t=>{
   const b=await boot(t);b.click('#goBtn');await tick();
   b.requests[0].resolve(json({...answer('2gis'),source:'2gis',recommendations:[{...rec('2gis_7','Монумент-Бәйтерек'),coords:{lat:51.128,lon:71.43}}]}));await tick();await tick();

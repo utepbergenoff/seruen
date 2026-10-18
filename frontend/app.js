@@ -275,18 +275,23 @@
     $("#status").innerHTML = `<div class="loading" role="status"><div class="spinner"></div>${esc(T().loading)}</div>`;
     $("#goBtn").disabled = true;
     try {
-      // the server searches the full 2GIS catalog with Gemini; if 2GIS fails or its demo quota is used up,
-      // the same request goes to our own checked database, so the answer is never empty because of 2GIS
+      // the server searches the full 2GIS catalog with Gemini; if 2GIS fails, its demo quota is used up or it
+      // has nothing that fits, the same request goes to our own checked database, so 2GIS never leaves it empty
       let body = {location: {lat: round3(state.loc.lat), lon: round3(state.loc.lon), precision_m: 100, source: state.loc.source},
         query: $("#query").value.trim(), context: await context()};
       if (version !== state.requestVersion) return;
       let data = await postJSON("/recommend", body);
       if (version !== state.requestVersion) return;
-      if (data.source === "2gis" && data.source_error && !(data.recommendations || []).length && !(data.nearby_places || []).length) {
-        body = {...body, source: "local"};
-        data = await postJSON("/recommend", body);
+      // a 2GIS answer that lists nearby places or can load more is kept: the person sees them on the map
+      if (data.source === "2gis" && !(data.recommendations || []).length
+          && (data.source_error || (!(data.nearby_places || []).length && !data.next_cursor))) {
+        const local = await postJSON("/recommend", {...body, source: "local"});
         if (version !== state.requestVersion) return;
-        data.notes = [T().catalog.fallback, ...(data.notes || [])];
+        if ((local.recommendations || []).length || data.source_error) {
+          body = {...body, source: "local"};
+          local.notes = [data.source_error ? T().catalog.fallback : T().catalog.fallbackEmpty, ...(local.notes || [])];
+          data = local;
+        }
       }
       state.lastWeather = body.context.weather ? {...body.context.weather, simulated: simulatedWeather} : null;
       state.lastReq = body; state.extraCands = null; state.showCands = false;
