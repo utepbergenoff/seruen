@@ -45,6 +45,7 @@
       <ul>
         <li><b>OpenStreetMap</b> (лицензия ODbL) — основа базы: собирается скриптом одной командой.</li>
         <li><b>Википедия</b> (CC BY-SA) — короткие описания достопримечательностей.</li>
+        <li><b>2ГИС</b> — рейтинг и расписание по кнопке «Рейтинг и часы 2ГИС» на карточке. Запрашиваются только при нажатии, не сохраняются в нашу базу и не передаются ИИ. Фотографий 2ГИС не выдаёт.</li>
         <li><b>Google Places</b> — сохранены только идентификаторы 175 мест. Запросы рейтингов и часов выключены; в карточках используются часы OSM.</li>
       </ul>
       <p>У каждой карточки указаны источники и дата. Описание, составленное по тегам, помечено «сгенерировано по тегам».</p>
@@ -88,7 +89,7 @@
     </section>
     <section class="card block" lang="en">
       <h2>In English</h2>
-      <p>No accounts or stored query history. Location is rounded to three decimals on your device; application logs omit query text and coordinates. Gemini receives the query, context, rounded location and selected POI data. Code checks IDs, time budgets and selected unsafe claims; it cannot guarantee every AI sentence. Places come from OpenStreetMap and Wikipedia. Google ratings and hours are disabled. A fresh schedule means no more than 30 days old, not a live availability check. Map, hosting and AI providers have their own data policies. Check details before visiting.</p>
+      <p>No accounts or stored query history. Location is rounded to three decimals on your device; application logs omit query text and coordinates. Gemini receives the query, context, rounded location and selected POI data. Code checks IDs, time budgets and selected unsafe claims; it cannot guarantee every AI sentence. Places come from OpenStreetMap and Wikipedia. Google ratings and hours are disabled. 2GIS rating and hours are fetched only when you press the button on a card; they are not stored or sent to the AI. A fresh schedule means no more than 30 days old, not a live availability check. Map, hosting and AI providers have their own data policies. Check details before visiting.</p>
     </section>
   </main>
 </body>

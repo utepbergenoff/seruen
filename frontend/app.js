@@ -6,7 +6,7 @@
 (() => {
   "use strict";
   const CFG = window.SERUEN_CONFIG || {};
-  const FEAT = Object.assign({mapLinks: true, weather: true, route: true, languages: true, points: true}, CFG.FEATURES || {});
+  const FEAT = Object.assign({mapLinks: true, weather: true, route: true, languages: true, points: true, twogis: true}, CFG.FEATURES || {});
   const API = (CFG.API_URL || "").replace(/\/$/, "");
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => Array.from(document.querySelectorAll(s));
@@ -23,7 +23,7 @@
     lang: params.get("lang") || store.get("seruen_lang", "ru"),
     loc: {...ASTANA, source: "map"}, locKind: "center", locating: false, locVersion: 0, requestVersion: 0, preset: null,
     presets: [], scenarios: [], last: null, lastReq: null, lastWeather: null,
-    showCands: false, extraCands: null, chipCtx: {}, apiMode: null,
+    showCands: false, extraCands: null, chipCtx: {}, apiMode: null, gis: {},
   };
   if (!FEAT.languages && !params.get("lang")) state.lang = "ru";
   const T = () => window.I18N[state.lang] || window.I18N.ru;
@@ -399,8 +399,10 @@
           ${FEAT.mapLinks ? `<a class="btn" href="${esc(L2.gis)}" target="_blank" rel="noopener">🗺 ${esc(t.route2gis)}</a>
           <a class="btn" href="${esc(L2.google)}" target="_blank" rel="noopener">🧭 ${esc(t.routeGoogle)}</a>` : ""}
           <button type="button" class="btn" data-act="map">📍 ${esc(t.onMap)}</button>
+          ${FEAT.twogis ? `<button type="button" class="btn" data-act="gis" aria-expanded="false" aria-controls="gis-${i}">⭐ ${esc(t.gisBtn)}</button>` : ""}
           ${FEAT.points ? `<button type="button" class="btn" data-act="visit" ${done ? "disabled" : ""}>${done ? "✓ " + esc(t.visitedDone) : "🪙 " + esc(t.visited) + " +10"}</button>` : ""}
         </div>
+        ${FEAT.twogis ? `<div class="gis-box" id="gis-${i}" aria-live="polite" hidden></div>` : ""}
       </article>`;
       const icon = L.divIcon({className: "", iconSize: [30, 30], iconAnchor: [15, 30], html: `<div class="pin"><b>${i + 1}</b></div>`});
       markers[r.poi_id] = L.marker([r.coords.lat, r.coords.lon], {icon, title: r.name}).addTo(layer)
@@ -419,7 +421,7 @@
         $$(".rec").forEach((x) => x.classList.toggle("active", x === el));
         if (window.matchMedia("(max-width: 860px)").matches) $("#map").scrollIntoView({behavior: "smooth"});
       };
-      el.addEventListener("click", (e) => { if (!e.target.closest("a,button")) focus(); });
+      el.addEventListener("click", (e) => { if (!e.target.closest("a,button,.gis-box")) focus(); });
       el.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target === el) focus(); });
       el.querySelector('[data-act="map"]').addEventListener("click", focus);
       const v = el.querySelector('[data-act="visit"]');
@@ -427,9 +429,82 @@
         const all = visited(); all[id] = Date.now(); store.set("seruen_visited", all); renderPoints();
         v.disabled = true; v.textContent = "✓ " + T().visitedDone;
       });
+      const g = el.querySelector('[data-act="gis"]');
+      if (g) g.addEventListener("click", () => toggleGis(el, id, g));
     });
     const rb = $("#routeBtn"); if (rb) rb.addEventListener("click", buildRoute);
     const cb = $("#candBtn"); if (cb) cb.addEventListener("click", toggleCands);
+  }
+
+  // ---------- 2GIS rating and hours (extra): asked only when the button is pressed, never for every card ----------
+  const GIS_RETRY = ["twogis_timeout", "twogis_unavailable", "twogis_local_limit", "network"];
+  const gisKey = (id) => `${id}|${state.lang === "kk" ? "kk" : "ru"}`;  // English gets the Russian 2GIS answer anyway
+  async function getTwoGis(id) {
+    const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 15000);
+    try {
+      const r = await fetch(`${API}/places/${encodeURIComponent(id)}/2gis?lang=${encodeURIComponent(state.lang)}`, {signal: ctrl.signal, cache: "no-store"});
+      const j = await r.json().catch(() => null);
+      if (!r.ok || !j || !j.provider_name) return {error: (j && j.error && j.error.code) || "twogis_unavailable"};
+      return j;
+    } catch { return {error: "network"}; }
+    finally { clearTimeout(timer); }
+  }
+  function gisHours(g) {
+    const t = T(), G = t.gis;
+    if (g.is_24x7) return G.allDay;
+    if (!(g.weekly_hours || []).length) return G.noHours;
+    const byDay = Object.fromEntries(g.weekly_hours.map((d) => [d.day, d.intervals || []]));
+    const groups = [];
+    ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].forEach((d, i) => {
+      // a missing day is "no data", not "closed": 2GIS did not say
+      const v = byDay[d] && byDay[d].length ? byDay[d].map((x) => `${x.start}–${x.end}`).join(", ") : G.noData;
+      const last = groups[groups.length - 1];
+      if (last && last.v === v) last.to = i; else groups.push({from: i, to: i, v});
+    });
+    return groups.map((x) => `${t.weekday[x.from]}${x.to > x.from ? "–" + t.weekday[x.to] : ""} ${x.v}`).join("; ");
+  }
+  function gisHtml(g) {
+    const t = T(), G = t.gis;
+    if (g.error) {
+      return `<p class="msg warn">${esc(G.err[g.error] || G.err.twogis_unavailable)}${GIS_RETRY.includes(g.error) ? ` <button type="button" class="btn small" data-act="gis-retry">${esc(t.retry)}</button>` : ""}</p>`;
+    }
+    const today = new Intl.DateTimeFormat("en-CA", {timeZone: "Asia/Almaty"}).format(new Date());
+    const special = (g.special_hours || []).filter((x) => x.date >= today).slice(0, 3)
+      .map((x) => `${x.date.split("-").reverse().join(".")} ${(x.intervals || []).map((v) => `${v.start}–${v.end}`).join(", ") || G.noData}`);
+    const rating = g.rating != null
+      ? `★ ${esc(g.rating)}${g.rating_count != null ? ` · ${esc(G.reviews)}: ${esc(g.rating_count)}` : ""}${G.scope[g.rating_scope] ? ` <span class="meta">(${esc(G.scope[g.rating_scope])})</span>` : ""}`
+      : esc(G.noRating);
+    const when = new Intl.DateTimeFormat({ru: "ru-RU", kk: "kk-KZ", en: "en-GB"}[state.lang] || "ru-RU",
+      {day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Almaty"}).format(new Date(g.checked_at));
+    const match = g.match_method === "stored_id" ? G.matchManual : fmt(G.matchAuto, {m: g.match_distance_m});
+    const url = /^https:\/\/2gis\.(kz|ru)\//.test(g.provider_url || "") ? g.provider_url : "";
+    return `<div class="gis-head"><span class="badge gis">${esc(G.data)}</span> <b>${esc(g.provider_name)}</b></div>
+      ${g.address ? `<div class="meta">📍 ${esc(g.address)}</div>` : ""}
+      <div>${rating}</div>
+      <div>🕘 <b>${esc(G.hours)}:</b> ${esc(gisHours(g))}</div>
+      ${special.length ? `<div>📅 <b>${esc(G.special)}:</b> ${esc(special.join("; "))}</div>` : ""}
+      ${g.schedule_note ? `<div class="meta">${esc(g.schedule_note)}</div>` : ""}
+      <p class="meta">${esc(G.notNow)}${G.langNote ? " " + esc(G.langNote) : ""}</p>
+      <p class="src">${esc(match)} · ${esc(t.checked)} ${esc(when)}${url ? ` · <a href="${esc(url)}" target="_blank" rel="noopener">${esc(G.open)} ↗</a>` : ""}</p>`;
+  }
+  function toggleGis(card, id, btn) {
+    const box = card.querySelector(".gis-box"), open = box.hidden;
+    box.hidden = !open; btn.setAttribute("aria-expanded", String(open));
+    if (open) loadGis(card, id, btn);
+  }
+  async function loadGis(card, id, btn) {
+    const box = card.querySelector(".gis-box"), key = gisKey(id);
+    if (!state.gis[key]) {
+      btn.disabled = true;
+      box.innerHTML = `<div class="loading" role="status"><div class="spinner"></div>${esc(T().gis.loading)}</div>`;
+      const g = await getTwoGis(id);
+      btn.disabled = false;
+      if (!GIS_RETRY.includes(g.error)) state.gis[key] = g;  // final answers are kept, so 2GIS is asked once per place
+      if (!card.isConnected) return;
+      box.innerHTML = gisHtml(g);
+    } else box.innerHTML = gisHtml(state.gis[key]);
+    const rb = box.querySelector('[data-act="gis-retry"]');
+    if (rb) rb.addEventListener("click", () => loadGis(card, id, btn));
   }
 
   async function toggleCands() {

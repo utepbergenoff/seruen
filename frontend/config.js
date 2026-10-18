@@ -11,6 +11,7 @@ window.SERUEN_CONFIG = {
     route: true,      // "Build a route" from 3 places, line on the map (computed in the browser)
     languages: true,  // KZ / RU / EN switch
     points: true,     // coins for visited places, stored only in this browser
+    twogis: true,     // "2GIS rating & hours" button on each card: asks the backend only when pressed
   },
 
   // Route line geometry. The public OSRM demo server; if it fails we draw straight lines.
