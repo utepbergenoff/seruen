@@ -1,6 +1,6 @@
 // Service worker: caches the app shell so the site opens offline / on a weak network.
 // API answers are never cached here (they depend on time and place).
-const CACHE = "seruen-v7";
+const CACHE = "seruen-v8";
 const SHELL = ["./", "index.html", "about.html", "styles.css", "app.js", "route.js", "i18n.js", "config.js", "manifest.json",
   "presets.json", "scenarios.json",
   "vendor/leaflet/leaflet.css", "vendor/leaflet/leaflet.js", "icons/icon.svg", "icons/icon-192.png"];

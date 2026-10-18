@@ -41,8 +41,9 @@ def decimals(x: float) -> int:
 def run_scenarios(ctx, label: str) -> None:
     for sid in ["S1", "S2", "S3", "S4", "S5", "S6"]:
         page = ctx.new_page()
-        errors, bodies = [], []
+        errors, bodies, gis_calls = [], [], []
         page.on("pageerror", lambda e, errs=errors: errs.append(str(e)))
+        page.on("request", lambda r, g=gis_calls: g.append(r.url) if "/2gis" in r.url else None)
         page.on("request", lambda r, b=bodies: b.append(r.post_data) if r.url.endswith("/recommend") else None)
         page.goto(f"{BASE}/?scenario={sid}&at={DAY}{THEME}")
         try:
@@ -81,6 +82,8 @@ def run_scenarios(ctx, label: str) -> None:
             ok = decimals(loc["lat"]) <= 3 and decimals(loc["lon"]) <= 3
             check(f"{label} {sid}: request coords rounded to 3 decimals", ok, f"{loc['lat']}, {loc['lon']}")
         check(f"{label} {sid}: no coordinates in page URL", not re.search(r"\d{2}\.\d{3,}", page.url))
+        check(f"{label} {sid}: 2GIS button on every card", page.locator('.rec [data-act="gis"]').count() == n)
+        check(f"{label} {sid}: no 2GIS requests until the button is pressed", not gis_calls, f"{len(gis_calls)} requests")
         check(f"{label} {sid}: no JavaScript errors", not errors, "; ".join(errors[:2]))
         page.close()
 
@@ -110,6 +113,34 @@ def main() -> int:
         page.wait_for_selector(".msg.err", timeout=15000)
         check("error state: server unreachable shows a message", "Сервер" in page.inner_text("#status") or
               "server" in page.inner_text("#status").lower())
+        page.close()
+        # 2GIS block: a fake answer (no real quota is spent), asked once, shown as text with the source link
+        page = laptop.new_page()
+        gis_calls = []
+        fake = {"poi_id": "x", "twogis_place_id": "70000001", "source": "2gis", "provider_name": "Тест <b>2ГИС</b>",
+                "address": "проспект Мәңгілік Ел, 55/11", "language": "ru", "checked_at": "2026-10-18T09:00:00Z",
+                "match_method": "exact_name_nearby", "match_distance_m": 12, "rating": 4.6, "rating_count": 321,
+                "rating_scope": "organization", "weekly_hours": [{"day": d, "intervals": [{"start": "08:00", "end": "22:00"}]}
+                                                                 for d in ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")],
+                "special_hours": [], "is_24x7": False, "schedule_note": None, "open_now": None,
+                "provider_url": "https://2gis.kz/astana/firm/70000001", "attribution": "Данные 2ГИС", "photos_supported": False}
+
+        def fake_gis(route):
+            gis_calls.append(route.request.url)
+            route.fulfill(status=200, content_type="application/json", body=json.dumps(fake))
+        page.route("**/places/*/2gis*", fake_gis)
+        page.goto(f"{BASE}/?scenario=S1&at={DAY}{THEME}")
+        page.wait_for_selector(".rec", timeout=25000)
+        page.click('.rec >> nth=0 >> [data-act="gis"]')
+        page.wait_for_selector(".rec >> nth=0 >> .gis-box .gis-head", timeout=10000)
+        box = page.locator(".rec >> nth=0 >> .gis-box")
+        text = box.inner_text()
+        check("2GIS block: label, rating, hours, 'not open-now' note", all(x in text for x in ("Данные 2ГИС", "4.6", "пн–вс 08:00–22:00", "прямо сейчас")), text[:120])
+        check("2GIS block: provider text is not HTML", "Тест <b>2ГИС</b>" in text)
+        check("2GIS block: link to the 2GIS card", box.locator('a[href="https://2gis.kz/astana/firm/70000001"]').count() == 1)
+        page.click('.rec >> nth=0 >> [data-act="gis"]')
+        page.click('.rec >> nth=0 >> [data-act="gis"]')
+        check("2GIS block: asked once, reopening uses the answer", len(gis_calls) == 1, f"{len(gis_calls)} requests")
         page.close()
         # location detected automatically on open (simulated position near Expo)
         ctx = browser.new_context(viewport={"width": 390, "height": 844}, permissions=["geolocation"],

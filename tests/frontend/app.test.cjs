@@ -9,7 +9,7 @@ const answer = name => ({mode:'no_ai', recommendations:[], notes:[name], safety:
 async function boot(t, opts = {}) {
   const dom = new JSDOM(fs.readFileSync('frontend/index.html','utf8'), {url:'https://example.test/',runScripts:'outside-only'});
   t.after(() => dom.window.close());
-  const w=dom.window, requests=[], gps={};
+  const w=dom.window, requests=[], gps={}, gis=[];
   w.matchMedia=()=>({matches:false});
   w.HTMLElement.prototype.scrollIntoView=()=>{};
   w.SERUEN_CONFIG={API_URL:'https://api.example.test',FEATURES:{weather:false}};
@@ -17,7 +17,7 @@ async function boot(t, opts = {}) {
   Object.defineProperty(w.navigator,'geolocation',{value:{getCurrentPosition:(ok,fail)=>Object.assign(gps,{ok,fail})}});
   const map={setView(){return this;},on(){return this;},getZoom(){return 15;},invalidateSize(){},fitBounds(){},removeLayer(){}};
   w.L={map:()=>map,tileLayer:()=>({addTo(){}}),divIcon:x=>x,
-    marker:()=>({addTo(){return this;},bindTooltip(){return this;},on(){return this;},setLatLng(){},setTooltipContent(){}}),
+    marker:()=>({addTo(){return this;},bindTooltip(){return this;},bindPopup(){return this;},on(){return this;},setLatLng(){},setTooltipContent(){}}),
     layerGroup:()=>({addTo(){return this;},clearLayers(){}}),latLngBounds:x=>x,
     Control:{extend:cfg=>class{addTo(){w.document.body.appendChild(cfg.onAdd());}}},
     DomUtil:{create:(tag,cl)=>{const el=w.document.createElement(tag);el.className=cl;return el;}},
@@ -26,11 +26,12 @@ async function boot(t, opts = {}) {
     if(url==='presets.json'||url==='scenarios.json') return json(JSON.parse(fs.readFileSync('frontend/'+url,'utf8')));
     if(url.endsWith('/health')) return opts.health ? opts.health.promise : json({mode_available:['no_ai']});
     if(url.endsWith('/recommend')) {const p=pending();requests.push({body:JSON.parse(options.body),...p});return p.promise;}
+    if(url.includes('/2gis')) {gis.push(url);return opts.twogis(url);}
     throw Error('Unexpected request '+url);
   };
   for(const file of ['i18n.js','route.js','app.js']) w.eval(fs.readFileSync('frontend/'+file,'utf8'));
   await tick(); await tick();
-  return {w,requests,gps,click:s=>w.document.querySelector(s).click()};
+  return {w,requests,gps,gis,click:s=>w.document.querySelector(s).click()};
 }
 test('shell and six demos stay usable while backend health is pending', async t=>{
   const b=await boot(t,{health:pending()});
@@ -88,3 +89,43 @@ for (const choice of ['alone','group','child']) {
     assert.equal(b.requests[1].body.context.companions,choice);
   });
 }
+
+const rec = (id, name) => ({poi_id:id,name,category:'coffee',coords:{lat:51.13,lon:71.43},distance_m:300,walk_min:5,time_to_spend_min:30,
+  why:'w',why_source:'template',what_to_do:'d',what_to_do_source:'template',open_status:{state:'unknown',confidence:'low',hours:null,source:'none',checked_at:null}});
+const gisAnswer = {poi_id:'p1',twogis_place_id:'70000001',source:'2gis',provider_name:'Coffee BOOM',address:'<img src=x onerror=alert(1)>',language:'ru',
+  checked_at:'2026-10-18T09:00:00Z',match_method:'exact_name_nearby',match_distance_m:12,rating:4.6,rating_count:321,rating_scope:'organization',
+  weekly_hours:['Mon','Tue','Wed','Thu','Fri'].map(day=>({day,intervals:[{start:'08:00',end:'22:00'}]})),special_hours:[],is_24x7:false,
+  schedule_note:null,open_now:null,provider_url:'https://2gis.kz/astana/firm/70000001',attribution:'Данные 2ГИС',photos_supported:false};
+async function withCards(t, twogis) {
+  const b=await boot(t,{twogis});b.click('#goBtn');await tick();
+  b.requests[0].resolve(json({...answer('cards'),recommendations:[rec('p1','Coffee BOOM'),rec('p2','Drinkit')]}));await tick();
+  return b;
+}
+test('2GIS is asked only on the button, once per place, and its text is escaped',async t=>{
+  const b=await withCards(t,()=>json(gisAnswer));
+  assert.equal(b.gis.length,0);
+  const btn=b.w.document.querySelector('.rec [data-act="gis"]'),box=b.w.document.querySelector('.rec .gis-box');
+  btn.click();await tick();await tick();
+  assert.equal(b.gis.length,1);assert.match(b.gis[0],/\/places\/p1\/2gis\?lang=ru$/);
+  assert.match(box.textContent,/Данные 2ГИС/);assert.match(box.textContent,/★ 4\.6 · отзывов: 321/);
+  assert.match(box.textContent,/пн–пт 08:00–22:00; сб–вс нет данных/);
+  assert.match(box.textContent,/не подтверждает, что место открыто прямо сейчас/);
+  assert.equal(box.querySelector('img'),null);
+  assert.equal(box.querySelector('a').href,'https://2gis.kz/astana/firm/70000001');
+  btn.click();assert.ok(box.hidden);
+  btn.click();await tick();assert.ok(!box.hidden);assert.equal(b.gis.length,1);
+});
+test('2GIS failures: no match is final, a timeout offers retry, the card stays',async t=>{
+  let code='twogis_not_matched';
+  const b=await withCards(t,()=>({ok:false,status:404,json:async()=>({error:{code}})}));
+  const [c1,c2]=b.w.document.querySelectorAll('.rec');
+  c1.querySelector('[data-act="gis"]').click();await tick();await tick();
+  assert.match(c1.querySelector('.gis-box').textContent,/нет надёжного совпадения/);
+  assert.equal(c1.querySelector('[data-act="gis-retry"]'),null);
+  code='twogis_timeout';
+  c2.querySelector('[data-act="gis"]').click();await tick();await tick();
+  assert.match(c2.querySelector('.gis-box').textContent,/не ответил вовремя/);
+  c2.querySelector('[data-act="gis-retry"]').click();await tick();await tick();
+  assert.equal(b.gis.length,3);
+  assert.match(c1.querySelector('h3').textContent,/Coffee BOOM/);
+});
