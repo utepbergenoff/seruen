@@ -483,6 +483,6 @@ table.cands { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-
 [data-theme="dark"] ::selection { background: #536178; color: #fff; }
 @media (max-width: 860px) {
   .top { height: auto; min-height: 64px; flex-wrap: wrap; padding: 10px 12px; }
-  .top-actions { gap: 6px; }
+  .top-actions { gap: 6px; flex-wrap: wrap; }
   .map-tools { top: 10px; right: 10px; width: min(210px, calc(100% - 75px)); }
 }
