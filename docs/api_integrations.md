@@ -4,7 +4,7 @@
 
 ## Переменные
 
-- `GEMINI_API_KEY`: Gemini Developer API; `GEMINI_MODEL` по умолчанию `gemini-3.8-flash`.
+- `GEMINI_API_KEY`: Gemini Developer API; `GEMINI_MODEL` по умолчанию `gemini-3.5-flash-lite`.
 - `GOOGLE_PLACES_API_KEY`: Places API (New), серверный ключ. Для совместимости поддерживается `GOOGLE_API_KEY`, если первая переменная пустая.
 - `GOOGLE_PLACES_ENABLED=false` по умолчанию. Наличие ключа **не включает** запросы рейтингов и часов.
 
