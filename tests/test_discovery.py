@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 
 from backend.app import create_app
 from backend.discovery import Discovery, to_poi
-from backend.schemas import RecommendRequest
+from backend.schemas import Draft, Generated, RecommendRequest
 from backend.service import RecommendationService
 from backend.twogis import TwoGis
 
@@ -53,14 +53,14 @@ def test_catalog_places_not_in_local_db_are_returned_and_paginated(enabled):
         assert all(x["facts_source"] == "2gis" and x["sources"] == ["2gis"] for x in first["recommendations"])
         assert all(x["links"]["2gis"].startswith("https://2gis.kz/astana/firm/") for x in first["recommendations"])
         assert all(x["poi_id"] not in c.app.state.twogis.pois for x in first["recommendations"])
-        second = c.post("/recommend", json={**ASK, "cursor": first["next_cursor"]}).json()
-        third = c.post("/recommend", json={**ASK, "cursor": second["next_cursor"]}).json()
-        ids = [x["poi_id"] for d in (first, second, third) for x in d["recommendations"]]
-        assert len(ids) == len(set(ids)) == 7 and third["next_cursor"] is None
-        assert len(seen) == 1  # paging within the result set does not consume API quota
+        ids = [x["poi_id"] for x in first["nearby_places"]]
+        assert len(ids) == len(set(ids)) == 7 and first["next_cursor"] is None
+        assert {x["poi_id"] for x in first["recommendations"]} <= set(ids)
+        c.post("/recommend", json=ASK)
+        assert len(seen) == 1  # repeated browsing reuses the short-lived page cache
         params = seen[0].url.params
         assert params["q"] == "Кофейни" and params["page_size"] == "10"
-        assert "type" not in params and "sort" not in params
+        assert "type" not in params and params["sort"] == "distance"
         assert params["point"] == "71.43,51.128"
         assert "synthetic-private-key" not in r.text
 
@@ -145,7 +145,7 @@ def test_park_search_avoids_ambiguous_clothing_query(enabled):
 
 
 def test_duplicate_ids_and_cursor_binding(enabled):
-    with TestClient(create_app(enabled, twogis_transport=transport([place(), place(), place(2), place(3), place(4)]))) as c:
+    with TestClient(create_app(enabled, twogis_transport=transport([place(), place(), place(2), place(3), place(4)], total=30))) as c:
         first = c.post("/recommend", json=ASK).json()
         assert first["next_cursor"]
         for other in ({**ASK, "query": "Хочу поесть"}, {**ASK, "location": {"lat": 51.1, "lon": 71.4}}):
@@ -159,7 +159,7 @@ def test_provider_next_page_and_cursor_expiry(enabled):
     with TestClient(create_app(enabled, twogis_transport=transport([place()], total=51, seen=seen))) as c:
         first = c.post("/recommend", json=ASK).json()
         c.post("/recommend", json={**ASK, "cursor": first["next_cursor"]})
-        assert [r.url.params["page"] for r in seen] == ["1", "2"]
+        assert [r.url.params["page"] for r in seen] == ["1", "2", "3", "4"]
         saved = c.app.state.discovery.cursors[first["next_cursor"]]
         c.app.state.discovery.cursors[first["next_cursor"]] = (saved[0]-301, *saved[1:])
         assert c.post("/recommend", json={**ASK, "cursor": first["next_cursor"]}).json()["source_error"] == "twogis_search_expired"
@@ -202,3 +202,98 @@ async def test_simultaneous_searches_share_one_upstream_request(enabled):
     results = await asyncio.gather(*(discovery.recommend(req) for _ in range(3)))
     assert all(len(r[0].recommendations) == 3 for r in results)
     assert len(seen) == 1
+
+
+class CatalogGemini:
+    def __init__(self, broken=False):
+        self.calls, self.received, self.broken = 0, [], broken
+
+    async def generate(self, request, intent, hits):
+        self.calls += 1
+        self.received = hits
+        if self.broken:
+            raise RuntimeError('private provider diagnostic')
+        return Generated(recommendations=[
+            Draft(poi_id='invented', why='Не показывать.', time_to_spend_min=10, what_to_do='Не показывать.'),
+            Draft(poi_id=hits[-1].poi.poi_id, why='Близкое кафе подходит для короткой остановки.',
+                  time_to_spend_min=480, what_to_do='Можно взять кофе и отдохнуть.')])
+
+
+def test_gemini_selects_new_catalog_place_without_replacing_its_explanation(enabled):
+    enabled.gemini_api_key = 'synthetic-ai-key'
+    ai = CatalogGemini()
+    with TestClient(create_app(enabled, provider=ai, twogis_transport=transport())) as c:
+        d = c.post('/recommend', json=ASK).json()
+        assert d['mode'] == 'ai' and len(ai.received) == 7
+        assert d['recommendations'][0]['poi_id'] == ai.received[-1].poi.poi_id
+        assert d['recommendations'][0]['why'] == 'Близкое кафе подходит для короткой остановки.'
+        assert d['recommendations'][0]['why_source'] == 'ai'
+        assert all(p['facts_source']=='2gis' and p['poi_id']!='invented' for p in d['recommendations'])
+        assert all(p['budget_breakdown']['total_min'] <= 120 for p in d['recommendations'])
+        assert c.app.state.service.metrics['invented_ids_rejected'] == 1
+        assert all(h.poi.sources == ['2gis'] for h in ai.received)
+        c.post('/recommend', json=ASK)
+        assert ai.calls == 1
+
+
+def test_gemini_failure_keeps_catalog_and_marks_fallback(enabled):
+    enabled.gemini_api_key = 'synthetic-ai-key'
+    with TestClient(create_app(enabled, provider=CatalogGemini(True), twogis_transport=transport())) as c:
+        d = c.post('/recommend', json=ASK).json()
+        assert d['mode'] == 'no_ai' and len(d['nearby_places']) == 7
+        assert d['recommendations'] and d['source_error'] is None
+        assert any('ИИ' in note for note in d['notes'])
+        assert 'private provider' not in str(d)
+
+
+def test_coffee_chains_cafe_rubrics_and_closed_places_remain_visible(enabled):
+    hours = {day: {'working_hours':[{'from':'01:00','to':'02:00'}]}
+             for day in ('Mon','Tue','Wed','Thu','Fri','Sat','Sun')}
+    items=[place(1,name='Espresso Day',rubrics=[{'name':'Кафе'}]),
+           place(2,name='Coffee Boom',rubrics=[{'name':'Рестораны'},{'name':'Кофейни'},
+                                             {'name':'Детские игровые площадки'}]),
+           place(3,name='Closed cafe',schedule=hours)]
+    with TestClient(create_app(enabled, twogis_transport=transport(items))) as c:
+        d=c.post('/recommend',json=ASK).json()
+        assert {p['name'] for p in d['recommendations']} == {'Espresso Day','Coffee Boom'}
+        assert len(d['nearby_places']) == 3
+        closed=next(p for p in d['nearby_places'] if p['name']=='Closed cafe')
+        assert not closed['eligible'] and closed['excluded_because']=='closed'
+
+
+@pytest.mark.parametrize('name',['Coffee Boom','Espresso Day'])
+def test_brand_name_is_not_replaced_by_generic_coffee_query(enabled,name):
+    seen=[]
+    with TestClient(create_app(enabled,twogis_transport=transport(seen=seen))) as c:
+        c.post('/recommend',json={**ASK,'query':name})
+    assert seen[0].url.params['q']==name
+
+
+def test_nearby_pagination_covers_all_results_without_duplicates(enabled):
+    seen=[]
+    def respond(req):
+        page=int(req.url.params['page'])
+        seen.append(page)
+        items=[place(n) for n in range((page-1)*10+1,min(page*10,43)+1)]
+        return httpx.Response(200,json={'meta':{'code':200},'result':{'items':items,'total':43}})
+    with TestClient(create_app(enabled,twogis_transport=httpx.MockTransport(respond))) as c:
+        q=copy.deepcopy(ASK)
+        ids=[]
+        for _ in range(3):
+            d=c.post('/recommend',json=q).json()
+            ids += [p['poi_id'] for p in d['nearby_places']]
+            if d['next_cursor']:
+                q['cursor']=d['next_cursor']
+        assert len(ids)==len(set(ids))==43
+        assert d['next_cursor'] is None and seen==[1,2,3,4,5]
+
+
+def test_partial_provider_failure_keeps_first_page_and_retry_cursor(enabled):
+    def respond(req):
+        if req.url.params['page']=='2':
+            return httpx.Response(429)
+        return httpx.Response(200,json={'meta':{'code':200},'result':{'items':[place()], 'total':20}})
+    with TestClient(create_app(enabled,twogis_transport=httpx.MockTransport(respond))) as c:
+        d=c.post('/recommend',json=ASK).json()
+        assert d['recommendations'] and d['nearby_places'] and d['next_cursor']
+        assert d['source_error']=='twogis_quota_exceeded'

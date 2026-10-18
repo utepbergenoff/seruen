@@ -88,7 +88,8 @@ class TwoGis:
                 self.day, self.day_calls = today, 0
             while self.calls and self.calls[0] <= now - 60:
                 self.calls.popleft()
-            if len(self.calls) >= 5 or self.day_calls >= 25:
+            if (len(self.calls) >= self.settings.twogis_requests_per_minute
+                    or self.day_calls >= self.settings.twogis_requests_per_day):
                 raise PlacesError("twogis_local_limit", 429)
             self.calls.append(now)
             self.day_calls += 1
