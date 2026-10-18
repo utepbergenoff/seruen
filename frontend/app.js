@@ -191,7 +191,6 @@
     if ($("#whenSel").value === "other" && $("#whenAt").value) { ctx.now = $("#whenAt").value + ":00+05:00"; ctx.simulate = true; }
     Object.assign(ctx, state.chipCtx);
     const w = await weatherForRequest();
-    state.lastWeather = w;  // the full object (with "simulated") stays here for the panel
     if (w) ctx.weather = {temp_c: w.temp_c, wind_ms: w.wind_ms, precip_mm: w.precip_mm};  // exactly the contract fields
     return ctx;
   }
@@ -265,6 +264,7 @@
 
   async function ask() {
     const version = ++state.requestVersion;
+    const simulatedWeather = ["cold", "mild"].includes($("#weather").value);
     $("#status").innerHTML = `<div class="loading" role="status"><div class="spinner"></div>${esc(T().loading)}</div>`;
     $("#goBtn").disabled = true;
     try {
@@ -273,6 +273,7 @@
       if (version !== state.requestVersion) return;
       const data = await postJSON("/recommend", body);
       if (version !== state.requestVersion) return;
+      state.lastWeather = body.context.weather ? {...body.context.weather, simulated: simulatedWeather} : null;
       state.lastReq = body; state.extraCands = null; state.showCands = false;
       state.last = data;
       $("#status").innerHTML = "";
@@ -370,7 +371,7 @@
       // real descriptions (Wikipedia / OSM) are shown; generated ones are folded behind their honest label
       const desc = !r.description ? (generated ? `<div class="desc">${esc(t.descSrc.generated_from_tags)}</div>` : "")
         : generated ? `<details class="desc"><summary>${esc(t.descSrc.generated_from_tags)}</summary>${esc(r.description)}</details>`
-        : `<div class="desc">${esc(r.description)} <span class="src">(${esc(t.descSrc[r.description_source] || r.description_source || "")})</span></div>`;
+        : `<div class="desc">${esc(r.description)} <span class="src">(${r.description_url && /^https:\/\/(?:[a-z-]+\.)?wikipedia\.org\//i.test(r.description_url) ? `<a href="${esc(r.description_url)}" target="_blank" rel="noopener">${esc(t.descSrc[r.description_source] || r.description_source)}</a>` : esc(t.descSrc[r.description_source] || r.description_source || "")})</span></div>`;
       const rating = r.rating ? ` · ★ ${esc(r.rating)}${r.rating_count ? " (" + esc(r.rating_count) + ")" : ""}` : "";
       const acc = r.accessibility && r.accessibility !== "unknown" ? (r.accessibility === "no" ? "" : "♿ ") + t.accessL[r.accessibility] : t.accessL.unknown;
       const tags = (r.tag_labels || []).map((x) => `<span class="tag">${esc(x)}</span>`).join("");
@@ -457,7 +458,7 @@
     if (c.goal || (c.categories && c.categories.length)) add(t.goal, `${esc(c.goal || "")}${c.categories && c.categories.length ? " → " + esc(c.categories.join(", ")) : ""}${c.tags && c.tags.length ? " · " + esc(c.tags.join(", ")) : ""}`);
     if (c.filters && c.filters.length) add(t.filters, esc(c.filters.map(codeLabel).join("; ")));
     if (c.walk_speed_m_per_min) add(t.speed, `${esc(c.walk_speed_m_per_min)} ${esc(t.mPerMin)} × ${esc(c.street_factor || 1.3)}`);
-    const w = c.weather && c.weather.temp_c !== undefined ? {...c.weather, wind_ms: c.weather.wind_ms ?? (c.weather.wind_kmh ? c.weather.wind_kmh / 3.6 : 0)} : state.lastWeather;
+    const w = c.weather && c.weather.temp_c !== undefined ? {...c.weather, simulated: !!state.lastWeather?.simulated, wind_ms: c.weather.wind_ms ?? (c.weather.wind_kmh ? c.weather.wind_kmh / 3.6 : 0)} : state.lastWeather;
     if (FEAT.weather && w) add(t.weatherL, esc(weatherText(w)));
     add(t.found, esc(c.candidates_found ?? (d.candidates || []).length));
     add(t.mode, esc(t.modes[d.mode] || d.mode));
@@ -465,11 +466,11 @@
     let cands = "";
     if (state.showCands) {
       const src = (d.candidates && d.candidates.length) ? d : (state.extraCands || {});
-      const cl = src.candidates || [], ex = src.excluded || [];
+      const cl = src.candidates || [], ex = [...(src.excluded || [])].sort((a, b) => a.distance_m - b.distance_m);
       cands = `<h3 class="sub">${esc(t.cands)} (${cl.length})</h3><p class="meta">${esc(t.candsHint)}</p><div class="tbl"><table class="cands"><tr><th>#</th><th></th><th>${esc(t.distance)}</th><th>${esc(t.score)}</th></tr>` +
         cl.map((x, i) => `<tr><td>${i + 1}</td><td>${esc(x.name)}<br><span class="meta">${esc(x.category_label || catLabel(x.category))}${(x.reasons || []).length ? " · " + esc(x.reasons.map(codeLabel).join(", ")) : ""}</span></td><td>${esc(x.distance_m)}</td><td>${x.score != null ? esc(Number(x.score).toFixed(2)) : ""}</td></tr>`).join("") +
-        `</table></div>` + (ex.length ? `<h3 class="sub">${esc(t.excluded)}</h3><div class="tbl"><table class="cands">` +
-        ex.map((x) => `<tr><td>${esc(x.name)}<br><span class="meta">${esc(x.category_label || catLabel(x.category))} · ${esc(x.distance_m)} ${esc(t.distance)}</span></td><td>${esc(x.excluded_label || codeLabel(x.excluded_because))}</td></tr>`).join("") + "</table></div>" : "");
+        `</table></div>` + (ex.length ? `<h3 class="sub">${esc(t.excluded)} (${Math.min(20, ex.length)}/${ex.length})</h3><div class="tbl"><table class="cands">` +
+        ex.slice(0, 20).map((x) => `<tr><td>${esc(x.name)}<br><span class="meta">${esc(x.category_label || catLabel(x.category))} · ${esc(x.distance_m)} ${esc(t.distance)}</span></td><td>${esc(x.excluded_label || codeLabel(x.excluded_because))}</td></tr>`).join("") + "</table></div>" : "");
     }
     const any = (d.candidates || []).length || (d.excluded || []).length || c.candidates_found;
     return `<section class="card considered" id="consideredBox"><h3>🔎 ${esc(t.considered)}</h3><dl class="kv">${rows.join("")}</dl>
@@ -520,7 +521,7 @@
   // ---------- start ----------
   async function getJSON(url, timeoutMs = 12000) {
     const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), timeoutMs);
-    try { const r = await fetch(url, {signal: ctrl.signal}); if (!r.ok) throw new Error(r.status); return await r.json(); }
+    try { const r = await fetch(url, {signal: ctrl.signal, cache: "no-store"}); if (!r.ok) throw new Error(r.status); return await r.json(); }
     finally { clearTimeout(timer); }
   }
   async function init() {

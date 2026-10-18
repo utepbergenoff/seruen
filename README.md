@@ -19,13 +19,13 @@
 
 ## Проверка всей системы 18.10
 
-Подробное покрытие ТЗ и всех потоков: [docs/spec_audit.md](docs/spec_audit.md). Локально проходят **190 Python-тестов + 17 тестов интерфейса**, Ruff и два набора по 30 сценариев без ИИ. Полный публичный прогон запускается без копирования ключей: `.venv/bin/python eval/live.py`.
+Подробное покрытие ТЗ и всех потоков: [docs/spec_audit.md](docs/spec_audit.md). Локально проходят **191 Python-тестов + 18 тестов интерфейса**, Ruff и два набора по 30 сценариев без ИИ. Полный публичный прогон запускается без копирования ключей: `.venv/bin/python eval/live.py`.
 
 Фронтенд проверяется командой `npm ci && npm test` (Node 22+); сборка сайта не нужна. Запуск: `python3 -m http.server 5173 --directory frontend` → `http://localhost:5173`. Он обращается к публичному Render. Публикацию новой версии сайта выполняет Алихан: [инструкция](docs/frontend/AUDIT_HANDOFF.md).
 
 ## Быстрый запуск
 
-Нужен Python 3.11+ (проверено на 3.12). Из корня репозитория:
+Нужен Python 3.12+ (проверено на 3.12). Из корня репозитория:
 
 ```bash
 make setup
@@ -33,7 +33,7 @@ make index
 make run
 ```
 
-Если `python3` старше 3.11, укажите подходящий интерпретатор: `make setup PYTHON=python3.12`. Далее открывайте `http://127.0.0.1:8000/docs`. Ключей не требуется. `make run` использует реальный снимок; после установки запуск — одна команда. `make mock` включает явный mock=true для B1.
+Если `python3` старше 3.12, укажите подходящий интерпретатор: `make setup PYTHON=python3.12`. Далее открывайте `http://127.0.0.1:8000/docs`. Ключей не требуется. `make run` использует реальный снимок; после установки запуск — одна команда. `make mock` включает явный mock=true для B1.
 
 Альтернатива при запущенном Docker: `docker compose up --build`. Dockerfile и Compose подготовлены; актуальное подтверждение проверки контейнера указано в handoff, а не подразумевается самим наличием файлов.
 
@@ -110,11 +110,11 @@ make run
 
 Переменные перечислены в `.env.example`. Секреты текущего деплоя хранятся только в Render Environment; локальный `.env` не требуется и не создавался. По умолчанию используется `gemini-3.5-flash-lite` из [официального списка Google](https://ai.google.dev/gemini-api/docs/models). Живой прогон на Render: 6/6 сценариев отвечают, в 5/6 — ИИ; в S1 ответ модели отклонён проверкой и заменён шаблонами. Модель 3.8 Flash возвращала HTTP 429, поэтому выбран Flash-Lite. [Результаты](docs/api_integrations_verification.json). REST `generateContent` и JSON Schema соответствуют [документации API](https://ai.google.dev/api/generate-content). Код не подключает платные тарифы сам.
 
-После получения ключа: настроить GEMINI_API_KEY/GEMINI_MODEL, перезапустить сервер, затем `POI_PATH=data/poi_sample.json .venv/bin/python eval/run.py --ai`. Это делает реальные вызовы Google и расходует квоту аккаунта. Без `--ai` eval намеренно проверяет только no_ai.
+Ключ уже настроен в Render. Для проверки публичного сервиса запускайте `.venv/bin/python eval/live.py`: ключ остаётся на сервере. Локальный `eval/run.py --ai` нужен только в окружении с разрешённым ключом и делает реальные вызовы Google; без `--ai` он проверяет no_ai.
 
 ## Технологии
 
-Python 3.11+, FastAPI, Pydantic 2, Uvicorn, HTTPX; NumPy/scikit-learn для локального векторного индекса; pytest и Ruff. Точные проверенные версии закреплены в `requirements.txt` и `requirements-dev.txt`; это файлы установки для чистого окружения и Render.
+Python 3.12+, FastAPI, Pydantic 2, Uvicorn, HTTPX; NumPy/scikit-learn для локального векторного индекса; pytest и Ruff. Точные проверенные версии закреплены в `requirements.txt` и `requirements-dev.txt`; это файлы установки для чистого окружения и Render.
 
 ## Честность, безопасность, приватность
 

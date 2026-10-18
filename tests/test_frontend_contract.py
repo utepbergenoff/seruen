@@ -31,3 +31,23 @@ def test_offline_frontend_demos_match_backend():
     import json
     from backend.config import ROOT
     assert json.loads((ROOT / 'frontend/scenarios.json').read_text(encoding='utf-8')) == scenarios()
+
+
+@pytest.mark.asyncio
+async def test_generated_description_is_not_sent_as_verified_fact(service, req, monkeypatch):
+    from backend.generate import Gemini
+    captured = {}
+    intent, _, search = service.inspect(req)
+    hit = search.hits[0]
+    hit.poi = hit.poi.model_copy(update={'description_source': 'generated', 'description': 'Unverified invented amenity'})
+    provider = Gemini(service.settings)
+
+    async def capture(system, payload, schema):
+        captured.update(payload)
+        return {'recommendations': [{'poi_id': hit.poi.poi_id, 'why': 'A nearby option',
+                  'what_to_do': 'Check visitor details', 'time_to_spend_min': 20}]}
+
+    monkeypatch.setattr(provider, 'structured', capture)
+    await provider.generate(req, intent, [hit])
+    assert captured['candidates'][0]['description'] == ''
+    assert captured['candidates'][0]['description_source'] == 'generated'

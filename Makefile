@@ -3,6 +3,7 @@ POI_PATH ?= data/poi.json
 export POI_PATH
 .PHONY: setup run test eval index mock data data-fresh test-data
 setup:
+	$(PYTHON) -c "import sys; sys.version_info >= (3, 12) or sys.exit('Use Python 3.12+: make setup PYTHON=python3.12')"
 	$(PYTHON) -m venv .venv
 	.venv/bin/python -m pip install -r requirements-dev.txt
 index:

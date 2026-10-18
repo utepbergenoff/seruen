@@ -1,0 +1,19 @@
+{
+  "sample_size": 100,
+  "structured_rows": 100,
+  "only_allowed_fields": true,
+  "credential_patterns_found": false,
+  "error_counts": {
+    "none": 74,
+    "http_429": 7,
+    "provider_http_error": 7,
+    "ai_unavailable": 8,
+    "http_400": 1,
+    "http_422": 1,
+    "places_disabled": 1,
+    "all_drafts_rejected": 1
+  },
+  "first_timestamp": "2026-10-18T08:11:03.322063544Z",
+  "last_timestamp": "2026-10-18T08:12:40.198190235Z",
+  "scope": "Bounded sample of shared application logs; not proxy logs and not exclusively this evaluator"
+}
