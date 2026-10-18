@@ -260,16 +260,23 @@ class Photos:
             return matches[0]
         return None
 
-    async def details(self, poi_id, ask):
-        if re.fullmatch(r"2gis_[0-9]{1,32}", poi_id):
+    async def details(self, poi_id, ask, poi=None):
+        if poi is None and re.fullmatch(r"2gis_[0-9]{1,32}", poi_id):
             # `near` remains accepted for published frontend compatibility, but is not identity proof.
             verified = self.catalog_poi(poi_id) if self.catalog_poi else None
+            if verified and self.settings.photos_enabled:
+                async with httpx.AsyncClient(timeout=self.settings.photo_timeout_s, transport=self.transport,
+                                             follow_redirects=False, headers={"User-Agent": "SeruenAstana/1.0"}) as client:
+                    await self.load_index(client)
+                # the team's own photos can be listed under the 2GIS id itself (places our map data lacks)
+                if self.entries(poi_id):
+                    return await self.details(poi_id, ask.model_copy(update={"near": None}), poi=verified)
             target = await self.nearest(verified) if verified and self.settings.photos_enabled else None
             if target is None:
                 return PlacePhotos(poi_id=poi_id, status="no_photos", checked_at=datetime.now(timezone.utc))
             result = await self.details(target, ask.model_copy(update={"near": None}))
             return result.model_copy(update={"poi_id": poi_id})
-        poi = self.pois.get(poi_id)
+        poi = poi or self.pois.get(poi_id)
         if poi is None:
             raise PlacesError("poi_not_found", 404)
         now = datetime.now(timezone.utc)

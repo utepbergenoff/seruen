@@ -194,3 +194,16 @@ async def test_2gis_russian_name_matches_the_osm_russian_name_of_our_place(setti
     photos = Photos(settings, [place], transport({"park": COMMONS}, names={"park": ["Парк влюбленных"]}), ai)
     photos.catalog_poi = lambda _: place.model_copy(update={"poi_id": "2gis_7", "name": "Парк влюблённых"})
     assert (await photos.details("2gis_7", PhotoRequest())).status == "ok"
+
+
+async def test_team_photos_listed_under_a_2gis_id_need_that_place_in_the_answer(settings, poi):
+    ai = FakeAI(ANSWER)
+    team = [{"url": "c/team-1.jpg", "source": "team"}]
+    photos = make(settings, poi, {"2gis_70000001072135261": team}, ai)
+    remote = poi.model_copy(update={"poi_id": "2gis_70000001072135261", "name": "Coffee BOOM, сеть кофеен"})
+    photos.catalog_poi = lambda pid: remote if pid == remote.poi_id else None
+    result = await photos.details(remote.poi_id, PhotoRequest(query="кофе"))
+    assert result.status == "ok" and result.poi_id == remote.poi_id
+    assert [p.source for p in result.photos] == ["team"] and ai.calls[0]["payload"]["place"]["name"] == remote.name
+    photos.catalog_poi = lambda _: None  # not in a recent answer: identity unknown, nothing shown
+    assert (await photos.details("2gis_70000001072135261", PhotoRequest(query="x"))).status == "no_photos"
