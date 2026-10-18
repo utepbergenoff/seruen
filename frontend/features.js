@@ -449,6 +449,7 @@
   }
   function renderWalk() {
     const box = $("#walk"); if (!box) return;
+    window.dispatchEvent(new CustomEvent("seruen:walk-change"));
     pauseLayer.clearLayers();
     if (walkLine) { map.removeLayer(walkLine); walkLine = null; }
     box.hidden = !walk;

@@ -7,7 +7,7 @@
 
 Редакция 2 согласует код из `feat/frontend-eight-features` с сервером. Версии серверных PlanState/OfflinePlan и файлов данных остаются 1; локальная оболочка сохранённой прогулки в браузере — version=2.
 
-`GET /health` возвращает `feature_contract_version:2` и `features:{replan:1,end_point:1,constraints:1,comfort:1,cost:1,atmosphere:1,plan_export:1}`. Флаги означают поддержку API, а не наличие новых данных или живой квоты Gemini. Подготовленный фронтенд включает функции только при этой редакции. Старый опубликованный интерфейс продолжает работать.
+`GET /health` возвращает `feature_contract_version:2` и `features:{replan:1,end_point:1,constraints:1,comfort:1,cost:1,atmosphere:1,plan_export:1,nearby_break:1,city_history:1,meet_halfway:1,winter_plan:1}`. Флаги означают поддержку API, а не наличие новых данных или живой квоты Gemini. Подготовленный фронтенд включает функции только при этой редакции. Старый опубликованный интерфейс продолжает работать. Новые городские функции описаны в [city_experiences.md](city_experiences.md).
 
 | Назначение | Согласованный формат (вместо черновика v0) |
 |---|---|

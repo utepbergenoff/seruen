@@ -486,3 +486,20 @@ table.cands { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-
   .top-actions { gap: 6px; flex-wrap: wrap; }
   .map-tools { top: 10px; right: 10px; width: min(210px, calc(100% - 75px)); }
 }
+/* City experiences use the existing theme palette and remain readable on small screens. */
+.experience-tabs { display:flex; gap:8px; flex-wrap:wrap; }
+.experience-head { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:16px; }
+.experience-head h3 { margin:0; }
+.experiences label { display:block; margin:12px 0; }
+.experiences select { max-width:100%; }
+.experiences p { overflow-wrap:anywhere; }
+.experiences .row { margin:10px 0; }
+.story-card, .preview-card { border-top:1px solid var(--line); margin-top:16px; padding-top:16px; }
+.story-card h3 { margin:6px 0 12px; }
+.experience-pin { background:var(--surface); color:var(--ink); font-weight:700; }
+.meeting-times { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:12px 0; }
+.meeting-times span { padding:12px; border:1px solid var(--line); border-radius:12px; }
+.meeting-times strong { display:block; font-size:20px; margin-top:6px; }
+.preview-range input { width:100%; margin:14px 0; accent-color:var(--sky-deep); }
+#previewStage { min-height:126px; border-left:3px solid #B87900; padding-left:14px; }
+#mapDetailBtn { margin-top:6px; }

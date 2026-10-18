@@ -74,6 +74,7 @@ class Preferences(Model):
     max_walk_min: int | None = Field(default=None, ge=1, le=120)
     max_distance_m: int | None = Field(default=None, ge=50, le=10000)
     indoor_only: bool = False
+    winter_mode: bool = False
     expense_mode: Literal["any", "free_only", "no_required_purchase"] = "any"
     atmosphere_example_id: str | None = Field(default=None, min_length=1, max_length=120)
 
@@ -347,6 +348,7 @@ class Health(Model):
     features: dict[str, int] = Field(default_factory=lambda: {
         "replan": 1, "end_point": 1, "constraints": 1, "comfort": 1,
         "cost": 1, "atmosphere": 1, "plan_export": 1, "nearby_break": 1,
+        "city_history": 1, "meet_halfway": 1, "winter_plan": 1,
     })
 
 

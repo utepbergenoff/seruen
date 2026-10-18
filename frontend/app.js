@@ -35,13 +35,14 @@
 
   // ---------- map ----------
   const map = L.map("map", {zoomControl: true}).setView([state.loc.lat, state.loc.lon], 15);
-  const fitTo = (bounds, opts = {}) => map.fitBounds(bounds, {padding: [48, 48], ...opts});
-  const showAt = (latlng, zoom) => map.setView(latlng, zoom);
+  const fitTo = (bounds, opts = {}) => map.fitBounds(bounds, {padding: [48, 48], ...opts, maxZoom: state.mapMode === "streets" ? 19 : 14});
+  const showAt = (latlng, zoom) => map.setView(latlng, Math.min(zoom, state.mapMode === "streets" ? 19 : 14));
   let baseTiles = [], tileVersion = 0;
   function renderMapControls() {
     $("#mapMode").value = state.mapMode;
     $("#mapNotice").hidden = !state.mapError && state.mapMode === "streets";
     $("#mapNotice").textContent = state.mapError ? T().mapLayerError : T().mapSatelliteHint;
+    $("#mapDetailBtn").hidden = state.mapMode === "streets";
     const mode = window.SeruenTheme?.mode || "system";
     $("#themeBtn").textContent = "◐ " + T().themeModes[mode];
     $("#themeBtn").title = T().themeSwitch;
@@ -52,9 +53,11 @@
     const version = ++tileVersion; let errors = 0;
     baseTiles.forEach(l => map.removeLayer(l)); baseTiles = [];
     state.mapMode = mode; state.mapError = false;
+    // Sentinel-2 is 10 m imagery: never enlarge overview pixels to building-level zoom.
+    map.setMaxZoom?.(mode === "streets" ? 19 : 14);
     store.set("seruen_map_mode", mode); $("#map").dataset.mode = mode;
     const add = (url, options) => {
-      const tile = L.tileLayer(url, {maxZoom: 19, ...options});
+      const tile = L.tileLayer(url, {maxZoom: mode === "streets" ? 19 : 14, ...options});
       tile.on("tileerror", () => {
         if (version !== tileVersion) return;
         if (++errors >= 3 && mode !== "streets") setMapMode("streets");
@@ -75,6 +78,7 @@
     renderMapControls();
   }
   $("#mapMode").addEventListener("change", e => setMapMode(e.target.value));
+  $("#mapDetailBtn").addEventListener("click", () => setMapMode("streets"));
   $("#themeBtn").addEventListener("click", () => { window.SeruenTheme?.cycle(); renderMapControls(); });
   setMapMode(store.get("seruen_map_mode", "streets"));
   const meIcon = () => L.divIcon({className: "", iconSize: [22, 22], iconAnchor: [11, 11], html: '<div class="me"></div>'});
@@ -857,7 +861,7 @@
     }
   }
   window.SeruenApp = {state, FEAT, API, T, fmt, esc, icon, $, $$, map, layer, markers, L, showAt, fitTo, round3,
-    postJSON, getJSON, ask: () => ask(), render: (d) => render(d), rerender: () => { if (state.last) render(state.last); }, catLabel};
+    postJSON, getJSON, context, ask: () => ask(), render: (d) => render(d), rerender: () => { if (state.last) render(state.last); }, catLabel};
   init();
   if (ext.onReady) ext.onReady();
 })();

@@ -30,7 +30,7 @@ def target_time(request: RecommendRequest, intent: Intent, current: datetime | N
 
 
 def speed(request, intent, now):
-    winter = now.month in (11, 12, 1, 2, 3) or (
+    winter = request.preferences.winter_mode or now.month in (11, 12, 1, 2, 3) or (
         request.context.weather is not None and request.context.weather.temp_c <= 0
     )
     return 60 if intent.companions == "child" or winter else 75

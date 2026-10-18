@@ -19,6 +19,7 @@ from .twogis import TwoGis, TwoGisDetails
 from .photos import Photos, PhotoRequest, PlacePhotos
 from .discovery import Discovery
 from .feature_api import register_features
+from .experiences import register_experiences
 from .plans import Planner, PlanError
 from .geo import ALMATY
 
@@ -63,6 +64,7 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
 
     app = FastAPI(title="Серуен API", version="0.1.0", lifespan=lifespan)
     register_features(app)
+    register_experiences(app)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=list(settings.cors_origins),
