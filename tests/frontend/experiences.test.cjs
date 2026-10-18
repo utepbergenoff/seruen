@@ -217,3 +217,41 @@ test('choosing your own point cancels the meeting point picker',async t=>{
   assert.equal(b.w.SeruenExt.onMapClick({latlng:{lat:51.13,lng:71.43}}),false);
   assert.equal(b.w.document.querySelector('#meetCancel').hidden,true);
 });
+
+// the server fits only 2 of the 3 top places: a real "partial" answer
+function partial(){
+  const r=clone(FX.build_ok);r.status='partial';
+  const ids=FX.recommend_normal.recommendations.slice(0,2);
+  r.stops.forEach((s,i)=>Object.assign(s,{poi_id:ids[i].poi_id,canonical_id:ids[i].poi_id,name:ids[i].name}));
+  r.legs[0].to_id=ids[0].poi_id;r.legs[1].from_id=ids[0].poi_id;r.legs[1].to_id=ids[1].poi_id;r.legs[2].from_id=ids[1].poi_id;
+  r.state.remaining_ids=ids.map(p=>p.poi_id);return r;
+}
+
+test('top-3 preview accepts a partial plan, like «Начать прогулку»',async t=>{
+  const b=await boot(t,{...base,build:partial()});await search(b);
+  b.click('[data-plan-preview="results"]');await settle();
+  assert.deepEqual(b.builds.at(-1).stop_ids,FX.recommend_normal.recommendations.map(p=>p.poi_id));
+  assert.ok(b.w.document.querySelector('#previewStep'),b.w.document.querySelector('#experienceMessage')?.textContent);
+  b.click('#previewNext');assert.match(b.w.document.querySelector('#previewStage').textContent,new RegExp(FX.recommend_normal.recommendations[0].name));
+  b.click('#previewStart');
+  assert.deepEqual([...b.w.SeruenFeatures.walk.plan.stops].map(s=>s.poi_id),FX.recommend_normal.recommendations.slice(0,2).map(p=>p.poi_id));
+});
+
+test('a chosen place must still be in its preview',async t=>{
+  const b=await boot(t,{...base,build:partial()});await search(b);
+  const third=FX.recommend_normal.recommendations[2];
+  b.w.SeruenApp.markers[third.poi_id].fire('click');
+  b.click('[data-plan-preview="selected"]');await settle();
+  assert.deepEqual(b.builds.at(-1).stop_ids,[third.poi_id]);
+  assert.equal(b.w.document.querySelector('#previewStep'),null);
+  assert.equal(b.w.document.querySelector('#experienceMessage').textContent,b.w.SeruenExperienceText.ru.noPlan);
+});
+
+test('a 2GIS card gets the Wikipedia link of its verified canonical object',async t=>{
+  const data=JSON.parse(fs.readFileSync('data/city_stories.json','utf8'));
+  const b=await boot(t,{...base,stories:data});await settle();
+  const story=data[0], ext=b.w.SeruenExt;
+  assert.match(ext.cardExtras({poi_id:'2gis_70000001021365759',canonical_id:story.poi_id,name:'Монумент-Бәйтерек',coords:story.coords}),/wikipedia\.org/);
+  assert.doesNotMatch(ext.cardExtras({poi_id:'2gis_other',canonical_id:'osm_way_other',name:'Монумент-Бәйтерек',coords:story.coords}),/wikipedia\.org/);
+  assert.doesNotMatch(ext.cardExtras({poi_id:'2gis_none',canonical_id:null,name:'Baiterek Coffee',coords:story.coords}),/wikipedia\.org/);
+});

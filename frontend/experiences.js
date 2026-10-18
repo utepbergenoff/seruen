@@ -24,7 +24,8 @@
   const normalized = name => String(name || "").split(",")[0].toLocaleLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
   function matchedStory(place) {
     if (!has("city_history")) return null;
-    const exact = storyIndex.find(p => p.poi_id === place.poi_id);
+    // A 2GIS card points to the story's object through the server's verified canonical_id.
+    const exact = storyIndex.find(p => p.poi_id === place.poi_id || (place.canonical_id && p.poi_id === place.canonical_id));
     if (exact) return exact;
     if (!place.coords) return null;
     return storyIndex.find(p => p.aliases.some(a => normalized(a) === normalized(place.name))
@@ -216,8 +217,9 @@
       const result = await A.postJSON(winter ? "/plans/winter" : "/plans/build", winter
         ? {plan: payload, max_outdoor_min: winterLimit} : payload, 40000);
       if (!current()) return;
+      // One chosen place must be in the plan; for the top places a partial plan is fine, as in «Начать прогулку».
       if (!result.fits || !result.stops.length || !["ok","partial"].includes(result.status)
-          || ids.some(id => !result.stops.some(s => s.poi_id === id))) { say(X().noPlan); return; }
+          || (selected && !result.stops.some(s => s.poi_id === selected))) { say(X().noPlan); return; }
       showPreview(result, req, false);
     });
   }
