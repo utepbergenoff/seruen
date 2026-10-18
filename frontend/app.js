@@ -667,7 +667,7 @@
       const avail = h.mode_available || [];
       state.apiMode = h.ai === "gemini" || avail.includes("ai") ? "ai" : h.ai === "no_ai" || avail.includes("no_ai") ? "no_ai" : (h.mode || null);
       const snap = h.data_snapshot || h.data_snapshot_date, places = h.places || h.poi_count;
-      if (snap) $("#snapshot").textContent = `· ${T().snapshot}: ${snap}${places ? " (" + places + ")" : ""}`;
+      if (snap && !h.twogis?.search_enabled) $("#snapshot").textContent = `· ${T().snapshot}: ${snap}${places ? " (" + places + ")" : ""}`;
       renderModeBadge(state.last ? state.last.mode : null);
     } catch { /* Recommendation requests provide their own retry state. */ }
     })();
