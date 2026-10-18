@@ -6,7 +6,7 @@
 (() => {
   "use strict";
   const CFG = window.SERUEN_CONFIG || {};
-  const FEAT = Object.assign({mapLinks: true, weather: true, route: true, languages: true, pirate: true, points: true}, CFG.FEATURES || {});
+  const FEAT = Object.assign({mapLinks: true, weather: true, route: true, languages: true, points: true}, CFG.FEATURES || {});
   const API = (CFG.API_URL || "").replace(/\/$/, "");
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => Array.from(document.querySelectorAll(s));
@@ -22,8 +22,7 @@
 
   const state = {
     lang: params.get("lang") || store.get("seruen_lang", "ru"),
-    pirate: FEAT.pirate && (params.get("pirate") === "1" || store.get("seruen_pirate", false)),
-    loc: {...ASTANA, source: "preset"}, preset: null,
+    loc: {...ASTANA, source: "map"}, locKind: "center", locating: false, preset: null,
     presets: [], scenarios: [], last: null, lastReq: null, lastWeather: null,
     showCands: false, extraCands: null, chipCtx: {}, apiMode: null,
   };
@@ -36,9 +35,9 @@
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(map);
-  const me = L.marker([state.loc.lat, state.loc.lon], {draggable: true, zIndexOffset: 1000, keyboard: true,
-    icon: L.divIcon({className: "", iconSize: [22, 22], iconAnchor: [11, 11], html: '<div class="me"></div>'})}).addTo(map);
-  me.bindTooltip(T().youAreHere, {permanent: true, direction: "top", offset: [0, -12], className: "me-label"});
+  const meIcon = () => L.divIcon({className: "", iconSize: [22, 22], iconAnchor: [11, 11], html: '<div class="me"></div>'});
+  const me = L.marker([state.loc.lat, state.loc.lon], {draggable: true, zIndexOffset: 1000, keyboard: true, icon: meIcon()}).addTo(map);
+  me.bindTooltip(T().youAreHere, {permanent: true, direction: "top", offset: [0, -14], className: "me-label"});
   me.on("dragend", () => { const p = me.getLatLng(); setLoc(p.lat, p.lng, "map", null, false); });
   map.on("click", (e) => setLoc(e.latlng.lat, e.latlng.lng, "map", null, false));
   // the map box gets its final size after CSS/layout: tell Leaflet, or tiles leave grey gaps
@@ -50,15 +49,16 @@
   let routeLine = null;
   const markers = {};
 
-  function setLoc(lat, lon, source, presetId, pan = true) {
+  // source goes to the backend (gps | map | preset); locKind is only for the line under the title
+  function setLoc(lat, lon, source, presetId, pan = true, kind = null) {
     state.loc = {lat, lon, source};
     state.preset = presetId;
+    state.locKind = kind || source;
     me.setLatLng([lat, lon]);
     if (pan) map.setView([lat, lon], Math.max(map.getZoom(), 15));
-    $$("#presets button").forEach((b) => b.classList.toggle("on", b.dataset.id === presetId));
-    $("#geoMsg").hidden = true;
+    if (kind !== "center") $("#geoMsg").hidden = true;
+    renderLocLine();
   }
-
   // ---------- language ----------
   function applyLang() {
     const t = T();
@@ -67,7 +67,8 @@
     $$("[data-i18n-placeholder]").forEach((el) => { el.placeholder = t[el.dataset.i18nPlaceholder]; });
     $$(".lang button").forEach((b) => b.classList.toggle("on", b.dataset.lang === state.lang));
     me.setTooltipContent(t.youAreHere);
-    renderPresets(); renderChips(); renderScenarioMenu(); renderPoints(); renderModeBadge();
+    renderChips(); renderScenarioMenu(); renderScenarioStrip(); renderPoints(); renderModeBadge(); renderLocLine();
+    const gb = $("#geoBtn"); if (gb) { gb.title = t.myLocation; gb.setAttribute("aria-label", t.myLocation); }
     if (state.last) render(state.last);
   }
   $$(".lang button").forEach((b) => b.addEventListener("click", () => {
@@ -76,16 +77,14 @@
 
   // ---------- presets, chips, scenarios ----------
   const plabel = (p) => (p.label && (p.label[state.lang] || p.label.ru)) || p.id;
-  function renderPresets() {
-    $("#presets").innerHTML = state.presets.map((p) =>
-      `<button type="button" data-id="${esc(p.id)}" class="${p.id === state.preset ? "on" : ""}">${esc(plabel(p))}</button>`).join("");
-    $$("#presets button").forEach((b) => b.addEventListener("click", () => {
-      const p = state.presets.find((x) => x.id === b.dataset.id);
-      setLoc(p.lat, p.lon, "preset", p.id);
-    }));
-  }
+  // quick requests as photo tiles (photos: Wikimedia Commons / CC0, credits on the About page)
+  const CHIP_PHOTOS = ["coffee", "walk", "kids", "unusual", "flight", "night"];
   function renderChips() {
-    $("#chips").innerHTML = T().chips.map((c, i) => `<button type="button" data-i="${i}">${esc(c[0])}</button>`).join("");
+    $("#chips").innerHTML = T().chips.map((c, i) => {
+      const label = c[0].replace(/^[^\p{L}\p{N}]+/u, "");
+      const ph = CHIP_PHOTOS[i];
+      return `<button type="button" class="tile" data-i="${i}">${ph ? `<img src="img/cat-${ph}.jpg" alt="" decoding="async">` : ""}<span>${esc(label)}</span></button>`;
+    }).join("");
     $$("#chips button").forEach((b) => b.addEventListener("click", () => {
       const c = T().chips[+b.dataset.i];
       $("#query").value = c[1];
@@ -102,6 +101,26 @@
         <small>${esc(p ? plabel(p) : "")}${p ? " — " : ""}«${esc(s.query)}»</small></button>`;
     }).join("");
     $$("#scenariosMenu button").forEach((b) => b.addEventListener("click", () => { toggleMenu(false); runScenario(b.dataset.id); }));
+  }
+  // ready-made scenarios as photo cards (photos of the real locations)
+  const LOC_PHOTO = {expo: "loc-expo", khan: "loc-khan", mega: "loc-mega", baiterek: "loc-baiterek", nurly: "cat-flight", airport: "loc-airport"};
+  function scenarioPhoto(s) {
+    const hour = s.context && s.context.now ? +String(s.context.now).slice(11, 13) : 12;
+    if (hour >= 21 || hour < 5) return "cat-night";
+    // the Expo "unusual" scenario gets the Nur Alem sphere (also at Expo), so the two Expo cards differ
+    if (s.preset === "expo" && /необыч|unusual|ерекше/i.test(`${s.query} ${typeof s.title === "string" ? s.title : ""}`)) return "cat-unusual";
+    return LOC_PHOTO[s.preset] || "hero-baiterek-night";
+  }
+  function renderScenarioStrip() {
+    $("#scenarioStrip").hidden = !state.scenarios.length;
+    $("#scenarioCards").innerHTML = state.scenarios.map((s) => {
+      const p = state.presets.find((x) => x.id === s.preset);
+      const title = typeof s.title === "string" ? s.title : (s.title && (s.title[state.lang] || s.title.ru)) || s.id;
+      const place = p ? plabel(p).replace(/^(Я у|Я в|At the|At)\s+/i, "").replace(/\s+жанында$/i, "") : "";
+      return `<button type="button" class="scard" data-id="${esc(s.id)}"><img src="img/${scenarioPhoto(s)}.jpg" alt="" loading="lazy" decoding="async">
+        <span class="scard-text"><b>${esc(title)}</b><small>${esc(place)}</small></span></button>`;
+    }).join("");
+    $$("#scenarioCards .scard").forEach((b) => b.addEventListener("click", () => runScenario(b.dataset.id)));
   }
   function toggleMenu(open) { $("#scenariosMenu").hidden = !open; $("#scenariosBtn").setAttribute("aria-expanded", String(open)); }
   $("#scenariosBtn").addEventListener("click", (e) => { e.stopPropagation(); toggleMenu($("#scenariosMenu").hidden); });
@@ -176,19 +195,48 @@
     return Object.assign(ctx, state.chipCtx);
   }
 
-  // ---------- geolocation ----------
-  $("#geoBtn").addEventListener("click", () => {
-    const msg = $("#geoMsg"); msg.hidden = true;
-    const fail = (text) => { msg.textContent = text; msg.hidden = false; };
+  // ---------- location: detected automatically when the page opens ----------
+  function renderLocLine() {
+    const t = T(), p = state.presets.find((x) => x.id === state.preset);
+    const text = state.locating ? t.locLocating
+      : state.locKind === "gps" ? t.locFound
+      : p ? fmt(t.locPreset, {name: plabel(p)})
+      : state.locKind === "map" ? t.locMap
+      : t.locCenter;
+    $("#locLine").textContent = text;
+  }
+  function locate() {
+    const msg = $("#geoMsg");
+    const fail = (text) => {
+      state.locating = false;
+      if (state.locKind !== "gps" && state.locKind !== "map" && !state.preset) setLoc(ASTANA.lat, ASTANA.lon, "map", null, true, "center");
+      msg.textContent = text; msg.hidden = false; renderLocLine();
+    };
     if (!navigator.geolocation || !window.isSecureContext) return fail(T().geoDenied);
-    $("#geoBtn").disabled = true;
+    state.locating = true; renderLocLine();
     navigator.geolocation.getCurrentPosition((pos) => {
-      $("#geoBtn").disabled = false;
+      state.locating = false;
       const lat = round3(pos.coords.latitude), lon = round3(pos.coords.longitude);  // rounded right away
-      if (lat < 51.0 || lat > 51.25 || lon < 71.25 || lon > 71.65) { setLoc(ASTANA.lat, ASTANA.lon, "map", null); return fail(T().geoOutside); }
+      if (lat < 51.0 || lat > 51.25 || lon < 71.25 || lon > 71.65) {
+        setLoc(ASTANA.lat, ASTANA.lon, "map", null, true, "center");
+        msg.textContent = T().geoOutside; msg.hidden = false; return;
+      }
       setLoc(lat, lon, "gps", null);
-    }, () => { $("#geoBtn").disabled = false; fail(T().geoDenied); }, {enableHighAccuracy: false, timeout: 10000, maximumAge: 60000});
+    }, () => fail(T().geoDenied), {enableHighAccuracy: false, timeout: 10000, maximumAge: 60000});
+  }
+  // "find me" button on the map (to detect again, e.g. after moving the point by hand)
+  const LocateCtl = L.Control.extend({
+    options: {position: "topleft"},
+    onAdd() {
+      const b = L.DomUtil.create("button", "locate-btn");
+      b.id = "geoBtn"; b.type = "button";
+      b.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>';
+      L.DomEvent.disableClickPropagation(b);
+      L.DomEvent.on(b, "click", (e) => { L.DomEvent.stop(e); locate(); });
+      return b;
+    },
   });
+  new LocateCtl().addTo(map);
 
   // ---------- request ----------
   $("#askForm").addEventListener("submit", (e) => { e.preventDefault(); ask(); });
@@ -288,6 +336,7 @@
     layer.clearLayers(); if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
     Object.keys(markers).forEach((k) => delete markers[k]);
     const recs = d.recommendations || [];
+    document.body.classList.add("has-results");
     renderModeBadge(d.mode);
     let html = `<div class="result-head"><span class="badge mode-${esc(d.mode)}">${esc(t.mode)}: ${esc(t.modes[d.mode] || d.mode)}${d.cached_from ? " (" + esc(t.modes[d.cached_from] || d.cached_from) + ")" : ""}</span>
       <span class="meta">${d.timing_ms != null ? esc(Math.round(d.timing_ms)) + " ms" : ""}</span></div>`;
@@ -329,9 +378,7 @@
           ${FEAT.points ? `<button type="button" class="btn" data-act="visit" ${done ? "disabled" : ""}>${done ? "✓ " + esc(t.visitedDone) : "🪙 " + esc(t.visited) + " +10"}</button>` : ""}
         </div>
       </article>`;
-      const icon = state.pirate
-        ? L.divIcon({className: "", iconSize: [34, 40], iconAnchor: [17, 34], html: `<div class="chest">💰<b>${i + 1}</b></div>`})
-        : L.divIcon({className: "", iconSize: [30, 30], iconAnchor: [15, 30], html: `<div class="pin"><b>${i + 1}</b></div>`});
+      const icon = L.divIcon({className: "", iconSize: [30, 30], iconAnchor: [15, 30], html: `<div class="pin"><b>${i + 1}</b></div>`});
       markers[r.poi_id] = L.marker([r.coords.lat, r.coords.lon], {icon, title: r.name}).addTo(layer)
         .bindPopup(`<b>${i + 1}. ${esc(r.name)}</b><br>${esc(r.distance_m)} ${esc(t.distance)} · ${esc(r.walk_min)} ${esc(t.walk)}`);
     });
@@ -359,8 +406,6 @@
     });
     const rb = $("#routeBtn"); if (rb) rb.addEventListener("click", buildRoute);
     const cb = $("#candBtn"); if (cb) cb.addEventListener("click", toggleCands);
-    if (state.pirate && recs.length) { $("#captain").textContent = t.captain[Math.floor(Math.random() * t.captain.length)]; $("#captain").hidden = false; }
-    else $("#captain").hidden = true;
   }
 
   async function toggleCands() {
@@ -370,7 +415,9 @@
     if (state.showCands && !(d.candidates && d.candidates.length) && !state.extraCands) {
       try { state.extraCands = await postJSON("/candidates", state.lastReq); } catch { state.extraCands = {candidates: [], excluded: []}; }
     }
-    render(d);
+    // redraw only the panel, so markers and the route line stay on the map
+    $("#consideredBox").outerHTML = considered(d);
+    $("#candBtn").addEventListener("click", toggleCands);
     const p = $("#consideredBox"); if (p && state.showCands) p.scrollIntoView({behavior: "smooth", block: "nearest"});
   }
 
@@ -465,7 +512,7 @@
     $("#routeBox").innerHTML = `<div class="loading"><div class="spinner"></div>${esc(t.loading)}</div>`;
     const geo = await osrmLine([start, ...plan.order, start]);
     if (routeLine) map.removeLayer(routeLine);
-    routeLine = L.polyline(geo.line, {color: state.pirate ? "#7c2d12" : "#0f766e", weight: 4, dashArray: geo.osrm ? null : "8 8", opacity: .85}).addTo(map);
+    routeLine = L.polyline(geo.line, {color: "#123D32", weight: 4, dashArray: geo.osrm ? null : "8 8", opacity: .85}).addTo(map);
     map.fitBounds(routeLine.getBounds(), {padding: [40, 40]});
     const pts = plan.order.map((p) => `${p.lon}%2C${p.lat}`).join("%7C");
     const gis = `https://2gis.kz/astana/directions/tab/pedestrian/points/%7C${pts}?m=${plan.order[0].lon}%2C${plan.order[0].lat}%2F15`;
@@ -480,23 +527,10 @@
       <a class="btn small" target="_blank" rel="noopener" href="${esc(google)}">🧭 ${esc(t.routeGoogle)}</a></div></div>`;
   }
 
-  // ---------- pirate theme (extra) ----------
-  function applyPirate() {
-    document.documentElement.classList.toggle("pirate", state.pirate);
-    $("#pirateBtn").setAttribute("aria-pressed", String(state.pirate));
-    if (state.pirate && !document.getElementById("pirateFont")) {
-      const l = document.createElement("link"); l.id = "pirateFont"; l.rel = "stylesheet";
-      l.href = "https://fonts.googleapis.com/css2?family=Pirata+One&display=swap"; document.head.appendChild(l);
-    }
-    if (state.last) render(state.last);
-  }
-  $("#pirateBtn").addEventListener("click", () => { state.pirate = !state.pirate; store.set("seruen_pirate", state.pirate); applyPirate(); });
-
   // ---------- start ----------
   async function getJSON(url) { const r = await fetch(url); if (!r.ok) throw new Error(r.status); return r.json(); }
   async function init() {
     if (!FEAT.languages) $(".lang").hidden = true;
-    if (!FEAT.pirate) $("#pirateBtn").hidden = true;
     if (!FEAT.weather) $("#weatherField").hidden = true;
     try { state.presets = await getJSON("presets.json"); } catch { state.presets = []; }
     try { state.scenarios = await getJSON(API + "/scenarios"); } catch { state.scenarios = []; }
@@ -520,9 +554,11 @@
       const snap = h.data_snapshot || h.data_snapshot_date, places = h.places || h.poi_count;
       if (snap) $("#snapshot").textContent = `· ${T().snapshot}: ${snap}${places ? " (" + places + ")" : ""}`;
     } catch { $("#status").innerHTML = `<p class="msg err">${esc(T().serverDown)}</p>`; }
-    const p0 = state.presets.find((x) => x.id === (params.get("preset") || "baiterek"));
+    applyLang();
+    // where the person is: a preset from the link (demos), else detect automatically
+    const p0 = state.presets.find((x) => x.id === params.get("preset"));
     if (p0) setLoc(p0.lat, p0.lon, "preset", p0.id);
-    applyLang(); applyPirate();
+    else if (!params.get("scenario")) locate();
     if (FEAT.weather) liveWeather();  // warm up, so the first answer is not slowed down
     if (params.get("at")) {  // simulated time for demos and screenshots, e.g. ?at=2026-10-18T15:00
       $("#whenSel").value = "other"; $("#whenAt").hidden = false; $("#whenAt").value = params.get("at").slice(0, 16);
