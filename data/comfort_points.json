@@ -17,17 +17,17 @@
     "last_checked": "2026-10-19"
    },
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/way/499328514",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "ТРЦ, часы из OSM. Ожидается свободный вход в часы работы; не проверено на месте."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: вход свободный. Координаты и вид — OSM way/499328514."
    },
    "offline_allowed": true,
    "license": "ODbL-1.0",
    "attribution": "© OpenStreetMap contributors",
    "kind": "warming",
-   "access": "unknown",
+   "access": "public",
    "floor": null
   },
   {
@@ -46,47 +46,18 @@
     "last_checked": "2026-10-19"
    },
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/way/499328514",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "OSM: toilets=yes для здания, этаж и условия доступа не указаны."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: туалеты на всех этажах, бесплатно, для всех. Координаты и вид — OSM way/499328514."
    },
    "offline_allowed": true,
    "license": "ODbL-1.0",
    "attribution": "© OpenStreetMap contributors",
    "kind": "toilet",
-   "access": "unknown",
-   "floor": null
-  },
-  {
-   "poi": {
-    "poi_id": "team_comfort_drinkit_mega_toilet",
-    "name": "Drinkit (Mega Silk Way) — туалет",
-    "lat": 51.08908,
-    "lon": 71.40609,
-    "category": "coffee",
-    "indoor": true,
-    "opening_hours_raw": "Mo-Su 08:00-22:00",
-    "hours_source": "osm",
-    "sources": [
-     "osm"
-    ],
-    "last_checked": "2026-10-19"
-   },
-   "evidence": {
-    "source_url": "https://www.openstreetmap.org/node/14275682079",
-    "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "OSM: toilets=yes у кофейни, level=0. Вероятно только для гостей — не проверено."
-   },
-   "offline_allowed": true,
-   "license": "ODbL-1.0",
-   "attribution": "© OpenStreetMap contributors",
-   "kind": "toilet",
-   "access": "unknown",
-   "floor": "0"
+   "access": "public",
+   "floor": "все этажи"
   },
   {
    "poi": {
@@ -104,17 +75,17 @@
     "last_checked": "2026-10-19"
    },
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/way/1531992955",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "OSM: toilets=yes у станции LRT. Неизвестно, нужен ли проездной билет."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: туалет после турникета — нужен проезд. Координаты и вид — OSM way/1531992955."
    },
    "offline_allowed": true,
    "license": "ODbL-1.0",
    "attribution": "© OpenStreetMap contributors",
    "kind": "toilet",
-   "access": "unknown",
+   "access": "paid",
    "floor": null
   },
   {
@@ -133,11 +104,11 @@
     "last_checked": "2026-10-19"
    },
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/node/14091000688",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "OSM: скамейка без спинки и подлокотников (группа из 6)."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: скамейки есть. Координаты и вид — OSM node/14091000688."
    },
    "offline_allowed": true,
    "license": "ODbL-1.0",
@@ -162,11 +133,11 @@
     "last_checked": "2026-10-19"
    },
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/node/14091000690",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "OSM: скамейка без спинки и подлокотников."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: скамейки есть. Координаты и вид — OSM node/14091000690."
    },
    "offline_allowed": true,
    "license": "ODbL-1.0",
@@ -191,17 +162,17 @@
     "last_checked": "2026-10-19"
    },
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/way/460703779",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "ТРЦ, часы из OSM. Ожидается свободный вход; не проверено на месте."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: вход свободный. Координаты и вид — OSM way/460703779."
    },
    "offline_allowed": true,
    "license": "ODbL-1.0",
    "attribution": "© OpenStreetMap contributors",
    "kind": "warming",
-   "access": "unknown",
+   "access": "public",
    "floor": null
   },
   {
@@ -220,17 +191,17 @@
     "last_checked": "2026-10-19"
    },
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/way/1449295070",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "OSM: indoor=room, level=0."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: туалеты есть на всех этажах, бесплатно. Координаты и вид — OSM way/1449295070."
    },
    "offline_allowed": true,
    "license": "ODbL-1.0",
    "attribution": "© OpenStreetMap contributors",
    "kind": "toilet",
-   "access": "unknown",
+   "access": "public",
    "floor": "0"
   },
   {
@@ -249,17 +220,17 @@
     "last_checked": "2026-10-19"
    },
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/way/1449301380",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "OSM: level=1, wheelchair=yes."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: туалеты есть на всех этажах, бесплатно. Координаты и вид — OSM way/1449301380."
    },
    "offline_allowed": true,
    "license": "ODbL-1.0",
    "attribution": "© OpenStreetMap contributors",
    "kind": "toilet",
-   "access": "unknown",
+   "access": "public",
    "floor": "1"
   },
   {
@@ -278,17 +249,17 @@
     "last_checked": "2026-10-19"
    },
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/way/1449317684",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "OSM: level=2, wheelchair=yes."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: туалеты есть на всех этажах, бесплатно. Координаты и вид — OSM way/1449317684."
    },
    "offline_allowed": true,
    "license": "ODbL-1.0",
    "attribution": "© OpenStreetMap contributors",
    "kind": "toilet",
-   "access": "unknown",
+   "access": "public",
    "floor": "2"
   },
   {
@@ -307,17 +278,17 @@
     "last_checked": "2026-10-19"
    },
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/way/1449322333",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "OSM: level=4, этаж парка Fame City."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: туалеты есть на всех этажах, бесплатно. Координаты и вид — OSM way/1449322333."
    },
    "offline_allowed": true,
    "license": "ODbL-1.0",
    "attribution": "© OpenStreetMap contributors",
    "kind": "toilet",
-   "access": "unknown",
+   "access": "public",
    "floor": "4"
   },
   {
@@ -336,17 +307,17 @@
     "last_checked": "2026-10-19"
    },
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/way/108096984",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "ТРК, часы работы в OSM не указаны. Не проверено."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: вход свободный, работает 10:00–22:00. Координаты и вид — OSM way/108096984."
    },
    "offline_allowed": true,
    "license": "ODbL-1.0",
    "attribution": "© OpenStreetMap contributors",
    "kind": "warming",
-   "access": "unknown",
+   "access": "public",
    "floor": null
   },
   {
@@ -365,17 +336,17 @@
     "last_checked": "2026-10-19"
    },
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/node/5040418122",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "OSM: amenity=toilets, правка 2018 года — может быть устаревшей. Плата не указана."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: туалет есть, работает, бесплатно. Часы — из OSM, на месте не проверены. Координаты и вид — OSM node/5040418122."
    },
    "offline_allowed": true,
    "license": "ODbL-1.0",
    "attribution": "© OpenStreetMap contributors",
    "kind": "toilet",
-   "access": "unknown",
+   "access": "public",
    "floor": null
   },
   {
@@ -423,11 +394,11 @@
     "last_checked": "2026-10-19"
    },
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/node/13900933271",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "OSM: со спинкой и подлокотниками, 4 места."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: скамейки есть. Координаты и вид — OSM node/13900933271."
    },
    "offline_allowed": true,
    "license": "ODbL-1.0",
@@ -452,11 +423,11 @@
     "last_checked": "2026-10-19"
    },
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/node/13900933282",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "OSM: со спинкой и подлокотниками, 4 места."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: скамейки есть. Координаты и вид — OSM node/13900933282."
    },
    "offline_allowed": true,
    "license": "ODbL-1.0",
@@ -481,11 +452,11 @@
     "last_checked": "2026-10-19"
    },
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/node/12853583909",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "OSM: деревянная, со спинкой и подлокотниками."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: скамейки есть. Координаты и вид — OSM node/12853583909."
    },
    "offline_allowed": true,
    "license": "ODbL-1.0",
