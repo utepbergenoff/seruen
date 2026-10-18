@@ -24,7 +24,7 @@
 
   const state = {
     lang: params.get("lang") || store.get("seruen_lang", "ru"),
-    loc: {...ASTANA, source: "map"}, locKind: "center", locating: false, locVersion: 0, requestVersion: 0, preset: null,
+    loc: {...ASTANA, source: "map"}, locKind: "center", locating: false, geoMessage: null, locVersion: 0, requestVersion: 0, preset: null,
     presets: [], scenarios: [], last: null, lastReq: null, lastWeather: null,
     showCands: false, extraCands: null, chipCtx: {}, apiMode: null, gis: {}, photos: {}, photoPending: {}, features: {},
     selectedPlaceId: null, mapMode: null, mapError: false,
@@ -99,14 +99,16 @@
   const markers = {};
 
   // source goes to the backend (gps | map | preset); locKind is only for the line under the title
-  function setLoc(lat, lon, source, presetId, pan = true, kind = null) {
+  function cancelLocation() {
     state.locVersion++; state.locating = false; clearTimeout(state.locTimer);
+  }
+  function setLoc(lat, lon, source, presetId, pan = true, kind = null) {
+    cancelLocation(); state.geoMessage = null;
     state.loc = {lat: round3(lat), lon: round3(lon), source};
     state.preset = presetId;
     state.locKind = kind || source;
     me.setLatLng([lat, lon]);
     if (pan) showAt([lat, lon], Math.max(map.getZoom(), 15));
-    if (kind !== "center") $("#geoMsg").hidden = true;
     renderLocLine();
   }
   // ---------- language ----------
@@ -184,6 +186,7 @@
   function runScenario(id) {
     const s = state.scenarios.find((x) => x.id === id);
     if (!s) return;
+    ext.onScenario?.();
     const p = state.presets.find((x) => x.id === s.preset);
     if (p) setLoc(p.lat, p.lon, "preset", p.id);
     else if (s.location) setLoc(s.location.lat, s.location.lon, "preset", null);
@@ -259,37 +262,49 @@
       : state.locKind === "map" ? t.locMap
       : t.locCenter;
     $("#locLine").textContent = text;
+    $("#geoMsg").textContent = state.geoMessage ? t[state.geoMessage] : "";
+    $("#geoMsg").hidden = !state.geoMessage;
+    $("#geoActions").hidden = !state.locating && !state.geoMessage;
+    $("#geoRetry").disabled = state.locating;
+    const button = $("#geoBtn");
+    if (button) { button.disabled = state.locating; button.setAttribute("aria-busy", String(state.locating)); }
   }
   function locate() {
-    const msg = $("#geoMsg"), version = ++state.locVersion;
-    const fail = (text) => {
+    if (state.locating) return; // Repeated clicks must not restart the wait or launch overlapping requests.
+    ext.cancelMapPick?.();
+    const version = ++state.locVersion;
+    const fail = (key) => {
       if (version !== state.locVersion) return;
-      state.locating = false;
-      if (state.locKind !== "gps" && state.locKind !== "map" && !state.preset) setLoc(ASTANA.lat, ASTANA.lon, "map", null, true, "center");
-      msg.textContent = text; msg.hidden = false; renderLocLine();
+      clearTimeout(state.locTimer); state.locating = false;
+      state.geoMessage = key; renderLocLine(); // Keep the current point and active walk, including on failure.
     };
-    if (!navigator.geolocation || !window.isSecureContext) return fail(T().geoUnavailable);
-    state.locating = true; renderLocLine();
-    // if the permission prompt is ignored (or shown only as a small icon), do not wait forever
-    clearTimeout(state.locTimer);
-    state.locTimer = setTimeout(() => { if (state.locating) fail(T().geoTimeout); }, 15000);
-    navigator.geolocation.getCurrentPosition((pos) => {
+    state.geoMessage = null; state.locating = true; renderLocLine();
+    if (!navigator.geolocation || !window.isSecureContext) return fail("geoUnavailable");
+    // Bound the UI wait even when the browser's permission prompt remains unanswered.
+    state.locTimer = setTimeout(() => { if (state.locating) fail("geoTimeout"); }, 5000);
+    try { navigator.geolocation.getCurrentPosition((pos) => {
       if (version !== state.locVersion || !state.locating) return;
-      clearTimeout(state.locTimer);
-      state.locating = false;
       const lat = round3(pos.coords.latitude), lon = round3(pos.coords.longitude);  // rounded right away
+      if (!Number.isFinite(lat) || !Number.isFinite(lon)) return fail("geoUnavailable");
       if (lat < 51.0 || lat > 51.25 || lon < 71.25 || lon > 71.65) {
-        setLoc(ASTANA.lat, ASTANA.lon, "map", null, true, "center");
-        msg.textContent = T().geoOutside; msg.hidden = false; return;
+        fail("geoOutside"); return;
       }
       setLoc(lat, lon, "gps", null);
     }, (err) => {
       if (version !== state.locVersion || !state.locating) return;
       clearTimeout(state.locTimer);
       // 1 = permission denied, 2 = position unavailable (often: browser not allowed in macOS/Windows settings), 3 = timeout
-      fail(err && err.code === 1 ? T().geoDenied : err && err.code === 3 ? T().geoTimeout : T().geoUnavailable);
-    }, {enableHighAccuracy: false, timeout: 15000, maximumAge: 60000});
+      fail(err && err.code === 1 ? "geoDenied" : err && err.code === 3 ? "geoTimeout" : "geoUnavailable");
+    }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 60000});
+    } catch { fail("geoUnavailable"); }
   }
+  $("#geoRetry").addEventListener("click", locate);
+  $("#geoMap").addEventListener("click", () => {
+    ext.cancelMapPick?.();
+    cancelLocation(); state.geoMessage = "geoChooseMap"; renderLocLine();
+    $("#map").scrollIntoView({block: "center", behavior: "smooth"});
+    $("#map").focus({preventScroll: true});
+  });
   // "find me" button on the map (to detect again, e.g. after moving the point by hand)
   const LocateCtl = L.Control.extend({
     options: {position: "topleft"},
@@ -326,6 +341,9 @@
   }
 
   async function ask() {
+    // Search uses the point visible when the person submits, never a late GPS response.
+    if (state.locating) { cancelLocation(); renderLocLine(); }
+    if (ext.onSearch?.()) return;
     const version = ++state.requestVersion;
     const simulatedWeather = ["cold", "mild"].includes($("#weather").value);
     $("#status").innerHTML = `<div class="loading walking" role="status"><span class="trail" aria-hidden="true"><i></i></span>${esc(T().loading)}</div>`;
@@ -603,7 +621,7 @@
         selectPlace(id, false);
         if (window.matchMedia("(max-width: 860px)").matches) $("#map").scrollIntoView({behavior: "smooth"});
       };
-      el.addEventListener("click", (e) => { if (!e.target.closest("a,button,.gis-box")) focus(); });
+      el.addEventListener("click", (e) => { if (!e.target.closest("a,button,input,textarea,select,details,.gis-box")) focus(); });
       el.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target === el) focus(); });
       el.querySelector('[data-act="map"]').addEventListener("click", focus);
       const g = el.querySelector('[data-act="gis"]');
@@ -819,8 +837,12 @@
     applyLang(); // Labels and inputs must work even while Render wakes up.
     if (!FEAT.languages) $(".lang").hidden = true;
     if (!FEAT.weather) $("#weatherField").hidden = true;
-    try { state.presets = await getJSON("presets.json"); } catch { state.presets = []; }
-    try { state.scenarios = await getJSON("scenarios.json"); } catch { state.scenarios = []; }
+    // GPS starts immediately, independent of static files, backend wake-up and health.
+    if (!params.get("preset") && !params.get("scenario")) locate();
+    const initialLocVersion = state.locVersion;
+    [state.presets, state.scenarios] = await Promise.all([
+      getJSON("presets.json").catch(() => []), getJSON("scenarios.json").catch(() => []),
+    ]);
     // accept both {"query": "text"} and {"query": {"q": "text"}} from the backend
     state.scenarios = state.scenarios.map((x) => {
       const req = x.request || {};
@@ -836,14 +858,17 @@
     applyLang();
     // where the person is: a preset from the link (demos), else detect automatically
     const p0 = state.presets.find((x) => x.id === params.get("preset"));
-    if (p0) setLoc(p0.lat, p0.lon, "preset", p0.id);
-    else if (!params.get("scenario")) locate();
+    const initialPointUnchanged = state.locVersion === initialLocVersion;
+    if (initialPointUnchanged) {
+      if (p0) setLoc(p0.lat, p0.lon, "preset", p0.id);
+      else if (params.get("preset") && !params.get("scenario")) locate();
+    }
     if (FEAT.weather) liveWeather();  // warm up, so the first answer is not slowed down
     if (params.get("at")) {  // simulated time for demos and screenshots, e.g. ?at=2026-10-18T15:00
       $("#whenSel").value = "other"; $("#whenAt").hidden = false; $("#whenAt").value = params.get("at").slice(0, 16);
     }
-    if (params.get("scenario")) runScenario(params.get("scenario").toUpperCase());
-    else if (params.get("chip") !== null) $$("#chips button")[+params.get("chip")]?.click();
+    if (initialPointUnchanged && params.get("scenario")) runScenario(params.get("scenario").toUpperCase());
+    else if (initialPointUnchanged && params.get("chip") !== null) $$("#chips button")[+params.get("chip")]?.click();
     void (async () => {
     try {
       const h = await getJSON(API + "/health");
@@ -861,6 +886,7 @@
     }
   }
   window.SeruenApp = {state, FEAT, API, T, fmt, esc, icon, $, $$, map, layer, markers, L, showAt, fitTo, round3,
+    freezeLocation: () => { if (state.locating) { cancelLocation(); renderLocLine(); } },
     postJSON, getJSON, context, ask: () => ask(), render: (d) => render(d), rerender: () => { if (state.last) render(state.last); }, catLabel};
   init();
   if (ext.onReady) ext.onReady();

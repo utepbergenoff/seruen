@@ -4,9 +4,10 @@ const tick = () => new Promise(r => setImmediate(r));
 const pending = () => {let resolve; const promise = new Promise(r => resolve = r); return {promise, resolve};};
 const json = data => ({ok:true,json:async()=>data});
 async function boot(t, opts = {}) {
-  const dom = new JSDOM(fs.readFileSync('frontend/index.html','utf8'), {url:'https://example.test/',runScripts:'outside-only'});
+  const dom = new JSDOM(fs.readFileSync('frontend/index.html','utf8'), {url:opts.url||'https://example.test/',runScripts:'outside-only'});
   t.after(() => dom.window.close());
-  const w=dom.window, requests=[], gps={}, gis=[], photos=[], replans=[], comforts=[], builds=[], tiles=[], lines=[];
+  const w=dom.window, requests=[], gps={calls:[]}, gis=[], photos=[], replans=[], comforts=[], builds=[], tiles=[], lines=[], pins=[];
+  if (opts.clock) {w.setTimeout=opts.clock.setTimeout;w.clearTimeout=opts.clock.clearTimeout;}
   if (opts.live) w.AbortController = AbortController;
   const media={matches:!!opts.darkSystem,addEventListener:(_, cb)=>{media.change=cb;}};
   w.matchMedia=q=>q.includes('prefers-color-scheme') ? media : {matches:false};
@@ -14,19 +15,21 @@ async function boot(t, opts = {}) {
   w.HTMLElement.prototype.scrollIntoView=()=>{};
   w.SERUEN_CONFIG={API_URL:'https://api.example.test',FEATURES:{weather:false}};
   Object.defineProperty(w,'isSecureContext',{value:true});
-  Object.defineProperty(w.navigator,'geolocation',{value:{getCurrentPosition:(ok,fail)=>Object.assign(gps,{ok,fail})}});
+  Object.defineProperty(w.navigator,'geolocation',{value:{getCurrentPosition:(ok,fail,options)=>{
+    gps.calls.push({ok,fail,options});Object.assign(gps,{ok,fail});
+  }}});
   const layers=new Set();
   const map={setView(){return this;},setMaxZoom(z){this.maxZoom=z;return this;},on(){return this;},getZoom(){return 15;},invalidateSize(){},fitBounds(){},removeLayer(l){layers.delete(l);}};
   const events=()=>{const handlers={};return {on(e,cb){handlers[e]=cb;return this;},fire(e,payload={}){handlers[e]?.(payload);return this;}};};
   w.L={map:()=>map,tileLayer:(url,options)=>{const l={url,options,...events(),addTo(){layers.add(this);return this;}};tiles.push(l);return l;},divIcon:x=>x,
-    marker:(coords)=>({...events(),addTo(){return this;},bindTooltip(){return this;},bindPopup(){return this;},getLatLng(){return coords;},openPopup(){},setLatLng(){},setTooltipContent(){}}),
+    marker:(coords,options)=>{const p={coords,options,...events(),addTo(target){this.target=target;return this;},bindTooltip(){return this;},bindPopup(){return this;},getLatLng(){return coords;},openPopup(){},setLatLng(){},setTooltipContent(){}};pins.push(p);return p;},
     polyline:(coords,options)=>{const l={coords,options,addTo(target){if(target===map)layers.add(this);return this;}};lines.push(l);return l;},
     layerGroup:()=>({addTo(){return this;},clearLayers(){}}),latLngBounds:x=>x,
     Control:{extend:cfg=>class{addTo(){w.document.body.appendChild(cfg.onAdd());}}},
     DomUtil:{create:(tag,cl)=>{const el=w.document.createElement(tag);el.className=cl;return el;}},
     DomEvent:{disableClickPropagation(){},on:(el,event,cb)=>el.addEventListener(event,cb),stop:e=>e.stopPropagation()}};
   w.fetch=async(url,options)=>{
-    if(url==='presets.json'||url==='scenarios.json') return json(JSON.parse(fs.readFileSync('frontend/'+url,'utf8')));
+    if(url==='presets.json'||url==='scenarios.json') return opts.staticFiles?.[url]?.promise || json(JSON.parse(fs.readFileSync('frontend/'+url,'utf8')));
     if(opts.live && url.startsWith('https://api.example.test')) {
       let response;
       try { response = await fetch(url.replace('https://api.example.test', opts.live), options); }
@@ -50,7 +53,7 @@ async function boot(t, opts = {}) {
   };
   for(const file of ['theme.js','storage.js','i18n.js','route.js','app.js','features.js','experiences-i18n.js','experiences.js']) w.eval(fs.readFileSync('frontend/'+file,'utf8'));
   await tick(); await tick();
-  return {w,requests,gps,gis,photos,replans,comforts,builds,tiles,lines,layers,media,click:s=>w.document.querySelector(s).click()};
+  return {w,requests,gps,gis,photos,replans,comforts,builds,tiles,lines,pins,layers,media,click:s=>w.document.querySelector(s).click()};
 }
 
 module.exports = {boot};
