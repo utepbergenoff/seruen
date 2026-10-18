@@ -1,0 +1,91 @@
+{
+  "mode": "ai",
+  "recommendations": [
+    {
+      "poi_id": "osm_way_1460763574",
+      "name": "Тәуелсіздіктің 25 жылдығы",
+      "category": "viewpoint",
+      "coords": {
+        "lat": 51.0934524,
+        "lon": 71.4175645
+      },
+      "distance_m": 497,
+      "walk_min": 9,
+      "why": "Это место может подойти под вашу категорию viewpoint, хотя это стоит уточнить на месте.",
+      "why_source": "ai",
+      "time_to_spend_min": 32,
+      "what_to_do": "Идея для прогулки: можно осмотреть территорию и сделать памятные фотографии.",
+      "what_to_do_source": "ai",
+      "open_status": {
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description": "Тәуелсіздіктің 25 жылдығы — достопримечательность.",
+      "description_url": null,
+      "sources": [
+        "osm",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4175645,51.0934524",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.0934524%2C71.4175645"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 9,
+        "stay_min": 32,
+        "walk_back_min": 9,
+        "reserve_min": 0,
+        "total_min": 50
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 9,
+    "stay_min": 32,
+    "walk_back_min": 9,
+    "reserve_min": 0,
+    "total_min": 50
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 1298,
+    "radius_expanded": false,
+    "time_budget_min": 90,
+    "effective_budget_min": 90,
+    "reserve_min": 0,
+    "walk_speed_m_per_min": 75,
+    "street_factor": 1.3,
+    "companions": "alone",
+    "time_simulated": true,
+    "lang": "ru",
+    "filters": [
+      "category:culture",
+      "category:viewpoint",
+      "category:unusual"
+    ],
+    "time": "вс 14:00",
+    "candidates_found": 3,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "ai",
+    "target_time": "2026-10-18T14:00:00+05:00"
+  },
+  "notes": [
+    "Часы работы одного места неизвестны — проверьте перед визитом.",
+    "Демо-расчёт на 18.10.2026 14:00 по времени Астаны: часы работы и безопасность рассчитаны для этого времени."
+  ],
+  "safety": [],
+  "route": null,
+  "disclaimer": "Данные о местах могут устареть — проверяйте на месте. Время пешком приблизительное.",
+  "data_kind": "real",
+  "mock": false
+}

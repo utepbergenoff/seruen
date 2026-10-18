@@ -1,0 +1,139 @@
+{
+  "mode": "no_ai",
+  "recommendations": [
+    {
+      "poi_id": "osm_node_9047331879",
+      "name": "Starbucks",
+      "category": "coffee",
+      "coords": {
+        "lat": 51.0890092,
+        "lon": 71.4089158
+      },
+      "distance_m": 565,
+      "walk_min": 10,
+      "why": "Matches the requested category and fits your time budget.",
+      "why_source": "template",
+      "time_to_spend_min": 60,
+      "what_to_do": "Have a coffee; check seating before ordering.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Su 08:00-22:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description": "Кофейня Starbucks предлагает кофе.",
+      "description_url": null,
+      "sources": [
+        "osm",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4089158,51.0890092",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.0890092%2C71.4089158"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 10,
+        "stay_min": 60,
+        "walk_back_min": 10,
+        "reserve_min": 0,
+        "total_min": 80
+      }
+    },
+    {
+      "poi_id": "osm_node_12520559591",
+      "name": "Лепим и варим",
+      "category": "coffee",
+      "coords": {
+        "lat": 51.0891569,
+        "lon": 71.4078454
+      },
+      "distance_m": 640,
+      "walk_min": 12,
+      "why": "Matches the requested category and fits your time budget.",
+      "why_source": "template",
+      "time_to_spend_min": 60,
+      "what_to_do": "Have a coffee; check seating before ordering.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Su 10:00-23:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description": "Кофейня Лепим и варим работает допоздна.",
+      "description_url": null,
+      "sources": [
+        "osm",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4078454,51.0891569",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.0891569%2C71.4078454"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 12,
+        "stay_min": 60,
+        "walk_back_min": 12,
+        "reserve_min": 0,
+        "total_min": 84
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 10,
+    "stay_min": 60,
+    "walk_back_min": 10,
+    "reserve_min": 0,
+    "total_min": 80
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 865,
+    "radius_expanded": false,
+    "time_budget_min": 120,
+    "effective_budget_min": 120,
+    "reserve_min": 0,
+    "walk_speed_m_per_min": 75,
+    "street_factor": 1.3,
+    "companions": "alone",
+    "time_simulated": true,
+    "lang": "en",
+    "filters": [
+      "quiet",
+      "sockets",
+      "category:coffee",
+      "category:library",
+      "category:cowork"
+    ],
+    "time": "Sun 15:00",
+    "candidates_found": 6,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "rules",
+    "target_time": "2026-10-18T15:00:00+05:00"
+  },
+  "notes": [
+    "AI is unavailable or its response failed validation; rule-based recommendations are shown.",
+    "Demo for 18.10.2026 15:00 Astana time: opening hours and safety are evaluated for that time."
+  ],
+  "safety": [],
+  "route": null,
+  "disclaimer": "Place data may be outdated; verify locally. Walking times are estimates.",
+  "data_kind": "real",
+  "mock": false
+}

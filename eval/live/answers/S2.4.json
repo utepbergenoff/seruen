@@ -1,0 +1,138 @@
+{
+  "mode": "ai",
+  "recommendations": [
+    {
+      "poi_id": "osm_way_1449322354",
+      "name": "Fame City",
+      "category": "kids",
+      "coords": {
+        "lat": 51.1325344,
+        "lon": 71.4038802
+      },
+      "distance_m": 53,
+      "walk_min": 2,
+      "why": "Это место может подойти для детей, как идея для короткой прогулки.",
+      "why_source": "ai",
+      "time_to_spend_min": 30,
+      "what_to_do": "Посетите это место вместе с ребенком.",
+      "what_to_do_source": "ai",
+      "open_status": {
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description": "Fame City — место для детей.",
+      "description_url": null,
+      "sources": [
+        "osm",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4038802,51.1325344",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1325344%2C71.4038802"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 2,
+        "stay_min": 30,
+        "walk_back_min": 2,
+        "reserve_min": 0,
+        "total_min": 34
+      }
+    },
+    {
+      "poi_id": "osm_way_37884583",
+      "name": "Ғашықтар саябағы",
+      "category": "park",
+      "coords": {
+        "lat": 51.1314922,
+        "lon": 71.4092097
+      },
+      "distance_m": 401,
+      "walk_min": 9,
+      "why": "Это парк, который типично находится на воздухе, как идея для отдыха.",
+      "why_source": "ai",
+      "time_to_spend_min": 30,
+      "what_to_do": "Прогуляйтесь по территории парка.",
+      "what_to_do_source": "ai",
+      "open_status": {
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description": "Ғашықтар саябағы — парк или сквер.",
+      "description_url": null,
+      "sources": [
+        "osm",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4092097,51.1314922",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1314922%2C71.4092097"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 9,
+        "stay_min": 30,
+        "walk_back_min": 9,
+        "reserve_min": 0,
+        "total_min": 48
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 2,
+    "stay_min": 30,
+    "walk_back_min": 2,
+    "reserve_min": 0,
+    "total_min": 34
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 692,
+    "radius_expanded": false,
+    "time_budget_min": 60,
+    "effective_budget_min": 60,
+    "reserve_min": 0,
+    "walk_speed_m_per_min": 60,
+    "street_factor": 1.3,
+    "companions": "child",
+    "time_simulated": true,
+    "lang": "ru",
+    "filters": [
+      "category:kids",
+      "category:park",
+      "category:culture",
+      "child_friendly"
+    ],
+    "time": "вс 12:00",
+    "candidates_found": 10,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "ai",
+    "target_time": "2026-10-18T12:00:00+05:00"
+  },
+  "notes": [
+    "Часы работы одного места неизвестны — проверьте перед визитом.",
+    "Демо-расчёт на 18.10.2026 12:00 по времени Астаны: часы работы и безопасность рассчитаны для этого времени."
+  ],
+  "safety": [],
+  "route": null,
+  "disclaimer": "Данные о местах могут устареть — проверяйте на месте. Время пешком приблизительное.",
+  "data_kind": "real",
+  "mock": false
+}

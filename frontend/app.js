@@ -1,7 +1,7 @@
 /* Серуен website: plain JavaScript + Leaflet, no build step (plan B of the team plan).
    Privacy: coordinates are rounded to 3 decimals (~100 m) here, before anything is sent,
    and only travel in POST bodies. Visited places and coins live in this browser only.
-   The page works with any backend that follows docs/frontend_contract.md: optional fields
+   The page works with any backend that follows docs/api.md: optional fields
    (per-card budget, labels, candidates) are computed here when the backend does not send them. */
 (() => {
   "use strict";
@@ -91,7 +91,7 @@
       state.chipCtx = {...(c[2] || {})};
       // "with a child" from a tile applies to that tile only: the next tile goes back to the person's own choice
       if (c[2] && c[2].companions) { $("#companions").value = c[2].companions; state.compFromTile = true; }
-      else if (state.compFromTile) { $("#companions").value = "alone"; state.compFromTile = false; }
+      else if (state.compFromTile) { $("#companions").value = state.companionsChoice || "alone"; state.compFromTile = false; }
       ask();
     }));
   }
@@ -256,9 +256,9 @@
   $("#askForm").addEventListener("submit", (e) => { e.preventDefault(); ask(); });
   $("#query").addEventListener("input", () => {
     state.chipCtx = {};
-    if (state.compFromTile) { $("#companions").value = "alone"; state.compFromTile = false; }
+    if (state.compFromTile) { $("#companions").value = state.companionsChoice || "alone"; state.compFromTile = false; }
   });
-  $("#companions").addEventListener("change", () => { state.compFromTile = false; });  // the person's own choice stays
+  $("#companions").addEventListener("change", () => { state.compFromTile = false; state.companionsChoice = $("#companions").value; });  // the person's own choice stays
 
   async function postJSON(path, body, timeoutMs = 20000) {
     const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), timeoutMs);

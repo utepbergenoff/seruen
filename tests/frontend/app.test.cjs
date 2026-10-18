@@ -77,3 +77,14 @@ test('candidate panel stays usable with a city-sized exclusion list',async t=>{
   assert.equal(b.w.document.querySelectorAll('.cands tr').length,22);
   assert.match(b.w.document.querySelector('#consideredBox').textContent,/20\/1250/);
 });
+
+for (const choice of ['alone','group','child']) {
+  test(`child tile does not overwrite the manual ${choice} preference for later tiles`,async t=>{
+    const b=await boot(t);const select=b.w.document.querySelector('#companions');
+    select.value=choice;select.dispatchEvent(new b.w.Event('change'));
+    b.click('#chips button[data-i="2"]');await tick();
+    assert.equal(b.requests[0].body.context.companions,'child');
+    b.click('#chips button[data-i="0"]');await tick();
+    assert.equal(b.requests[1].body.context.companions,choice);
+  });
+}

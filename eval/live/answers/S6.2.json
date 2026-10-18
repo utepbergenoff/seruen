@@ -1,0 +1,95 @@
+{
+  "mode": "ai",
+  "recommendations": [
+    {
+      "poi_id": "osm_node_2826184438",
+      "name": "Лигалайф",
+      "category": "night",
+      "coords": {
+        "lat": 51.1296521,
+        "lon": 71.4339722
+      },
+      "distance_m": 333,
+      "walk_min": 6,
+      "why": "Это место относится к категории ночной жизни (пожалуйста, уточните этот факт). Идея для посещения.",
+      "why_source": "ai",
+      "time_to_spend_min": 60,
+      "what_to_do": "Проведите время в Лигалайф.",
+      "what_to_do_source": "ai",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "09:00-06:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description": "Бар \"Лигалайф\" работает допоздна.",
+      "description_url": null,
+      "sources": [
+        "osm",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4339722,51.1296521",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1296521%2C71.4339722"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 6,
+        "stay_min": 60,
+        "walk_back_min": 6,
+        "reserve_min": 0,
+        "total_min": 72
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 6,
+    "stay_min": 60,
+    "walk_back_min": 6,
+    "reserve_min": 0,
+    "total_min": 72
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 1000,
+    "radius_expanded": false,
+    "time_budget_min": 120,
+    "effective_budget_min": 120,
+    "reserve_min": 0,
+    "walk_speed_m_per_min": 75,
+    "street_factor": 1.3,
+    "companions": "alone",
+    "time_simulated": true,
+    "lang": "ru",
+    "filters": [
+      "category:night",
+      "category:viewpoint",
+      "category:food",
+      "category:coffee",
+      "category:unusual",
+      "category:park"
+    ],
+    "time": "вс 23:00",
+    "candidates_found": 46,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "ai",
+    "target_time": "2026-10-18T23:00:00+05:00"
+  },
+  "notes": [
+    "Демо-расчёт на 18.10.2026 23:00 по времени Астаны: часы работы и безопасность рассчитаны для этого времени."
+  ],
+  "safety": [
+    "Ночью выбирайте освещённые людные места; возвращайтесь на такси или транспорте."
+  ],
+  "route": null,
+  "disclaimer": "Данные о местах могут устареть — проверяйте на месте. Время пешком приблизительное.",
+  "data_kind": "real",
+  "mock": false
+}

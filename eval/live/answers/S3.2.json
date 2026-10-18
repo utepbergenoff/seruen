@@ -1,0 +1,92 @@
+{
+  "mode": "ai",
+  "recommendations": [
+    {
+      "poi_id": "osm_way_1467797207",
+      "name": "NU Park",
+      "category": "park",
+      "coords": {
+        "lat": 51.0872699,
+        "lon": 71.3994394
+      },
+      "distance_m": 315,
+      "walk_min": 6,
+      "why": "Этот вариант расположен близко к вам и подходит для короткой прогулки.",
+      "why_source": "ai",
+      "time_to_spend_min": 30,
+      "what_to_do": "Если это место действительно относится к категории парков, как предполагается, здесь можно прогуляться на свежем воздухе.",
+      "what_to_do_source": "ai",
+      "open_status": {
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description": "NU Park является парком или сквером.",
+      "description_url": null,
+      "sources": [
+        "osm",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.3994394,51.0872699",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.0872699%2C71.3994394"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 6,
+        "stay_min": 30,
+        "walk_back_min": 6,
+        "reserve_min": 0,
+        "total_min": 42
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 6,
+    "stay_min": 30,
+    "walk_back_min": 6,
+    "reserve_min": 0,
+    "total_min": 42
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 865,
+    "radius_expanded": false,
+    "time_budget_min": 60,
+    "effective_budget_min": 60,
+    "reserve_min": 0,
+    "walk_speed_m_per_min": 75,
+    "street_factor": 1.3,
+    "companions": "alone",
+    "time_simulated": true,
+    "lang": "ru",
+    "filters": [
+      "category:park",
+      "category:viewpoint",
+      "category:culture",
+      "category:unusual"
+    ],
+    "time": "вс 17:30",
+    "candidates_found": 4,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "ai",
+    "target_time": "2026-10-18T17:30:00+05:00"
+  },
+  "notes": [
+    "Часы работы одного места неизвестны — проверьте перед визитом.",
+    "Демо-расчёт на 18.10.2026 17:30 по времени Астаны: часы работы и безопасность рассчитаны для этого времени."
+  ],
+  "safety": [],
+  "route": null,
+  "disclaimer": "Данные о местах могут устареть — проверяйте на месте. Время пешком приблизительное.",
+  "data_kind": "real",
+  "mock": false
+}

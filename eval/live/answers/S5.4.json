@@ -1,0 +1,94 @@
+{
+  "mode": "ai",
+  "recommendations": [
+    {
+      "poi_id": "osm_node_13948916190",
+      "name": "Қазақстан Теміржол тарихы Мұражайы",
+      "category": "culture",
+      "coords": {
+        "lat": 51.1122858,
+        "lon": 71.5316883
+      },
+      "distance_m": 423,
+      "walk_min": 8,
+      "why": "This culture spot is a short walk away, fitting your time before a flight.",
+      "why_source": "ai",
+      "time_to_spend_min": 25,
+      "what_to_do": "Explore the exhibits. Please confirm its status.",
+      "what_to_do_source": "ai",
+      "open_status": {
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description": "Место культуры Қазақстан Теміржол тарихы Мұражайы.",
+      "description_url": null,
+      "sources": [
+        "osm",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.5316883,51.1122858",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1122858%2C71.5316883"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 8,
+        "stay_min": 25,
+        "walk_back_min": 8,
+        "reserve_min": 60,
+        "total_min": 101
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 8,
+    "stay_min": 25,
+    "walk_back_min": 8,
+    "reserve_min": 60,
+    "total_min": 101
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 865,
+    "radius_expanded": false,
+    "time_budget_min": 120,
+    "effective_budget_min": 60,
+    "reserve_min": 60,
+    "walk_speed_m_per_min": 75,
+    "street_factor": 1.3,
+    "companions": "alone",
+    "time_simulated": true,
+    "lang": "en",
+    "filters": [
+      "category:viewpoint",
+      "category:culture",
+      "category:park",
+      "category:coffee",
+      "category:unusual"
+    ],
+    "time": "Sun 16:00",
+    "candidates_found": 2,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "ai",
+    "target_time": "2026-10-18T16:00:00+05:00"
+  },
+  "notes": [
+    "Some opening hours are unknown; check before visiting.",
+    "Time is reserved for airport travel; this is a fixed estimate, check your route and check-in time.",
+    "Demo for 18.10.2026 16:00 Astana time: opening hours and safety are evaluated for that time."
+  ],
+  "safety": [],
+  "route": null,
+  "disclaimer": "Place data may be outdated; verify locally. Walking times are estimates.",
+  "data_kind": "real",
+  "mock": false
+}

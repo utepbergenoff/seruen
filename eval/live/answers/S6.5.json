@@ -1,0 +1,95 @@
+{
+  "mode": "ai",
+  "recommendations": [
+    {
+      "poi_id": "osm_node_2826184438",
+      "name": "Лигалайф",
+      "category": "night",
+      "coords": {
+        "lat": 51.1296521,
+        "lon": 71.4339722
+      },
+      "distance_m": 333,
+      "walk_min": 6,
+      "why": "LigaLife is categorized as a typical night spot. Please confirm if this matches your idea of an unusual late-night place.",
+      "why_source": "ai",
+      "time_to_spend_min": 50,
+      "what_to_do": "As an idea, you could spend time walking over and exploring the venue.",
+      "what_to_do_source": "ai",
+      "open_status": {
+        "state": "open",
+        "confidence": "high",
+        "hours": "09:00-06:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "description_source": "generated",
+      "description": "Бар \"Лигалайф\" работает допоздна.",
+      "description_url": null,
+      "sources": [
+        "osm",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4339722,51.1296521",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1296521%2C71.4339722"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 6,
+        "stay_min": 50,
+        "walk_back_min": 6,
+        "reserve_min": 0,
+        "total_min": 62
+      }
+    }
+  ],
+  "budget_breakdown": {
+    "walk_there_min": 6,
+    "stay_min": 50,
+    "walk_back_min": 6,
+    "reserve_min": 0,
+    "total_min": 62
+  },
+  "considered": {
+    "location_rounded_to_m": 100,
+    "radius_m": 1000,
+    "radius_expanded": false,
+    "time_budget_min": 120,
+    "effective_budget_min": 120,
+    "reserve_min": 0,
+    "walk_speed_m_per_min": 75,
+    "street_factor": 1.3,
+    "companions": "alone",
+    "time_simulated": true,
+    "lang": "en",
+    "filters": [
+      "category:night",
+      "category:viewpoint",
+      "category:food",
+      "category:coffee",
+      "category:unusual",
+      "category:park"
+    ],
+    "time": "Sun 23:00",
+    "candidates_found": 46,
+    "weather": null,
+    "retrieval_mode": "bm25+lsa",
+    "intent_source": "ai",
+    "target_time": "2026-10-18T23:00:00+05:00"
+  },
+  "notes": [
+    "Demo for 18.10.2026 23:00 Astana time: opening hours and safety are evaluated for that time."
+  ],
+  "safety": [
+    "At night choose well-lit busy places; return by taxi or public transport."
+  ],
+  "route": null,
+  "disclaimer": "Place data may be outdated; verify locally. Walking times are estimates.",
+  "data_kind": "real",
+  "mock": false
+}
