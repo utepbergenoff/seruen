@@ -1,0 +1,209 @@
+{
+  "$defs": {
+    "AtmospherePhoto": {
+      "additionalProperties": false,
+      "properties": {
+        "photo_id": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Photo Id",
+          "type": "string"
+        },
+        "url": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "license": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "License",
+          "type": "string"
+        },
+        "attribution": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Attribution",
+          "type": "string"
+        },
+        "offline_allowed": {
+          "default": false,
+          "title": "Offline Allowed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "photo_id",
+        "url",
+        "content_sha256",
+        "license",
+        "attribution"
+      ],
+      "title": "AtmospherePhoto",
+      "type": "object"
+    },
+    "AtmosphereRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "example_id": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Example Id",
+          "type": "string"
+        },
+        "poi_id": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Poi Id",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "features": {
+          "items": {
+            "enum": [
+              "natural_light",
+              "bright",
+              "dim",
+              "greenery",
+              "open_space",
+              "small_space",
+              "visible_seating",
+              "modern",
+              "traditional",
+              "unusual_architecture",
+              "outdoor",
+              "indoor"
+            ],
+            "type": "string"
+          },
+          "maxItems": 12,
+          "minItems": 1,
+          "title": "Features",
+          "type": "array"
+        },
+        "photos": {
+          "items": {
+            "$ref": "#/$defs/AtmospherePhoto"
+          },
+          "maxItems": 4,
+          "minItems": 1,
+          "title": "Photos",
+          "type": "array"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        },
+        "analysis_source": {
+          "enum": [
+            "manual",
+            "gemini"
+          ],
+          "title": "Analysis Source",
+          "type": "string"
+        },
+        "analysis_version": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Analysis Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "example_id",
+        "poi_id",
+        "title",
+        "features",
+        "photos",
+        "evidence",
+        "analysis_source",
+        "analysis_version"
+      ],
+      "title": "AtmosphereRecord",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "source_url": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Source Url",
+          "type": "string"
+        },
+        "checked_at": {
+          "format": "date",
+          "title": "Checked At",
+          "type": "string"
+        },
+        "verification": {
+          "enum": [
+            "verified",
+            "unverified",
+            "conflicting"
+          ],
+          "title": "Verification",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "field_visit",
+            "official_source",
+            "licensed_source",
+            "team_review"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "note": {
+          "default": "",
+          "maxLength": 800,
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_url",
+        "checked_at",
+        "verification",
+        "method"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 1,
+      "default": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/$defs/AtmosphereRecord"
+      },
+      "maxItems": 5000,
+      "title": "Items",
+      "type": "array"
+    }
+  },
+  "required": [
+    "items"
+  ],
+  "title": "AtmosphereRecordFile",
+  "type": "object"
+}

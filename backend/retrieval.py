@@ -32,7 +32,8 @@ class SearchResult:
 
 
 class Retriever:
-    def __init__(self, dataset, index_path):
+    def __init__(self, dataset, index_path, features=None):
+        self.features = features
         self.pois = dataset.pois
         self.documents = [Counter(tokenize(poi_text(p))) for p in self.pois]
         self.lengths = [sum(d.values()) for d in self.documents]
@@ -92,7 +93,10 @@ class Retriever:
                 reason = None
                 chosen_stay = min(stay, available - 2 * walk)
                 min_stay = max(1, math.ceil(stay * 0.7)) if expanded else stay
-                if p.category in intent.exclude_categories:
+                feature_reason = self.features.constraint(p, request.preferences, walk, now.date()) if self.features else None
+                if feature_reason:
+                    reason = feature_reason
+                elif p.category in intent.exclude_categories:
                     reason = "excluded_category"
                 elif intent.companions == "child" and (p.adult_only or p.category == "night" or not p.kid_friendly):
                     reason = "not_child_friendly"
@@ -119,6 +123,9 @@ class Retriever:
                     reason = "night_safety_unconfirmed"
                 tag_match = len(matched) / max(len(intent.tags), 1)
                 rank = score(semantic, distance, current_radius, p.popularity, status.state, tag_match)
+                if self.features and request.preferences.atmosphere_example_id:
+                    match = self.features.match(p.poi_id, request.preferences.atmosphere_example_id, now.date())
+                    rank += min(0.3, len(match.matched_features) * 0.05)
                 reasons = [f"inferred_tag:{t}" if t in inferred else f"tag:{t}" for t in matched]
                 if severe and p.indoor:
                     rank += 0.15

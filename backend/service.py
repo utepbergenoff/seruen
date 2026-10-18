@@ -3,11 +3,12 @@ import math
 
 
 from .cache import ResponseCache
+from .feature_data import FeatureData, apply_feedback, relaxation_options, feedback_note
 from .fallback import drafts
 from .generate import AIError, Gemini, validate_drafts
 from .geo import budget_for, in_astana, target_time, speed
 from .intent import merge_intent, rule_intent
-from .loader import load_pois
+from .loader import Dataset, load_pois
 from .provider_status import log_provider
 from .places import maps_url
 from .retrieval import Retriever, SearchResult
@@ -28,22 +29,46 @@ class RecommendationService:
     def __init__(self, settings, provider=None):
         self.settings = settings
         self.dataset = load_pois(settings.poi_path)
+        self.features = FeatureData(settings.feature_data_dir, self.dataset.pois)
         if any(p.poi_id.startswith("sample_") for p in self.dataset.pois):
             settings.data_kind = "sample"
-        self.retriever = Retriever(self.dataset, settings.index_path)
+        self.retriever = Retriever(self.dataset, settings.index_path, self.features)
+        extra = [r.poi for pid, r in self.features.owned.items() if pid not in self.features.comfort]
+        # Keep the original LSA index intact; reviewed additions use a small separate BM25 retriever.
+        self.extra_retriever = Retriever(Dataset(extra, self.features.fingerprint, 0, 0), None, self.features) if extra else None
         self.provider = provider or Gemini(settings)
+        if isinstance(self.provider, Gemini):
+            self.provider.feature_data = self.features
         self.cache = ResponseCache(settings.cache_size)
         self.metrics = {"invented_ids_rejected": 0, "invalid_drafts_rejected": 0, "ai_errors": 0}
 
     def inspect(self, request, intent=None, current=None):
+        request = apply_feedback(request)
         intent = intent or rule_intent(request)
+        if request.preferences.preferred_categories:
+            intent = intent.model_copy(update={"categories": request.preferences.preferred_categories})
         now = target_time(request, intent, current)
         if not in_astana(request.location.lat, request.location.lon) or not intent.relevant or intent.unsafe:
             return intent, now, SearchResult([], [], 0, False, 0, 0, self.retriever.mode)
         search = self.retriever.search(request, intent, now, self.settings.airport_reserve_min)
+        if self.extra_retriever:
+            extra = self.extra_retriever.search(request, intent, now, self.settings.airport_reserve_min)
+            search.hits = sorted(search.hits + extra.hits, key=lambda h: (-h.candidate.score, h.poi.poi_id))[:10]
+            search.excluded += extra.excluded
+            search.found += extra.found
+        seen, distinct = set(), []
+        for hit in search.hits:
+            identity = self.features.canonical(hit.poi.poi_id)
+            if identity not in seen:
+                distinct.append(hit)
+                seen.add(identity)
+        search.hits = distinct
         if (
             not search.hits
             and intent.categories
+            and not request.preferences.preferred_categories
+            and not request.preferences.indoor_only
+            and not request.feedback
             and not any(word in request.query.casefold() for word in ("только", "only", "тек "))
         ):
             alternative = self.retriever.search(
@@ -64,10 +89,11 @@ class RecommendationService:
         return None
 
     async def recommend(self, request, use_cache=True, force_no_ai=False, current=None):
+        request = apply_feedback(request)
         rules = rule_intent(request)
         now = target_time(request, rules, current)
         ai_enabled = bool(self.settings.gemini_api_key) and not force_no_ai and not self.settings.mock
-        variant = f"{ai_enabled}:{self.settings.gemini_model}:{self.settings.mock}:{self.settings.airport_reserve_min}"
+        variant = f"{ai_enabled}:{self.settings.gemini_model}:{self.settings.mock}:{self.settings.airport_reserve_min}:{self.features.fingerprint}"
         key = self.cache.key(request, now, self.dataset.fingerprint, variant)
         cached = self.cache.get(key) if use_cache else None
         if cached:
@@ -135,6 +161,8 @@ class RecommendationService:
 
     def assemble(self, request, intent, now, search, selected, mode, intent_source, error, ai_ids=None, data_kind=None):
         cards, notes = [], []
+        if request.feedback:
+            notes.append(feedback_note(request.feedback.reason, intent.lang))
         data_kind = data_kind or self.settings.data_kind
         lookup = {h.poi.poi_id: h for h in search.hits}
         for draft in selected:
@@ -160,6 +188,7 @@ class RecommendationService:
             cards.append(
                 Recommendation(
                     poi_id=p.poi_id,
+                    canonical_id=self.features.canonical(p.poi_id),
                     name=(p.name_kk if intent.lang == "kk" else p.name_en if intent.lang == "en" else p.name) or p.name,
                     category=p.category,
                     coords=Coords(lat=p.lat, lon=p.lon),
@@ -181,6 +210,8 @@ class RecommendationService:
                     rating=p.rating,
                     rating_count=p.rating_count,
                     budget_breakdown=budget,
+                    visit_condition=self.features.condition(p.poi_id, now.date()),
+                    atmosphere_match=self.features.match(p.poi_id, request.preferences.atmosphere_example_id, now.date()),
                 )
             )
         refusal = self.refusal(request, intent)
@@ -248,4 +279,7 @@ class RecommendationService:
             disclaimer=message("disclaimer", intent.lang),
             data_kind=data_kind,
             mock=self.settings.mock,
+            applied_preferences=request.preferences,
+            change_codes=[request.feedback.reason] if request.feedback else [],
+            relaxation_options=relaxation_options(request.preferences) if not cards else [],
         )

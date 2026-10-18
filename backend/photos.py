@@ -282,11 +282,6 @@ class Photos:
         now = datetime.now(timezone.utc)
         if not self.settings.photos_enabled:
             return PlacePhotos(poi_id=poi_id, status="disabled", checked_at=now)
-        key = (poi_id, ask.lang, ask.companions, " ".join(ask.query.casefold().split()))
-        hit = self.cache.get(key)
-        if hit and time.monotonic() < hit[0]:
-            self.cache.move_to_end(key)
-            return hit[1]
         async with httpx.AsyncClient(timeout=self.settings.photo_timeout_s, transport=self.transport,
                                      follow_redirects=False, headers={"User-Agent": "SeruenAstana/1.0"}) as client:
             await self.load_index(client)
@@ -295,6 +290,16 @@ class Photos:
                 return PlacePhotos(poi_id=poi_id, status="no_photos", checked_at=now)
             loaded = await asyncio.gather(*(self.image(client, p) for p in photos))
         pairs = [(p, img) for p, img in zip(photos, loaded) if img]
+        # Same URL can serve a changed photograph. Cache only after hashing actual image bytes
+        # and the analysis schema/prompt; unchanged materials consume no new Gemini request.
+        import hashlib
+        materials = hashlib.sha256(repr((SYSTEM, PhotoAnswer.model_json_schema(),
+                                        [(p.model_dump(), img) for p, img in pairs])).encode()).hexdigest()
+        key = (poi_id, ask.lang, ask.companions, " ".join(ask.query.casefold().split()), materials)
+        hit = self.cache.get(key)
+        if hit and time.monotonic() < hit[0]:
+            self.cache.move_to_end(key)
+            return hit[1]
         team = [p for p, _ in pairs if p.source == "team"]
         try:
             answer = await self.analyze(poi, ask, [p for p, _ in pairs], [img for _, img in pairs]) if pairs else None

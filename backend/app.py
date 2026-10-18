@@ -18,6 +18,9 @@ from .places import Places, PlaceDetails, PlacesError
 from .twogis import TwoGis, TwoGisDetails
 from .photos import Photos, PhotoRequest, PlacePhotos
 from .discovery import Discovery
+from .feature_api import register_features
+from .plans import Planner, PlanError
+from .geo import ALMATY
 
 logger = logging.getLogger("seruen")
 
@@ -27,7 +30,7 @@ def scenarios():
 
 
 def create_app(settings=None, provider=None, places_transport=None, twogis_transport=None, photos_transport=None,
-               photos_ai=None):
+               photos_ai=None, routing_transport=None):
     settings = settings or Settings.from_env()
 
     @asynccontextmanager
@@ -37,6 +40,7 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
         app.state.places = Places(settings, service.dataset.pois, places_transport)
         app.state.twogis = TwoGis(settings, service.dataset.pois, twogis_transport)
         app.state.discovery = Discovery(app.state.twogis, service)
+        app.state.planner = Planner(service, app.state.discovery, routing_transport)
         app.state.photos = Photos(settings, service.dataset.pois, photos_transport,
                                   photos_ai or getattr(service.provider, "structured", None) and service.provider,
                                   catalog_poi=app.state.discovery.cached_poi)
@@ -58,6 +62,7 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
         service.cache.entries.clear()
 
     app = FastAPI(title="Серуен API", version="0.1.0", lifespan=lifespan)
+    register_features(app)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=list(settings.cors_origins),
@@ -126,6 +131,10 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
 
     @app.post("/recommend", response_model=RecommendResponse)
     async def recommend(payload: RecommendRequest, request: Request):
+        example = payload.preferences.atmosphere_example_id
+        if example and not any(r.example_id == example for r in request.app.state.service.features.examples(
+                datetime.now(ALMATY).date())):
+            raise PlanError("atmosphere_example_unavailable", 404)
         discovery = request.app.state.discovery
         if payload.source == "2gis" or (payload.source == "auto" and discovery.active()):
             response, error = await discovery.recommend(payload)
@@ -173,6 +182,10 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
 
     @app.post("/candidates")
     async def candidates_post(payload: RecommendRequest, request: Request):
+        example = payload.preferences.atmosphere_example_id
+        if example and not any(r.example_id == example for r in request.app.state.service.features.examples(
+                datetime.now(ALMATY).date())):
+            raise PlanError("atmosphere_example_unavailable", 404)
         if payload.source == "2gis" or (payload.source == "auto" and request.app.state.discovery.active()):
             response = await recommend(payload, request)
             return {"candidates": response.candidates, "excluded": response.excluded,

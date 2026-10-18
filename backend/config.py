@@ -27,6 +27,12 @@ class Settings:
     photo_timeout_s: float = 20.0
     photo_ai_per_minute: int = 8
     photo_ai_per_day: int = 400
+    feature_data_dir: Path = ROOT / "data"
+    routing_enabled: bool = False
+    routing_timeout_s: float = 3.0
+    ai_requests_per_minute: int = 12
+    ai_requests_per_day: int = 400
+    photo_ai_reserved_requests: int = 100
     gemini_model: str = "gemini-3.5-flash-lite"
     ai_timeout_s: float = 8.0
     airport_reserve_min: int = 60
@@ -54,6 +60,8 @@ class Settings:
             twogis_requests_per_day=max(1, min(1000, int(os.getenv("TWOGIS_REQUESTS_PER_DAY", "200")))),
             photos_enabled=os.getenv("PHOTOS_ENABLED", "true").lower() == "true",
             photo_index_url=os.getenv("PHOTO_INDEX_URL", cls.photo_index_url),
+            feature_data_dir=ROOT / os.getenv("FEATURE_DATA_DIR", "data"),
+            routing_enabled=os.getenv("ROUTING_ENABLED", "true").lower() == "true",
             gemini_model=os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite"),
             mock=os.getenv("MOCK_MODE", "false").lower() == "true",
             warm_cache=os.getenv("WARM_CACHE", "true").lower() == "true",

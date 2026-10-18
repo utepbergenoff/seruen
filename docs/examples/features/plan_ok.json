@@ -1,0 +1,216 @@
+{
+  "fixture": "SYNTHETIC TEST DATA, NOT REAL VENUES",
+  "method": "POST",
+  "path": "/plans/build",
+  "request": {
+    "request": {
+      "location": {
+        "lat": 51.128,
+        "lon": 71.43
+      },
+      "query": "Хочу кофе",
+      "source": "local",
+      "context": {
+        "time_budget_min": 90,
+        "now": "2026-10-18T15:00:00+05:00",
+        "simulate": true,
+        "lang": "ru"
+      }
+    },
+    "stop_ids": [
+      "team_coffee",
+      "team_second"
+    ]
+  },
+  "http_status": 200,
+  "response": {
+    "schema_version": 1,
+    "status": "ok",
+    "fits": true,
+    "stops": [
+      {
+        "poi_id": "team_coffee",
+        "canonical_id": "team_coffee",
+        "name": "SYNTHETIC team_coffee",
+        "category": "coffee",
+        "coords": {
+          "lat": 51.129,
+          "lon": 71.43
+        },
+        "arrival_at": "2026-10-18T15:02:00+05:00",
+        "departure_at": "2026-10-18T15:22:00+05:00",
+        "stay_min": 20,
+        "open_status": {
+          "state": "open",
+          "confidence": "high",
+          "hours": "24/7",
+          "source": "osm",
+          "checked_at": "2026-10-18"
+        },
+        "visit_condition": {
+          "kind": "free",
+          "note": "Synthetic test record",
+          "source_url": "https://example.org/synthetic-evidence",
+          "checked_at": "2026-10-18",
+          "verification": "verified"
+        },
+        "atmosphere_match": {
+          "matched_features": [],
+          "source": "none",
+          "checked_at": null,
+          "photo_ids": []
+        },
+        "sources": [
+          "synthetic-test"
+        ]
+      },
+      {
+        "poi_id": "team_second",
+        "canonical_id": "team_second",
+        "name": "SYNTHETIC team_second",
+        "category": "coffee",
+        "coords": {
+          "lat": 51.13,
+          "lon": 71.43
+        },
+        "arrival_at": "2026-10-18T15:24:00+05:00",
+        "departure_at": "2026-10-18T15:44:00+05:00",
+        "stay_min": 20,
+        "open_status": {
+          "state": "open",
+          "confidence": "high",
+          "hours": "24/7",
+          "source": "osm",
+          "checked_at": "2026-10-18"
+        },
+        "visit_condition": {
+          "kind": "optional_purchase",
+          "note": "Synthetic test record",
+          "source_url": "https://example.org/synthetic-evidence",
+          "checked_at": "2026-10-18",
+          "verification": "verified"
+        },
+        "atmosphere_match": {
+          "matched_features": [],
+          "source": "none",
+          "checked_at": null,
+          "photo_ids": []
+        },
+        "sources": [
+          "synthetic-test"
+        ]
+      }
+    ],
+    "legs": [
+      {
+        "from_id": "start",
+        "to_id": "team_coffee",
+        "distance_m": 145,
+        "walk_min": 2,
+        "source": "distance_estimate"
+      },
+      {
+        "from_id": "team_coffee",
+        "to_id": "team_second",
+        "distance_m": 145,
+        "walk_min": 2,
+        "source": "distance_estimate"
+      },
+      {
+        "from_id": "team_second",
+        "to_id": "finish",
+        "distance_m": 290,
+        "walk_min": 4,
+        "source": "distance_estimate"
+      }
+    ],
+    "budget": {
+      "available_min": 90,
+      "walking_min": 8,
+      "visiting_min": 40,
+      "reserve_min": 5,
+      "total_min": 53,
+      "spare_min": 37
+    },
+    "state": {
+      "schema_version": 1,
+      "created_at": "2026-10-18T18:55:21.671589Z",
+      "origin": {
+        "lat": 51.128,
+        "lon": 71.43,
+        "precision_m": 100,
+        "source": "preset"
+      },
+      "finish_mode": "return",
+      "finish": {
+        "lat": 51.128,
+        "lon": 71.43,
+        "precision_m": 100,
+        "source": "preset"
+      },
+      "remaining_ids": [
+        "team_coffee",
+        "team_second"
+      ],
+      "completed_ids": [],
+      "skipped_ids": [],
+      "preferences": {
+        "exclude_poi_ids": [],
+        "visited_poi_ids": [],
+        "exclude_visited": false,
+        "preferred_categories": [],
+        "max_walk_min": null,
+        "indoor_only": false,
+        "expense_mode": "any",
+        "atmosphere_example_id": null
+      },
+      "exclude_categories": []
+    },
+    "departure_at": "2026-10-18T15:00:00+05:00",
+    "estimated_arrival_at": "2026-10-18T15:48:00+05:00",
+    "routing_source": "distance_estimate",
+    "routing_error": null,
+    "geometry": [
+      [
+        71.43,
+        51.128
+      ],
+      [
+        71.43,
+        51.129
+      ],
+      [
+        71.43,
+        51.13
+      ],
+      [
+        71.43,
+        51.128
+      ]
+    ],
+    "exclusions": [],
+    "notes": [
+      "Минуты — оценка; расчёт не гарантирует время прибытия или доступность проходов."
+    ],
+    "warning_codes": [
+      "estimated_arrival",
+      "plan_not_navigation",
+      "street_route_unavailable"
+    ],
+    "applied_preferences": {
+      "exclude_poi_ids": [],
+      "visited_poi_ids": [],
+      "exclude_visited": false,
+      "preferred_categories": [],
+      "max_walk_min": null,
+      "indoor_only": false,
+      "expense_mode": "any",
+      "atmosphere_example_id": null
+    },
+    "change_codes": [],
+    "relaxation_options": [],
+    "data_kind": "sample",
+    "source": "local",
+    "source_error": null
+  }
+}
