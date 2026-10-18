@@ -24,17 +24,17 @@ ENDPOINT = "https://catalog.api.2gis.com/3.0/items"
 TTL = 300
 PAGE_SIZE = 10
 MAX_PAGES = 5
-QUERIES = {"coffee": "Кофейни", "food": "Кафе", "park": "Парки", "kids": "Детские развлекательные центры",
+QUERIES = {"coffee": "Кофейни", "food": "Кафе", "park": "Парки культуры и отдыха", "kids": "Детские развлекательные центры",
            "culture": "Достопримечательности", "viewpoint": "Достопримечательности", "shopping": "Торговые центры",
            "sport": "Спортивные площадки", "night": "Кафе", "unusual": "Достопримечательности",
            "library": "Библиотеки", "cowork": "Коворкинги"}
 # Classify only the provider's rubrics, never invent a category from the user's request.
 CATEGORIES = [
-    ("night", r"бар\b|ночн|клуб|pub|nightclub|кальян"),
-    ("kids", r"детск|балалар|playground|children|kids"),
+    ("night", r"\bбар(?:ы|ов)?\b|ночн|pub|nightclub|кальян"),
+    ("kids", r"детск.{0,35}(площад|игров|развлек|клуб|центр досуга)|playground|children.{0,30}(play|entertain)|kids.{0,30}(play|entertain)|балалар.{0,30}(ойын|көңіл)"),
     ("coffee", r"кофейн|кофе|coffee"),
     ("food", r"ресторан|кафе|столов|пекар|restaurant|cafe|асхана"),
-    ("park", r"парк|сквер|сад\b|park|garden|саябақ"),
+    ("park", r"\bпарк(?:и|ов)?\b|сквер|\bсад\b|\bparks?\b|garden|саябақ"),
     ("library", r"библиот|library|кітапхана"),
     ("cowork", r"коворкин|cowork"),
     ("shopping", r"торгов|трц|shopping|сауда"),
@@ -113,7 +113,10 @@ def to_poi(item, request, radius):
             or not math.isfinite(lat) or not math.isfinite(lon) or not in_astana(lat, lon)
             or haversine(request.location.lat, request.location.lon, lat, lon) > radius):
         return None
-    rubrics = " ".join(str(r.get("name", "")) for r in item.get("rubrics", []) if isinstance(r, dict))
+    rubric_names = [str(r.get("name", "")) for r in item.get("rubrics", []) if isinstance(r, dict)]
+    # Clothes, toy and sports-equipment shops are not playgrounds or sports venues.
+    rubrics = " ".join(r for r in rubric_names if not re.search(
+        r"одежд|обув|инвентар|товар|оборудован|магазин|игруш|сувенир|clothing|footwear|toy store", r, re.I))
     category = next((cat for cat, pattern in CATEGORIES if re.search(pattern, rubrics, re.I)), None)
     if category is None and item.get("type") == "attraction":
         category = "culture"

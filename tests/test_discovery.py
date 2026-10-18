@@ -126,6 +126,24 @@ def test_invalid_or_irrelevant_places_are_not_imported(bad):
     assert to_poi(bad, RecommendRequest.model_validate(ASK), 1500) is None
 
 
+@pytest.mark.parametrize("rubric", ["Детская одежда", "Спортивная одежда / обувь", "Детские игрушки", "Парковки"])
+def test_shops_and_parking_are_not_recreation_venues(rubric):
+    assert to_poi(place(rubrics=[{"name": rubric}]), RecommendRequest.model_validate(ASK), 1500) is None
+
+
+def test_child_clubs_are_not_nightclubs():
+    poi = to_poi(place(rubrics=[{"name": "Детские / подростковые клубы"}]),
+                 RecommendRequest.model_validate(ASK), 1500)
+    assert poi.category == "kids" and poi.kid_friendly and not poi.adult_only
+
+
+def test_park_search_avoids_ambiguous_clothing_query(enabled):
+    seen = []
+    with TestClient(create_app(enabled, twogis_transport=transport(seen=seen))) as c:
+        c.post("/recommend", json={**ASK, "query": "Хочу прогуляться 30 минут"})
+    assert seen[0].url.params["q"] == "Парки культуры и отдыха"
+
+
 def test_duplicate_ids_and_cursor_binding(enabled):
     with TestClient(create_app(enabled, twogis_transport=transport([place(), place(), place(2), place(3), place(4)]))) as c:
         first = c.post("/recommend", json=ASK).json()
