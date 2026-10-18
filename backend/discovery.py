@@ -22,7 +22,7 @@ from .twogis import DAYS, FIELDS, IDENTIFIER, intervals
 
 ENDPOINT = "https://catalog.api.2gis.com/3.0/items"
 TTL = 300
-PAGE_SIZE = 50
+PAGE_SIZE = 10
 MAX_PAGES = 5
 QUERIES = {"coffee": "Кофейни", "food": "Кафе", "park": "Парки", "kids": "Детские развлекательные центры",
            "culture": "Достопримечательности", "viewpoint": "Достопримечательности", "shopping": "Торговые центры",
@@ -162,7 +162,7 @@ class Discovery:
                 return cached[1]
             params = {"q": query, "point": f"{request.location.lon},{request.location.lat}",
                       "radius": math.ceil(radius), "page_size": PAGE_SIZE, "page": page,
-                      "locale": "ru_KZ", "type": "branch,attraction", "sort": "distance",
+                      "locale": "ru_KZ",
                       "fields": FIELDS + ",items.rubrics"}
             try:
                 result = await self.provider.request_items(ENDPOINT, params, max_bytes=1_000_000)

@@ -59,7 +59,8 @@ def test_catalog_places_not_in_local_db_are_returned_and_paginated(enabled):
         assert len(ids) == len(set(ids)) == 7 and third["next_cursor"] is None
         assert len(seen) == 1  # paging within the result set does not consume API quota
         params = seen[0].url.params
-        assert params["q"] == "Кофейни" and params["page_size"] == "50"
+        assert params["q"] == "Кофейни" and params["page_size"] == "10"
+        assert "type" not in params and "sort" not in params
         assert params["point"] == "71.43,51.128"
         assert "synthetic-private-key" not in r.text
 

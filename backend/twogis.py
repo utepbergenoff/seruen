@@ -112,12 +112,15 @@ class TwoGis:
                                          transport=self.transport, follow_redirects=False) as client:
                 response = await client.get(endpoint, params=params)
             if response.status_code != 200:
+                log_provider("twogis", f"http_{int(response.status_code)}")
                 raise self.provider_error(response.status_code)
             if len(response.content) > max_bytes:
                 raise ValueError("large response")
             data = response.json()
             code = data["meta"]["code"]
             if code != 200:
+                if type(code) is int and 100 <= code <= 599:
+                    log_provider("twogis", f"meta_{code}")
                 raise self.provider_error(code)
             result = data["result"]
             if not isinstance(result, dict) or not isinstance(result.get("items", []), list):
