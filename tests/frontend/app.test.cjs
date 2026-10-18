@@ -129,3 +129,15 @@ test('2GIS failures: no match is final, a timeout offers retry, the card stays',
   assert.equal(b.gis.length,3);
   assert.match(c1.querySelector('h3').textContent,/Coffee BOOM/);
 });
+
+test('cards the code added after an AI pick are labelled, pure AI or pure template answers are not',async t=>{
+  const b=await boot(t);b.click('#goBtn');await tick();
+  const ai={...rec('p1','Fame City'),why_source:'ai',what_to_do_source:'ai'};
+  b.requests[0].resolve(json({...answer('mixed'),mode:'ai',recommendations:[ai,rec('p2','Сквер'),rec('p3','Парк')]}));await tick();
+  const badges=[...b.w.document.querySelectorAll('.rec h3')].map(h=>/добавлено кодом/.test(h.textContent));
+  assert.deepEqual(badges,[false,true,true]);
+  b.click('#goBtn');await tick();
+  b.requests[1].resolve(json({...answer('plain'),recommendations:[rec('p2','Сквер'),rec('p3','Парк')]}));await tick();
+  assert.equal(b.w.document.querySelectorAll('.rec').length,2);
+  assert.doesNotMatch(b.w.document.querySelector('#results').textContent,/добавлено кодом/);
+});

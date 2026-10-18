@@ -369,8 +369,11 @@
     if (notes) html += `<div class="notes">${notes}</div>`;
     if (!recs.length) html += `<div class="card empty"><div class="big">🧭</div><h3>${esc(t.emptyTitle)}</h3><p class="meta">${esc(t.emptyHint)}</p></div>`;
 
+    // when the AI picked fewer than three places, the backend adds the next best checked ones with template texts
+    const mixed = recs.some((r) => r.why_source === "ai");
     recs.forEach((r, i) => {
       const done = !!visited()[r.poi_id];
+      const byCode = mixed && r.why_source !== "ai" ? ` <span class="badge tpl" title="${esc(t.byCodeHint)}">${esc(t.byCode)}</span>` : "";
       const L2 = links(r);
       const b = cardBudget(r, d);
       const kind = r.kind_label || r.category_label || catLabel(r.category);
@@ -384,7 +387,7 @@
       const tags = (r.tag_labels || []).map((x) => `<span class="tag">${esc(x)}</span>`).join("");
       html += `<article class="card rec" data-id="${esc(r.poi_id)}" tabindex="0" aria-label="${esc(r.name)}">
         <div class="rec-title"><span class="num">${i + 1}</span><div>
-          <h3><a class="plain" href="${esc(L2.gisPlace)}" target="_blank" rel="noopener" title="${esc(t.openIn2gis)}">${esc(r.name)}</a> <span class="badge db">${esc(t.fromDb)}</span></h3>
+          <h3><a class="plain" href="${esc(L2.gisPlace)}" target="_blank" rel="noopener" title="${esc(t.openIn2gis)}">${esc(r.name)}</a> <span class="badge db">${esc(t.fromDb)}</span>${byCode}</h3>
           <div class="meta">${esc(kind)} · ${esc(r.distance_m)} ${esc(t.distance)} · 🚶 ${esc(r.walk_min)} ${esc(t.walk)}${rating}</div>
         </div></div>
         <div>${r.open_status ? statusPill(r.open_status) : ""}</div>

@@ -85,6 +85,7 @@ class RecommendationService:
         intent, now, search = self.inspect(request, rules, current)
         result_drafts = drafts(search.hits, intent)
         mode, intent_source, error = "no_ai", "rules", "none"
+        ai_ids = set()
         if ai_enabled and search.hits and not self.refusal(request, intent):
             try:
                 async with asyncio.timeout(self.settings.ai_timeout_s):
@@ -102,6 +103,12 @@ class RecommendationService:
                             raise AIError("all_drafts_rejected")
                         error = "invented_id_rejected" if invented else "draft_rejected" if rejected else "none"
                         mode = "ai"
+                        ai_ids = {d.poi_id for d in result_drafts}
+                        # Gemini often picks a single place. The next best checked candidates fill the cards
+                        # up to three with template texts, so each card says honestly who chose it.
+                        result_drafts = result_drafts + drafts(
+                            [h for h in search.hits if h.poi.poi_id not in ai_ids], intent
+                        )
                     else:
                         result_drafts = []
             except Exception as exc:
@@ -117,8 +124,8 @@ class RecommendationService:
                 # Deterministic fallback restarts from rules, not a partially completed AI intent.
                 intent, now, search = self.inspect(request, rules, current)
                 result_drafts = drafts(search.hits, intent)
-                intent_source, error = "rules", "ai_unavailable"
-        response = self.assemble(request, intent, now, search, result_drafts, mode, intent_source, error)
+                intent_source, error, ai_ids = "rules", "ai_unavailable", set()
+        response = self.assemble(request, intent, now, search, result_drafts, mode, intent_source, error, ai_ids)
         if use_cache:
             ttl = 1800 - (now.timestamp() % 1800)
             if error == "ai_unavailable":
@@ -126,10 +133,14 @@ class RecommendationService:
             self.cache.put(key, response, ttl)
         return response, error
 
-    def assemble(self, request, intent, now, search, selected, mode, intent_source, error):
+    def assemble(self, request, intent, now, search, selected, mode, intent_source, error, ai_ids=None):
         cards, notes = [], []
         lookup = {h.poi.poi_id: h for h in search.hits}
-        for draft in selected[:3]:
+        for draft in selected:
+            if len(cards) == 3:
+                break
+            # ai_ids=None keeps the old meaning: in AI mode every card was written by the AI.
+            source = "ai" if mode == "ai" and (ai_ids is None or draft.poi_id in ai_ids) else "template"
             hit = lookup.get(draft.poi_id)
             if not hit:
                 continue
@@ -154,10 +165,10 @@ class RecommendationService:
                     distance_m=c.distance_m,
                     walk_min=c.walk_min,
                     why=draft.why,
-                    why_source="ai" if mode == "ai" else "template",
+                    why_source=source,
                     time_to_spend_min=stay,
                     what_to_do=draft.what_to_do,
-                    what_to_do_source="ai" if mode == "ai" else "template",
+                    what_to_do_source=source,
                     open_status=hit.status,
                     description_source=p.description_source,
                     description=p.description,

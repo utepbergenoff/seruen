@@ -154,6 +154,21 @@ async def test_no_invented_ids_and_clamped_budget(settings, req):
     assert all(r.time_to_spend_min <= 78 for r in response.recommendations)
 
 
+async def test_single_ai_pick_is_filled_up_to_three_with_honest_sources(settings, req):
+    settings.gemini_api_key = "synthetic-test-key"
+    service = RecommendationService(settings, FakeGemini("one"))
+    response, error = await service.recommend(req)
+    _, _, search = service.inspect(req)
+    recs = response.recommendations
+    assert response.mode == "ai" and error == "none"
+    assert len(recs) == min(3, len(search.hits)) >= 2
+    assert recs[0].poi_id == search.hits[0].poi.poi_id
+    assert recs[0].why_source == recs[0].what_to_do_source == "ai"
+    assert all(r.why_source == r.what_to_do_source == "template" for r in recs[1:])
+    assert len({r.poi_id for r in recs}) == len(recs)
+    assert {r.poi_id for r in recs} <= {h.poi.poi_id for h in search.hits}
+
+
 async def test_real_http_adapter_schema_and_key_header(settings, req):
     settings.gemini_api_key = "synthetic-test-key"
 
