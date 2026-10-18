@@ -18,6 +18,7 @@ class Settings:
     google_places_timeout_s: float = 3.0
     twogis_api_key: str = field(default="", repr=False)
     twogis_enabled: bool = False
+    twogis_search_enabled: bool = True
     twogis_timeout_s: float = 5.0
     photos_enabled: bool = True
     photo_index_url: str = "https://seruen-astana.netlify.app/img/places/index.json"
@@ -46,6 +47,7 @@ class Settings:
             google_places_enabled=os.getenv("GOOGLE_PLACES_ENABLED", "false").lower() == "true",
             twogis_api_key=os.getenv("TWOGIS_API_KEY", ""),
             twogis_enabled=os.getenv("TWOGIS_ENABLED", "false").lower() == "true",
+            twogis_search_enabled=os.getenv("TWOGIS_SEARCH_ENABLED", "true").lower() == "true",
             photos_enabled=os.getenv("PHOTOS_ENABLED", "true").lower() == "true",
             photo_index_url=os.getenv("PHOTO_INDEX_URL", cls.photo_index_url),
             gemini_model=os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite"),

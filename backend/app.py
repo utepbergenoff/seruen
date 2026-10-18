@@ -17,6 +17,7 @@ from .service import RecommendationService
 from .places import Places, PlaceDetails, PlacesError
 from .twogis import TwoGis, TwoGisDetails
 from .photos import Photos, PhotoRequest, PlacePhotos
+from .discovery import Discovery
 
 logger = logging.getLogger("seruen")
 
@@ -35,6 +36,7 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
         service = app.state.service
         app.state.places = Places(settings, service.dataset.pois, places_transport)
         app.state.twogis = TwoGis(settings, service.dataset.pois, twogis_transport)
+        app.state.discovery = Discovery(app.state.twogis, service)
         app.state.photos = Photos(settings, service.dataset.pois, photos_transport,
                                   photos_ai or getattr(service.provider, "structured", None) and service.provider)
         await app.state.places.probe()
@@ -117,12 +119,17 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
                 "configured": bool(settings.twogis_api_key),
                 "enabled": settings.twogis_enabled and not settings.mock,
                 "last_status": request.app.state.twogis.last_status,
+                "search_enabled": request.app.state.discovery.active(),
             },
         )
 
     @app.post("/recommend", response_model=RecommendResponse)
     async def recommend(payload: RecommendRequest, request: Request):
-        response, error = await request.app.state.service.recommend(payload)
+        discovery = request.app.state.discovery
+        if payload.source == "2gis" or (payload.source == "auto" and discovery.active()):
+            response, error = await discovery.recommend(payload)
+        else:
+            response, error = await request.app.state.service.recommend(payload)
         request.state.mode, request.state.candidates, request.state.error = (
             response.mode,
             response.considered.candidates_found,
@@ -142,6 +149,8 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
     async def twogis_details(poi_id: str, request: Request, lang: Literal["ru", "kk", "en"] = "ru"):
         request.state.mode = "twogis"
         try:
+            if poi_id.startswith("2gis_"):
+                return await request.app.state.discovery.details(poi_id, lang)
             return await request.app.state.twogis.details(poi_id, lang)
         except PlacesError as exc:
             request.state.error = exc.code
@@ -151,6 +160,9 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
     async def place_photos(poi_id: str, payload: PhotoRequest, request: Request):
         # POST: the request text stays out of URLs and logs
         request.state.mode = "photos"
+        if poi_id.startswith("2gis_") and poi_id[5:].isdigit() and len(poi_id) <= 37:
+            from datetime import timezone
+            return PlacePhotos(poi_id=poi_id, status="no_photos", checked_at=datetime.now(timezone.utc))
         try:
             return await request.app.state.photos.details(poi_id, payload)
         except PlacesError as exc:
@@ -162,7 +174,15 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
         return [{**row, "data_kind": request.app.state.service.settings.data_kind} for row in scenarios()]
 
     @app.post("/candidates")
-    def candidates_post(payload: RecommendRequest, request: Request):
+    async def candidates_post(payload: RecommendRequest, request: Request):
+        if payload.source == "2gis" or (payload.source == "auto" and request.app.state.discovery.active()):
+            response = await recommend(payload, request)
+            return {"candidates": response.candidates, "excluded": response.excluded,
+                    "radius_m": response.considered.radius_m, "radius_expanded": response.considered.radius_expanded,
+                    "time_budget_min": response.considered.time_budget_min,
+                    "target_time": response.considered.target_time, "retrieval_mode": "2gis",
+                    "source": response.source, "source_error": response.source_error,
+                    "next_cursor": response.next_cursor, "data_kind": "real"}
         intent, now, search = request.app.state.service.inspect(payload)
         request.state.mode, request.state.candidates = "no_ai", search.found
         return {
@@ -177,7 +197,7 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
         }
 
     @app.get("/candidates")
-    def candidates_get(
+    async def candidates_get(
         request: Request,
         lat: float,
         lon: float,
@@ -219,7 +239,7 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
             )
         except ValidationError:
             return JSONResponse(status_code=422, content={"error": {"code": "invalid_request"}})
-        return candidates_post(payload, request)
+        return await candidates_post(payload, request)
 
     return app
 

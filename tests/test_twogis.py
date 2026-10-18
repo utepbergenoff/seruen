@@ -220,7 +220,8 @@ def test_api_no_startup_calls_and_safe_headers(settings):
 
     with TestClient(create_app(settings, twogis_transport=httpx.MockTransport(respond))) as c:
         health = c.get("/health").json()["twogis"]
-        assert health == {"configured": True, "enabled": True, "last_status": "not_checked", "photos_supported": False}
+        assert health == {"configured": True, "enabled": True, "last_status": "not_checked",
+                          "photos_supported": False, "search_enabled": True}
         assert not calls
         poi = next(p for p in c.app.state.service.dataset.pois if not p.name_generic)
         res = c.get(f"/places/{poi.poi_id}/2gis", headers={"Origin": "http://localhost:5173"})

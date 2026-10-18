@@ -169,6 +169,55 @@
         }
       }
     },
+    "/places/{poi_id}/photos": {
+      "post": {
+        "summary": "Place Photos",
+        "operationId": "place_photos_places__poi_id__photos_post",
+        "parameters": [
+          {
+            "name": "poi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Poi Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PhotoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlacePhotos"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/scenarios": {
       "get": {
         "summary": "Get Scenarios",
@@ -1098,6 +1147,114 @@
         ],
         "title": "OpenStatus"
       },
+      "PhotoFacts": {
+        "properties": {
+          "lighting": {
+            "type": "string",
+            "enum": [
+              "bright",
+              "natural",
+              "dim",
+              "unknown"
+            ],
+            "title": "Lighting",
+            "default": "unknown"
+          },
+          "kids_area": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no",
+              "unknown"
+            ],
+            "title": "Kids Area",
+            "default": "unknown"
+          },
+          "seats": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 500.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Seats"
+          },
+          "seating": {
+            "type": "string",
+            "enum": [
+              "few",
+              "some",
+              "many",
+              "unknown"
+            ],
+            "title": "Seating",
+            "default": "unknown"
+          },
+          "space": {
+            "type": "string",
+            "enum": [
+              "small",
+              "medium",
+              "large",
+              "unknown"
+            ],
+            "title": "Space",
+            "default": "unknown"
+          },
+          "decor": {
+            "type": "string",
+            "maxLength": 120,
+            "title": "Decor",
+            "default": ""
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 400,
+            "title": "Summary",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "PhotoFacts"
+      },
+      "PhotoRequest": {
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kk",
+              "en"
+            ],
+            "title": "Lang",
+            "default": "ru"
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 500,
+            "title": "Query",
+            "default": ""
+          },
+          "companions": {
+            "type": "string",
+            "enum": [
+              "alone",
+              "child",
+              "group"
+            ],
+            "title": "Companions",
+            "default": "alone"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "PhotoRequest"
+      },
       "PlaceDetails": {
         "properties": {
           "poi_id": {
@@ -1209,6 +1366,123 @@
         ],
         "title": "PlaceDetails"
       },
+      "PlacePhoto": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "page_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page Url"
+          },
+          "author": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author"
+          },
+          "license": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "License"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "commons",
+              "team"
+            ],
+            "title": "Source"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "url",
+          "source"
+        ],
+        "title": "PlacePhoto"
+      },
+      "PlacePhotos": {
+        "properties": {
+          "poi_id": {
+            "type": "string",
+            "title": "Poi Id"
+          },
+          "photos": {
+            "items": {
+              "$ref": "#/components/schemas/PlacePhoto"
+            },
+            "type": "array",
+            "maxItems": 4,
+            "title": "Photos"
+          },
+          "analysis": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PhotoFacts"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "analysis_source": {
+            "type": "string",
+            "enum": [
+              "gemini",
+              "none"
+            ],
+            "title": "Analysis Source",
+            "default": "none"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "no_photos",
+              "not_relevant",
+              "ai_unavailable",
+              "disabled"
+            ],
+            "title": "Status"
+          },
+          "checked_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Checked At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "poi_id",
+          "status",
+          "checked_at"
+        ],
+        "title": "PlacePhotos"
+      },
       "PlacesStatus": {
         "properties": {
           "configured": {
@@ -1246,6 +1520,28 @@
           },
           "context": {
             "$ref": "#/components/schemas/Context"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "local",
+              "2gis"
+            ],
+            "title": "Source",
+            "default": "auto"
+          },
+          "cursor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cursor"
           }
         },
         "additionalProperties": false,
@@ -1343,6 +1639,37 @@
             "type": "boolean",
             "title": "Mock",
             "default": false
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "local",
+              "2gis"
+            ],
+            "title": "Source",
+            "default": "local"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          },
+          "source_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Error"
           }
         },
         "additionalProperties": false,
@@ -1436,9 +1763,23 @@
           },
           "facts_source": {
             "type": "string",
-            "const": "poi_db",
+            "enum": [
+              "poi_db",
+              "2gis"
+            ],
             "title": "Facts Source",
             "default": "poi_db"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
           },
           "description_source": {
             "type": "string",
@@ -1627,7 +1968,8 @@
             "type": "string",
             "enum": [
               "stored_id",
-              "exact_name_nearby"
+              "exact_name_nearby",
+              "catalog_id"
             ],
             "title": "Match Method"
           },
@@ -1763,6 +2105,11 @@
           "photos_supported": {
             "type": "boolean",
             "title": "Photos Supported",
+            "default": false
+          },
+          "search_enabled": {
+            "type": "boolean",
+            "title": "Search Enabled",
             "default": false
           }
         },

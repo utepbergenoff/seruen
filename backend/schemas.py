@@ -66,6 +66,8 @@ class RecommendRequest(Model):
     location: Location
     query: str = Field(default="", max_length=1000)
     context: Context = Field(default_factory=Context)
+    source: Literal["auto", "local", "2gis"] = "auto"
+    cursor: str | None = Field(default=None, max_length=100)
 
 
 class POI(Model):
@@ -147,7 +149,8 @@ class Recommendation(Model):
     what_to_do: str = Field(min_length=1)
     what_to_do_source: Literal["ai", "template"]
     open_status: OpenStatus
-    facts_source: Literal["poi_db"] = "poi_db"
+    facts_source: Literal["poi_db", "2gis"] = "poi_db"
+    address: str | None = None
     description_source: Literal["wikipedia", "source", "generated"]
     description: str = ""
     description_url: str | None = None
@@ -213,6 +216,9 @@ class RecommendResponse(Model):
     disclaimer: str
     data_kind: Literal["sample", "real"]
     mock: bool = False
+    source: Literal["local", "2gis"] = "local"
+    next_cursor: str | None = None
+    source_error: str | None = None
 
 
 class PlacesStatus(Model):
@@ -238,6 +244,7 @@ class TwoGisStatus(Model):
     enabled: bool
     last_status: str
     photos_supported: bool = False
+    search_enabled: bool = False
 
 
 class Draft(Model):
