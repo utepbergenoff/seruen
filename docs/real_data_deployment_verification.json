@@ -1,0 +1,359 @@
+{
+  "verified_at_utc": "2026-10-18T06:27:07.098595+00:00",
+  "base_url": "https://seruen-backend-f36d.onrender.com",
+  "service_id": "srv-db9r92ajnfac73dc07gg",
+  "deploy_id": "dep-dba6crvbtjjs73dvjfqg",
+  "deployed_commit": "898f73757b38b22e556af6bd6a995b241eca11ad",
+  "scope": "Real HTTPS requests, real POI snapshot, no_ai; no paid API calls",
+  "endpoints": {
+    "/health": 200,
+    "/docs": 200,
+    "/openapi.json": 200,
+    "/scenarios": 200
+  },
+  "demos": [
+    {
+      "id": "S1",
+      "cards": 2,
+      "cached": true,
+      "candidates_status": 200,
+      "latency_ms": 384.17
+    },
+    {
+      "id": "S2",
+      "cards": 3,
+      "cached": true,
+      "candidates_status": 200,
+      "latency_ms": 385.6
+    },
+    {
+      "id": "S3",
+      "cards": 3,
+      "cached": true,
+      "candidates_status": 200,
+      "latency_ms": 375.86
+    },
+    {
+      "id": "S4",
+      "cards": 3,
+      "cached": true,
+      "candidates_status": 200,
+      "latency_ms": 358.25
+    },
+    {
+      "id": "S5",
+      "cards": 3,
+      "cached": true,
+      "candidates_status": 200,
+      "latency_ms": 381.19
+    },
+    {
+      "id": "S6",
+      "cards": 3,
+      "cached": true,
+      "candidates_status": 200,
+      "latency_ms": 393.42
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "S1.1",
+      "passed": true,
+      "cards": 2,
+      "latency_ms": 379.76
+    },
+    {
+      "id": "S1.2",
+      "passed": true,
+      "cards": 2,
+      "latency_ms": 393.15
+    },
+    {
+      "id": "S1.3",
+      "passed": true,
+      "cards": 2,
+      "latency_ms": 408.3
+    },
+    {
+      "id": "S1.4",
+      "passed": true,
+      "cards": 2,
+      "latency_ms": 697.67
+    },
+    {
+      "id": "S1.5",
+      "passed": true,
+      "cards": 2,
+      "latency_ms": 392.89
+    },
+    {
+      "id": "S2.1",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 404.42
+    },
+    {
+      "id": "S2.2",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 404.7
+    },
+    {
+      "id": "S2.3",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 302.47
+    },
+    {
+      "id": "S2.4",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 292.43
+    },
+    {
+      "id": "S2.5",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 297.33
+    },
+    {
+      "id": "S3.1",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 299.67
+    },
+    {
+      "id": "S3.2",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 300.87
+    },
+    {
+      "id": "S3.3",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 399.03
+    },
+    {
+      "id": "S3.4",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 306.81
+    },
+    {
+      "id": "S3.5",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 295.74
+    },
+    {
+      "id": "S4.1",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 297.14
+    },
+    {
+      "id": "S4.2",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 388.7
+    },
+    {
+      "id": "S4.3",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 216.59
+    },
+    {
+      "id": "S4.4",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 285.75
+    },
+    {
+      "id": "S4.5",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 298.3
+    },
+    {
+      "id": "S5.1",
+      "passed": true,
+      "cards": 2,
+      "latency_ms": 304.52
+    },
+    {
+      "id": "S5.2",
+      "passed": true,
+      "cards": 2,
+      "latency_ms": 304.54
+    },
+    {
+      "id": "S5.3",
+      "passed": true,
+      "cards": 2,
+      "latency_ms": 490.85
+    },
+    {
+      "id": "S5.4",
+      "passed": true,
+      "cards": 2,
+      "latency_ms": 402.56
+    },
+    {
+      "id": "S5.5",
+      "passed": true,
+      "cards": 2,
+      "latency_ms": 400.37
+    },
+    {
+      "id": "S6.1",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 300.5
+    },
+    {
+      "id": "S6.2",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 306.88
+    },
+    {
+      "id": "S6.3",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 302.57
+    },
+    {
+      "id": "S6.4",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 301.74
+    },
+    {
+      "id": "S6.5",
+      "passed": true,
+      "cards": 3,
+      "latency_ms": 300.38
+    }
+  ],
+  "night_checks": [
+    {
+      "id": "S2",
+      "time": "2026-10-18 01:04:00+05:00",
+      "safety": [
+        "Ночью выбирайте освещённые людные места; возвращайтесь на такси или транспорте."
+      ],
+      "cards": 0,
+      "passed": true
+    },
+    {
+      "id": "S4",
+      "time": "2026-10-18 01:04:00+05:00",
+      "safety": [
+        "Ночью выбирайте освещённые людные места; возвращайтесь на такси или транспорте."
+      ],
+      "cards": 1,
+      "passed": true
+    }
+  ],
+  "cors": [
+    {
+      "origin": "https://seruen-astana.netlify.app",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "origin": "https://seruen-astana.netlify.app",
+      "method": "POST",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "origin": "http://localhost:5173",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "origin": "http://localhost:5173",
+      "method": "POST",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "origin": "http://127.0.0.1:5173",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "origin": "http://127.0.0.1:5173",
+      "method": "POST",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "origin": "http://localhost:3000",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "origin": "http://localhost:3000",
+      "method": "POST",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "origin": "https://example.com",
+      "method": "GET",
+      "status": 400,
+      "passed": true
+    },
+    {
+      "origin": "https://example.com",
+      "method": "POST",
+      "status": 400,
+      "passed": true
+    }
+  ],
+  "health": {
+    "status": "ok",
+    "mode_available": [
+      "no_ai"
+    ],
+    "data_snapshot_date": "2026-10-17",
+    "poi_count": 1251,
+    "data_kind": "real",
+    "retrieval_mode": "bm25+lsa",
+    "mock": false
+  },
+  "all_passed": true,
+  "deploy_status": "live",
+  "plan": "free",
+  "branch": "main",
+  "finished_at_utc": "2026-10-18T06:26:53.904859Z",
+  "browser_check": {
+    "url": "https://seruen-astana.netlify.app",
+    "scenario": "S1",
+    "places": [
+      "Drinkit",
+      "Starbucks"
+    ],
+    "map_markers": 2,
+    "snapshot_count": 1251,
+    "simulation_note_visible": true
+  },
+  "app_log_check": {
+    "records": 84,
+    "unexpected_fields": 0,
+    "internal_errors": 0,
+    "error_codes": [
+      "none",
+      "http_400"
+    ],
+    "scope": "Application JSON records during verification; http_400 from negative CORS checks"
+  }
+}

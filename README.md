@@ -9,6 +9,7 @@
 - Измеренный прогон: [eval/real/report.md](eval/real/report.md); 30 сценариев Ерлана: [eval/real_spec/report.json](eval/real_spec/report.json).
 - Размещение и передача команде: [docs/handoff.md](docs/handoff.md).
 - Публичный API на Render Free: [Swagger /docs](https://seruen-backend-f36d.onrender.com/docs), [health](https://seruen-backend-f36d.onrender.com/health). Базовый адрес для фронта: `https://seruen-backend-f36d.onrender.com`.
+- Публичная проверка реальных данных 18.10: [отчёт](docs/real_data_deployment_verification.json) — 1 251 место, 6/6 демо, 30/30 сценариев Ерлана, ночь и CORS; S1 проверен на сайте.
 - Исторический публичный прогон на сэмпле: [docs/deployment_verification.json](docs/deployment_verification.json) — 6/6 демо, 30/30 фикстур, кеш и CORS проверены 17.10.2026.
 - Сайт команды: [seruen-astana.netlify.app](https://seruen-astana.netlify.app). CORS для сайта настроен и проверен: [docs/cors_verification.json](docs/cors_verification.json). В браузере проверен S1 с тремя карточками и метками; видео ещё не предоставлено.
 

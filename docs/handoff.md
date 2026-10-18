@@ -17,12 +17,16 @@
 - Один Python web service в My Workspace, Frankfurt, без БД/диска; auto-deploy выключен.
 - Build: `pip install -r requirements.txt && python scripts/reindex.py`.
 - Start: `python -m scripts.serve`; health check: `/health`.
-- Целевые параметры интеграции: branch=`main`, `POI_PATH=data/poi.json`, `DATA_KIND=real`; HOST=0.0.0.0, PYTHON_VERSION=3.12.10, WARM_CACHE=true, OPENBLAS_NUM_THREADS=1, OMP_NUM_THREADS=1. Порт задаёт Render.
+- Проверенные параметры сервиса: branch=`main`, `POI_PATH=data/poi.json`, `DATA_KIND=real`; HOST=0.0.0.0, PYTHON_VERSION=3.12.10, WARM_CACHE=true, OPENBLAS_NUM_THREADS=1, OMP_NUM_THREADS=1. Порт задаёт Render.
 - CORS: `https://seruen-astana.netlify.app`, `http://localhost:5173`, `http://127.0.0.1:5173`, `http://localhost:3000`; GET/POST/OPTIONS, Content-Type.
 
-Предыдущие подтверждённые публичные проверки от 17.10 выполнены на синтетическом наборе: [deployment_verification.json](deployment_verification.json), [cors_verification.json](cors_verification.json). Они не являются подтверждением развёртывания новых реальных данных. Текущее состояние проверять через `/health`: ожидаются `data_kind=real`, `poi_count=1251`, `retrieval_mode=bm25+lsa`, `mode_available=[no_ai]`.
+**Реальные данные развёрнуты 18.10.2026, Live с 06:26:53 UTC (11:26 по Астане).** Деплой `dep-dba6crvbtjjs73dvjfqg`, коммит `898f73757b38b22e556af6bd6a995b241eca11ad`, ветка `main`, тариф `free`. `/health`: `data_kind=real`, `poi_count=1251`, `retrieval_mode=bm25+lsa`, `mode_available=[no_ai]`.
 
-После объединения PR выбрать в существующем сервисе main, обновить две переменные снимка и дождаться Live. Изменение переменных Render само запускает деплой; не дублировать его вручную. Для следующих изменений кода: тесты → PR → main → Manual Deploy → Deploy latest commit → /health и проверка сценариев.
+Публичные проверки: /health, /docs, /openapi.json, /scenarios — 200; 6/6 демо и кандидаты, повторные ответы cached, 30/30 сценариев Ерлана, S2/S4 ночью в 01:04, 10 CORS-проверок (включая чужой origin). В браузере на сайте Алихана S1 показывает Drinkit и Starbucks, две метки и заметку о времени демо; снимок — 1 251 место. В 84 JSON-записях приложения за окно проверки нет лишних полей или внутренних ошибок. Отрицательные CORS-запросы дали ожидаемый http_400. Это не полная приёмка интерфейса/нагрузки и не проверка внешних логов прокси.
+
+Машиночитаемое подтверждение: [real_data_deployment_verification.json](real_data_deployment_verification.json). Старые [deployment_verification.json](deployment_verification.json) и [cors_verification.json](cors_verification.json) сохраняют историю проверок на сэмпле от 17.10.
+
+Две переменные снимка обновлены без замены остальных, тариф не менялся. Для следующих изменений: тесты → PR → main → Manual Deploy → Deploy latest commit → /health и проверка сценариев. Изменение переменных Render само запускает деплой; не дублировать его вручную.
 
 Render Free засыпает после 15 минут без трафика; следующий старт может занять около минуты ([условия Render](https://render.com/docs/free)). Перед показом открыть /health и прогреть сценарии:
 
