@@ -24,6 +24,7 @@ async def test_real_mega_walk_recommends_outdoor_places_not_chaplin(query):
     req = request(query)
     answer, _ = await service.recommend(req, force_no_ai=True)
     assert 1 <= len(answer.recommendations) <= 3
+    assert "outdoor_walk" not in answer.considered.filters  # internal marker has no UI label
     by_id = {p.poi_id: p for p in service.dataset.pois}
     assert all(outdoor_walk_place(by_id[c.poi_id]) for c in answer.recommendations)
     assert all("Chaplin" not in c.name for c in answer.recommendations)
