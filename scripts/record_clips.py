@@ -9,6 +9,7 @@ Uses the Google Chrome installed on this computer.
 """
 from __future__ import annotations
 
+import re
 import shutil
 import subprocess
 import sys
@@ -59,6 +60,13 @@ class Director:
         self.page = page
         self.page.mouse.move(700, 400)
 
+    def preset(self, pid: str, pause: float = 1.2):
+        """Put the point at a demo location (the page detects location itself; presets come from the link)."""
+        self.page.goto(re.sub(r"preset=\w+", f"preset={pid}", self.page.url))
+        self.page.wait_for_selector("#chips button")
+        self.page.wait_for_load_state("networkidle", timeout=15000)
+        self.pause(pause)
+
     def pause(self, s: float):
         self.page.wait_for_timeout(int(s * 1000))
 
@@ -91,7 +99,7 @@ class Director:
 def clip_child(d: Director):
     """1:15-1:50 — laptop: 'Я у Хан Шатыра' -> 'С ребёнком' -> map with numbered markers, 18+ excluded, budget."""
     d.pause(1.5)
-    d.click('#presets button[data-id="khan"]', 1.2)
+    d.preset("khan", 1.2)
     d.click("#chips button >> nth=2")
     d.wait_answer()
     d.show("#results", "start")
@@ -106,7 +114,7 @@ def clip_child(d: Director):
 def clip_expo(d: Director):
     """1:50-2:25 — 'Я у Экспо' -> 'Необычное на 1–2 часа' -> 'Что я учёл' -> 'Показать кандидатов'."""
     d.pause(1.0)
-    d.click('#presets button[data-id="expo"]', 1.0)
+    d.preset("expo", 1.0)
     d.click("#chips button >> nth=3")
     d.wait_answer()
     d.show("#results", "start")
@@ -124,7 +132,7 @@ def clip_expo(d: Director):
 def clip_honesty_night(d: Director):
     """2:25-2:50 — a place with unknown hours; simulated 23:00 changes the answer, safety notes appear."""
     d.pause(1.0)
-    d.click('#presets button[data-id="baiterek"]', 1.0)
+    d.preset("baiterek", 1.0)
     d.click("#chips button >> nth=3")
     d.wait_answer()
     d.show("#results", "start")
@@ -146,7 +154,7 @@ def clip_honesty_night(d: Director):
 def clip_extras(d: Director):
     """2:50-3:15 — 'Собрать маршрут' -> line on the map; Kazakh request -> Kazakh answer; weather; pirate mode."""
     d.pause(1.0)
-    d.click('#presets button[data-id="expo"]', 1.0)
+    d.preset("expo", 1.0)
     d.click("#chips button >> nth=3")
     d.wait_answer()
     d.click("#routeBtn")
@@ -154,22 +162,20 @@ def clip_extras(d: Director):
     d.show("#routeBox", "center")
     d.pause(3.0)
     d.click('.lang button[data-lang="kk"]', 1.0)
-    d.click('#presets button[data-id="khan"]', 1.0)
+    d.preset("khan", 1.0)
     d.click("#chips button >> nth=2")
     d.wait_answer()
     d.show("#results", "start")
     d.pause(2.5)
     d.show("#consideredBox", "start")
     d.pause(2.0)
-    d.click("#pirateBtn", 1.0)
-    d.show("#results", "start")
-    d.pause(3.0)
+    d.pause(2.0)
 
 
 def clip_phone_backup(d: Director):
     """Backup for 0:35-1:15 if the real phone recording fails: phone layout, 'Кофе и розетка'."""
     d.pause(1.5)
-    d.click('#presets button[data-id="expo"]', 1.0)
+    d.preset("expo", 1.0)
     d.click("#chips button >> nth=0")
     d.wait_answer()
     d.pause(1.0)

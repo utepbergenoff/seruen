@@ -10,7 +10,6 @@ window.SERUEN_CONFIG = {
     weather: true,    // Astana weather from Open-Meteo -> context.weather
     route: true,      // "Build a route" from 3 places, line on the map (computed in the browser)
     languages: true,  // KZ / RU / EN switch
-    pirate: true,     // pirate theme, parrot captain, treasure chests on the map
     points: true,     // coins for visited places, stored only in this browser
   },
 
