@@ -199,6 +199,8 @@ async def test_missing_hours_rating_and_org_scope(settings, poi, item):
 
 
 async def test_quota_reservation_is_atomic_and_daily_guard(settings, poi, item):
+    settings.twogis_requests_per_minute = 5
+    settings.twogis_requests_per_day = 25
     calls = []
     p = provider(settings, poi, item, calls)
     results = await asyncio.gather(*(p.details(poi.poi_id) for _ in range(6)), return_exceptions=True)

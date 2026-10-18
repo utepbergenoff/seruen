@@ -202,8 +202,24 @@ class Candidate(Model):
     excluded_because: str | None = None
 
 
+class CatalogPlace(Model):
+    poi_id: str
+    name: str
+    category: Category
+    coords: Coords
+    distance_m: int
+    walk_min: int
+    address: str | None = None
+    rating: float | None = None
+    rating_count: int | None = None
+    open_status: OpenStatus
+    eligible: bool
+    excluded_because: str | None = None
+    links: dict[str, str]
+
+
 class RecommendResponse(Model):
-    candidates: list[Candidate] = Field(default_factory=list, max_length=10)
+    candidates: list[Candidate] = Field(default_factory=list, max_length=30)
     excluded: list[Candidate] = Field(default_factory=list, max_length=20)
     excluded_count: int = Field(default=0, ge=0)
     mode: Literal["ai", "no_ai", "cached"]
@@ -219,6 +235,8 @@ class RecommendResponse(Model):
     source: Literal["local", "2gis"] = "local"
     next_cursor: str | None = None
     source_error: str | None = None
+    nearby_places: list[CatalogPlace] = Field(default_factory=list, max_length=30)
+    catalog_total: int | None = Field(default=None, ge=0)
 
 
 class PlacesStatus(Model):

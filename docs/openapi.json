@@ -648,6 +648,119 @@
         ],
         "title": "Candidate"
       },
+      "CatalogPlace": {
+        "properties": {
+          "poi_id": {
+            "type": "string",
+            "title": "Poi Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "coffee",
+              "food",
+              "park",
+              "kids",
+              "culture",
+              "viewpoint",
+              "shopping",
+              "sport",
+              "night",
+              "unusual",
+              "library",
+              "cowork"
+            ],
+            "title": "Category"
+          },
+          "coords": {
+            "$ref": "#/components/schemas/Coords"
+          },
+          "distance_m": {
+            "type": "integer",
+            "title": "Distance M"
+          },
+          "walk_min": {
+            "type": "integer",
+            "title": "Walk Min"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "rating": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating"
+          },
+          "rating_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating Count"
+          },
+          "open_status": {
+            "$ref": "#/components/schemas/OpenStatus"
+          },
+          "eligible": {
+            "type": "boolean",
+            "title": "Eligible"
+          },
+          "excluded_because": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Excluded Because"
+          },
+          "links": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Links"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "poi_id",
+          "name",
+          "category",
+          "coords",
+          "distance_m",
+          "walk_min",
+          "open_status",
+          "eligible",
+          "links"
+        ],
+        "title": "CatalogPlace"
+      },
       "Considered": {
         "properties": {
           "location_rounded_to_m": {
@@ -1558,7 +1671,7 @@
               "$ref": "#/components/schemas/Candidate"
             },
             "type": "array",
-            "maxItems": 10,
+            "maxItems": 30,
             "title": "Candidates"
           },
           "excluded": {
@@ -1670,6 +1783,26 @@
               }
             ],
             "title": "Source Error"
+          },
+          "nearby_places": {
+            "items": {
+              "$ref": "#/components/schemas/CatalogPlace"
+            },
+            "type": "array",
+            "maxItems": 30,
+            "title": "Nearby Places"
+          },
+          "catalog_total": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catalog Total"
           }
         },
         "additionalProperties": false,

@@ -2,7 +2,7 @@
 // a native speaker should review them before the final submission.
 window.I18N = {
   ru: {
-    catalog: {source: "Места из 2ГИС", next: "Следующие места", more: "Искать ещё в 2ГИС", match: "Место получено напрямую из каталога 2ГИС"},
+    catalog: {source: "Места из 2ГИС", more: "Искать ещё в 2ГИС", next: "Загрузить ещё места", match: "Место получено напрямую из каталога 2ГИС", all: "Все найденные места рядом", hint: "На карте показаны все загруженные места. Выше — до трёх рекомендаций для вашего запроса.", filtered: "Не вошло в рекомендации:"},
     gisBtn: "Рейтинг и часы 2ГИС",
     gis: {data: "Данные 2ГИС", loading: "Спрашиваю 2ГИС…", reviews: "отзывов", noRating: "Рейтинга в 2ГИС нет",
       scope: {branch: "оценка этого филиала", organization: "оценка всей сети, не обязательно этого филиала"},
@@ -33,7 +33,7 @@ window.I18N = {
     locFound: "Ищу рядом с вами (точность ~100 м)",
     locLocating: "Определяю ваше местоположение…",
     codeL: {quiet: "тихо", sockets: "розетки", wifi: "Wi‑Fi", child_friendly: "для детей", within_radius: "в радиусе", within_budget: "укладывается во время",
-      closed: "закрыто в это время", out_of_radius: "вне радиуса", category_mismatch: "не та категория", event_unverified: "событие не подтверждено",
+      over_budget: "не укладывается во время", accessibility_unconfirmed: "доступность не подтверждена", night_safety_unconfirmed: "нет данных для ночной прогулки", closed: "закрыто в это время", out_of_radius: "вне радиуса", category_mismatch: "не та категория", event_unverified: "событие не подтверждено",
       not_child_friendly: "не для детей", adult_only: "18+", no_accessibility: "нет данных о доступности", does_not_fit_budget: "не укладывается во время"},
     budgetL: "Бюджет времени",
     youAreHere: "Я здесь", wind: "ветер", ms: "м/с", indoorFirst: "крытые места в приоритете", retry: "Повторить",
@@ -117,7 +117,7 @@ window.I18N = {
     weekday: ["пн","вт","ср","чт","пт","сб","вс"],
   },
   en: {
-    catalog: {source: "Places from 2GIS", next: "Next places", more: "Search more in 2GIS", match: "Place obtained directly from the 2GIS catalog"},
+    catalog: {source: "Places from 2GIS", more: "Search more in 2GIS", next: "Load more places", match: "Place obtained directly from the 2GIS catalog", all: "All nearby places found", hint: "The map shows all loaded places. Above are up to three recommendations for your request.", filtered: "Not recommended for this plan:"},
     gisBtn: "2GIS rating & hours",
     gis: {data: "2GIS data", loading: "Asking 2GIS…", reviews: "reviews", noRating: "No rating in 2GIS",
       scope: {branch: "rating of this branch", organization: "rating of the whole chain, not necessarily this branch"},
@@ -149,7 +149,7 @@ window.I18N = {
     locFound: "Searching near you (accuracy ~100 m)",
     locLocating: "Detecting your location…",
     codeL: {quiet: "quiet", sockets: "sockets", wifi: "Wi‑Fi", child_friendly: "child-friendly", within_radius: "within radius", within_budget: "fits the time",
-      closed: "closed at that time", out_of_radius: "outside radius", category_mismatch: "other category", event_unverified: "event not verified",
+      over_budget: "does not fit the time budget", accessibility_unconfirmed: "accessibility unconfirmed", night_safety_unconfirmed: "night conditions unconfirmed", closed: "closed at that time", out_of_radius: "outside radius", category_mismatch: "other category", event_unverified: "event not verified",
       not_child_friendly: "not for kids", adult_only: "18+", no_accessibility: "no accessibility data", does_not_fit_budget: "doesn't fit the time"},
     budgetL: "Time budget",
     youAreHere: "I'm here", wind: "wind", ms: "m/s", indoorFirst: "indoor places first", retry: "Retry",
@@ -233,7 +233,7 @@ window.I18N = {
     weekday: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
   },
   kk: {
-    catalog: {source: "2ГИС орындары", next: "Келесі орындар", more: "2ГИС-те тағы іздеу", match: "Орын 2ГИС каталогынан тікелей алынды"},
+    catalog: {source: "2ГИС орындары", more: "2ГИС-те тағы іздеу", next: "Тағы орындарды жүктеу", match: "Орын 2ГИС каталогынан тікелей алынды", all: "Маңайдан табылған барлық орындар", hint: "Картада жүктелген барлық орындар көрсетілген. Жоғарыда сұрауыңызға сай үшке дейін ұсыныс бар.", filtered: "Ұсынысқа кірмеді:"},
     gisBtn: "2ГИС рейтингі мен кестесі",
     gis: {data: "2ГИС деректері", loading: "2ГИС-тен сұрап жатырмын…", reviews: "пікір", noRating: "2ГИС-те рейтинг жоқ",
       scope: {branch: "осы филиалдың бағасы", organization: "бүкіл желінің бағасы, міндетті түрде осы филиалдікі емес"},
@@ -264,7 +264,7 @@ window.I18N = {
     locFound: "Сіздің жаныңыздан іздеймін (дәлдік ~100 м)",
     locLocating: "Орныңызды анықтап жатырмын…",
     codeL: {quiet: "тыныш", sockets: "розетка", wifi: "Wi‑Fi", child_friendly: "балаларға", within_radius: "радиус ішінде", within_budget: "уақытқа сыяды",
-      closed: "бұл уақытта жабық", out_of_radius: "радиустан тыс", category_mismatch: "басқа санат", event_unverified: "оқиға расталмаған",
+      over_budget: "уақытқа сыймайды", accessibility_unconfirmed: "қолжетімділік расталмаған", night_safety_unconfirmed: "түнгі жағдай расталмаған", closed: "бұл уақытта жабық", out_of_radius: "радиустан тыс", category_mismatch: "басқа санат", event_unverified: "оқиға расталмаған",
       not_child_friendly: "балаларға емес", adult_only: "18+", no_accessibility: "қолжетімділік дерегі жоқ", does_not_fit_budget: "уақытқа сыймайды"},
     budgetL: "Уақыт бюджеті",
     youAreHere: "Мен осындамын", wind: "жел", ms: "м/с", indoorFirst: "жабық орындар бірінші", retry: "Қайталау",

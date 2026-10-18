@@ -74,7 +74,8 @@ class Retriever:
         semantics = self.relevance(" ".join([request.query, *intent.tags, *intent.categories]))
         max_radius = 500 if severe else 1000 if night else float("inf")
         # Nearby coffee/work visits have a 15-minute one-way walking limit (team scenario S1).
-        if intent.categories and set(intent.categories) <= {"coffee", "library", "cowork"}:
+        if (set(intent.categories) & {"coffee", "library", "cowork"}
+                and set(intent.categories) <= {"coffee", "library", "cowork", "food"}):
             max_radius = min(max_radius, walking_speed * 15 / 1.3)
             radius = min(radius, max_radius)
 

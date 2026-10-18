@@ -201,3 +201,27 @@ test('answers come from the checked database with AI; the 2GIS catalog only from
   assert.match(b.w.document.querySelector('#results').textContent,/Coffee BOOM/);
   assert.equal(b.w.document.querySelector('#catalogBtn'),null);
 });
+const nearbyPlace = (id,name,eligible=true) => ({poi_id:id,name,category:'coffee',coords:{lat:51.128,lon:71.43},distance_m:100,walk_min:2,address:'Test address',rating:4.8,eligible,excluded_because:eligible?null:'closed',links:{'2gis':'https://2gis.kz/astana/firm/123'}});
+test('nearby list contains unselected and closed places; next page appends without duplicates', async t=>{
+  const b=await boot(t);b.click('#goBtn');await tick();
+  b.requests[0].resolve(json({...answer('FIRST'),source:'2gis',next_cursor:'page2',nearby_places:[nearbyPlace('a','Espresso Day'),nearbyPlace('b','Coffee Boom',false)]}));await tick();
+  assert.equal(b.w.document.querySelectorAll('.nearby-place').length,2);
+  assert.match(b.w.document.querySelector('#nearbyPlaces').textContent,/Coffee Boom/);
+  assert.match(b.w.document.querySelector('#nearbyPlaces').textContent,/закрыто в это время/);
+  b.click('#nextPlacesBtn');await tick();
+  b.requests[1].resolve(json({...answer('SECOND'),source:'2gis',nearby_places:[nearbyPlace('b','Coffee Boom',false),nearbyPlace('c','New cafe')]}));await tick();
+  assert.equal(b.w.document.querySelectorAll('.nearby-place').length,3);
+  assert.match(b.w.document.querySelector('#nearbyPlaces').textContent,/Espresso Day/);
+  assert.equal(b.w.document.querySelector('#nextPlacesBtn'),null);
+  b.click('#goBtn');await tick();
+  b.requests[2].resolve(json({...answer('NEW SEARCH'),source:'2gis',nearby_places:[nearbyPlace('d','Different place')]}));await tick();
+  assert.equal(b.w.document.querySelectorAll('.nearby-place').length,1);
+});
+test('provider quota error preserves the accumulated catalog for retry',async t=>{
+  const b=await boot(t);b.click('#goBtn');await tick();
+  b.requests[0].resolve(json({...answer('KEEP'),source:'2gis',next_cursor:'page2',nearby_places:[nearbyPlace('a','Espresso Day')]}));await tick();
+  b.click('#nextPlacesBtn');await tick();
+  b.requests[1].resolve(json({...answer('LIMIT'),source:'2gis',source_error:'twogis_local_limit'}));await tick();
+  assert.match(b.w.document.querySelector('#nearbyPlaces').textContent,/Espresso Day/);
+  assert.equal(b.w.document.querySelector('#nextPlacesBtn').disabled,false);
+});
