@@ -223,10 +223,16 @@ class Discovery:
                 raise AIError("all_drafts_rejected")
             ai_ids = {d.poi_id for d in accepted}
             return accepted + drafts([h for h in hits if h.poi.poi_id not in ai_ids], intent), "ai", ai_ids, "none"
-        except Exception:
+        except Exception as exc:
             self.ai_cache.pop(cache_key, None)
             self.service.metrics["ai_errors"] += 1
-            log_provider("gemini", "catalog_generation_failed")
+            safe_codes = {"missing_key", "invalid_model", "provider_http_error", "provider_oversized",
+                          "provider_incomplete", "provider_timeout", "provider_invalid_response",
+                          "invalid_generation_schema", "all_drafts_rejected"}
+            code = exc.code if isinstance(exc, AIError) and exc.code in safe_codes else (
+                "deadline_exceeded" if isinstance(exc, TimeoutError) else "invalid_or_unexpected_response"
+            )
+            log_provider("gemini", "catalog_" + code)
             return fallback, "no_ai", set(), "ai_unavailable"
 
     async def recommend(self, request, current=None):

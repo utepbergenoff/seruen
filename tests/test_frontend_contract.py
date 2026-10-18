@@ -44,8 +44,8 @@ async def test_generated_description_is_not_sent_as_verified_fact(service, req, 
 
     async def capture(system, payload, schema):
         captured.update(payload)
-        return {'recommendations': [{'poi_id': hit.poi.poi_id, 'why': 'A nearby option',
-                  'what_to_do': 'Check visitor details', 'time_to_spend_min': 20}]}
+        return {'recommendations': [{'poi_id': hit.poi.poi_id, 'why': 'Подходящее место рядом',
+                  'what_to_do': 'Сделать короткую остановку', 'time_to_spend_min': 20}]}
 
     monkeypatch.setattr(provider, 'structured', capture)
     await provider.generate(req, intent, [hit])
