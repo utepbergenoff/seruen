@@ -476,7 +476,7 @@
       const cl = src.candidates || [], ex = [...(src.excluded || [])].sort((a, b) => a.distance_m - b.distance_m);
       cands = `<h3 class="sub">${esc(t.cands)} (${cl.length})</h3><p class="meta">${esc(t.candsHint)}</p><div class="tbl"><table class="cands"><tr><th>#</th><th></th><th>${esc(t.distance)}</th><th>${esc(t.score)}</th></tr>` +
         cl.map((x, i) => `<tr><td>${i + 1}</td><td>${esc(x.name)}<br><span class="meta">${esc(x.category_label || catLabel(x.category))}${(x.reasons || []).length ? " · " + esc(x.reasons.map(codeLabel).join(", ")) : ""}</span></td><td>${esc(x.distance_m)}</td><td>${x.score != null ? esc(Number(x.score).toFixed(2)) : ""}</td></tr>`).join("") +
-        `</table></div>` + (ex.length ? `<h3 class="sub">${esc(t.excluded)} (${Math.min(20, ex.length)}/${ex.length})</h3><div class="tbl"><table class="cands">` +
+        `</table></div>` + (ex.length ? `<h3 class="sub">${esc(t.excluded)} (${Math.min(20, ex.length)}/${src.excluded_count ?? ex.length})</h3><div class="tbl"><table class="cands">` +
         ex.slice(0, 20).map((x) => `<tr><td>${esc(x.name)}<br><span class="meta">${esc(x.category_label || catLabel(x.category))} · ${esc(x.distance_m)} ${esc(t.distance)}</span></td><td>${esc(x.excluded_label || codeLabel(x.excluded_because))}</td></tr>`).join("") + "</table></div>" : "");
     }
     const any = (d.candidates || []).length || (d.excluded || []).length || c.candidates_found;

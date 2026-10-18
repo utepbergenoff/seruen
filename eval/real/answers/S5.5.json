@@ -1,4 +1,300 @@
 {
+  "candidates": [
+    {
+      "poi_id": "osm_node_6408271985",
+      "name": "CrepeCafe",
+      "category": "coffee",
+      "distance_m": 183,
+      "walk_min": 4,
+      "score": 0.443043,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_way_230401645",
+      "name": "Бәйтерек",
+      "category": "viewpoint",
+      "distance_m": 46,
+      "walk_min": 1,
+      "score": 0.431578,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_node_5132817725",
+      "name": "Starbucks",
+      "category": "coffee",
+      "distance_m": 375,
+      "walk_min": 7,
+      "score": 0.417915,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_node_4506675474",
+      "name": "IMAX Кинопарк7",
+      "category": "culture",
+      "distance_m": 327,
+      "walk_min": 6,
+      "score": 0.37952,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_way_258818063",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 30,
+      "walk_min": 1,
+      "score": 0.372322,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_way_258818059",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 46,
+      "walk_min": 1,
+      "score": 0.3677,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_way_230358847",
+      "name": "Көрме",
+      "category": "culture",
+      "distance_m": 676,
+      "walk_min": 12,
+      "score": 0.299974,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    }
+  ],
+  "excluded": [
+    {
+      "poi_id": "osm_node_14100100183",
+      "name": "Peek-a-boo",
+      "category": "food",
+      "distance_m": 191,
+      "walk_min": 4,
+      "score": 0.311503,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_230358855",
+      "name": "Қазақстан Республикасының Ұлттық академиялық кітапханасы",
+      "category": "library",
+      "distance_m": 218,
+      "walk_min": 4,
+      "score": 0.269339,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_13467930244",
+      "name": "Divan",
+      "category": "food",
+      "distance_m": 229,
+      "walk_min": 4,
+      "score": 0.249219,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1530378860",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 267,
+      "walk_min": 5,
+      "score": 0.212867,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_13620484606",
+      "name": "Ну, шоты!",
+      "category": "night",
+      "distance_m": 278,
+      "walk_min": 5,
+      "score": 0.359194,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1530378859",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 312,
+      "walk_min": 6,
+      "score": 0.199867,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_108096984",
+      "name": "Керуен",
+      "category": "shopping",
+      "distance_m": 329,
+      "walk_min": 6,
+      "score": 0.249536,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_2826184438",
+      "name": "Лигалайф",
+      "category": "night",
+      "distance_m": 333,
+      "walk_min": 6,
+      "score": 0.425191,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_2691375023",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 340,
+      "walk_min": 6,
+      "score": 0.191778,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_12293708058",
+      "name": "Paul",
+      "category": "food",
+      "distance_m": 354,
+      "walk_min": 7,
+      "score": 0.346251,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_6404747238",
+      "name": "Ozen",
+      "category": "night",
+      "distance_m": 359,
+      "walk_min": 7,
+      "score": 0.375187,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1510554098",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 362,
+      "walk_min": 7,
+      "score": 0.185422,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1510554100",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 365,
+      "walk_min": 7,
+      "score": 0.184556,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_10798946230",
+      "name": "Selfie",
+      "category": "food",
+      "distance_m": 366,
+      "walk_min": 7,
+      "score": 0.34603,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_12041597269",
+      "name": "RIBAMBELLE",
+      "category": "food",
+      "distance_m": 381,
+      "walk_min": 7,
+      "score": 0.229548,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_relation_19990578",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 381,
+      "walk_min": 7,
+      "score": 0.179933,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_4594452990",
+      "name": "йога-центр \"натарадж\"",
+      "category": "sport",
+      "distance_m": 395,
+      "walk_min": 7,
+      "score": 0.176138,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_relation_21213421",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 423,
+      "walk_min": 8,
+      "score": 0.1678,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1510554097",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 425,
+      "walk_min": 8,
+      "score": 0.167222,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_11162304905",
+      "name": "Атлас",
+      "category": "food",
+      "distance_m": 438,
+      "walk_min": 8,
+      "score": 0.364479,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    }
+  ],
+  "excluded_count": 1200,
   "mode": "no_ai",
   "recommendations": [
     {

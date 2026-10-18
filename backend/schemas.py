@@ -187,7 +187,21 @@ class Considered(Model):
     target_time: datetime
 
 
+class Candidate(Model):
+    poi_id: str
+    name: str
+    category: Category
+    distance_m: int
+    walk_min: int
+    score: float
+    reasons: list[str]
+    excluded_because: str | None = None
+
+
 class RecommendResponse(Model):
+    candidates: list[Candidate] = Field(default_factory=list, max_length=10)
+    excluded: list[Candidate] = Field(default_factory=list, max_length=20)
+    excluded_count: int = Field(default=0, ge=0)
     mode: Literal["ai", "no_ai", "cached"]
     recommendations: list[Recommendation] = Field(max_length=3)
     budget_breakdown: Budget | None
@@ -198,17 +212,6 @@ class RecommendResponse(Model):
     disclaimer: str
     data_kind: Literal["sample", "real"]
     mock: bool = False
-
-
-class Candidate(Model):
-    poi_id: str
-    name: str
-    category: Category
-    distance_m: int
-    walk_min: int
-    score: float
-    reasons: list[str]
-    excluded_because: str | None = None
 
 
 class PlacesStatus(Model):

@@ -1,4 +1,248 @@
 {
+  "candidates": [
+    {
+      "poi_id": "osm_node_5880883097",
+      "name": "Chaplin Cinema",
+      "category": "culture",
+      "distance_m": 514,
+      "walk_min": 9,
+      "score": 0.535983,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_way_1460763574",
+      "name": "Тәуелсіздіктің 25 жылдығы",
+      "category": "viewpoint",
+      "distance_m": 497,
+      "walk_min": 9,
+      "score": 0.408072,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_way_499328449",
+      "name": "Астана балет",
+      "category": "culture",
+      "distance_m": 1154,
+      "walk_min": 21,
+      "score": 0.307008,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    }
+  ],
+  "excluded": [
+    {
+      "poi_id": "osm_node_11993865901",
+      "name": "Line Brew",
+      "category": "food",
+      "distance_m": 140,
+      "walk_min": 3,
+      "score": 0.400485,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1452597370",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 264,
+      "walk_min": 5,
+      "score": 0.251867,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1452597371",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 280,
+      "walk_min": 5,
+      "score": 0.249556,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1452597374",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 295,
+      "walk_min": 6,
+      "score": 0.247389,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1452597386",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 318,
+      "walk_min": 6,
+      "score": 0.244067,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1452597421",
+      "name": "Спортивная площадка",
+      "category": "sport",
+      "distance_m": 344,
+      "walk_min": 6,
+      "score": 0.240398,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1452597438",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 361,
+      "walk_min": 7,
+      "score": 0.237856,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1452597435",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 376,
+      "walk_min": 7,
+      "score": 0.235689,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1452597436",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 401,
+      "walk_min": 7,
+      "score": 0.232078,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_12093489323",
+      "name": "Del Papa",
+      "category": "food",
+      "distance_m": 481,
+      "walk_min": 9,
+      "score": 0.348163,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_6404769885",
+      "name": "Ocean Basket",
+      "category": "food",
+      "distance_m": 501,
+      "walk_min": 9,
+      "score": 0.220633,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_10211901020",
+      "name": "Тануки",
+      "category": "food",
+      "distance_m": 532,
+      "walk_min": 10,
+      "score": 0.339282,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_14107301089",
+      "name": "Korean House",
+      "category": "food",
+      "distance_m": 532,
+      "walk_min": 10,
+      "score": 0.311385,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_13173517356",
+      "name": "Gasteria",
+      "category": "coffee",
+      "distance_m": 535,
+      "walk_min": 10,
+      "score": 0.295524,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1456208624",
+      "name": "Бейбітшілік пен Келісім аллеясы",
+      "category": "park",
+      "distance_m": 536,
+      "walk_min": 10,
+      "score": 0.230578,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1126613519",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 540,
+      "walk_min": 10,
+      "score": 0.212,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_9047331879",
+      "name": "Starbucks",
+      "category": "coffee",
+      "distance_m": 565,
+      "walk_min": 10,
+      "score": 0.349389,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_12093489321",
+      "name": "Дареджани",
+      "category": "food",
+      "distance_m": 568,
+      "walk_min": 10,
+      "score": 0.337775,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_13397061028",
+      "name": "Coco",
+      "category": "food",
+      "distance_m": 580,
+      "walk_min": 11,
+      "score": 0.332585,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_12293708057",
+      "name": "Paul",
+      "category": "food",
+      "distance_m": 590,
+      "walk_min": 11,
+      "score": 0.342778,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    }
+  ],
+  "excluded_count": 1248,
   "mode": "no_ai",
   "recommendations": [
     {

@@ -310,5 +310,6 @@
     "Intent correctness of the live Gemini JSON is not exposed and is not inferred from card counts."
   ],
   "max_cached_ms": 1458.2,
-  "cached_within_1s": 27
+  "cached_within_1s": 27,
+  "tested_commit": "3aae89233611efdd3dde31cc97872e5ab15b310f"
 }

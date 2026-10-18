@@ -473,6 +473,78 @@
         ],
         "title": "Budget"
       },
+      "Candidate": {
+        "properties": {
+          "poi_id": {
+            "type": "string",
+            "title": "Poi Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "coffee",
+              "food",
+              "park",
+              "kids",
+              "culture",
+              "viewpoint",
+              "shopping",
+              "sport",
+              "night",
+              "unusual",
+              "library",
+              "cowork"
+            ],
+            "title": "Category"
+          },
+          "distance_m": {
+            "type": "integer",
+            "title": "Distance M"
+          },
+          "walk_min": {
+            "type": "integer",
+            "title": "Walk Min"
+          },
+          "score": {
+            "type": "number",
+            "title": "Score"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Reasons"
+          },
+          "excluded_because": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Excluded Because"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "poi_id",
+          "name",
+          "category",
+          "distance_m",
+          "walk_min",
+          "score",
+          "reasons"
+        ],
+        "title": "Candidate"
+      },
       "Considered": {
         "properties": {
           "location_rounded_to_m": {
@@ -1068,6 +1140,28 @@
       },
       "RecommendResponse": {
         "properties": {
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/Candidate"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Candidates"
+          },
+          "excluded": {
+            "items": {
+              "$ref": "#/components/schemas/Candidate"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Excluded"
+          },
+          "excluded_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Excluded Count",
+            "default": 0
+          },
           "mode": {
             "type": "string",
             "enum": [

@@ -1,4 +1,248 @@
 {
+  "candidates": [
+    {
+      "poi_id": "osm_node_5880883097",
+      "name": "Chaplin Cinema",
+      "category": "culture",
+      "distance_m": 477,
+      "walk_min": 9,
+      "score": 0.425203,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_way_1467797207",
+      "name": "NU Park",
+      "category": "park",
+      "distance_m": 315,
+      "walk_min": 6,
+      "score": 0.393932,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_way_1470723968",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 426,
+      "walk_min": 8,
+      "score": 0.304985,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    }
+  ],
+  "excluded": [
+    {
+      "poi_id": "osm_node_14275682079",
+      "name": "Drinkit",
+      "category": "coffee",
+      "distance_m": 216,
+      "walk_min": 4,
+      "score": 0.34766,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_607963095",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 272,
+      "walk_min": 5,
+      "score": 0.211422,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_499328514",
+      "name": "Mega Silk Way",
+      "category": "shopping",
+      "distance_m": 303,
+      "walk_min": 6,
+      "score": 0.33207,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_4965336822",
+      "name": "Мега Силк Вей",
+      "category": "shopping",
+      "distance_m": 318,
+      "walk_min": 6,
+      "score": 0.216133,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_8237697404",
+      "name": "Пинта",
+      "category": "night",
+      "distance_m": 318,
+      "walk_min": 6,
+      "score": 0.324395,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_12520559591",
+      "name": "Лепим и варим",
+      "category": "coffee",
+      "distance_m": 339,
+      "walk_min": 6,
+      "score": 0.318575,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_13397061026",
+      "name": "Luckee Yu",
+      "category": "food",
+      "distance_m": 343,
+      "walk_min": 6,
+      "score": 0.317028,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_607963090",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 372,
+      "walk_min": 7,
+      "score": 0.182533,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_12293708057",
+      "name": "Paul",
+      "category": "food",
+      "distance_m": 392,
+      "walk_min": 7,
+      "score": 0.314756,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_13397061028",
+      "name": "Coco",
+      "category": "food",
+      "distance_m": 399,
+      "walk_min": 7,
+      "score": 0.300928,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_607963094",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 407,
+      "walk_min": 8,
+      "score": 0.172422,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_12093489321",
+      "name": "Дареджани",
+      "category": "food",
+      "distance_m": 412,
+      "walk_min": 8,
+      "score": 0.298733,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_9047331879",
+      "name": "Starbucks",
+      "category": "coffee",
+      "distance_m": 414,
+      "walk_min": 8,
+      "score": 0.312162,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_13173517356",
+      "name": "Gasteria",
+      "category": "coffee",
+      "distance_m": 444,
+      "walk_min": 8,
+      "score": 0.246156,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_14107301089",
+      "name": "Korean House",
+      "category": "food",
+      "distance_m": 457,
+      "walk_min": 8,
+      "score": 0.253978,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_607963091",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 480,
+      "walk_min": 9,
+      "score": 0.151333,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_6404769885",
+      "name": "Ocean Basket",
+      "category": "food",
+      "distance_m": 483,
+      "walk_min": 9,
+      "score": 0.153467,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_12093489323",
+      "name": "Del Papa",
+      "category": "food",
+      "distance_m": 503,
+      "walk_min": 9,
+      "score": 0.270689,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_607963093",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 547,
+      "walk_min": 10,
+      "score": 0.131978,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_13462282540",
+      "name": "Kunde Cafe",
+      "category": "coffee",
+      "distance_m": 559,
+      "walk_min": 10,
+      "score": 0.131511,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    }
+  ],
+  "excluded_count": 1247,
   "mode": "no_ai",
   "recommendations": [
     {

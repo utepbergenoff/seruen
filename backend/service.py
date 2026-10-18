@@ -206,6 +206,9 @@ class RecommendationService:
         if search.category_relaxed:
             filters.append("category_relaxed_with_notice")
         return RecommendResponse(
+            candidates=[h.candidate for h in search.hits],
+            excluded=sorted(search.excluded, key=lambda c: c.distance_m)[:20],
+            excluded_count=len(search.excluded),
             mode=mode,
             recommendations=cards,
             budget_breakdown=cards[0].budget_breakdown if cards else None,

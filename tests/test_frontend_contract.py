@@ -51,3 +51,15 @@ async def test_generated_description_is_not_sent_as_verified_fact(service, req, 
     await provider.generate(req, intent, [hit])
     assert captured['candidates'][0]['description'] == ''
     assert captured['candidates'][0]['description_source'] == 'generated'
+
+
+@pytest.mark.parametrize('scenario', scenarios(), ids=lambda s: s['id'])
+def test_response_contains_the_actual_candidate_pool(client, scenario):
+    data = client.post('/recommend', json=scenario['request']).json()
+    pool = {c['poi_id'] for c in data['candidates']}
+    assert 1 <= len(pool) <= 10
+    assert all(c['poi_id'] in pool for c in data['recommendations'])
+    assert all(c['excluded_because'] is None for c in data['candidates'])
+    assert len(data['excluded']) <= 20
+    assert data['excluded_count'] >= len(data['excluded'])
+    assert all(c['excluded_because'] for c in data['excluded'])

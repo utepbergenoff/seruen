@@ -1,4 +1,235 @@
 {
+  "candidates": [
+    {
+      "poi_id": "osm_node_13948916190",
+      "name": "Қазақстан Теміржол тарихы Мұражайы",
+      "category": "culture",
+      "distance_m": 423,
+      "walk_min": 8,
+      "score": 0.346227,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_node_13900933375",
+      "name": "Астана Арена",
+      "category": "viewpoint",
+      "distance_m": 509,
+      "walk_min": 9,
+      "score": 0.275432,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    }
+  ],
+  "excluded": [
+    {
+      "poi_id": "osm_way_1536856228",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 78,
+      "walk_min": 2,
+      "score": 0.267467,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1390487360",
+      "name": "Jibek Joly",
+      "category": "shopping",
+      "distance_m": 429,
+      "walk_min": 8,
+      "score": 0.169067,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1353681580",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 868,
+      "walk_min": 16,
+      "score": 0.04,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1353681579",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 895,
+      "walk_min": 16,
+      "score": 0.04,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_5907475816",
+      "name": "AAA Resto Hall",
+      "category": "food",
+      "distance_m": 1693,
+      "walk_min": 30,
+      "score": 0.088128,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1290259155",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 2065,
+      "walk_min": 36,
+      "score": 0.136272,
+      "reasons": [],
+      "excluded_because": "out_of_radius"
+    },
+    {
+      "poi_id": "osm_way_1430345323",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 2380,
+      "walk_min": 42,
+      "score": 0.04,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1390487910",
+      "name": "Damu Mall",
+      "category": "shopping",
+      "distance_m": 2414,
+      "walk_min": 42,
+      "score": 0.043,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_431972347",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 2546,
+      "walk_min": 45,
+      "score": 0.04,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_431972349",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 2614,
+      "walk_min": 46,
+      "score": 0.04,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_4904163499",
+      "name": "Гольф клуб",
+      "category": "sport",
+      "distance_m": 2885,
+      "walk_min": 51,
+      "score": 0.04,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_4932698343",
+      "name": "Мереке ТД",
+      "category": "shopping",
+      "distance_m": 2885,
+      "walk_min": 51,
+      "score": 0.043,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_5775305782",
+      "name": "Ханшаим",
+      "category": "coffee",
+      "distance_m": 2964,
+      "walk_min": 52,
+      "score": 0.155678,
+      "reasons": [],
+      "excluded_because": "out_of_radius"
+    },
+    {
+      "poi_id": "osm_node_5775305781",
+      "name": "Мангал",
+      "category": "coffee",
+      "distance_m": 2982,
+      "walk_min": 52,
+      "score": 0.124001,
+      "reasons": [],
+      "excluded_because": "out_of_radius"
+    },
+    {
+      "poi_id": "osm_node_10564988182",
+      "name": "Degirmen",
+      "category": "coffee",
+      "distance_m": 3121,
+      "walk_min": 55,
+      "score": 0.249109,
+      "reasons": [],
+      "excluded_because": "out_of_radius"
+    },
+    {
+      "poi_id": "osm_way_519429425",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 3128,
+      "walk_min": 55,
+      "score": 0.136272,
+      "reasons": [],
+      "excluded_because": "out_of_radius"
+    },
+    {
+      "poi_id": "osm_node_4986871030",
+      "name": "Шедевр Гарден",
+      "category": "food",
+      "distance_m": 3370,
+      "walk_min": 59,
+      "score": 0.120256,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_way_1227982089",
+      "name": "Сквер",
+      "category": "park",
+      "distance_m": 3381,
+      "walk_min": 59,
+      "score": 0.136272,
+      "reasons": [],
+      "excluded_because": "out_of_radius"
+    },
+    {
+      "poi_id": "osm_way_917348929",
+      "name": "Қ.Қуанышбаев атындағы Мемлекеттік академиялық қазақ музыкалық-драма театры",
+      "category": "culture",
+      "distance_m": 3384,
+      "walk_min": 59,
+      "score": 0.176702,
+      "reasons": [],
+      "excluded_because": "out_of_radius"
+    },
+    {
+      "poi_id": "osm_way_1539729975",
+      "name": "Детская площадка",
+      "category": "kids",
+      "distance_m": 3405,
+      "walk_min": 60,
+      "score": 0.04,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    }
+  ],
+  "excluded_count": 1249,
   "mode": "no_ai",
   "recommendations": [
     {
