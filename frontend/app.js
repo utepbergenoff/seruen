@@ -293,6 +293,27 @@
     } finally { if (version === state.requestVersion) $("#goBtn").disabled = false; }
   }
 
+  async function askNext() {
+    const previous = state.last;
+    if (!previous?.next_cursor || !state.lastReq) return;
+    const version = ++state.requestVersion;
+    const button = $("#nextPlacesBtn");
+    if (button) button.disabled = true;
+    try {
+      const body = {...state.lastReq, cursor: previous.next_cursor};
+      const data = await postJSON("/recommend", body);
+      if (version !== state.requestVersion) return;
+      state.lastReq = body;
+      state.last = data;
+      $("#status").innerHTML = "";
+      render(data);
+    } catch {
+      if (version !== state.requestVersion) return;
+      $("#status").innerHTML = `<p class="msg err">${esc(T().serverDown)}</p>`;
+      if (button?.isConnected) button.disabled = false;
+    }
+  }
+
   // ---------- helpers for contract fields ----------
   const catLabel = (c) => (T().cats && T().cats[c]) || c;
   const codeLabel = (k) => {
@@ -319,7 +340,7 @@
     // destination only: the user's own location is never put into a link
     return {
       gis: `https://2gis.kz/astana/directions/tab/pedestrian/points/%7C${lon}%2C${lat}?m=${lon}%2C${lat}%2F17`,
-      gisPlace: `https://2gis.kz/astana/search/${encodeURIComponent(r.name)}?m=${lon}%2C${lat}%2F17`,
+      gisPlace: /^https:\/\/2gis\.kz\/astana\/(firm|geo)\/\d+$/.test(r.links?.["2gis"] || "") ? r.links["2gis"] : `https://2gis.kz/astana/search/${encodeURIComponent(r.name)}?m=${lon}%2C${lat}%2F17`,
       google: `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}&travelmode=walking`,
     };
   }
@@ -364,6 +385,7 @@
     renderModeBadge(d.mode);
     let html = `<div class="result-head"><span class="badge mode-${esc(d.mode)}">${esc(t.mode)}: ${esc(t.modes[d.mode] || d.mode)}${d.cached_from ? " (" + esc(t.modes[d.cached_from] || d.cached_from) + ")" : ""}</span>
       <span class="meta">${d.timing_ms != null ? esc(Math.round(d.timing_ms)) + " ms" : ""}</span></div>`;
+    if (d.source === "2gis") html += `<p class="badge gis">${esc(t.catalog.source)}</p>`;
     const notes = (d.notes || []).map((n) => `<div class="note info">${esc(n)}</div>`).join("") +
       (d.safety || []).map((n) => `<div class="note safety">${esc(n)}</div>`).join("");
     if (notes) html += `<div class="notes">${notes}</div>`;
@@ -387,6 +409,7 @@
           <h3><a class="plain" href="${esc(L2.gisPlace)}" target="_blank" rel="noopener" title="${esc(t.openIn2gis)}">${esc(r.name)}</a></h3>
           <div class="meta">${esc(kind)} · ${esc(r.distance_m)} ${esc(t.distance)} · 🚶 ${esc(r.walk_min)} ${esc(t.walk)}${rating}</div>
         </div></div>
+        ${r.address ? `<div class="meta">📍 ${esc(r.address)}</div>` : ""}
         <div>${r.open_status ? statusPill(r.open_status) : ""}</div>
         <div class="field why"><b>${esc(t.why)}:</b> ${esc(r.why)}</div>
         ${FEAT.photos ? `<div class="photos" aria-live="polite"></div>` : ""}
@@ -412,6 +435,7 @@
         .bindPopup(`<b>${i + 1}. ${esc(r.name)}</b><br>${esc(r.distance_m)} ${esc(t.distance)} · ${esc(r.walk_min)} ${esc(t.walk)}`);
     });
     if (FEAT.route && recs.length >= 2) html += `<button type="button" id="routeBtn" class="btn">🧭 ${esc(t.buildRoute)}</button><div id="routeBox"></div>`;
+    if (d.next_cursor) html += `<button type="button" id="nextPlacesBtn" class="btn">${esc(t.catalog.next)}</button>`;
     html += considered(d);
     html += `<p class="foot">⚠️ ${esc(d.disclaimer || t.disclaimerShort)}</p>`;
     $("#results").innerHTML = html;
@@ -435,6 +459,7 @@
       const g = el.querySelector('[data-act="gis"]');
       if (g) g.addEventListener("click", () => toggleGis(el, id, g));
     });
+    const np = $("#nextPlacesBtn"); if (np) np.addEventListener("click", askNext);
     const rb = $("#routeBtn"); if (rb) rb.addEventListener("click", buildRoute);
     if (FEAT.photos) recs.forEach((r) => loadPhotos(r, d));
   }
@@ -479,7 +504,7 @@
       : esc(G.noRating);
     const when = new Intl.DateTimeFormat({ru: "ru-RU", kk: "kk-KZ", en: "en-GB"}[state.lang] || "ru-RU",
       {day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Almaty"}).format(new Date(g.checked_at));
-    const match = g.match_method === "stored_id" ? G.matchManual : fmt(G.matchAuto, {m: g.match_distance_m});
+    const match = g.match_method === "catalog_id" ? t.catalog.match : g.match_method === "stored_id" ? G.matchManual : fmt(G.matchAuto, {m: g.match_distance_m});
     const url = /^https:\/\/2gis\.(kz|ru)\//.test(g.provider_url || "") ? g.provider_url : "";
     return `<div class="gis-head"><span class="badge gis">${esc(G.data)}</span> <b>${esc(g.provider_name)}</b></div>
       ${g.address ? `<div class="meta">📍 ${esc(g.address)}</div>` : ""}

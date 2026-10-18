@@ -46,7 +46,7 @@ class TwoGisDetails(Model):
     address: str | None = Field(default=None, max_length=1000)
     language: Literal["ru", "kk"]
     checked_at: datetime
-    match_method: Literal["stored_id", "exact_name_nearby"]
+    match_method: Literal["stored_id", "exact_name_nearby", "catalog_id"]
     match_distance_m: int = Field(ge=0, le=150)
     rating: float | None = Field(default=None, ge=0, le=5, strict=True)
     rating_count: int | None = Field(default=None, ge=0, strict=True)
@@ -102,6 +102,10 @@ class TwoGis:
         else:
             endpoint = "https://catalog.api.2gis.com/3.0/items"
             params.update(q=poi.name, point=f"{poi.lon},{poi.lat}", radius="150", page_size="10")
+        return await self.request_items(endpoint, params)
+
+    async def request_items(self, endpoint, params, max_bytes=200_000):
+        params = {**params, "key": self.settings.twogis_api_key}
         await self.reserve()
         try:
             async with httpx.AsyncClient(timeout=self.settings.twogis_timeout_s,
@@ -109,7 +113,7 @@ class TwoGis:
                 response = await client.get(endpoint, params=params)
             if response.status_code != 200:
                 raise self.provider_error(response.status_code)
-            if len(response.content) > 200_000:
+            if len(response.content) > max_bytes:
                 raise ValueError("large response")
             data = response.json()
             code = data["meta"]["code"]
@@ -181,26 +185,8 @@ class TwoGis:
         language = "kk" if language == "kk" else "ru"
         try:
             item, distance = self.match(poi, await self.fetch(poi, language))
-            schedule, reviews = item.get("schedule") or {}, item.get("reviews") or {}
-            rating, count = reviews.get("rating"), reviews.get("review_count")
-            scope = "organization" if reviews.get("is_org_reviews") is True else "branch"
-            if rating is None:
-                rating, count, scope = reviews.get("general_rating"), reviews.get("general_review_count"), "unknown"
-            # 2GIS uses zero for an unrated place; do not show it as a zero-star rating.
-            if type(rating) in (float, int) and rating == 0:
-                rating = None
-            notes = [schedule.get(k) for k in ("comment", "description", "date_from", "date_to") if schedule.get(k)]
-            return TwoGisDetails(
-                poi_id=poi_id, twogis_place_id=item["id"], provider_name=item["name"],
-                address=item.get("address_name"), language=language, checked_at=datetime.now(timezone.utc),
-                match_method="stored_id" if poi.twogis_place_id else "exact_name_nearby",
-                match_distance_m=round(distance), rating=rating, rating_count=count, rating_scope=scope,
-                weekly_hours=[DayHours(day=d, intervals=intervals(schedule[d])) for d in DAYS if d in schedule],
-                special_hours=[SpecialHours(date=d["date"], intervals=intervals(d))
-                               for d in item.get("schedule_special", [])],
-                is_24x7=schedule.get("is_24x7"), schedule_note="; ".join(notes) or None,
-                provider_url=f"https://2gis.kz/astana/{'firm' if item.get('type') == 'branch' else 'geo'}/{item['id']}",
-            )
+            return self.format_details(item, poi_id, language, distance,
+                                       "stored_id" if poi.twogis_place_id else "exact_name_nearby")
         except PlacesError as exc:
             self.last_status = exc.code
             log_provider("twogis", exc.code)
@@ -209,3 +195,26 @@ class TwoGis:
             self.last_status = "twogis_invalid_response"
             log_provider("twogis", self.last_status)
             raise PlacesError(self.last_status, 502) from None
+
+    @staticmethod
+    def format_details(item, poi_id, language="ru", distance=0, method="catalog_id"):
+        schedule, reviews = item.get("schedule") or {}, item.get("reviews") or {}
+        rating, count = reviews.get("rating"), reviews.get("review_count")
+        scope = "organization" if reviews.get("is_org_reviews") is True else "branch"
+        if rating is None:
+            rating, count, scope = reviews.get("general_rating"), reviews.get("general_review_count"), "unknown"
+        # 2GIS uses zero for an unrated place; do not show it as a zero-star rating.
+        if type(rating) in (float, int) and rating == 0:
+            rating = None
+        notes = [schedule.get(k) for k in ("comment", "description", "date_from", "date_to") if schedule.get(k)]
+        return TwoGisDetails(
+            poi_id=poi_id, twogis_place_id=item["id"], provider_name=item["name"],
+            address=item.get("address_name"), language=language, checked_at=datetime.now(timezone.utc),
+            match_method=method,
+            match_distance_m=round(distance), rating=rating, rating_count=count, rating_scope=scope,
+            weekly_hours=[DayHours(day=d, intervals=intervals(schedule[d])) for d in DAYS if d in schedule],
+            special_hours=[SpecialHours(date=d["date"], intervals=intervals(d))
+                           for d in item.get("schedule_special", [])],
+            is_24x7=schedule.get("is_24x7"), schedule_note="; ".join(notes) or None,
+            provider_url=f"https://2gis.kz/astana/{'firm' if item.get('type') == 'branch' else 'geo'}/{item['id']}",
+        )

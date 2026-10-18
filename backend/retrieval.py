@@ -39,7 +39,7 @@ class Retriever:
         df = Counter(t for d in self.documents for t in d)
         self.idf = {t: math.log(1 + (len(self.pois) - n + 0.5) / (n + 0.5)) for t, n in df.items()}
         try:
-            self.embeddings = Embeddings(index_path, dataset)
+            self.embeddings = Embeddings(index_path, dataset) if index_path is not None else None
         except (OSError, ValueError, KeyError, TypeError):
             self.embeddings = None
         self.mode = "bm25+lsa" if self.embeddings else "bm25"
@@ -60,7 +60,7 @@ class Retriever:
         similarities = self.embeddings.similarities(text)
         return [0.5 * b + 0.5 * float(e) for b, e in zip(bm25, similarities)]
 
-    def search(self, request, intent, now, airport_reserve=60):
+    def search(self, request, intent, now, airport_reserve=60, diversify=True):
         reserve = min(airport_reserve, intent.time_budget_min) if intent.before_flight else 0
         available = intent.time_budget_min - reserve
         stay = default_stay(available)
@@ -144,6 +144,8 @@ class Retriever:
             radius = min(radius * 1.5, max_radius)
             hits, excluded = collect(radius, True)
         found = len(hits)
+        if not diversify:
+            return SearchResult(hits, excluded, radius, expanded, found, reserve, self.mode)
         diversified, counts, chains = [], Counter(), set()
         for hit in hits:
             chain = hit.poi.poi_id if hit.poi.name_generic else canonical_name(hit.poi.chain or hit.poi.name)

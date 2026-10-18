@@ -65,6 +65,31 @@ test('server errors show an actionable retry',async t=>{
   const b=await boot(t);b.click('#goBtn');await tick();b.requests[0].resolve({ok:false,status:503});await tick();
   assert.ok(b.w.document.querySelector('#retryBtn'));b.click('#retryBtn');await tick();assert.equal(b.requests.length,2);
 });
+test('2GIS next page preserves the original request and cannot overwrite a newer search',async t=>{
+  const b=await boot(t); b.click('#goBtn'); await tick();
+  const first={...answer('FIRST'),source:'2gis',next_cursor:'opaque-next'};
+  b.requests[0].resolve(json(first));await tick();
+  assert.match(b.w.document.querySelector('#results').textContent,/Места из 2ГИС/);
+  assert.ok(b.w.document.querySelector('#nextPlacesBtn'));
+  b.click('#nextPlacesBtn');await tick();
+  assert.deepEqual(b.requests[1].body,{...b.requests[0].body,cursor:'opaque-next'});
+  assert.ok(b.w.document.querySelector('#nextPlacesBtn').disabled);
+  b.click('#goBtn');await tick();
+  b.requests[2].resolve(json(answer('LATEST')));await tick();
+  b.requests[1].resolve(json({...answer('OLD PAGE'),source:'2gis'}));await tick();
+  assert.match(b.w.document.querySelector('#results').textContent,/LATEST/);
+  assert.doesNotMatch(b.w.document.querySelector('#results').textContent,/OLD PAGE/);
+  assert.equal(b.w.document.querySelector('#nextPlacesBtn'),null);
+});
+
+test('2GIS paging error preserves results and enables retry',async t=>{
+  const b=await boot(t);b.click('#goBtn');await tick();
+  b.requests[0].resolve(json({...answer('KEEP ME'),source:'2gis',next_cursor:'next'}));await tick();
+  b.click('#nextPlacesBtn');await tick();
+  b.requests[1].resolve({ok:false,status:503});await tick();
+  assert.match(b.w.document.querySelector('#results').textContent,/KEEP ME/);
+  assert.equal(b.w.document.querySelector('#nextPlacesBtn').disabled,false);
+});
 test('all three UI languages render without missing labels',async t=>{
   const b=await boot(t);
   for(const lang of ['en','kk','ru']) {b.click(`[data-lang="${lang}"]`);assert.equal(b.w.document.documentElement.lang,lang);assert.ok(b.w.document.querySelector('#goBtn').textContent);}

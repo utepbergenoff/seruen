@@ -133,8 +133,9 @@ class RecommendationService:
             self.cache.put(key, response, ttl)
         return response, error
 
-    def assemble(self, request, intent, now, search, selected, mode, intent_source, error, ai_ids=None):
+    def assemble(self, request, intent, now, search, selected, mode, intent_source, error, ai_ids=None, data_kind=None):
         cards, notes = [], []
+        data_kind = data_kind or self.settings.data_kind
         lookup = {h.poi.poi_id: h for h in search.hits}
         for draft in selected:
             if len(cards) == 3:
@@ -153,7 +154,7 @@ class RecommendationService:
             google = maps_url(p)
             links = (
                 {}
-                if self.settings.data_kind == "sample"
+                if data_kind == "sample"
                 else {"2gis": f"https://2gis.kz/astana/geo/{p.lon},{p.lat}", "google": google}
             )
             cards.append(
@@ -199,7 +200,7 @@ class RecommendationService:
             notes.append(message("flight", intent.lang))
         if error == "ai_unavailable":
             notes.append(message("ai_fallback", intent.lang))
-        if self.settings.data_kind == "sample":
+        if data_kind == "sample":
             notes.append(message("sample", intent.lang))
         if self.settings.mock:
             notes.append(message("mock", intent.lang))
@@ -245,6 +246,6 @@ class RecommendationService:
             notes=notes,
             safety=safety_notes(request, now, intent.lang),
             disclaimer=message("disclaimer", intent.lang),
-            data_kind=self.settings.data_kind,
+            data_kind=data_kind,
             mock=self.settings.mock,
         )
