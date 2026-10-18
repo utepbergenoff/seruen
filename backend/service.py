@@ -207,7 +207,7 @@ class RecommendationService:
         if request.context.simulate and request.context.now:
             notes.append(message("simulation", intent.lang).format(time=now.strftime("%d.%m.%Y %H:%M")))
         filters = [
-            *intent.tags,
+            *(tag for tag in intent.tags if tag != "outdoor_walk"),
             *[f"category:{c}" for c in intent.categories],
             *[f"exclude:{c}" for c in intent.exclude_categories],
         ]

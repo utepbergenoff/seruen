@@ -1,0 +1,181 @@
+{
+  "checked_at": "2026-10-18T17:40:32.505119+00:00",
+  "commit": "0783d31e88417efc7ba926ef56bc6ec04f9cafe5",
+  "note": "Synthetic published demo inputs, preset snapping matches frontend. Weather off. UI fallback mirrored explicitly; not a provider guarantee.",
+  "cases": [
+    {
+      "id": "S1",
+      "source": "2gis",
+      "fallback": false,
+      "first_source_error": null,
+      "mode": "no_ai",
+      "cards": 3,
+      "names": [
+        "Urpaq Coffee & Tea, кофейня",
+        "Coffee BOOM, сеть кофеен",
+        "Global coffee, кофейня"
+      ],
+      "why_sources": [
+        "template",
+        "template",
+        "template"
+      ],
+      "elapsed_ms": 1857.4,
+      "issues": [],
+      "photo_http": 200,
+      "photo_status": "no_photos",
+      "photo_count": 0
+    },
+    {
+      "id": "S2",
+      "source": "2gis",
+      "fallback": false,
+      "first_source_error": null,
+      "mode": "no_ai",
+      "cards": 3,
+      "names": [
+        "Детская площадка",
+        "Игровой клуб",
+        "Fame City, игровой центр"
+      ],
+      "why_sources": [
+        "template",
+        "template",
+        "template"
+      ],
+      "elapsed_ms": 857.0,
+      "issues": [],
+      "photo_http": 200,
+      "photo_status": "no_photos",
+      "photo_count": 0
+    },
+    {
+      "id": "S3",
+      "source": "local",
+      "fallback": true,
+      "first_source_error": null,
+      "mode": "no_ai",
+      "cards": 2,
+      "names": [
+        "NU Park",
+        "Сквер"
+      ],
+      "why_sources": [
+        "template",
+        "template"
+      ],
+      "elapsed_ms": 1551.6,
+      "issues": [],
+      "photo_http": 200,
+      "photo_status": "no_photos",
+      "photo_count": 0
+    },
+    {
+      "id": "S4",
+      "source": "2gis",
+      "fallback": false,
+      "first_source_error": null,
+      "mode": "no_ai",
+      "cards": 3,
+      "names": [
+        "Декоративный объект",
+        "Декоративный объект",
+        "Инсталляция Вода"
+      ],
+      "why_sources": [
+        "template",
+        "template",
+        "template"
+      ],
+      "elapsed_ms": 1219.2,
+      "issues": [],
+      "photo_http": 200,
+      "photo_status": "no_photos",
+      "photo_count": 0
+    },
+    {
+      "id": "S5",
+      "source": "2gis",
+      "fallback": false,
+      "first_source_error": null,
+      "mode": "no_ai",
+      "cards": 3,
+      "names": [
+        "Монумент-Бәйтерек",
+        "Фонтан",
+        "Львы"
+      ],
+      "why_sources": [
+        "template",
+        "template",
+        "template"
+      ],
+      "elapsed_ms": 1330.6,
+      "issues": [],
+      "photo_http": 200,
+      "photo_status": "no_photos",
+      "photo_count": 0
+    },
+    {
+      "id": "S6",
+      "source": "2gis",
+      "fallback": false,
+      "first_source_error": null,
+      "mode": "no_ai",
+      "cards": 3,
+      "names": [
+        "Второй, бистро",
+        "Brand",
+        "Ну, шоты, бары"
+      ],
+      "why_sources": [
+        "template",
+        "template",
+        "template"
+      ],
+      "elapsed_ms": 1542.5,
+      "issues": [],
+      "photo_http": 200,
+      "photo_status": "no_photos",
+      "photo_count": 0
+    }
+  ],
+  "passed": 6,
+  "total": 6,
+  "frontend_files": {
+    "app.js": {
+      "sha256": "e34a9881a674d8b4a018d054f1dc333f5185d45b438430419350b5484367d8d2",
+      "matches_main": true
+    },
+    "sw.js": {
+      "sha256": "1a00604249d2b764f0c3c482c25a211f147c98c5828ccf7cbb492b40b1df8a12",
+      "matches_main": true
+    },
+    "config.js": {
+      "sha256": "b610ce064b9e321adccda9272d2427c077cd65b1814907402ebce832c28522cf",
+      "matches_main": true
+    },
+    "scenarios.json": {
+      "sha256": "89588ab229ed99c3dba2c2c167bf6404643370da30b66b095dcdac43fa21875e",
+      "matches_main": true
+    },
+    "presets.json": {
+      "sha256": "1535fd1224f95175bb5bb905c5f3d62000427928d8ded2b646959d0b3330080b",
+      "matches_main": true
+    }
+  },
+  "cors": {
+    "http": 200,
+    "origin": "https://seruen-astana.netlify.app",
+    "methods": "GET, POST, OPTIONS",
+    "headers": "Accept, Accept-Language, Content-Language, Content-Type"
+  },
+  "spoof_photo_safe": true,
+  "deployment": {
+    "id": "dep-dbag7irbc2fs73b9ke1g",
+    "status": "live",
+    "plan": "free",
+    "commit": "0783d31e88417efc7ba926ef56bc6ec04f9cafe5"
+  },
+  "ai_status": "Not accepted live: all 6 replies no_ai, provider HTTP 429 confirmed. No billing enabled."
+}
