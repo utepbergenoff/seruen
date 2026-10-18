@@ -14,6 +14,7 @@ from pydantic import ValidationError
 from .config import ROOT, Settings
 from .schemas import Context, Health, Location, RecommendRequest, RecommendResponse, Weather
 from .service import RecommendationService
+from .places import Places, PlaceDetails, PlacesError
 
 logger = logging.getLogger("seruen")
 
@@ -22,13 +23,15 @@ def scenarios():
     return json.loads((ROOT / "data/demo_scenarios.json").read_text(encoding="utf-8"))
 
 
-def create_app(settings=None, provider=None):
+def create_app(settings=None, provider=None, places_transport=None):
     settings = settings or Settings.from_env()
 
     @asynccontextmanager
     async def lifespan(app):
         app.state.service = RecommendationService(settings, provider)
         service = app.state.service
+        app.state.places = Places(settings, service.dataset.pois, places_transport)
+        await app.state.places.probe()
         logger.info(
             json.dumps(
                 {
@@ -99,6 +102,11 @@ def create_app(settings=None, provider=None):
             data_kind=settings.data_kind,
             retrieval_mode=service.retriever.mode,
             mock=settings.mock,
+            google_places={
+                "configured": bool(settings.google_places_api_key),
+                "details_enabled": settings.google_places_enabled and not settings.mock,
+                "ids_probe": request.app.state.places.probe_status,
+            },
         )
 
     @app.post("/recommend", response_model=RecommendResponse)
@@ -110,6 +118,14 @@ def create_app(settings=None, provider=None):
             error,
         )
         return response
+
+    @app.get("/places/{poi_id}/details", response_model=PlaceDetails)
+    async def place_details(poi_id: str, request: Request, lang: Literal["ru", "kk", "en"] = "ru"):
+        try:
+            return await request.app.state.places.details(poi_id, lang)
+        except PlacesError as exc:
+            request.state.error = exc.code
+            return JSONResponse(status_code=exc.status, content={"error": {"code": exc.code}})
 
     @app.get("/scenarios")
     def get_scenarios(request: Request):

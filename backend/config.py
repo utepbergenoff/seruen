@@ -13,7 +13,10 @@ class Settings:
     data_kind: str = "real"
     index_path: Path = ROOT / "data/index/lsa.json"
     gemini_api_key: str = field(default="", repr=False)
-    gemini_model: str = "gemini-3.8-flash"
+    google_places_api_key: str = field(default="", repr=False)
+    google_places_enabled: bool = False
+    google_places_timeout_s: float = 3.0
+    gemini_model: str = "gemini-3.5-flash-lite"
     ai_timeout_s: float = 8.0
     airport_reserve_min: int = 60
     cache_size: int = 256
@@ -31,7 +34,9 @@ class Settings:
             poi_path=path,
             data_kind=os.getenv("DATA_KIND", "sample" if sample else "real"),
             gemini_api_key=os.getenv("GEMINI_API_KEY", ""),
-            gemini_model=os.getenv("GEMINI_MODEL", "gemini-3.8-flash"),
+            google_places_api_key=os.getenv("GOOGLE_PLACES_API_KEY", "") or os.getenv("GOOGLE_API_KEY", ""),
+            google_places_enabled=os.getenv("GOOGLE_PLACES_ENABLED", "false").lower() == "true",
+            gemini_model=os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite"),
             mock=os.getenv("MOCK_MODE", "false").lower() == "true",
             warm_cache=os.getenv("WARM_CACHE", "true").lower() == "true",
             airport_reserve_min=int(os.getenv("AIRPORT_RESERVE_MIN", "60")),

@@ -1,7 +1,7 @@
 # Seruen — project status & to-do (18.10.2026, ~12:30 Astana)
 
 Living note for the team. Owner: Yerlan. Backend details: [real_data_integration.md](real_data_integration.md),
-[handoff.md](handoff.md); Heroku plan: PR #5 / `docs/heroku.md`.
+[handoff.md](handoff.md), APIs: [api_integrations.md](api_integrations.md); Heroku plan: PR #5 / `docs/heroku.md`.
 
 ---
 
@@ -22,7 +22,9 @@ Living note for the team. Owner: Yerlan. Backend details: [real_data_integration
 All 6 scenarios were checked on the live backend with real data (18.10): 1–3 relevant cards each; S2 (child) only
 playgrounds/parks; S6 at 23:00 only places open at night + safety note.
 
-**Not yet:** answers are all **"без ИИ"** — Render has no `GEMINI_API_KEY` (see section 5).
+**AI is live (18.10, Tomiris, PR #7):** `gemini-3.5-flash-lite` on Render; 5/6 demo answers in `mode=ai`, S1 falls
+back safely. Google ratings/hours via `place_id` exist (PR #6, `GET /places/{poi_id}/details`) but are **off** until the
+Google quota is confirmed by the project owner (Yerlan).
 
 ---
 
@@ -42,7 +44,7 @@ playgrounds/parks; S6 at 23:00 only places open at night + safety note.
 **Tomiris**
 - «Что я учёл → Время: Sun 01:04» — the weekday in `considered.time` comes from the backend in English, also in the
   RU/KZ interface.
-- Decide on Gemini for the live backend (section 5) and test `eval/run.py --ai` once a key is set.
+- Full eval of the 30 answers with AI (`eval/run.py --ai`) + the 3-person 1–5 rating — still open.
 - `tests/test_real_integration.py` pins the snapshot counts (Google matches now 175; will change once more when A3 is
   finished).
 
@@ -59,7 +61,7 @@ playgrounds/parks; S6 at 23:00 only places open at night + safety note.
 |---|---|---|---|
 | 1 | Find out the **exact closing time of the submission form (19.10)** → post in chat | ASAP | Everything on Monday depends on it |
 | 2 | Activate Heroku student credits | today | Tomiris's PR #5 is ready |
-| 3 | Decide Gemini budget with Tomiris (section 5) | today | |
+| 3 | Confirm Google quota/billing so Tomiris can turn on live ratings/hours (PR #6); decide Gemini budget (section 5) | today | |
 | 4 | Finish A3: last 61 Google calls | after next reset (~12:00 Astana 19.10) or after raising the daily limit to 300 | Claude runs `python -m pipeline.enrich` + rebuild |
 | 5 | D5 presentation (12 slides, ≤ 6.5 min) | today evening | |
 | 6 | D4 document: real answers, screenshots, eval numbers | after screenshots + eval | Draft: `docs/scenarios_and_ethics.md` |
@@ -73,13 +75,13 @@ playgrounds/parks; S6 at 23:00 only places open at night + safety note.
 
 | API | Used by | When it is called | Limit we hit |
 |---|---|---|---|
-| Google Places (New) | **only** the data pipeline (`pipeline/enrich.py`) | once, when we collect data — never by users or judges | ~100 requests/day (default). Total needed: **272**; done **211** (cached, never repeated) |
+| Google Places (New) | data pipeline (`pipeline/enrich.py`, Nearby Search) **and**, if switched on, the backend (Place Details per card, PR #6) | pipeline: once when collecting data; backend details: **off** for now | Nearby: ~100 requests/day (default); total needed **272**, done **211** (cached). Place Details: 1 000 free/month, then paid |
 | Gemini | data pipeline (descriptions, once) **and** the backend (every user question, if a key is set) | backend: ~2 calls per question | free tier ≈ 20 requests/day |
 
 - Google Places stays free (5 000 calls/month free; we need 272 once). We store **only Google's place ID** —
   Google's terms forbid storing ratings/hours, so the real data has no ★.
-- **Judges + free Gemini key = AI runs out after ~10–20 questions**; the app then falls back to "без ИИ"
-  automatically (it never breaks).
+- If the backend Gemini key is on the free tier, judges can run it out after a few dozen questions; the app then
+  falls back to "без ИИ" automatically (it never breaks). Turning on live Google details adds ~1 call per card shown.
 - Recommended: a **separate Google Cloud project** for the backend key, billing on, **budget alert $5**, daily
   request cap ~1 000. Estimated cost: gemini-2.5-flash ≈ $0.002 per question → ~500 questions ≈ $1.
   Key only in Render/Heroku settings, never in git.
@@ -99,7 +101,7 @@ From `data/quality_report.md` (rebuilt 18.10):
   (mostly unnamed playgrounds/squares). All generated ones are labelled `description_source = generated`.
 - Google place ID for **175** places (14 %, partial run).
 - 181 records dropped (no name 104, duplicates 74, junk 3).
-- Tests: **166 passing** (backend + data + frontend checks).
+- Tests: **185 passing** (backend + data + API integrations).
 
 ## 7. Where things are
 

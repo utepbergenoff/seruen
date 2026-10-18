@@ -201,6 +201,12 @@ class Candidate(Model):
     excluded_because: str | None = None
 
 
+class PlacesStatus(Model):
+    configured: bool
+    details_enabled: bool
+    ids_probe: str
+
+
 class Health(Model):
     status: Literal["ok"] = "ok"
     mode_available: list[str]
@@ -209,6 +215,7 @@ class Health(Model):
     data_kind: Literal["sample", "real"]
     retrieval_mode: str
     mock: bool
+    google_places: PlacesStatus | None = None
 
 
 class Draft(Model):
