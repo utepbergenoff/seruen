@@ -95,8 +95,16 @@
   }).observe($(".top"));
   setTimeout(fixSize, 300);
   const layer = L.layerGroup().addTo(map);
+  const suggestionRoutes = L.layerGroup().addTo(map);
   let routeLine = null;
   const markers = {};
+  function setWalkActive(active) {
+    state.walkActive = !!active;
+    if (active) {
+      map.removeLayer(suggestionRoutes);
+      if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
+    } else suggestionRoutes.addTo(map);
+  }
 
   // source goes to the backend (gps | map | preset); locKind is only for the line under the title
   function cancelLocation() {
@@ -523,7 +531,8 @@
   function render(d) {
     if (ext.filterAnswer) d = ext.filterAnswer(d);
     const t = T();
-    layer.clearLayers(); if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
+    layer.clearLayers(); suggestionRoutes.clearLayers();
+    if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
     Object.keys(markers).forEach((k) => delete markers[k]);
     const recs = d.recommendations || [];
     const nearby = d.nearby_places || [];
@@ -584,7 +593,7 @@
       const pinIcon = L.divIcon({className: "", iconSize: [30, 30], iconAnchor: [15, 15], html: `<div class="pin"><b>${i + 1}</b></div>`});
       // a thin dashed line from the person to each pick: every place is measured from where they stand
       const from = state.lastReq ? state.lastReq.location : state.loc;
-      if (L.polyline) L.polyline([[from.lat, from.lon], [r.coords.lat, r.coords.lon]], {color: "#00AFCA", weight: 3, dashArray: "1 8", lineCap: "round", opacity: .95, interactive: false}).addTo(layer);
+      if (L.polyline) L.polyline([[from.lat, from.lon], [r.coords.lat, r.coords.lon]], {color: "#00AFCA", weight: 3, dashArray: "1 8", lineCap: "round", opacity: .95, interactive: false}).addTo(suggestionRoutes);
       markers[r.poi_id] = L.marker([r.coords.lat, r.coords.lon], {icon: pinIcon, title: r.name}).addTo(layer)
         .bindPopup(`<b>${i + 1}. ${esc(r.name)}</b><br>${esc(r.distance_m)} ${esc(t.distance)} · ${esc(r.walk_min)} ${esc(t.walk)}`)
         .on("click", () => selectPlace(r.poi_id));
@@ -813,6 +822,7 @@
     } catch { return {line: points.map((p) => [p.lat, p.lon]), osrm: false}; }
   }
   async function buildRoute() {
+    if (state.walkActive) return;
     const d = state.last, t = T();
     const c = d.considered || {};
     const budget = c.effective_budget_min || c.time_budget_min || (d.budget_breakdown && d.budget_breakdown.budget_min) || 60;
@@ -823,7 +833,7 @@
     if (!plan.fits) { $("#routeBox").innerHTML = `<p class="msg warn">${esc(t.routeNoBudget)}</p>`; return; }
     $("#routeBox").innerHTML = `<div class="loading"><div class="spinner"></div>${esc(t.loading)}</div>`;
     const geo = await osrmLine([start, ...plan.order, start]);
-    if (state.last !== d || !$("#routeBox")) return;
+    if (state.walkActive || state.last !== d || !$("#routeBox")) return;
     if (routeLine) map.removeLayer(routeLine);
     routeLine = L.polyline(geo.line, {color: "#00708A", weight: 5, dashArray: geo.osrm ? null : "8 8", lineCap: "round", opacity: .9}).addTo(map);
     fitTo(routeLine.getBounds());
@@ -898,7 +908,7 @@
       navigator.serviceWorker.register("sw.js").catch(() => {});
     }
   }
-  window.SeruenApp = {state, FEAT, API, T, fmt, esc, icon, $, $$, map, layer, markers, L, showAt, fitTo, round3,
+  window.SeruenApp = {state, FEAT, API, T, fmt, esc, icon, $, $$, map, layer, markers, L, showAt, fitTo, round3, setWalkActive,
     freezeLocation: () => { if (state.locating) { cancelLocation(); renderLocLine(); } },
     postJSON, getJSON, context, ask: () => ask(), render: (d) => render(d), rerender: () => { if (state.last) render(state.last); }, catLabel};
   init();

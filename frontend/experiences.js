@@ -275,6 +275,8 @@
   const oldRender=E.afterRender;
   E.afterRender=d=>{oldRender?.(d);syncMode();};
   const oldSearch=E.onSearch, oldScenario=E.onScenario;
+  const oldWalkStart=E.onWalkStart;
+  E.onWalkStart=()=>{ oldWalkStart?.(); open(null); };
   E.onSearch=()=>{
     if (mode === "meet" && has("meet_halfway")) { state.requestVersion++; open("meet"); void meet(); return true; }
     open(null); return oldSearch?.() || false;
