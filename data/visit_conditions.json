@@ -5,44 +5,44 @@
    "poi_id": "osm_way_460703779",
    "kind": "optional_purchase",
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/way/460703779",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "ТРЦ: вход без покупки ожидается; аттракционы и Sky Beach платные. Не проверено."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: вход в ТРЦ свободный; аттракционы и Sky Beach — отдельно, платно."
    }
   },
   {
    "poi_id": "osm_way_230401645",
    "kind": "paid",
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/way/230401645",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "Подъём на смотровую по билету; площадь вокруг свободна. Цена из старых статей (2000 ₸) не подтверждена."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: подъём по билету — взрослый 2500 ₸, льготный (пенсионеры) 2000 ₸, дети 6–15 лет 1250 ₸. Здесь условие — подъём, не площадь вокруг."
    }
   },
   {
    "poi_id": "osm_way_499328514",
    "kind": "optional_purchase",
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/way/499328514",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "ТРЦ: вход без покупки ожидается. Не проверено."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: вход в ТРЦ свободный, покупка не обязательна."
    }
   },
   {
    "poi_id": "osm_way_108096984",
    "kind": "optional_purchase",
    "evidence": {
-    "source_url": "https://www.openstreetmap.org/way/108096984",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "licensed_source",
-    "note": "ТРК: вход без покупки ожидается. Не проверено."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: вход свободный, 10:00–22:00, покупка не обязательна."
    }
   },
   {
@@ -113,101 +113,101 @@
   },
   {
    "poi_id": "2gis_70000001072135261",
-   "kind": "unknown",
+   "kind": "optional_purchase",
    "evidence": {
-    "source_url": "https://2gis.kz/astana/geo/70000001072135261",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "team_review",
-    "note": "Кофейня: не объявляем бесплатной; можно ли сидеть без заказа — не проверено."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "На месте: можно сидеть без заказа."
    }
   },
   {
    "poi_id": "2gis_70030077196911979",
    "kind": "free",
    "evidence": {
-    "source_url": "https://2gis.kz/astana/geo/70030077196911979",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "team_review",
-    "note": "Инсталляция робота: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "Инсталляция робота: на месте — доступна без билета."
    }
   },
   {
    "poi_id": "2gis_70030076137946320",
    "kind": "free",
    "evidence": {
-    "source_url": "https://2gis.kz/astana/geo/70030076137946320",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "team_review",
-    "note": "Инсталляция Energy magic: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "Инсталляция Energy magic: на месте — доступна без билета."
    }
   },
   {
    "poi_id": "2gis_70030076138246674",
    "kind": "free",
    "evidence": {
-    "source_url": "https://2gis.kz/astana/geo/70030076138246674",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "team_review",
-    "note": "Инсталляция In time and in space: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "Инсталляция In time and in space: на месте — доступна без билета."
    }
   },
   {
    "poi_id": "2gis_70030076138246704",
    "kind": "free",
    "evidence": {
-    "source_url": "https://2gis.kz/astana/geo/70030076138246704",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "team_review",
-    "note": "Инсталляция Unfurling Energy: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "Инсталляция Unfurling Energy: на месте — доступна без билета."
    }
   },
   {
    "poi_id": "2gis_70030076137946547",
    "kind": "free",
    "evidence": {
-    "source_url": "https://2gis.kz/astana/geo/70030076137946547",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "team_review",
-    "note": "Инсталляция Minima Maxima: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "Инсталляция Minima Maxima: на месте — доступна без билета."
    }
   },
   {
    "poi_id": "2gis_70030076137946451",
    "kind": "free",
    "evidence": {
-    "source_url": "https://2gis.kz/astana/geo/70030076137946451",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "team_review",
-    "note": "Инсталляция Солнце: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "Инсталляция Солнце: на месте — доступна без билета."
    }
   },
   {
    "poi_id": "2gis_70030076137946253",
    "kind": "free",
    "evidence": {
-    "source_url": "https://2gis.kz/astana/geo/70030076137946253",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "team_review",
-    "note": "Инсталляция Вода: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "Инсталляция Вода: на месте — доступна без билета."
    }
   },
   {
    "poi_id": "2gis_70030076138246517",
    "kind": "free",
    "evidence": {
-    "source_url": "https://2gis.kz/astana/geo/70030076138246517",
+    "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
-    "verification": "unverified",
-    "method": "team_review",
-    "note": "Инсталляция Воздух: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+    "verification": "verified",
+    "method": "field_visit",
+    "note": "Инсталляция Воздух: на месте — доступна без билета."
    }
   },
   {
@@ -262,7 +262,7 @@
     "checked_at": "2026-10-19",
     "verification": "unverified",
     "method": "team_review",
-    "note": "Поющий фонтан: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+    "note": "Фонтаны в холодное время года (сейчас) не работают, работают летом. Поющий фонтан: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
    }
   }
  ]
