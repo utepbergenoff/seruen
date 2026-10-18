@@ -26,7 +26,7 @@ async function boot(t, opts = {}) {
     if(url==='presets.json'||url==='scenarios.json') return json(JSON.parse(fs.readFileSync('frontend/'+url,'utf8')));
     if(url.endsWith('/health')) return opts.health ? opts.health.promise : json({mode_available:['no_ai']});
     if(url.endsWith('/recommend')) {const p=pending();requests.push({body:JSON.parse(options.body),...p});return p.promise;}
-    if(url.includes('/2gis')) {gis.push(url);return opts.twogis(url);}
+    if(/\/2gis(\?|$)/.test(url)) {gis.push(url);return opts.twogis(url);}
     if(url.endsWith('/photos')) {photos.push({url,body:JSON.parse(options.body)});return opts.photos?opts.photos(url):json({poi_id:'x',photos:[],status:'no_photos',checked_at:'2026-10-18T09:00:00Z'});}
     throw Error('Unexpected request '+url);
   };
@@ -191,15 +191,27 @@ test('photos: strip, photo reason and facts per card; no photos says so; text st
   assert.match(c2.querySelector('.photos').textContent,/Фото этого места пока нет/);
 });
 
-test('answers come from the checked database with AI; the 2GIS catalog only from its own button',async t=>{
+test('answers search 2GIS first and fall back to the checked database when 2GIS fails',async t=>{
   const b=await boot(t);b.click('#goBtn');await tick();
-  assert.equal(b.requests[0].body.source,'local');
-  b.requests[0].resolve(json({...answer('local'),recommendations:[rec('p1','Drinkit')]}));await tick();
-  b.click('#catalogBtn');await tick();
-  assert.equal(b.requests[1].body.source,'2gis');assert.equal(b.requests[1].body.cursor,undefined);
-  b.requests[1].resolve(json({...answer('catalog'),source:'2gis',recommendations:[rec('2gis_1','Coffee BOOM')]}));await tick();
-  assert.match(b.w.document.querySelector('#results').textContent,/Coffee BOOM/);
-  assert.equal(b.w.document.querySelector('#catalogBtn'),null);
+  assert.equal(b.requests[0].body.source,undefined);
+  b.requests[0].resolve(json({...answer('quota'),source:'2gis',source_error:'twogis_quota_exceeded',recommendations:[]}));await tick();
+  assert.equal(b.requests[1].body.source,'local');
+  b.requests[1].resolve(json({...answer('local'),recommendations:[rec('p1','Drinkit')]}));await tick();
+  assert.match(b.w.document.querySelector('#results').textContent,/2ГИС сейчас не ответил.*Drinkit/s);
+  b.click('#goBtn');await tick();
+  assert.equal(b.requests[2].body.source,undefined);
+});
+test('when 2GIS has nothing that fits, the checked database answers instead',async t=>{
+  const b=await boot(t);b.click('#goBtn');await tick();
+  b.requests[0].resolve(json({...answer('empty 2gis'),source:'2gis',recommendations:[]}));await tick();
+  assert.equal(b.requests[1].body.source,'local');
+  b.requests[1].resolve(json({...answer('local'),recommendations:[rec('p1','NU Park')]}));await tick();
+  assert.match(b.w.document.querySelector('#results').textContent,/В 2ГИС подходящих мест рядом не нашлось.*NU Park/s);
+});
+test('a 2GIS place asks photos with its own name and position, never the person\'s',async t=>{
+  const b=await boot(t);b.click('#goBtn');await tick();
+  b.requests[0].resolve(json({...answer('2gis'),source:'2gis',recommendations:[{...rec('2gis_7','Монумент-Бәйтерек'),coords:{lat:51.128,lon:71.43}}]}));await tick();await tick();
+  assert.deepEqual(b.photos[0].body.near,{name:'Монумент-Бәйтерек',lat:51.128,lon:71.43,category:'coffee'});
 });
 const nearbyPlace = (id,name,eligible=true) => ({poi_id:id,name,category:'coffee',coords:{lat:51.128,lon:71.43},distance_m:100,walk_min:2,address:'Test address',rating:4.8,eligible,excluded_because:eligible?null:'closed',links:{'2gis':'https://2gis.kz/astana/firm/123'}});
 test('nearby list contains unselected and closed places; next page appends without duplicates', async t=>{

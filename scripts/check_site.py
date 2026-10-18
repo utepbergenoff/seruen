@@ -43,7 +43,7 @@ def run_scenarios(ctx, label: str) -> None:
         page = ctx.new_page()
         errors, bodies, gis_calls = [], [], []
         page.on("pageerror", lambda e, errs=errors: errs.append(str(e)))
-        page.on("request", lambda r, g=gis_calls: g.append(r.url) if "/2gis" in r.url else None)
+        page.on("request", lambda r, g=gis_calls: g.append(r.url) if re.search(r"/2gis(\?|$)", r.url) else None)
         page.on("request", lambda r, b=bodies: b.append(r.post_data) if r.url.endswith("/recommend") else None)
         page.goto(f"{BASE}/?scenario={sid}&at={DAY}{THEME}")
         try:
@@ -88,8 +88,9 @@ def run_scenarios(ctx, label: str) -> None:
             page.click("#candBtn")
             page.wait_for_selector("table.cands", timeout=10000)
             check(f"{label} {sid}: candidates open", page.locator("table.cands tr").count() > 1)
-        pins = page.locator(".pin, .chest, .seal").count()
-        check(f"{label} {sid}: numbered markers on map", pins == n, f"{pins} markers")
+        # numbered pins for the picks; other nearby places from 2GIS get plain dots
+        pins = page.evaluate("() => [...document.querySelectorAll('.pin b')].filter(b => /^\\d+$/.test(b.textContent)).length")
+        check(f"{label} {sid}: numbered markers on map", pins == n, f"{pins} numbered markers")
         if bodies and bodies[0]:
             loc = json.loads(bodies[0])["location"]
             ok = decimals(loc["lat"]) <= 3 and decimals(loc["lon"]) <= 3

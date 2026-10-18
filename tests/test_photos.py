@@ -126,3 +126,16 @@ def test_photos_endpoint_uses_post_and_rejects_extra_fields(settings):
         assert ok.status_code == 200 and ok.json()["status"] == "no_photos"
         assert client.post(f"/places/{poi_id}/photos", json={"lang": "ru", "lat": 51.1}).status_code == 422
         assert client.post("/places/unknown/photos", json={}).json()["error"]["code"] == "poi_not_found"
+
+
+async def test_2gis_place_reuses_photos_of_the_same_place_in_our_list(settings, poi):
+    ai = FakeAI(ANSWER)
+    photos = make(settings, poi, {"cafe": COMMONS}, ai)
+    near = {"name": "Test Cafe, кофейня", "lat": poi.lat + 0.0005, "lon": poi.lon, "category": "coffee"}
+    result = await photos.details("2gis_70000001", PhotoRequest(query="кофе", near=near))
+    assert result.poi_id == "2gis_70000001" and result.status == "ok" and len(result.photos) == 1
+    far = {**near, "name": "Other Place", "lat": poi.lat + 0.01, "category": "park"}
+    assert (await photos.details("2gis_70000002", PhotoRequest(near=far))).status == "no_photos"
+    assert (await photos.details("2gis_70000003", PhotoRequest())).status == "no_photos"
+    with pytest.raises(PlacesError):
+        await photos.details("2gis_x", PhotoRequest(near=near))

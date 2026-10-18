@@ -6,7 +6,7 @@
 (() => {
   "use strict";
   const CFG = window.SERUEN_CONFIG || {};
-  const FEAT = Object.assign({mapLinks: true, weather: true, route: true, languages: true, points: true, twogis: true, photos: true, twogisSearch: true}, CFG.FEATURES || {});
+  const FEAT = Object.assign({mapLinks: true, weather: true, route: true, languages: true, points: true, twogis: true, photos: true}, CFG.FEATURES || {});
   const API = (CFG.API_URL || "").replace(/\/$/, "");
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => Array.from(document.querySelectorAll(s));
@@ -275,13 +275,24 @@
     $("#status").innerHTML = `<div class="loading" role="status"><div class="spinner"></div>${esc(T().loading)}</div>`;
     $("#goBtn").disabled = true;
     try {
-      // "local" = our checked database with Gemini and photos; the 2GIS catalog has no AI and only
-      // 25 searches a day on the demo key, so it is asked only from its own button below the answer
-      const body = {location: {lat: round3(state.loc.lat), lon: round3(state.loc.lon), precision_m: 100, source: state.loc.source},
-        query: $("#query").value.trim(), context: await context(), source: "local"};
+      // the server searches the full 2GIS catalog with Gemini; if 2GIS fails, its demo quota is used up or it
+      // has nothing that fits, the same request goes to our own checked database, so 2GIS never leaves it empty
+      let body = {location: {lat: round3(state.loc.lat), lon: round3(state.loc.lon), precision_m: 100, source: state.loc.source},
+        query: $("#query").value.trim(), context: await context()};
       if (version !== state.requestVersion) return;
-      const data = await postJSON("/recommend", body);
+      let data = await postJSON("/recommend", body);
       if (version !== state.requestVersion) return;
+      // a 2GIS answer that lists nearby places or can load more is kept: the person sees them on the map
+      if (data.source === "2gis" && !(data.recommendations || []).length
+          && (data.source_error || (!(data.nearby_places || []).length && !data.next_cursor))) {
+        const local = await postJSON("/recommend", {...body, source: "local"});
+        if (version !== state.requestVersion) return;
+        if ((local.recommendations || []).length || data.source_error) {
+          body = {...body, source: "local"};
+          local.notes = [data.source_error ? T().catalog.fallback : T().catalog.fallbackEmpty, ...(local.notes || [])];
+          data = local;
+        }
+      }
       state.lastWeather = body.context.weather ? {...body.context.weather, simulated: simulatedWeather} : null;
       state.lastReq = body; state.extraCands = null; state.showCands = false;
       state.last = data;
@@ -293,28 +304,6 @@
       $("#status").innerHTML = `<p class="msg err">${esc(T().serverDown)} <button type="button" class="btn small" id="retryBtn">${esc(T().retry)}</button></p>`;
       $("#retryBtn").addEventListener("click", ask);
     } finally { if (version === state.requestVersion) $("#goBtn").disabled = false; }
-  }
-
-  async function askCatalog() {
-    if (!state.lastReq) return;
-    const version = ++state.requestVersion;
-    const button = $("#catalogBtn");
-    if (button) button.disabled = true;
-    $("#status").innerHTML = `<div class="loading" role="status"><div class="spinner"></div>${esc(T().loading)}</div>`;
-    try {
-      const {cursor, ...base} = state.lastReq;  // a new catalog search starts from its first page
-      const body = {...base, source: "2gis"};
-      const data = await postJSON("/recommend", body);
-      if (version !== state.requestVersion) return;
-      state.lastReq = body;
-      state.last = data;
-      $("#status").innerHTML = "";
-      render(data);
-    } catch {
-      if (version !== state.requestVersion) return;
-      $("#status").innerHTML = `<p class="msg err">${esc(T().serverDown)}</p>`;
-      if (button?.isConnected) button.disabled = false;
-    }
   }
 
   async function askNext() {
@@ -487,7 +476,6 @@
       html += '</section>';
     }
     if (d.next_cursor) html += `<button type="button" id="nextPlacesBtn" class="btn">${esc(t.catalog.next)}</button>`;
-    if (FEAT.twogisSearch && d.source !== "2gis" && state.lastReq) html += `<button type="button" id="catalogBtn" class="btn">🔎 ${esc(t.catalog.more)}</button>`;
     html += considered(d);
     html += `<p class="foot">⚠️ ${esc(d.disclaimer || t.disclaimerShort)}</p>`;
     $("#results").innerHTML = html;
@@ -518,7 +506,6 @@
       if (g) g.addEventListener("click", () => toggleGis(el, id, g));
     });
     const np = $("#nextPlacesBtn"); if (np) np.addEventListener("click", askNext);
-    const cb = $("#catalogBtn"); if (cb) cb.addEventListener("click", askCatalog);
     const rb = $("#routeBtn"); if (rb) rb.addEventListener("click", buildRoute);
     if (FEAT.photos) recs.forEach((r) => loadPhotos(r, d));
   }
@@ -617,6 +604,8 @@
     const card = $$(".rec").find((el) => el.dataset.id === r.poi_id), box = card && card.querySelector(".photos");
     if (!box) return;
     const ask = {lang: state.lang, query: (state.lastReq && state.lastReq.query) || "", companions: (state.lastReq && state.lastReq.context.companions) || "alone"};
+    // a 2GIS place is matched on the server to the same place in our photo list by name and position
+    if (r.poi_id.startsWith("2gis_")) ask.near = {name: r.name, lat: r.coords.lat, lon: r.coords.lon, category: r.category};
     const key = `${r.poi_id}|${ask.lang}|${ask.companions}|${ask.query}`;
     if (!state.photos[key]) {
       box.innerHTML = `<div class="loading"><div class="spinner"></div>${esc(T().ph.loading)}</div>`;
