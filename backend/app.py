@@ -15,6 +15,7 @@ from .config import ROOT, Settings
 from .schemas import Context, Health, Location, RecommendRequest, RecommendResponse, Weather
 from .service import RecommendationService
 from .places import Places, PlaceDetails, PlacesError
+from .twogis import TwoGis, TwoGisDetails
 
 logger = logging.getLogger("seruen")
 
@@ -23,7 +24,7 @@ def scenarios():
     return json.loads((ROOT / "data/demo_scenarios.json").read_text(encoding="utf-8"))
 
 
-def create_app(settings=None, provider=None, places_transport=None):
+def create_app(settings=None, provider=None, places_transport=None, twogis_transport=None):
     settings = settings or Settings.from_env()
 
     @asynccontextmanager
@@ -31,6 +32,7 @@ def create_app(settings=None, provider=None, places_transport=None):
         app.state.service = RecommendationService(settings, provider)
         service = app.state.service
         app.state.places = Places(settings, service.dataset.pois, places_transport)
+        app.state.twogis = TwoGis(settings, service.dataset.pois, twogis_transport)
         await app.state.places.probe()
         logger.info(
             json.dumps(
@@ -107,6 +109,11 @@ def create_app(settings=None, provider=None, places_transport=None):
                 "details_enabled": settings.google_places_enabled and not settings.mock,
                 "ids_probe": request.app.state.places.probe_status,
             },
+            twogis={
+                "configured": bool(settings.twogis_api_key),
+                "enabled": settings.twogis_enabled and not settings.mock,
+                "last_status": request.app.state.twogis.last_status,
+            },
         )
 
     @app.post("/recommend", response_model=RecommendResponse)
@@ -123,6 +130,15 @@ def create_app(settings=None, provider=None, places_transport=None):
     async def place_details(poi_id: str, request: Request, lang: Literal["ru", "kk", "en"] = "ru"):
         try:
             return await request.app.state.places.details(poi_id, lang)
+        except PlacesError as exc:
+            request.state.error = exc.code
+            return JSONResponse(status_code=exc.status, content={"error": {"code": exc.code}})
+
+    @app.get("/places/{poi_id}/2gis", response_model=TwoGisDetails)
+    async def twogis_details(poi_id: str, request: Request, lang: Literal["ru", "kk", "en"] = "ru"):
+        request.state.mode = "twogis"
+        try:
+            return await request.app.state.twogis.details(poi_id, lang)
         except PlacesError as exc:
             request.state.error = exc.code
             return JSONResponse(status_code=exc.status, content={"error": {"code": exc.code}})

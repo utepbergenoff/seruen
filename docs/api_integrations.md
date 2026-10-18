@@ -1,4 +1,7 @@
-# Gemini и Google Places
+# Gemini, Google Places и 2ГИС
+
+2ГИС подключён отдельным обработчиком `GET /places/{poi_id}/2gis` с `TWOGIS_API_KEY` и `TWOGIS_ENABLED`.
+Рейтинг/расписание запрашиваются по требованию; фотографии недоступны. [Контракт и инструкция для Алихана](twogis.md).
 
 Секреты хранятся в Environment сервиса Render `seruen-backend`. Локальный `.env` не создавался.
 
