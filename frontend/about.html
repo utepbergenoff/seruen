@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Серуен — о данных и приватности</title>
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="styles.css">
   <style>
     .page { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
@@ -16,7 +17,7 @@
 </head>
 <body>
   <header class="top">
-    <div class="brand"><span class="logo">🧭</span><div><h1>Серуен</h1><p class="tagline">О данных и приватности · Data & privacy</p></div></div>
+    <div class="brand"><span class="logo" aria-hidden="true">С</span><div><h1>Серуен</h1><p class="tagline">О данных и приватности · Data & privacy</p></div></div>
     <nav class="top-actions"><a class="btn" href="./">← Назад / Back</a></nav>
   </header>
   <main class="page">
@@ -28,7 +29,7 @@
         <li>Координаты передаются только в теле запроса, никогда в адресе страницы. Журнал доступа сервера выключен.</li>
         <li>Сервер пишет в журнал только счётчики: режим (ИИ / без ИИ / кеш), время ответа, число кандидатов.</li>
         <li>Кеш ответов хранится в памяти 30 минут; ключ — хэш, по нему нельзя восстановить запрос или место.</li>
-        <li>Геолокация запрашивается только по кнопке. Без неё приложение полностью работает: точку можно поставить на карте или выбрать пресет.</li>
+        <li>При открытии сайт спрашивает разрешение на геолокацию, чтобы искать рядом с вами. Можно отказаться: точка встанет в центр Астаны, её можно перетащить на карте, а кнопка ◎ на карте определит место заново.</li>
         <li>Отмеченные места и «монеты» хранятся только в вашем браузере (localStorage) и никуда не отправляются.</li>
         <li>Кнопки «Маршрут в 2GIS / Google Maps» передают навигатору только координаты места, не ваши.</li>
         <li>Погода запрашивается для центра Астаны, а не для вашей точки.</li>
@@ -66,6 +67,24 @@
         <li>В мороз от −15 °C или сильный ветер — места в тепле и короткие переходы.</li>
         <li>Не советуем выходить на лёд водоёмов и на закрытые территории; не даём медицинских и юридических советов.</li>
         <li><b>Данные о местах могут устареть — проверяйте на месте.</b></li>
+      </ul>
+    </section>
+    <section class="card block" id="photos">
+      <h2>Фотографии · Photos</h2>
+      <p>Фото взяты с Wikimedia Commons под свободными лицензиями (CC0, CC BY, CC BY-SA) и уменьшены для сайта. Авторы:</p>
+      <ul>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Night_at_Esil_District%2C_Astana_%28P1190721%29.jpg" target="_blank" rel="noopener">Night at Esil District, Astana (P1190721)</a> — Matti Blume, CC BY-SA 4.0</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Taking_notes_at_a_coffee_table_%28Unsplash%29.jpg" target="_blank" rel="noopener">Taking notes at a coffee table (Unsplash)</a> — Tran Mau Tri Tam tranmautritam, CC0</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Astana_Botanical_Garden_20260628_%283%29.jpg" target="_blank" rel="noopener">Astana Botanical Garden 20260628 (3)</a> — Nurken, CC BY-SA 4.0</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Khan-Shatyr_shopping_mall.jpg" target="_blank" rel="noopener">Khan-Shatyr shopping mall</a> — Dauren Nabijan, CC0</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Expo_2017_%22Nur_Alem%22_Pavilion_Space_Exhibition.jpg" target="_blank" rel="noopener">Expo 2017 &quot;Nur Alem&quot; Pavilion Space Exhibition</a> — 颲風, CC BY-SA 4.0</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Astana_Nurly_Jol_2018.jpg" target="_blank" rel="noopener">Astana Nurly Jol 2018</a> — Randwick, CC BY-SA 4.0</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Baiterek_monument_at_night.jpg" target="_blank" rel="noopener">Baiterek monument at night</a> — Dauren Nabijan, CC0</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Expo_2017_%22Nur_Alem%22_Pavilion_Glass_Pathway_1.jpg" target="_blank" rel="noopener">Expo 2017 &quot;Nur Alem&quot; Pavilion Glass Pathway 1</a> — 颲風, CC BY-SA 4.0</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Khan_Shatyr.jpg" target="_blank" rel="noopener">Khan Shatyr</a> — Quarot, CC0</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:A%C4%89etcentro_SilkWay_%28Astano%29_01.jpg" target="_blank" rel="noopener">Aĉetcentro SilkWay (Astano) 01</a> — RG72, CC BY-SA 4.0</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:View_from_Bayterek_tower.jpg" target="_blank" rel="noopener">View from Bayterek tower</a> — Ken and Nyetta, CC BY 2.0</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Nursultan_Nazarbayev_International_Airport%2C_Astana_%28LRM_20240405_115306%29.jpg" target="_blank" rel="noopener">Nursultan Nazarbayev International Airport, Astana (LRM 20240405 115306)</a> — Matti Blume, CC BY-SA 4.0</li>
       </ul>
     </section>
     <section class="card block" lang="en">
