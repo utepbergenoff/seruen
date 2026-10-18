@@ -6,7 +6,7 @@ const json = data => ({ok:true,json:async()=>data});
 async function boot(t, opts = {}) {
   const dom = new JSDOM(fs.readFileSync('frontend/index.html','utf8'), {url:opts.url||'https://example.test/',runScripts:'outside-only'});
   t.after(() => dom.window.close());
-  const w=dom.window, requests=[], gps={calls:[]}, gis=[], photos=[], replans=[], comforts=[], builds=[], tiles=[], lines=[];
+  const w=dom.window, requests=[], gps={calls:[]}, gis=[], photos=[], replans=[], comforts=[], builds=[], tiles=[], lines=[], pins=[];
   if (opts.clock) {w.setTimeout=opts.clock.setTimeout;w.clearTimeout=opts.clock.clearTimeout;}
   if (opts.live) w.AbortController = AbortController;
   const media={matches:!!opts.darkSystem,addEventListener:(_, cb)=>{media.change=cb;}};
@@ -22,7 +22,7 @@ async function boot(t, opts = {}) {
   const map={setView(){return this;},setMaxZoom(z){this.maxZoom=z;return this;},on(){return this;},getZoom(){return 15;},invalidateSize(){},fitBounds(){},removeLayer(l){layers.delete(l);}};
   const events=()=>{const handlers={};return {on(e,cb){handlers[e]=cb;return this;},fire(e,payload={}){handlers[e]?.(payload);return this;}};};
   w.L={map:()=>map,tileLayer:(url,options)=>{const l={url,options,...events(),addTo(){layers.add(this);return this;}};tiles.push(l);return l;},divIcon:x=>x,
-    marker:(coords)=>({...events(),addTo(){return this;},bindTooltip(){return this;},bindPopup(){return this;},getLatLng(){return coords;},openPopup(){},setLatLng(){},setTooltipContent(){}}),
+    marker:(coords,options)=>{const p={coords,options,...events(),addTo(target){this.target=target;return this;},bindTooltip(){return this;},bindPopup(){return this;},getLatLng(){return coords;},openPopup(){},setLatLng(){},setTooltipContent(){}};pins.push(p);return p;},
     polyline:(coords,options)=>{const l={coords,options,addTo(target){if(target===map)layers.add(this);return this;}};lines.push(l);return l;},
     layerGroup:()=>({addTo(){return this;},clearLayers(){}}),latLngBounds:x=>x,
     Control:{extend:cfg=>class{addTo(){w.document.body.appendChild(cfg.onAdd());}}},
@@ -53,7 +53,7 @@ async function boot(t, opts = {}) {
   };
   for(const file of ['theme.js','storage.js','i18n.js','route.js','app.js','features.js','experiences-i18n.js','experiences.js']) w.eval(fs.readFileSync('frontend/'+file,'utf8'));
   await tick(); await tick();
-  return {w,requests,gps,gis,photos,replans,comforts,builds,tiles,lines,layers,media,click:s=>w.document.querySelector(s).click()};
+  return {w,requests,gps,gis,photos,replans,comforts,builds,tiles,lines,pins,layers,media,click:s=>w.document.querySelector(s).click()};
 }
 
 module.exports = {boot};

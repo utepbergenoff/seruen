@@ -161,7 +161,7 @@
     const x = X();
     if (!(d.recommendations || []).length) return "";
     let html = has("plan_export") ? `<div class="row walk-actions"><button type="button" class="btn" id="saveWalkBtn">${icon("save")} ${esc(x.saveWalk)}</button>
-      <button type="button" class="btn" id="startWalkBtn">${icon("play")} ${esc(x.startWalk)}</button></div><p class="src" id="saveWalkMsg" aria-live="polite"></p>` : "";
+      <button type="button" class="btn" id="startWalkBtn">${icon("play")} ${esc(x.startWalk)}</button>${ext.previewAction?.("results") || ""}</div><p class="src" id="saveWalkMsg" aria-live="polite"></p>` : "";
     if (has("comfort")) {
       const kinds = [["warm", "fire", x.kWarm], ["toilet", "toilet", x.kToilet], ["sit", "bench", x.kSit], ["water", "water", x.kWater], ["entrance", "door", x.kEntrance]];
       html += `<div class="card block comfort"><h3>${esc(x.comfort)}</h3><div class="row">${kinds.map(([k, ic, l]) =>
@@ -172,6 +172,7 @@
   };
   ext.selectedPlaceActions = p => has("plan_export")
     ? `<button type="button" class="btn primary" id="startSelectedWalk">${icon("play")} ${esc(X().startWalk)}</button>
+       ${ext.previewAction?.("selected") || ""}
        <p class="meta">${esc(T().selectedDestination)}: ${esc(p.name)}</p><p class="src" id="selectedWalkMsg" aria-live="polite"></p>` : "";
   ext.onPlaceSelected = (p, d) => {
     $("#startSelectedWalk")?.addEventListener("click", () => buildAnswer(d, false, p.poi_id));
@@ -302,6 +303,7 @@
     drawFinish(); renderFinish();
     return true;
   };
+  ext.cancelMapPick = () => { picking = false; renderFinish(); };
   function drawFinish() {
     if (finishMarker) { map.removeLayer(finishMarker); finishMarker = null; }
     if (!finish) return;
@@ -483,6 +485,7 @@
       ${navigator.onLine === false ? `<p class="msg info">${esc(x.offline)}</p>` : saved ? `<div class="row"><span class="meta">${esc(x.backOnline)}</span><button type="button" class="btn small" id="walkRefresh">${icon("refresh")} ${esc(x.refresh)}</button></div>` : ""}
       ${p.offline && !p.offline.contains_full_route ? `<p class="msg warn">${esc(x.partialExport)}</p>` : ""}
       ${p.total_min ? `<p class="walk-left">${esc(fmt(x.remaining, {m: p.total_min}))}</p>` : ""}
+      ${p.server ? ext.previewAction?.("active") || "" : ""}
       ${p.server ? `<p class="src">${esc(p.server.notes.join(" "))}</p>` : ""}
       ${p.server?.legs?.length ? `<p class="meta">${esc(fmt(x.toEnd, {m: p.server.legs[p.server.legs.length-1].walk_min}))} · ${esc(fmt(x.arrival, {
         t: new Intl.DateTimeFormat(state.lang === "en" ? "en-GB" : "ru-RU", {hour:"2-digit",minute:"2-digit",timeZone:"Asia/Almaty"}).format(new Date(p.server.estimated_arrival_at)),
@@ -490,6 +493,7 @@
       <ol class="walk-stops">${p.stops.map((s, i) => `<li class="ws ws-${esc(s.status)}"><div><b>${esc(s.name)}</b> <span class="meta">· ${esc(statusL[s.status] || s.status)}</span></div>
         <div class="meta">${s.address ? esc(s.address) + " · " : ""}${s.walk_min != null ? `${icon("walk")} ${esc(s.walk_min)} ${esc(T().minutes)} · ` : ""}${s.stay_min ? `${esc(s.stay_min)} ${esc(T().minutes)}` : ""}${s.hours_text ? ` · ${esc(s.hours_text)}` : ""}</div>
         ${(mine.places.get(s.poi_id) || {}).note ? `<div class="meta">${icon("note")} ${esc(mine.places.get(s.poi_id).note)}</div>` : ""}
+        ${ext.walkStopExtras?.(s) || ""}
         ${s.status === "next" ? `<div class="row"><button type="button" class="btn small" data-ws="done" data-i="${i}">${icon("check")} ${esc(x.done)}</button>
           <button type="button" class="btn small" data-ws="skip" data-i="${i}">${esc(x.skip)}</button></div>` : ""}</li>`).join("")}</ol>
       ${can && next.length ? `<div class="row changes"><button type="button" class="btn small" data-ch="less_time">${esc(x.chLess)}</button>
@@ -720,7 +724,7 @@
     window.addEventListener("offline", () => renderWalk());
     S.init().then(loadMine).then(() => { renderMine(); A.rerender(); }).catch(() => { mine.error = X().storeBlocked; });
   }
-  window.SeruenFeatures = {mine, startWalk, saveWalk, planView, get walk() { return walk; }, get cons() { return cons; },
+  window.SeruenFeatures = {mine, startWalk, saveWalk, planView, renderWalk, get walk() { return walk; }, get cons() { return cons; },
     setFinish: (f) => { finish = f; drawFinish(); renderFinish(); }, setAtmosphere: (a) => { atmosphere = a; }};
   ready();
   if (Object.keys(state.features || {}).length) ext.onHealth();

@@ -186,6 +186,7 @@
   function runScenario(id) {
     const s = state.scenarios.find((x) => x.id === id);
     if (!s) return;
+    ext.onScenario?.();
     const p = state.presets.find((x) => x.id === s.preset);
     if (p) setLoc(p.lat, p.lon, "preset", p.id);
     else if (s.location) setLoc(s.location.lat, s.location.lon, "preset", null);
@@ -270,6 +271,7 @@
   }
   function locate() {
     if (state.locating) return; // Repeated clicks must not restart the wait or launch overlapping requests.
+    ext.cancelMapPick?.();
     const version = ++state.locVersion;
     const fail = (key) => {
       if (version !== state.locVersion) return;
@@ -298,6 +300,7 @@
   }
   $("#geoRetry").addEventListener("click", locate);
   $("#geoMap").addEventListener("click", () => {
+    ext.cancelMapPick?.();
     cancelLocation(); state.geoMessage = "geoChooseMap"; renderLocLine();
     $("#map").scrollIntoView({block: "center", behavior: "smooth"});
     $("#map").focus({preventScroll: true});
@@ -340,6 +343,7 @@
   async function ask() {
     // Search uses the point visible when the person submits, never a late GPS response.
     if (state.locating) { cancelLocation(); renderLocLine(); }
+    if (ext.onSearch?.()) return;
     const version = ++state.requestVersion;
     const simulatedWeather = ["cold", "mild"].includes($("#weather").value);
     $("#status").innerHTML = `<div class="loading walking" role="status"><span class="trail" aria-hidden="true"><i></i></span>${esc(T().loading)}</div>`;
@@ -617,7 +621,7 @@
         selectPlace(id, false);
         if (window.matchMedia("(max-width: 860px)").matches) $("#map").scrollIntoView({behavior: "smooth"});
       };
-      el.addEventListener("click", (e) => { if (!e.target.closest("a,button,.gis-box")) focus(); });
+      el.addEventListener("click", (e) => { if (!e.target.closest("a,button,input,textarea,select,details,.gis-box")) focus(); });
       el.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target === el) focus(); });
       el.querySelector('[data-act="map"]').addEventListener("click", focus);
       const g = el.querySelector('[data-act="gis"]');
@@ -882,6 +886,7 @@
     }
   }
   window.SeruenApp = {state, FEAT, API, T, fmt, esc, icon, $, $$, map, layer, markers, L, showAt, fitTo, round3,
+    freezeLocation: () => { if (state.locating) { cancelLocation(); renderLocLine(); } },
     postJSON, getJSON, context, ask: () => ask(), render: (d) => render(d), rerender: () => { if (state.last) render(state.last); }, catLabel};
   init();
   if (ext.onReady) ext.onReady();

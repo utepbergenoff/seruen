@@ -488,8 +488,31 @@ table.cands { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-
   .map-tools { top: 10px; right: 10px; width: min(210px, calc(100% - 75px)); }
 }
 /* City experiences use the existing theme palette and remain readable on small screens. */
-.experience-tabs { display:flex; gap:8px; flex-wrap:wrap; }
-.experience-head { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:16px; }
+.search-intent { border:0; padding:0; margin:0 0 16px; display:flex; gap:6px; flex-wrap:wrap; }
+.search-intent legend { color:var(--muted); font-size:12px; margin-bottom:8px; }
+.search-intent label { flex:1; position:relative; cursor:pointer; }
+.search-intent input { position:absolute; opacity:0; width:1px; height:1px; }
+.search-intent span { display:block; padding:11px 12px; text-align:center; border:1px solid var(--line); border-radius:12px; font-weight:600; }
+.search-intent input:checked + span { background:var(--sun); color:#0F2230; border-color:var(--sun); }
+.search-intent input:focus-visible + span { outline:3px solid var(--sun); outline-offset:2px; }
+#meetingFields { padding:0 0 12px; margin-bottom:12px; border-bottom:1px solid var(--line); }
+#meetingFields .row { margin:8px 0; flex-wrap:wrap; }
+#meetingFields select { min-width:0; max-width:100%; }
+#winterField { margin:14px 0; padding:12px; border:1px solid var(--line); border-radius:12px; }
+.winter-toggle { display:flex; align-items:flex-start; gap:10px; cursor:pointer; }
+.winter-toggle input { margin-top:4px; accent-color:var(--sky-deep); }
+.winter-toggle strong, .winter-toggle small { display:block; }
+.winter-toggle small { margin-top:4px; color:var(--muted); line-height:1.45; font-size:12px; }
+#winterSettings { padding:10px 0 0 24px; }
+#winterSettings select { max-width:100%; }
+.story-layer-toggle { display:flex !important; align-items:center; gap:8px; margin-top:12px; cursor:pointer; }
+.story-layer-toggle input { accent-color:var(--sky-deep); }
+#storyLayerStatus { margin:4px 0 0; font-size:11px; }
+.story-pin { background:var(--sun); color:#122e45; border:2px solid var(--surface); cursor:pointer; }
+.place-story { border-left:3px solid var(--sun); padding:10px 12px; margin:12px 0; background:var(--surface); }
+.place-story summary { cursor:pointer; font-weight:600; }
+.place-story p { margin:8px 0; }
+.experience-head { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
 .experience-head h3 { margin:0; }
 .experiences label { display:block; margin:12px 0; }
 .experiences select { max-width:100%; }

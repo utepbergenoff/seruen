@@ -95,6 +95,7 @@
         </select>
         <p id="mapNotice" class="meta" role="status" hidden></p>
         <button id="mapDetailBtn" type="button" class="btn small" data-i18n="mapDetails" hidden></button>
+        <div id="storyLayerField" hidden></div>
       </div>
     </section>
 
@@ -109,18 +110,21 @@
 
       <form id="askForm" class="card block" autocomplete="off">
         <h2 data-i18n="what"></h2>
+        <div id="searchModeField" hidden></div>
         <p id="locLine" class="loc-line" aria-live="polite"></p>
         <p id="geoMsg" class="msg warn" role="status" hidden></p>
         <div id="geoActions" class="geo-actions" hidden>
           <button id="geoRetry" type="button" class="btn small" data-i18n="retry"></button>
           <button id="geoMap" type="button" class="btn small" data-i18n="geoPickMap"></button>
         </div>
+        <div id="meetingFields" hidden></div>
         <div id="chips" class="chips"></div>
         <div class="ask">
           <input id="query" type="text" maxlength="500" data-i18n-placeholder="placeholder" aria-label="Query" aria-describedby="privacyHint">
           <button id="goBtn" class="btn primary" type="submit" data-i18n="go"></button>
         </div>
         <p id="privacyHint" class="meta" data-i18n="privacyHint"></p>
+        <div id="winterField" hidden></div>
         <details id="ctxBox" class="ctx">
           <summary data-i18n="settings"></summary>
           <div class="ctx-grid">
