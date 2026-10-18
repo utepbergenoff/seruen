@@ -106,5 +106,13 @@ def drafts(hits, intent):
                 "Қоғамдық аумақтан тамашалаңыз; бару шарттарын алдын ала тексеріңіз.",
             ),
         )[index]
+        if hit.to_end is not None:
+            why = WHY[intent.lang]
+            if activity(hit.poi) in ("cinema", "theatre") or hit.poi.category == "park":
+                action = (
+                    "Уточните условия посещения; после остановки продолжайте путь к выбранному финишу.",
+                    "Check visitor conditions, then continue to your chosen finish point.",
+                    "Келу шарттарын нақтылап, аялдамадан кейін таңдалған мәреге барыңыз.",
+                )[index]
         result.append(Draft(poi_id=hit.poi.poi_id, why=why, time_to_spend_min=hit.stay, what_to_do=action))
     return result

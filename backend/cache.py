@@ -13,6 +13,7 @@ class ResponseCache:
 
     def key(self, request, target, fingerprint, variant):
         body = request.model_dump(mode="json")
+        body.pop("request_id", None)
         # Timestamp slot and all context affect the key; nearby users cannot share raw coordinates.
         body["context"]["now"] = None
         body["query"] = " ".join(request.query.casefold().split())

@@ -1,1 +1,123 @@
-{"version": 1, "items": []}
+{
+ "version": 1,
+ "items": [
+  {
+   "canonical_id": "osm_way_460703779",
+   "aliases": [
+    "2gis_70000001018125368"
+   ],
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70000001018125368",
+    "checked_at": "2026-10-19",
+    "verification": "verified",
+    "method": "team_review",
+    "note": "Сверены название, адрес и координаты OSM и 2ГИС, не только название. Хан Шатыр: Тұран 37 = проспект Туран 37, 84 м."
+   }
+  },
+  {
+   "canonical_id": "osm_way_230401645",
+   "aliases": [
+    "2gis_70000001021365759"
+   ],
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70000001021365759",
+    "checked_at": "2026-10-19",
+    "verification": "verified",
+    "method": "team_review",
+    "note": "Сверены название, адрес и координаты OSM и 2ГИС, не только название. Бәйтерек: Нұржол 14 = бульвар Нуржол 14, 1 м."
+   }
+  },
+  {
+   "canonical_id": "osm_way_499328514",
+   "aliases": [
+    "2gis_70000001026995330",
+    "osm_node_4965336822"
+   ],
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70000001026995330",
+    "checked_at": "2026-10-19",
+    "verification": "verified",
+    "method": "team_review",
+    "note": "Сверены название, адрес и координаты OSM и 2ГИС, не только название. Mega Silk Way: Қабанбай Батыр 62 = Кабанбай батыр 62, 135 м (большое здание). osm_node_4965336822 «Мега Силк Вей» — дубль того же ТРЦ в OSM."
+   }
+  },
+  {
+   "canonical_id": "osm_way_108096984",
+   "aliases": [
+    "2gis_70000001018099410"
+   ],
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70000001018099410",
+    "checked_at": "2026-10-19",
+    "verification": "verified",
+    "method": "team_review",
+    "note": "Сверены название, адрес и координаты OSM и 2ГИС, не только название. Керуен: Достық 9 = Достык 9, 52 м."
+   }
+  },
+  {
+   "canonical_id": "osm_way_230358855",
+   "aliases": [
+    "2gis_70000001018106637"
+   ],
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70000001018106637",
+    "checked_at": "2026-10-19",
+    "verification": "verified",
+    "method": "team_review",
+    "note": "Сверены название, адрес и координаты OSM и 2ГИС, не только название. Национальная академическая библиотека: Достық 11 = Достык 11, 3 м."
+   }
+  },
+  {
+   "canonical_id": "osm_way_917478479",
+   "aliases": [
+    "2gis_70000001018117572"
+   ],
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70000001018117572",
+    "checked_at": "2026-10-19",
+    "verification": "verified",
+    "method": "team_review",
+    "note": "Сверены название, адрес и координаты OSM и 2ГИС, не только название. Астана Опера: Қонаев 1 = Динмухамед Конаев 1, 64 м."
+   }
+  },
+  {
+   "canonical_id": "osm_way_37884583",
+   "aliases": [
+    "2gis_70000001019586971"
+   ],
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70000001019586971",
+    "checked_at": "2026-10-19",
+    "verification": "verified",
+    "method": "team_review",
+    "note": "Сверены название, адрес и координаты OSM и 2ГИС, не только название. Ғашықтар саябағы = Ғашықтар, парк: единственный парк с этим названием, 44 м; адреса нет в обоих источниках."
+   }
+  },
+  {
+   "canonical_id": "osm_way_239713764",
+   "aliases": [
+    "2gis_70000001018123410"
+   ],
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70000001018123410",
+    "checked_at": "2026-10-19",
+    "verification": "verified",
+    "method": "team_review",
+    "note": "Сверены название, адрес и координаты OSM и 2ГИС, не только название. Asia Park: Қабанбай Батыр 21 = Кабанбай батыр 21, 66 м."
+   }
+  },
+  {
+   "canonical_id": "osm_way_240909210",
+   "aliases": [
+    "2gis_70000001018113837"
+   ],
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70000001018113837",
+    "checked_at": "2026-10-19",
+    "verification": "verified",
+    "method": "team_review",
+    "note": "Сверены название, адрес и координаты OSM и 2ГИС, не только название. Сарыарқа / Saryarqa: Тұран 24 = проспект Туран 24, 26 м."
+   }
+  }
+ ]
+}

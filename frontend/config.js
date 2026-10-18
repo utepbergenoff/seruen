@@ -10,7 +10,6 @@ window.SERUEN_CONFIG = {
     weather: true,    // Astana weather from Open-Meteo -> context.weather
     route: true,      // "Build a route" from 3 places, line on the map (computed in the browser)
     languages: true,  // KZ / RU / EN switch
-    points: true,     // coins for visited places, stored only in this browser
     twogis: true,     // "2GIS rating & hours" button on each card: asks the backend only when pressed
     photos: true,     // photos of each place + what Gemini sees on them (lighting, seats, kids' area, space)
   },

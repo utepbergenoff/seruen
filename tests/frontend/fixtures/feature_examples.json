@@ -1,0 +1,866 @@
+{
+  "synthetic": true,
+  "note": "Synthetic UI examples for contract v2. Not real venue facts. Plan/export responses captured from TestClient.",
+  "health_with_features": {
+    "status": "ok",
+    "features": {
+      "replan": 1,
+      "end_point": 1,
+      "constraints": 1,
+      "comfort": 1,
+      "cost": 1,
+      "atmosphere": 1,
+      "plan_export": 1
+    },
+    "feature_contract_version": 2
+  },
+  "recommend_normal": {
+    "request_id": "r1",
+    "mode": "ai",
+    "recommendations": [
+      {
+        "poi_id": "osm_node_1",
+        "name": "Парк ЭКСПО",
+        "category": "park",
+        "coords": {
+          "lat": 51.09,
+          "lon": 71.418
+        },
+        "distance_m": 300,
+        "walk_min": 5,
+        "why": "Рядом и укладывается во время.",
+        "why_source": "template",
+        "what_to_do": "Прогуляйтесь по аллеям.",
+        "what_to_do_source": "template",
+        "time_to_spend_min": 20,
+        "open_status": {
+          "state": "open",
+          "confidence": "high",
+          "hours": "24/7",
+          "source": "osm",
+          "checked_at": "2026-10-17"
+        },
+        "budget_breakdown": {
+          "walk_there_min": 5,
+          "stay_min": 20,
+          "walk_to_end_min": 7,
+          "reserve_min": 0,
+          "total_min": 32,
+          "budget_min": 60
+        },
+        "arrival_estimate": "2026-10-19T11:32:00+05:00",
+        "visit_condition": {
+          "kind": "free",
+          "note": "вход свободный",
+          "source_url": "osm",
+          "checked_at": "2026-10-17"
+        }
+      },
+      {
+        "poi_id": "osm_node_2",
+        "name": "Нур Алем",
+        "category": "park",
+        "coords": {
+          "lat": 51.09,
+          "lon": 71.418
+        },
+        "distance_m": 300,
+        "walk_min": 5,
+        "why": "Рядом и укладывается во время.",
+        "why_source": "template",
+        "what_to_do": "Прогуляйтесь по аллеям.",
+        "what_to_do_source": "template",
+        "time_to_spend_min": 20,
+        "open_status": {
+          "state": "open",
+          "confidence": "high",
+          "hours": "24/7",
+          "source": "osm",
+          "checked_at": "2026-10-17"
+        },
+        "budget_breakdown": {
+          "walk_there_min": 5,
+          "stay_min": 20,
+          "walk_to_end_min": 7,
+          "reserve_min": 0,
+          "total_min": 32,
+          "budget_min": 60
+        },
+        "arrival_estimate": "2026-10-19T11:32:00+05:00",
+        "visit_condition": {
+          "kind": "paid",
+          "note": "вход в музей платный",
+          "source_url": "2gis",
+          "checked_at": "2026-10-18"
+        }
+      },
+      {
+        "poi_id": "osm_node_3",
+        "name": "Discovery Coffee",
+        "category": "park",
+        "coords": {
+          "lat": 51.09,
+          "lon": 71.418
+        },
+        "distance_m": 300,
+        "walk_min": 5,
+        "why": "Рядом и укладывается во время.",
+        "why_source": "template",
+        "what_to_do": "Прогуляйтесь по аллеям.",
+        "what_to_do_source": "template",
+        "time_to_spend_min": 20,
+        "open_status": {
+          "state": "open",
+          "confidence": "high",
+          "hours": "24/7",
+          "source": "osm",
+          "checked_at": "2026-10-17"
+        },
+        "budget_breakdown": {
+          "walk_there_min": 5,
+          "stay_min": 20,
+          "walk_to_end_min": 7,
+          "reserve_min": 0,
+          "total_min": 32,
+          "budget_min": 60
+        },
+        "arrival_estimate": "2026-10-19T11:32:00+05:00",
+        "visit_condition": {
+          "kind": "optional_purchase",
+          "note": "можно посидеть, покупка по желанию",
+          "source_url": "team",
+          "checked_at": "2026-10-18"
+        }
+      }
+    ],
+    "considered": {
+      "constraints_applied": [
+        "no_spend:lenient"
+      ],
+      "time_budget_min": 60
+    },
+    "notes": [],
+    "safety": [],
+    "disclaimer": "Проверяйте на месте."
+  },
+  "recommend_empty": {
+    "request_id": "r2",
+    "mode": "no_ai",
+    "recommendations": [],
+    "notes": [
+      "Подходящих мест в 600 м нет."
+    ],
+    "considered": {
+      "constraints_applied": [
+        "max_distance_m:600",
+        "no_spend:strict"
+      ],
+      "time_budget_min": 60
+    },
+    "safety": [],
+    "disclaimer": "Проверяйте на месте.",
+    "relaxation_options": [
+      "increase_distance_limit"
+    ]
+  },
+  "recommend_route_impossible": {
+    "request_id": "r3",
+    "mode": "no_ai",
+    "recommendations": [],
+    "notes": [
+      "До финиша не успеть за 30 минут."
+    ],
+    "route_impossible": {
+      "reason": "budget",
+      "need_min": 75,
+      "suggestions": [
+        {
+          "kind": "more_time",
+          "min": 75
+        },
+        {
+          "kind": "fewer_stops"
+        }
+      ]
+    },
+    "considered": {
+      "time_budget_min": 30
+    },
+    "safety": [],
+    "disclaimer": "Проверяйте на месте."
+  },
+  "provider_failure": {
+    "status": 503,
+    "body": {
+      "error": {
+        "code": "provider_unavailable"
+      }
+    }
+  },
+  "replan_ok": {
+    "schema_version": 1,
+    "status": "ok",
+    "fits": true,
+    "stops": [
+      {
+        "poi_id": "sample_019",
+        "canonical_id": "sample_019",
+        "name": "Ночная кофейня (демо)",
+        "category": "coffee",
+        "coords": {
+          "lat": 51.1285,
+          "lon": 71.4305
+        },
+        "arrival_at": "2026-10-19T15:02:00+05:00",
+        "departure_at": "2026-10-19T15:22:00+05:00",
+        "stay_min": 20,
+        "open_status": {
+          "state": "open",
+          "confidence": "high",
+          "hours": "24/7",
+          "source": "osm",
+          "checked_at": "2026-10-17"
+        },
+        "visit_condition": {
+          "kind": "unknown",
+          "note": "",
+          "source_url": null,
+          "checked_at": null,
+          "verification": "unknown"
+        },
+        "atmosphere_match": {
+          "matched_features": [],
+          "source": "none",
+          "checked_at": null,
+          "photo_ids": []
+        },
+        "sources": [
+          "synthetic_fixture_not_osm"
+        ]
+      },
+      {
+        "poi_id": "team_second",
+        "canonical_id": "team_second",
+        "name": "SYNTHETIC team_second",
+        "category": "coffee",
+        "coords": {
+          "lat": 51.13,
+          "lon": 71.43
+        },
+        "arrival_at": "2026-10-19T15:25:00+05:00",
+        "departure_at": "2026-10-19T15:45:00+05:00",
+        "stay_min": 20,
+        "open_status": {
+          "state": "open",
+          "confidence": "high",
+          "hours": "24/7",
+          "source": "osm",
+          "checked_at": "2026-10-19"
+        },
+        "visit_condition": {
+          "kind": "optional_purchase",
+          "note": "Synthetic test record",
+          "source_url": "https://example.org/synthetic-evidence",
+          "checked_at": "2026-10-19",
+          "verification": "verified"
+        },
+        "atmosphere_match": {
+          "matched_features": [],
+          "source": "none",
+          "checked_at": null,
+          "photo_ids": []
+        },
+        "sources": [
+          "synthetic-test"
+        ]
+      }
+    ],
+    "legs": [
+      {
+        "from_id": "start",
+        "to_id": "sample_019",
+        "distance_m": 86,
+        "walk_min": 2,
+        "source": "distance_estimate"
+      },
+      {
+        "from_id": "sample_019",
+        "to_id": "team_second",
+        "distance_m": 222,
+        "walk_min": 3,
+        "source": "distance_estimate"
+      },
+      {
+        "from_id": "team_second",
+        "to_id": "finish",
+        "distance_m": 290,
+        "walk_min": 4,
+        "source": "distance_estimate"
+      }
+    ],
+    "budget": {
+      "available_min": 70,
+      "walking_min": 9,
+      "visiting_min": 40,
+      "reserve_min": 5,
+      "total_min": 54,
+      "spare_min": 16
+    },
+    "state": {
+      "schema_version": 1,
+      "created_at": "2026-10-18T19:40:49.803596Z",
+      "origin": {
+        "lat": 51.128,
+        "lon": 71.43,
+        "precision_m": 100,
+        "source": "preset"
+      },
+      "finish_mode": "return",
+      "finish": {
+        "lat": 51.128,
+        "lon": 71.43,
+        "precision_m": 100,
+        "source": "preset"
+      },
+      "remaining_ids": [
+        "sample_019",
+        "team_second"
+      ],
+      "completed_ids": [
+        "team_coffee"
+      ],
+      "skipped_ids": [],
+      "preferences": {
+        "exclude_poi_ids": [
+          "team_coffee"
+        ],
+        "visited_poi_ids": [],
+        "exclude_visited": false,
+        "preferred_categories": [],
+        "max_walk_min": 5,
+        "max_distance_m": null,
+        "indoor_only": true,
+        "expense_mode": "any",
+        "atmosphere_example_id": null
+      },
+      "exclude_categories": [],
+      "companions": "alone",
+      "accessibility": false,
+      "reserve_min": 5
+    },
+    "departure_at": "2026-10-19T15:00:00+05:00",
+    "estimated_arrival_at": "2026-10-19T15:49:00+05:00",
+    "routing_source": "distance_estimate",
+    "routing_error": null,
+    "geometry": [
+      [
+        71.43,
+        51.128
+      ],
+      [
+        71.4305,
+        51.1285
+      ],
+      [
+        71.43,
+        51.13
+      ],
+      [
+        71.43,
+        51.128
+      ]
+    ],
+    "exclusions": [
+      {
+        "poi_id": "sample_022",
+        "reason": "closed_at_visit"
+      },
+      {
+        "poi_id": "sample_020",
+        "reason": "indoor_required"
+      },
+      {
+        "poi_id": "sample_021",
+        "reason": "indoor_required"
+      },
+      {
+        "poi_id": "sample_016",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_018",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_014",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_013",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_017",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_015",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_007",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_005",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_009",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_024",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_002",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_008",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_001",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_003",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_004",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_011",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_006",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_012",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "sample_010",
+        "reason": "walking_limit"
+      },
+      {
+        "poi_id": "team_coffee",
+        "reason": "excluded_place"
+      },
+      {
+        "poi_id": "team_park",
+        "reason": "indoor_required"
+      },
+      {
+        "poi_id": "team_paid",
+        "reason": "finish_walk_limit"
+      },
+      {
+        "poi_id": "team_unknown",
+        "reason": "finish_walk_limit"
+      },
+      {
+        "poi_id": "sample_023",
+        "reason": "walking_limit"
+      }
+    ],
+    "notes": [
+      "Стало холоднее: план пересчитан."
+    ],
+    "warning_codes": [
+      "estimated_arrival",
+      "plan_not_navigation",
+      "street_route_unavailable"
+    ],
+    "applied_preferences": {
+      "exclude_poi_ids": [
+        "team_coffee"
+      ],
+      "visited_poi_ids": [],
+      "exclude_visited": false,
+      "preferred_categories": [],
+      "max_walk_min": 5,
+      "max_distance_m": null,
+      "indoor_only": true,
+      "expense_mode": "any",
+      "atmosphere_example_id": null
+    },
+    "change_codes": [
+      "cold"
+    ],
+    "relaxation_options": [],
+    "data_kind": "sample",
+    "source": "local",
+    "source_error": null
+  },
+  "replan_impossible": {
+    "status": 409,
+    "body": {
+      "error": {
+        "code": "replan_impossible"
+      },
+      "reasons": [
+        "time"
+      ],
+      "suggestions": [
+        {
+          "kind": "end_here"
+        }
+      ]
+    }
+  },
+  "comfort": [
+    {
+      "poi_id": "c1",
+      "name": "Холл ТРЦ",
+      "coords": {
+        "lat": 51.0901,
+        "lon": 71.4181
+      },
+      "kind": "warming",
+      "access": "public",
+      "note": "в часы работы ТРЦ",
+      "source_url": "https://example.org/synthetic",
+      "checked_at": "2026-10-17",
+      "verified": true,
+      "floor": null
+    },
+    {
+      "poi_id": "c2",
+      "name": "Туалет в кафе",
+      "coords": {
+        "lat": 51.0912,
+        "lon": 71.4188
+      },
+      "kind": "toilet",
+      "access": "customers_only",
+      "note": "для посетителей",
+      "source_url": "https://example.org/synthetic",
+      "checked_at": "2026-10-18",
+      "verified": true,
+      "floor": null
+    }
+  ],
+  "atmosphere_examples": {
+    "schema_version": 1,
+    "status": "ready",
+    "examples": [
+      {
+        "example_id": "bright_interior",
+        "title": "Светлый интерьер",
+        "titles": {
+          "ru": "Светлый интерьер",
+          "kk": "Жарық интерьер",
+          "en": "Bright interior"
+        },
+        "features": [
+          "bright"
+        ],
+        "photos": [
+          {
+            "url": "img/places/c/team-coffeeboom-expo-1.jpg",
+            "attribution": "команда Серуен"
+          }
+        ]
+      },
+      {
+        "example_id": "greenery",
+        "title": "Зелень",
+        "titles": {
+          "ru": "Зелень",
+          "kk": "Жасыл желек",
+          "en": "Greenery"
+        },
+        "features": [
+          "greenery",
+          "open_space"
+        ],
+        "photos": [
+          {
+            "url": "img/cat-walk.jpg",
+            "attribution": "Wikimedia Commons"
+          }
+        ]
+      }
+    ]
+  },
+  "build_ok": {
+    "schema_version": 1,
+    "status": "ok",
+    "fits": true,
+    "stops": [
+      {
+        "poi_id": "team_coffee",
+        "canonical_id": "team_coffee",
+        "name": "SYNTHETIC team_coffee",
+        "category": "coffee",
+        "coords": {
+          "lat": 51.129,
+          "lon": 71.43
+        },
+        "arrival_at": "2026-10-19T15:02:00+05:00",
+        "departure_at": "2026-10-19T15:22:00+05:00",
+        "stay_min": 20,
+        "open_status": {
+          "state": "open",
+          "confidence": "high",
+          "hours": "24/7",
+          "source": "osm",
+          "checked_at": "2026-10-19"
+        },
+        "visit_condition": {
+          "kind": "free",
+          "note": "Synthetic test record",
+          "source_url": "https://example.org/synthetic-evidence",
+          "checked_at": "2026-10-19",
+          "verification": "verified"
+        },
+        "atmosphere_match": {
+          "matched_features": [],
+          "source": "none",
+          "checked_at": null,
+          "photo_ids": []
+        },
+        "sources": [
+          "synthetic-test"
+        ]
+      },
+      {
+        "poi_id": "team_second",
+        "canonical_id": "team_second",
+        "name": "SYNTHETIC team_second",
+        "category": "coffee",
+        "coords": {
+          "lat": 51.13,
+          "lon": 71.43
+        },
+        "arrival_at": "2026-10-19T15:24:00+05:00",
+        "departure_at": "2026-10-19T15:44:00+05:00",
+        "stay_min": 20,
+        "open_status": {
+          "state": "open",
+          "confidence": "high",
+          "hours": "24/7",
+          "source": "osm",
+          "checked_at": "2026-10-19"
+        },
+        "visit_condition": {
+          "kind": "optional_purchase",
+          "note": "Synthetic test record",
+          "source_url": "https://example.org/synthetic-evidence",
+          "checked_at": "2026-10-19",
+          "verification": "verified"
+        },
+        "atmosphere_match": {
+          "matched_features": [],
+          "source": "none",
+          "checked_at": null,
+          "photo_ids": []
+        },
+        "sources": [
+          "synthetic-test"
+        ]
+      }
+    ],
+    "legs": [
+      {
+        "from_id": "start",
+        "to_id": "team_coffee",
+        "distance_m": 145,
+        "walk_min": 2,
+        "source": "distance_estimate"
+      },
+      {
+        "from_id": "team_coffee",
+        "to_id": "team_second",
+        "distance_m": 145,
+        "walk_min": 2,
+        "source": "distance_estimate"
+      },
+      {
+        "from_id": "team_second",
+        "to_id": "finish",
+        "distance_m": 290,
+        "walk_min": 4,
+        "source": "distance_estimate"
+      }
+    ],
+    "budget": {
+      "available_min": 90,
+      "walking_min": 8,
+      "visiting_min": 40,
+      "reserve_min": 5,
+      "total_min": 53,
+      "spare_min": 37
+    },
+    "state": {
+      "schema_version": 1,
+      "created_at": "2026-10-18T19:40:49.801977Z",
+      "origin": {
+        "lat": 51.128,
+        "lon": 71.43,
+        "precision_m": 100,
+        "source": "preset"
+      },
+      "finish_mode": "return",
+      "finish": {
+        "lat": 51.128,
+        "lon": 71.43,
+        "precision_m": 100,
+        "source": "preset"
+      },
+      "remaining_ids": [
+        "team_coffee",
+        "team_second"
+      ],
+      "completed_ids": [],
+      "skipped_ids": [],
+      "preferences": {
+        "exclude_poi_ids": [],
+        "visited_poi_ids": [],
+        "exclude_visited": false,
+        "preferred_categories": [],
+        "max_walk_min": null,
+        "max_distance_m": null,
+        "indoor_only": false,
+        "expense_mode": "any",
+        "atmosphere_example_id": null
+      },
+      "exclude_categories": [],
+      "companions": "alone",
+      "accessibility": false,
+      "reserve_min": 5
+    },
+    "departure_at": "2026-10-19T15:00:00+05:00",
+    "estimated_arrival_at": "2026-10-19T15:48:00+05:00",
+    "routing_source": "distance_estimate",
+    "routing_error": null,
+    "geometry": [
+      [
+        71.43,
+        51.128
+      ],
+      [
+        71.43,
+        51.129
+      ],
+      [
+        71.43,
+        51.13
+      ],
+      [
+        71.43,
+        51.128
+      ]
+    ],
+    "exclusions": [],
+    "notes": [
+      "Минуты — оценка; расчёт не гарантирует время прибытия или доступность проходов."
+    ],
+    "warning_codes": [
+      "estimated_arrival",
+      "plan_not_navigation",
+      "street_route_unavailable"
+    ],
+    "applied_preferences": {
+      "exclude_poi_ids": [],
+      "visited_poi_ids": [],
+      "exclude_visited": false,
+      "preferred_categories": [],
+      "max_walk_min": null,
+      "max_distance_m": null,
+      "indoor_only": false,
+      "expense_mode": "any",
+      "atmosphere_example_id": null
+    },
+    "change_codes": [],
+    "relaxation_options": [],
+    "data_kind": "sample",
+    "source": "local",
+    "source_error": null
+  },
+  "export_ok": {
+    "schema_version": 1,
+    "saved_at": "2026-10-18T19:40:08.912753Z",
+    "status": "saved",
+    "stops": [
+      {
+        "poi_id": "team_coffee",
+        "name": "SYNTHETIC team_coffee",
+        "coords": {
+          "lat": 51.129,
+          "lon": 71.43
+        },
+        "category": "coffee",
+        "stay_min": 20,
+        "sources": [
+          "synthetic-test"
+        ],
+        "checked_at": "2026-10-19",
+        "license": "synthetic-test",
+        "attribution": "TEST ONLY"
+      },
+      {
+        "poi_id": "team_second",
+        "name": "SYNTHETIC team_second",
+        "coords": {
+          "lat": 51.13,
+          "lon": 71.43
+        },
+        "category": "coffee",
+        "stay_min": 20,
+        "sources": [
+          "synthetic-test"
+        ],
+        "checked_at": "2026-10-19",
+        "license": "synthetic-test",
+        "attribution": "TEST ONLY"
+      }
+    ],
+    "omitted_ids": [],
+    "contains_full_route": true,
+    "budget": {
+      "available_min": 90,
+      "walking_min": 8,
+      "visiting_min": 40,
+      "reserve_min": 5,
+      "total_min": 53,
+      "spare_min": 37
+    },
+    "origin": {
+      "lat": 51.128,
+      "lon": 71.43,
+      "precision_m": 100,
+      "source": "preset"
+    },
+    "finish": {
+      "lat": 51.128,
+      "lon": 71.43,
+      "precision_m": 100,
+      "source": "preset"
+    },
+    "warning_codes": [
+      "snapshot_not_current",
+      "offline_map_not_included"
+    ],
+    "notes": [
+      "Сохранённый снимок может устареть. После подключения обновите часы и условия; карта офлайн не включена."
+    ]
+  }
+}

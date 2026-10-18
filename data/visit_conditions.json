@@ -1,1 +1,269 @@
-{"version": 1, "items": []}
+{
+ "version": 1,
+ "items": [
+  {
+   "poi_id": "osm_way_460703779",
+   "kind": "optional_purchase",
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/460703779",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "ТРЦ: вход без покупки ожидается; аттракционы и Sky Beach платные. Не проверено."
+   }
+  },
+  {
+   "poi_id": "osm_way_230401645",
+   "kind": "paid",
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/230401645",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "Подъём на смотровую по билету; площадь вокруг свободна. Цена из старых статей (2000 ₸) не подтверждена."
+   }
+  },
+  {
+   "poi_id": "osm_way_499328514",
+   "kind": "optional_purchase",
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/499328514",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "ТРЦ: вход без покупки ожидается. Не проверено."
+   }
+  },
+  {
+   "poi_id": "osm_way_108096984",
+   "kind": "optional_purchase",
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/108096984",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "ТРК: вход без покупки ожидается. Не проверено."
+   }
+  },
+  {
+   "poi_id": "osm_way_230358855",
+   "kind": "unknown",
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/230358855",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "OSM: fee=no, но для залов нужна регистрация читателя; условия не подтверждены."
+   }
+  },
+  {
+   "poi_id": "osm_way_917478479",
+   "kind": "paid",
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/917478479",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "Спектакли по билетам; экскурсии и цены не подтверждены официальным сайтом."
+   }
+  },
+  {
+   "poi_id": "osm_way_37884583",
+   "kind": "free",
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/37884583",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "Открытый городской парк; ограждений и платы не найдено."
+   }
+  },
+  {
+   "poi_id": "osm_way_239713764",
+   "kind": "optional_purchase",
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/239713764",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "ТРЦ: вход без покупки ожидается. Не проверено."
+   }
+  },
+  {
+   "poi_id": "osm_way_240909210",
+   "kind": "optional_purchase",
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/240909210",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "ТРЦ: вход без покупки ожидается. Не проверено."
+   }
+  },
+  {
+   "poi_id": "osm_way_1449322354",
+   "kind": "paid",
+   "evidence": {
+    "source_url": "https://www.openstreetmap.org/way/1449322354",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "licensed_source",
+    "note": "Fame City в Хан Шатыре: аттракционы платные; зона без аттракционов не проверена."
+   }
+  },
+  {
+   "poi_id": "2gis_70000001072135261",
+   "kind": "unknown",
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70000001072135261",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "team_review",
+    "note": "Кофейня: не объявляем бесплатной; можно ли сидеть без заказа — не проверено."
+   }
+  },
+  {
+   "poi_id": "2gis_70030077196911979",
+   "kind": "free",
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70030077196911979",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "team_review",
+    "note": "Инсталляция робота: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+   }
+  },
+  {
+   "poi_id": "2gis_70030076137946320",
+   "kind": "free",
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70030076137946320",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "team_review",
+    "note": "Инсталляция Energy magic: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+   }
+  },
+  {
+   "poi_id": "2gis_70030076138246674",
+   "kind": "free",
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70030076138246674",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "team_review",
+    "note": "Инсталляция In time and in space: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+   }
+  },
+  {
+   "poi_id": "2gis_70030076138246704",
+   "kind": "free",
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70030076138246704",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "team_review",
+    "note": "Инсталляция Unfurling Energy: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+   }
+  },
+  {
+   "poi_id": "2gis_70030076137946547",
+   "kind": "free",
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70030076137946547",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "team_review",
+    "note": "Инсталляция Minima Maxima: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+   }
+  },
+  {
+   "poi_id": "2gis_70030076137946451",
+   "kind": "free",
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70030076137946451",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "team_review",
+    "note": "Инсталляция Солнце: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+   }
+  },
+  {
+   "poi_id": "2gis_70030076137946253",
+   "kind": "free",
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70030076137946253",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "team_review",
+    "note": "Инсталляция Вода: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+   }
+  },
+  {
+   "poi_id": "2gis_70030076138246517",
+   "kind": "free",
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70030076138246517",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "team_review",
+    "note": "Инсталляция Воздух: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+   }
+  },
+  {
+   "poi_id": "2gis_9570844992864485",
+   "kind": "free",
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/9570844992864485",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "team_review",
+    "note": "Скульптура Страж: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+   }
+  },
+  {
+   "poi_id": "2gis_9570844992864484",
+   "kind": "free",
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/9570844992864484",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "team_review",
+    "note": "Скульптура Всадник: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+   }
+  },
+  {
+   "poi_id": "2gis_9570844992864486",
+   "kind": "free",
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/9570844992864486",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "team_review",
+    "note": "Скульптура Верблюд: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+   }
+  },
+  {
+   "poi_id": "2gis_70030076137930662",
+   "kind": "free",
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70030076137930662",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "team_review",
+    "note": "Скульптура Львы: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+   }
+  },
+  {
+   "poi_id": "2gis_70030077176246066",
+   "kind": "free",
+   "evidence": {
+    "source_url": "https://2gis.kz/astana/geo/70030077176246066",
+    "checked_at": "2026-10-19",
+    "verification": "unverified",
+    "method": "team_review",
+    "note": "Поющий фонтан: объект под открытым небом в 2ГИС; свободный доступ ожидается, не проверено."
+   }
+  }
+ ]
+}

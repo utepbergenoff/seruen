@@ -17,9 +17,10 @@ def sample_index(tmp_path_factory):
 
 
 @pytest.fixture
-def settings(sample_index):
+def settings(sample_index, tmp_path):
     return Settings(
-        poi_path=ROOT / "data/poi_sample.json", index_path=sample_index, data_kind="sample", warm_cache=False
+        poi_path=ROOT / "data/poi_sample.json", index_path=sample_index, data_kind="sample", warm_cache=False,
+        feature_data_dir=tmp_path / "feature_data",
     )
 
 

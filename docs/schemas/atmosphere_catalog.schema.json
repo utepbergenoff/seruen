@@ -70,6 +70,22 @@
           "title": "Title",
           "type": "string"
         },
+        "titles": {
+          "additionalProperties": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "propertyNames": {
+            "enum": [
+              "ru",
+              "kk",
+              "en"
+            ]
+          },
+          "title": "Titles",
+          "type": "object"
+        },
         "features": {
           "items": {
             "enum": [

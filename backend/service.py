@@ -1,12 +1,13 @@
 import asyncio
 import math
+from datetime import timedelta
 
 
 from .cache import ResponseCache
 from .feature_data import FeatureData, apply_feedback, relaxation_options, feedback_note
 from .fallback import drafts
 from .generate import AIError, Gemini, validate_drafts
-from .geo import budget_for, in_astana, target_time, speed
+from .geo import budget_for, haversine, in_astana, target_time, speed, walk_minutes
 from .intent import merge_intent, rule_intent
 from .loader import Dataset, load_pois
 from .provider_status import log_provider
@@ -48,7 +49,7 @@ class RecommendationService:
         if request.preferences.preferred_categories:
             intent = intent.model_copy(update={"categories": request.preferences.preferred_categories})
         now = target_time(request, intent, current)
-        if not in_astana(request.location.lat, request.location.lon) or not intent.relevant or intent.unsafe:
+        if self.refusal(request, intent):
             return intent, now, SearchResult([], [], 0, False, 0, 0, self.retriever.mode)
         search = self.retriever.search(request, intent, now, self.settings.airport_reserve_min)
         if self.extra_retriever:
@@ -80,7 +81,7 @@ class RecommendationService:
         return intent, now, search
 
     def refusal(self, request, intent):
-        if not in_astana(request.location.lat, request.location.lon):
+        if any(not in_astana(p.lat, p.lon) for p in (request.location, request.end) if p is not None):
             return "out"
         if intent.unsafe:
             return "unsafe"
@@ -107,6 +108,10 @@ class RecommendationService:
                 cached.mode = "cached"
                 cached.considered.time = display_time(exact, rules.lang)
                 cached.considered.target_time = exact
+                for card in cached.recommendations:
+                    if request.end:
+                        card.arrival_estimate = exact + timedelta(minutes=(
+                            card.budget_breakdown.total_min-card.budget_breakdown.reserve_min))
                 return cached, "none"
         intent, now, search = self.inspect(request, rules, current)
         result_drafts = drafts(search.hits, intent)
@@ -174,11 +179,12 @@ class RecommendationService:
             if not hit:
                 continue
             p, c = hit.poi, hit.candidate
-            remaining = intent.time_budget_min - search.reserve - 2 * c.walk_min
+            final_walk = c.walk_min if hit.to_end is None else hit.to_end
+            remaining = intent.time_budget_min - search.reserve - c.walk_min - final_walk
             stay = min(remaining, max(math.ceil(hit.stay * 0.7), min(int(hit.stay * 1.3), draft.time_to_spend_min)))
             if stay <= 0:
                 continue
-            budget = budget_for(c.walk_min, stay, search.reserve)
+            budget = budget_for(c.walk_min, stay, search.reserve, hit.to_end)
             google = maps_url(p)
             links = (
                 {}
@@ -212,6 +218,8 @@ class RecommendationService:
                     budget_breakdown=budget,
                     visit_condition=self.features.condition(p.poi_id, now.date()),
                     atmosphere_match=self.features.match(p.poi_id, request.preferences.atmosphere_example_id, now.date()),
+                    arrival_estimate=now + timedelta(minutes=budget.total_min-search.reserve) if request.end else None,
+                    offline_allowed=self.features.can_export(p.poi_id, now.date()) and not p.poi_id.startswith("2gis_"),
                 )
             )
         refusal = self.refusal(request, intent)
@@ -248,7 +256,15 @@ class RecommendationService:
             filters.append("wheelchair_confirmed")
         if search.category_relaxed:
             filters.append("category_relaxed_with_notice")
+        impossible = None
+        if request.end and not cards and not refusal:
+            direct = walk_minutes(haversine(request.location.lat, request.location.lon,
+                                           request.end.lat, request.end.lon), speed(request, intent, now)) + search.reserve
+            if direct > intent.time_budget_min:
+                impossible = {"reason": "budget", "need_min": direct,
+                              "suggestions": [{"kind": "more_time", "min": direct}] if direct <= 480 else []}
         return RecommendResponse(
+            route_impossible=impossible,
             candidates=[h.candidate for h in search.hits],
             excluded=sorted(search.excluded, key=lambda c: c.distance_m)[:20],
             excluded_count=len(search.excluded),
