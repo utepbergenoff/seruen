@@ -115,7 +115,7 @@ class RecommendationService:
                 # Keep the public contract stable; diagnostics contain only bounded codes.
                 safe_codes = {"missing_key", "invalid_model", "provider_http_error", "provider_oversized",
                               "provider_incomplete", "provider_timeout", "provider_invalid_response",
-                              "all_drafts_rejected"}
+                              "all_drafts_rejected", "invalid_generation_schema"}
                 code = exc.code if isinstance(exc, AIError) and exc.code in safe_codes else (
                     "deadline_exceeded" if isinstance(exc, TimeoutError) else "invalid_or_unexpected_response"
                 )

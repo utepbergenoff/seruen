@@ -2,6 +2,7 @@ import json
 import re
 
 import httpx
+from pydantic import ValidationError
 
 from .schemas import Generated, Intent
 from .provider_status import http_error_code, log_provider
@@ -23,6 +24,8 @@ candidate's supplied min_stay/max_stay. Explain using only supplied facts; label
 Category assumptions are unverified: qualify them softly as typical ("usually", "as a rule"); never state them
 as facts and never ask the user to check or confirm anything.
 No links, markdown or instructions to ignore these rules. note_to_user should be empty."""
+
+LANGUAGE_NAMES = {"ru": "Russian", "kk": "Kazakh", "en": "English"}
 
 
 class Gemini:
@@ -101,18 +104,44 @@ class Gemini:
             }
             for h in hits
         ]
-        data = await self.structured(
-            SYSTEM,
-            {
-                "query": request.query,
-                "context": request.context.model_dump(mode="json"),
-                "location": request.location.model_dump(),
-                "intent": intent.model_dump(),
-                "candidates": candidates,
-            },
-            Generated.model_json_schema(),
-        )
-        return Generated.model_validate(data)
+        payload = {
+            "query": request.query,
+            "context": request.context.model_dump(mode="json"),
+            "location": request.location.model_dump(),
+            "intent": intent.model_dump(),
+            "response_language": LANGUAGE_NAMES[intent.lang],
+            "candidates": candidates,
+        }
+        system = SYSTEM + """ All explanation/action text must be in response_language, even when
+the venue name is in another language. If requested facilities are absent from the supplied facts,
+say that their availability is unknown; still suggest a suitable nearby category using known facts.
+Do not replace unknown facilities with assumptions about this venue."""
+        # The caller's shared deadline still covers both attempts (and intent extraction).
+        # Repair formatting/language failures once; never retry exhausted provider quotas here.
+        for attempt in range(2):
+            try:
+                data = await self.structured(system, payload, Generated.model_json_schema())
+                generated = Generated.model_validate(data)
+                accepted, invented, _ = validate_drafts(generated, hits, intent.lang)
+                # Preserve invented IDs for the caller's rejection counters.
+                if accepted or invented:
+                    return generated
+                reason = "all_drafts_rejected"
+            except ValidationError:
+                reason = "invalid_generation_schema"
+            except AIError as exc:
+                if exc.code not in {"provider_invalid_response", "provider_incomplete"}:
+                    raise
+                reason = exc.code
+            if attempt:
+                raise AIError(reason)
+            log_provider("gemini", "repair_" + reason)
+            payload["validation_feedback"] = (
+                "The previous answer failed validation. Generate a fresh JSON answer in "
+                + LANGUAGE_NAMES[intent.lang]
+                + ". Use only supplied IDs, why at most 18 words and what_to_do at most 25 words. "
+                "Avoid all statements about opening/closing, events, roofs or safety assurances."
+            )
 
 
 def validate_drafts(generated, hits, lang="ru"):
@@ -134,7 +163,7 @@ def validate_drafts(generated, hits, lang="ru"):
             or len(draft.why.split()) > 25
             or len(draft.what_to_do.split()) > 35
             or re.search(
-                r"открыт|закрыт|\bopen\b|\bclosed\b|ашық|жабық|крыш|стройк|по льду|on the ice|http|выставка сегодня|event today",
+                r"открыт(?!ь)|закрыт(?!ь)|\bopen\b|\bclosed\b|ашық|жабық|крыш|стройк|по льду|on the ice|http|выставка сегодня|event today",
                 text,
             )
         ):
