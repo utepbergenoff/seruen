@@ -116,7 +116,9 @@ class Photos:
 
     def allowed(self, url):
         parts, own = urlparse(url), urlparse(self.settings.photo_index_url)
-        return parts.scheme == "https" and parts.hostname in {"upload.wikimedia.org", own.hostname}
+        return parts.scheme == "https" and parts.hostname in {
+            "upload.wikimedia.org", "thumb.wikimedia.org", own.hostname,
+        }
 
     async def load_index(self, client):
         # The list is published with the website, so new team photos need no backend deploy.
