@@ -160,9 +160,6 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
     async def place_photos(poi_id: str, payload: PhotoRequest, request: Request):
         # POST: the request text stays out of URLs and logs
         request.state.mode = "photos"
-        if poi_id.startswith("2gis_") and poi_id[5:].isdigit() and len(poi_id) <= 37:
-            from datetime import timezone
-            return PlacePhotos(poi_id=poi_id, status="no_photos", checked_at=datetime.now(timezone.utc))
         try:
             return await request.app.state.photos.details(poi_id, payload)
         except PlacesError as exc:

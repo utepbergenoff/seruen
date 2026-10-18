@@ -21,9 +21,11 @@ import httpx
 from pydantic import Field, ValidationError
 
 from .generate import AIError
+from .geo import haversine
 from .places import PlacesError
 from .provider_status import log_provider
 from .schemas import Model
+from .twogis import normalized
 
 MAX_PHOTOS = 4
 MAX_IMAGE_BYTES = 1_500_000
@@ -70,10 +72,19 @@ class PhotoAnswer(PhotoFacts):
     photos: list[PhotoCheck] = Field(default_factory=list, max_length=10)
 
 
+class NearPlace(Model):
+    """A 2GIS place from the answer: its own name and position, never the person's."""
+    name: str = Field(min_length=1, max_length=200)
+    lat: float = Field(ge=-90, le=90)
+    lon: float = Field(ge=-180, le=180)
+    category: str = Field(default="", max_length=40)
+
+
 class PhotoRequest(Model):
     lang: Literal["ru", "kk", "en"] = "ru"
     query: str = Field(default="", max_length=500)
     companions: Literal["alone", "child", "group"] = "alone"
+    near: NearPlace | None = None
 
 
 class PlacePhoto(Model):
@@ -200,7 +211,35 @@ class Photos:
                 data["seats"] = None
         return PhotoAnswer.model_validate(data)
 
+    async def nearest(self, near):
+        """Our place with photos that is the same as a 2GIS place: same name within 150 m,
+        or, for unnamed matches, the same category within 60 m."""
+        async with httpx.AsyncClient(timeout=self.settings.photo_timeout_s, transport=self.transport,
+                                     follow_redirects=False, headers={"User-Agent": "SeruenAstana/1.0"}) as client:
+            await self.load_index(client)
+        name, best = normalized(near.name), None
+        for pid in self.index:
+            poi = self.pois.get(pid)
+            if poi is None:
+                continue
+            distance = haversine(near.lat, near.lon, poi.lat, poi.lon)
+            if distance > 150:
+                continue
+            names = {normalized(n) for n in (poi.name, poi.name_kk, poi.name_en) if n}
+            same = any(len(n) >= 4 and (n in name or name in n) for n in names)
+            if same or (poi.category == near.category and distance <= 60):
+                score = (0 if same else 1, distance)
+                if best is None or score < best[0]:
+                    best = (score, pid)
+        return best and best[1]
+
     async def details(self, poi_id, ask):
+        if re.fullmatch(r"2gis_[0-9]{1,32}", poi_id):
+            target = await self.nearest(ask.near) if ask.near and self.settings.photos_enabled else None
+            if target is None:
+                return PlacePhotos(poi_id=poi_id, status="no_photos", checked_at=datetime.now(timezone.utc))
+            result = await self.details(target, ask.model_copy(update={"near": None}))
+            return result.model_copy(update={"poi_id": poi_id})
         poi = self.pois.get(poi_id)
         if poi is None:
             raise PlacesError("poi_not_found", 404)

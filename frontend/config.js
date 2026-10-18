@@ -13,7 +13,6 @@ window.SERUEN_CONFIG = {
     points: true,     // coins for visited places, stored only in this browser
     twogis: true,     // "2GIS rating & hours" button on each card: asks the backend only when pressed
     photos: true,     // photos of each place + what Gemini sees on them (lighting, seats, kids' area, space)
-    twogisSearch: true, // "Search more in 2GIS" button under the answer (no AI, 25 searches a day on the demo key)
   },
 
   // Route line geometry. The public OSRM demo server; if it fails we draw straight lines.
