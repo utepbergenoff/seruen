@@ -66,6 +66,30 @@ def test_exact_walk_minutes_are_allowed_but_invented_numbers_are_rejected(servic
         assert not supports_draft(d.model_copy(update={"why": text}), h, req, intent)
 
 
+@pytest.mark.parametrize("claim", [
+    "Культурный объект находится в двадцати одном шаге ходьбы.",
+    "This park is six minutes away, fitting your walk request.",
+    "Кофейня в девяти минутах ходьбы.", "Жақын орынға он қадам жүріңіз.",
+    "Кафе работает ночью и подходит для перекуса.",
+    "Заведение подходит благодаря тегам кофе и крытое помещение.",
+    "Пройдитесь по дорожкам и отдохните на скамейке.",
+])
+def test_live_prose_cannot_disguise_quantities_hours_or_missing_benches(service, req, claim):
+    intent, _, search = service.inspect(req)
+    h = search.hits[0]
+    h.poi = h.poi.model_copy(update={"tags": [], "tags_inferred": []})
+    assert not supports_draft(draft(h).model_copy(update={"why": claim}), h, req, intent)
+
+
+def test_confirmed_bench_and_plain_walk_remain_useful_suggestions(service, req):
+    intent, _, search = service.inspect(req)
+    h = search.hits[0]
+    h.poi = h.poi.model_copy(update={"tags": ["bench"], "tags_inferred": []})
+    d = draft(h).model_copy(update={"what_to_do": "Пройдитесь и отдохните на скамейке."})
+    assert supports_draft(d, h, req, intent)
+    assert supports_draft(d.model_copy(update={"why": "Парк рядом для короткой прогулки."}), h, req, intent)
+
+
 @pytest.mark.parametrize("lang,why,todo,claim", [
     ("ru", "Парк рядом для прогулки.", "Погуляйте на открытом воздухе.", "Парк открыт сейчас."),
     ("en", "A nearby park for a walk.", "Enjoy an open-air walk.", "The park is open now."),
