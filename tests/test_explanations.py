@@ -81,7 +81,7 @@ async def test_gemini_payload_excludes_user_coordinates_and_history(service, set
         if 'candidates' not in payload:
             return intent.model_dump()
         return Generated(recommendations=[Draft(poi_id=search.hits[0].poi.poi_id,
-            why='Место соответствует категории.', what_to_do='Осмотрите место.', time_to_spend_min=20,
+            why='Место рядом для короткого перерыва.', what_to_do='Осмотрите место.', time_to_spend_min=20,
             evidence_ids=['category'])]).model_dump()
 
     provider.structured = capture

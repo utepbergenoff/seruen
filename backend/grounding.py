@@ -32,6 +32,14 @@ def unknown_note(hit, intent):
 def supported_numbers(text, hit):
     """Accept exact supplied walk/visit times, never arbitrary numeric claims."""
     text = text.replace(hit.poi.name.casefold(), "")
+    # Spelled-out quantities evade digit validation (live: "twenty-one steps"
+    # instead of 21 minutes). Distances and steps belong to the route UI; time
+    # claims must use digits so they can be compared to the supplied duration.
+    if re.search(r"\b(?:шаг\w*|steps?|метр\w*|километр\w*|metres?|meters?|kilomet\w*|қадам\w*)\b", text):
+        return False
+    for unit in re.finditer(r"\b(?:минут\w*|мин|minutes?|mins?|час(?:а|ов|е|у|ами|ах)?|hours?|сағат\w*|секунд\w*|seconds?)\b", text):
+        if not re.search(r"\d+\s*[-–]?\s*$", text[:unit.start()]):
+            return False
     for clause in re.split(r"[.!?;]", text):
         for number in re.finditer(r"\d+", clause):
             rest = clause[number.start():]
@@ -81,6 +89,10 @@ def draft_failure(draft, hit, request, intent, features=None):
         return "unsupported_claim"
     if not supported_numbers(text, hit):
         return "numeric_claim"
+    if re.search(r"\bработа(?:ет|ют)\b|\boperates?\b|жұмыс істейді", text):
+        return "opening_claim"
+    if re.search(r"\bкатегори\w*|\bтег\w*|\bcategor(?:y|ies)\b|\btags?\b", text):
+        return "internal_label"
     known = confirmed_tags(hit.poi)
     uncertain = r"уточн|провер|не подтверж|неизвест|не гаран|\bcheck\b|\bask\b|unconfirm|unknown|нақтыла|тексер|расталма|белгісіз"
     for clause in re.split(r"[.!?;]", text):
@@ -91,6 +103,10 @@ def draft_failure(draft, hit, request, intent, features=None):
                               ("indoor", r"в помещении|\bindoors\b|ғимарат ішінде")):
             if fact not in facts and re.search(pattern, clause) and not re.search(uncertain, clause):
                 return "unconfirmed_access"
+        if (not known.intersection({"bench", "benches", "скамейка", "лавочка", "орындық"})
+                and re.search(r"скаме[йе]\w*|лавоч\w*|\bbench\w*|орындық\w*", clause)
+                and not re.search(uncertain, clause)):
+            return "unconfirmed_seating"
     return "why_too_long" if len((draft.why + " " + unknown_note(hit, intent)).split()) > 25 else None
 
 
