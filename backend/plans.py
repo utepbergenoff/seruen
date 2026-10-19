@@ -143,11 +143,12 @@ class Planner:
                                   and poi.event_start <= arrival and departure <= poi.event_end):
             return "event_unverified"
         # Check each minute, including split-day/overnight schedules and closing during the visit.
-        if poi.opening_hours_raw and poi.hours_source != "none":
+        if (poi.opening_hours_raw or poi.published_special_hours) and poi.hours_source != "none":
             try:
                 minute = arrival
                 while minute < departure:
-                    if not schedule_open(poi.opening_hours_raw, minute):
+                    raw = poi.published_special_hours.get(str(minute.date()), poi.opening_hours_raw)
+                    if raw and not schedule_open(raw, minute):
                         return "closed_at_visit"
                     minute += timedelta(minutes=1)
             except ValueError:
@@ -281,7 +282,7 @@ class Planner:
             stops.append(PlanStop(poi_id=poi.poi_id, canonical_id=self.features.canonical(poi.poi_id), name=poi.name, category=poi.category,
                                   coords=Coords(lat=poi.lat, lon=poi.lon), arrival_at=arrival,
                                   departure_at=departure, stay_min=stay, open_status=open_status(poi, arrival),
-                                  visit_condition=self.features.condition(poi.poi_id, arrival.date()),
+                                  visit_condition=self.features.condition(poi.poi_id, arrival.date(), poi),
                                   atmosphere_match=self.features.match(poi.poi_id, prefs.atmosphere_example_id,
                                                                       arrival.date(), prefs.atmosphere_profile), sources=poi.sources))
             cursor = departure
@@ -413,31 +414,43 @@ class Planner:
             raise PlanError("too_many_exclusions")
         nearby.query = {"ru": "тёплое место рядом", "kk": "жылы жабық орын қайда",
                         "en": "warm indoor place"}.get(req.context.lang, "warm indoor place")
-        # The next rest stop must be close to the person, even when the original finish is far away.
         nearby.end = None
-        # When tired, a real public bench is a useful first choice; never infer benches from parks.
+        goal = await self.resolve(remaining[0], req)
+        candidates = []
         if payload.reason == "tired" and not req.preferences.indoor_only:
-            benches = sorted((r for r in self.features.comfort.values() if r.kind == "bench"
-                and r.access == "public" and self.features.verified(r.evidence, datetime.now(ALMATY).date(), 30)),
-                key=lambda r: haversine(req.location.lat, req.location.lon, r.poi.lat, r.poi.lon))
-            for bench in benches[:3]:
-                if haversine(req.location.lat, req.location.lon, bench.poi.lat, bench.poi.lon) > 300:
-                    continue
-                try:
-                    return await self.insert_break(payload, req, completed, skipped, reserve, bench.poi.poi_id)
-                except PlanError:
-                    continue
-        candidate = await self.build(PlanRequest(request=nearby, origin=req.location,
-            completed_ids=completed, skipped_ids=skipped, reserve_min=reserve, max_stops=1), use_current_time=True)
-        if not candidate.fits or not candidate.stops:
-            raise PlanError("no_replacement_found", 409)
-        return await self.insert_break(payload, req, completed, skipped, reserve, candidate.stops[0].poi_id)
+            candidates.extend(r.poi for r in self.features.comfort.values() if r.kind == "bench"
+                and r.access == "public" and self.features.verified(r.evidence, datetime.now(ALMATY).date(), 30))
+        # Search the forward corridor, then validate the chosen stop together with every original stop.
+        try:
+            pool, _ = await self.pool(nearby, Coords(lat=goal.lat, lon=goal.lon))
+            candidates.extend(p for p in pool if p.indoor)
+        except PlacesError:
+            pass
+        eligible = []
+        for poi in candidates:
+            metric = forward_break(req.location, Coords(lat=goal.lat, lon=goal.lon), poi)
+            if metric is not None and poi.poi_id not in remaining + completed + skipped:
+                eligible.append((metric, poi))
+        eligible.sort(key=lambda pair: (0 if payload.reason == "tired" and pair[1].poi_id in self.features.comfort else 1,
+                                       pair[0], pair[1].poi_id))
+        for _, poi in eligible[:4]:
+            try:
+                return await self.insert_break(payload, req, completed, skipped, reserve, poi.poi_id)
+            except PlanError as exc:
+                if exc.status != 409:
+                    raise
+        raise PlanError("no_on_route_break", 409)
 
     async def insert_break(self, payload, req, completed, skipped, reserve, pause_id):
         state = payload.previous
         remaining = [p for p in state.remaining_ids if p not in completed and p not in skipped]
         if not remaining or len(remaining) >= 5 or pause_id in remaining + completed + skipped:
             raise PlanError("no_replacement_found", 409)
+        goal = await self.resolve(remaining[0], req)
+        pause = await self.resolve(pause_id, req)
+        goal_coords = Coords(lat=goal.lat, lon=goal.lon)
+        if forward_break(req.location, goal_coords, pause) is None:
+            raise PlanError("break_not_on_route", 409)
         original_preferences = req.preferences.model_copy(deep=True)
         # An emergency rest need not match the café's decor. Keep budget, exclusions and safety filters.
         req = req.model_copy(deep=True)
@@ -453,6 +466,12 @@ class Planner:
         if (not result.fits or [p.poi_id for p in result.stops] != required
                 or not result.legs or result.legs[0].walk_min > min(req.preferences.max_walk_min or 120, 5 if payload.reason == "cold" else 10)):
             raise PlanError("no_replacement_found", 409)
+        # Reject actual street detours too. With an unavailable router this remains a labelled estimate.
+        direct = haversine(req.location.lat, req.location.lon, goal.lat, goal.lon) * 1.3
+        baseline_minutes = self.router.estimate([req.location, goal_coords], speed(req, rule_intent(req), result.departure_at)).minutes[0]
+        if (sum(leg.distance_m for leg in result.legs[:2]) - direct > 180
+                or sum(leg.walk_min for leg in result.legs[:2]) - baseline_minutes > 3):
+            raise PlanError("break_detour_too_long", 409)
         result.state.preferences = original_preferences
         result.applied_preferences = original_preferences
         for stop in result.stops:
@@ -460,9 +479,9 @@ class Planner:
                 stop.atmosphere_match = self.features.match(stop.poi_id, original_preferences.atmosphere_example_id,
                     stop.arrival_at.date(), original_preferences.atmosphere_profile)
         result.change_codes = [payload.reason, "nearby_break_keeps_stops"]
-        result.notes.insert(0, {"ru": "Предложена остановка рядом. Прежние остановки и финиш сохранены; проверьте условия доступа.",
-            "en": "Suggested a nearby break. All remaining stops and the finish are kept; check access conditions.",
-            "kk": "Жақын жерде аялдау ұсынылды. Бұрынғы аялдамалар мен соңғы нүкте сақталды; кіру шарттарын тексеріңіз."
+        result.notes.insert(0, {"ru": "Предложена остановка по направлению к следующей цели (добавочный путь — не более 3 минут по оценке). Прежние остановки и финиш сохранены; проверьте условия доступа.",
+            "en": "Suggested a break towards your next stop (estimated extra walk: at most 3 minutes). All remaining stops and the finish are kept; check access conditions.",
+            "kk": "Келесі мақсатқа қарай аялдау ұсынылды (қосымша жол шамамен 3 минуттан аспайды). Бұрынғы аялдамалар мен соңғы нүкте сақталды; кіру шарттарын тексеріңіз."
             }.get(req.context.lang, "Indoor break suggested; remaining stops and finish kept."))
         return result
 
@@ -478,6 +497,8 @@ class Planner:
         points = payload.route_points or [payload.location]
         if any(not in_astana(p.lat, p.lon) for p in points + [payload.location]):
             raise PlanError("outside_astana")
+        if payload.on_route_only and len(points) < 2:
+            raise PlanError("route_destination_required")
         today = datetime.now(ALMATY).date()
         result = []
         for pid, record in self.features.comfort.items():
@@ -489,9 +510,16 @@ class Planner:
             distance = distance_to_path(record.poi, points)
             if distance > payload.radius_m:
                 continue
+            extra = None
+            if payload.on_route_only:
+                if len(points) < 2:
+                    raise PlanError("route_destination_required")
+                extra = forward_break(payload.location, points[-1], record.poi)
+                if extra is None:
+                    continue
             result.append(ComfortView(poi_id=pid, name=record.poi.name,
                                       coords=Coords(lat=record.poi.lat, lon=record.poi.lon), kind=record.kind,
-                                      access=record.access, distance_to_route_m=math.ceil(distance), floor=record.floor,
+                                      extra_walk_min=math.ceil(extra / 60) if extra is not None else None, access=record.access, distance_to_route_m=math.ceil(distance), floor=record.floor,
                                       note=record.evidence.note, source_url=str(record.evidence.source_url),
                                       checked_at=record.evidence.checked_at, verified=verified,
                                       distance_m=math.ceil(haversine(payload.location.lat, payload.location.lon, record.poi.lat, record.poi.lon)),
@@ -541,3 +569,25 @@ def distance_to_path(poi, points):
         t = max(0, min(1, -(ax*dx+ay*dy)/(dx*dx+dy*dy))) if dx or dy else 0
         best = min(best, math.hypot(ax+t*dx, ay+t*dy))
     return best
+
+
+def forward_break(start, goal, poi):
+    """Conservative city-scale corridor: no backwards stops and at most 180 m added walking.
+
+    We do not call a straight line street navigation. insert_break also checks routed legs.
+    A near-zero projection is allowed only for a stop already at the current position.
+    """
+    scale = 111195
+    cos = math.cos(math.radians(start.lat))
+    gx, gy = (goal.lon-start.lon)*scale*cos, (goal.lat-start.lat)*scale
+    px, py = (poi.lon-start.lon)*scale*cos, (poi.lat-start.lat)*scale
+    length = math.hypot(gx, gy)
+    if length < 15:
+        return None
+    progress = (px*gx + py*gy) / length
+    cross = abs(px*gy - py*gx) / length
+    before, after = math.hypot(px, py), math.hypot(px-gx, py-gy)
+    extra = max(0, (before + after - length) * 1.3)
+    if progress < 0 or progress > length or cross > 100 or before > 450 or after > length + 5 or extra > 180:
+        return None
+    return extra

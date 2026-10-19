@@ -457,7 +457,7 @@ def test_nearby_break_cannot_trade_away_destination_to_fit_budget(api):
     r = api.post('/plans/recalculate', json={'request': ASK, 'previous': old['state'],
         'reason': 'cold', 'remaining_time_min': old['budget']['total_min'], 'keep_stops': True})
     assert r.status_code == 409
-    assert r.json()['error']['code'] == 'no_replacement_found'
+    assert r.json()['error']['code'] == 'no_on_route_break'
 
 
 def test_explicit_catalog_selection_changes_inferred_category_but_keeps_hard_filters(api):

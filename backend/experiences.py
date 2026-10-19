@@ -107,7 +107,7 @@ def register_experiences(app):
                                "difference_min": abs(minutes[0]-minutes[1]), "max_walk_min": longest,
                                "meeting_at": meeting_at, "stay_min": payload.stay_min,
                                "open_status": open_status(poi, meeting_at),
-                               "visit_condition": planner.features.condition(poi.poi_id, now.date()),
+                               "visit_condition": planner.features.condition(poi.poi_id, now.date(), poi),
                                "paths": [r.geometry for r in routes], "sources": poi.sources})
         candidates.sort(key=lambda p: (p["max_walk_min"], p["difference_min"], sum(p["walk_min"]), p["poi_id"]))
         return {"status": "ok" if candidates else "no_matches", "items": candidates[:3],

@@ -133,6 +133,7 @@ class PlanResponse(Model):
 
 class ComfortRequest(Model):
     location: Location
+    on_route_only: bool = False
     route_points: list[Location] = Field(default_factory=list, max_length=20)
     kinds: list[ComfortKind] = Field(default_factory=list, max_length=5)
     radius_m: int = Field(default=500, ge=50, le=2000)
@@ -146,6 +147,7 @@ class ComfortView(Model):
     coords: Coords
     kind: ComfortKind
     access: Literal["public", "customers_only", "paid", "unknown"]
+    extra_walk_min: int | None = None
     distance_to_route_m: int
     floor: str | None
     note: str

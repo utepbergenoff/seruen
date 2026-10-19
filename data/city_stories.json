@@ -703,5 +703,215 @@
       "Атамекен Қазақстан картасы этно-мемориалдық кешені",
       "Атамекен (мұражай)"
     ]
+  },
+  {
+    "id": "osm_node_1278114185",
+    "poi_id": "osm_node_1278114185",
+    "coords": {
+      "lat": 51.1604981,
+      "lon": 71.4240851
+    },
+    "source_title": "Visit Astana",
+    "source_url": "https://www.visitastana.kz/ru/about-city/what-to-see/pamyatnik-kenesary/",
+    "checked_at": "2026-10-19",
+    "wikipedia_url": "https://ru.wikipedia.org/wiki/Памятник_Кенесары-хану_(Астана)",
+    "aliases": [
+      "Кенесары хан",
+      "Кенесары хан на набережной",
+      "Kenesary Khan on the embankment",
+      "Жағалаудағы Кенесары хан"
+    ],
+    "translations": {
+      "ru": {
+        "title": "Кенесары хан на набережной",
+        "story": "Конный памятник посвящён Кенесары Касымову, руководителю национально-освободительного движения XIX века.",
+        "look_for": "Посмотрите на силуэт всадника со стороны набережной и сравните его с видом с площади."
+      },
+      "en": {
+        "title": "Kenesary Khan on the embankment",
+        "story": "This equestrian monument commemorates Kenesary Kasymov, leader of a nineteenth-century national liberation movement.",
+        "look_for": "Compare the rider’s silhouette from the riverbank and from the square."
+      },
+      "kk": {
+        "title": "Жағалаудағы Кенесары хан",
+        "story": "Ат үстіндегі ескерткіш XIX ғасырдағы ұлт-азаттық қозғалыстың жетекшісі Кенесары Қасымұлына арналған.",
+        "look_for": "Салт аттының сұлбасын жағалау мен алаң жағынан салыстырып көріңіз."
+      }
+    }
+  },
+  {
+    "id": "osm_node_3743119878",
+    "poi_id": "osm_node_3743119878",
+    "coords": {
+      "lat": 51.1679151,
+      "lon": 71.420358
+    },
+    "source_title": "Visit Astana",
+    "source_url": "https://visitastana.kz/ru/about-city/what-to-see/pamyatnik-abayu-kunanbaevu/",
+    "checked_at": "2026-10-19",
+    "wikipedia_url": "https://ru.wikipedia.org/wiki/Абай_Кунанбаев",
+    "aliases": [
+      "А. Құнанбайұлы",
+      "Памятник Абаю",
+      "Abai monument",
+      "Абай ескерткіші"
+    ],
+    "translations": {
+      "ru": {
+        "title": "Памятник Абаю",
+        "story": "Памятник посвящён поэту и мыслителю Абаю Кунанбаеву. Ссылка в Википедию ведёт к биографии поэта.",
+        "look_for": "Рассмотрите позу и выражение лица: как скульптор передал сосредоточенность человека?"
+      },
+      "en": {
+        "title": "Abai monument",
+        "story": "The monument honours the poet and thinker Abai Kunanbayev. The Wikipedia link opens his biography.",
+        "look_for": "Look at the posture and expression: how does the sculpture convey concentration?"
+      },
+      "kk": {
+        "title": "Абай ескерткіші",
+        "story": "Ескерткіш ақын және ойшыл Абай Құнанбайұлына арналған. Википедия сілтемесі ақынның өмірбаянына апарады.",
+        "look_for": "Мүсіннің қалпы мен бет әлпетіне қараңыз: мүсінші ойға шомуды қалай көрсеткен?"
+      }
+    }
+  },
+  {
+    "id": "osm_way_384145918",
+    "poi_id": "osm_way_384145918",
+    "coords": {
+      "lat": 51.1755361,
+      "lon": 71.4048797
+    },
+    "source_title": "Акимат Астаны",
+    "source_url": "https://www.gov.kz/memleket/entities/astana/press/news/details/309254?lang=ru",
+    "checked_at": "2026-10-19",
+    "wikipedia_url": "https://ru.wikipedia.org/wiki/Богенбай-батыр",
+    "aliases": [
+      "Памятник Богенбай Батыру",
+      "Памятник Богенбай батыру",
+      "Bogenbai Batyr monument",
+      "Бөгенбай батыр ескерткіші"
+    ],
+    "translations": {
+      "ru": {
+        "title": "Памятник Богенбай батыру",
+        "story": "Монумент посвящён казахскому полководцу Богенбай батыру. Он входит в число городских памятников, за которыми следит управление культуры. Википедия рассказывает о самом полководце.",
+        "look_for": "Выберите точку обзора на тротуаре; не выходите на проезжую часть ради фотографии."
+      },
+      "en": {
+        "title": "Bogenbai Batyr monument",
+        "story": "The monument honours the Kazakh commander Bogenbai Batyr. It is among the city monuments maintained by the culture authority. Wikipedia provides his biography.",
+        "look_for": "View it from the pavement; do not step into traffic for a photograph."
+      },
+      "kk": {
+        "title": "Бөгенбай батыр ескерткіші",
+        "story": "Ескерткіш қазақ қолбасшысы Бөгенбай батырға арналған. Ол мәдениет басқармасы күтім жасайтын қалалық ескерткіштердің бірі. Википедияда қолбасшының өмірбаяны берілген.",
+        "look_for": "Тротуардан қараңыз; суретке түсу үшін көлік жолына шықпаңыз."
+      }
+    }
+  },
+  {
+    "id": "osm_node_455447680",
+    "poi_id": "osm_node_455447680",
+    "coords": {
+      "lat": 51.165132,
+      "lon": 71.4163353
+    },
+    "source_title": "Театр имени М. Горького",
+    "source_url": "https://gorkytheatre.kz/about",
+    "checked_at": "2026-10-19",
+    "wikipedia_url": null,
+    "aliases": [
+      "Русский Академический театр драмы им М.Горького",
+      "Театр имени Максима Горького",
+      "Maxim Gorky Drama Theatre",
+      "Максим Горький атындағы драма театры"
+    ],
+    "translations": {
+      "ru": {
+        "title": "Театр имени Максима Горького",
+        "story": "История театра началась в 1899 году, ещё в Акмолинске. Это возможность увидеть культурный слой города до появления левобережной столицы.",
+        "look_for": "Осмотрите фасад, а для визита внутрь проверьте афишу на сайте театра."
+      },
+      "en": {
+        "title": "Maxim Gorky Drama Theatre",
+        "story": "The theatre traces its history to 1899 in Akmolinsk, offering a glimpse of the city’s culture before the modern left-bank capital.",
+        "look_for": "Look at the façade; check the theatre’s programme before planning an indoor visit."
+      },
+      "kk": {
+        "title": "Максим Горький атындағы драма театры",
+        "story": "Театр тарихы 1899 жылы Ақмолада басталған. Бұл сол жағалаудағы жаңа астанадан бұрынғы қала мәдениетімен танысуға мүмкіндік береді.",
+        "look_for": "Қасбетін көріңіз; ішке баруды жоспарласаңыз, театр сайтындағы афишаны тексеріңіз."
+      }
+    }
+  },
+  {
+    "id": "osm_way_499328449",
+    "poi_id": "osm_way_499328449",
+    "coords": {
+      "lat": 51.0992346,
+      "lon": 71.4196527
+    },
+    "source_title": "Visit Astana",
+    "source_url": "https://visitastana.kz/kz/about-city/what-to-see/astana-balet-teatry/",
+    "checked_at": "2026-10-19",
+    "wikipedia_url": null,
+    "aliases": [
+      "Астана балет",
+      "Astana Ballet",
+      "Astana Ballet",
+      "Астана Балет"
+    ],
+    "translations": {
+      "ru": {
+        "title": "Astana Ballet",
+        "story": "Театр создан в 2012 году. В репертуаре сочетаются классический балет, современная хореография и национальные постановки.",
+        "look_for": "Сравните строгую геометрию здания с пластикой танца на афишах. Спектакль и билет выбирайте отдельно."
+      },
+      "en": {
+        "title": "Astana Ballet",
+        "story": "Founded in 2012, the theatre combines classical ballet, contemporary choreography and national productions.",
+        "look_for": "Compare the building’s geometry with the movement in its posters. Choose a performance and ticket separately."
+      },
+      "kk": {
+        "title": "Астана Балет",
+        "story": "Театр 2012 жылы құрылған. Репертуарында классикалық балет, заманауи хореография және ұлттық қойылымдар тоғысады.",
+        "look_for": "Ғимарат геометриясын афишалардағы би қимылымен салыстырыңыз. Қойылым мен билетті бөлек таңдаңыз."
+      }
+    }
+  },
+  {
+    "id": "osm_way_1239177393",
+    "poi_id": "osm_way_1239177393",
+    "coords": {
+      "lat": 51.1560749,
+      "lon": 71.4249916
+    },
+    "source_title": "Kazakhstan Travel",
+    "source_url": "https://kazakhstan.travel/ru/attractions/435",
+    "checked_at": "2026-10-19",
+    "wikipedia_url": null,
+    "aliases": [
+      "Атырау көпірі",
+      "Мост «Атырау»",
+      "Atyrau Bridge",
+      "Атырау көпірі"
+    ],
+    "translations": {
+      "ru": {
+        "title": "Мост «Атырау»",
+        "story": "Вело-пешеходный мост через Есиль подарен Атырауской областью к 20-летию столицы. На мосту установлена скульптура каспийского осетра.",
+        "look_for": "Найдите осетра и посмотрите, как оболочка моста меняется при движении. Оставляйте место велосипедистам."
+      },
+      "en": {
+        "title": "Atyrau Bridge",
+        "story": "This cycle and pedestrian bridge across the Esil was a gift from Atyrau Region for the capital’s twentieth anniversary. It features a Caspian sturgeon sculpture.",
+        "look_for": "Find the sturgeon and watch the bridge’s outer structure change as you move. Leave room for cyclists."
+      },
+      "kk": {
+        "title": "Атырау көпірі",
+        "story": "Есіл үстіндегі жаяу және велосипед көпірі елорданың 20 жылдығына Атырау облысының сыйлығы. Көпірде Каспий бекіресінің мүсіні бар.",
+        "look_for": "Бекіре мүсінін табыңыз, қозғалғанда көпір қабығының көрінісі қалай өзгеретінін байқаңыз. Велосипедшілерге орын қалдырыңыз."
+      }
+    }
   }
 ]

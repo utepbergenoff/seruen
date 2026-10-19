@@ -5,6 +5,437 @@
     "version": "0.1.0"
   },
   "paths": {
+    "/plans/build": {
+      "post": {
+        "summary": "Build Plan",
+        "operationId": "build_plan_plans_build_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plans/recalculate": {
+      "post": {
+        "summary": "Recalculate Plan",
+        "operationId": "recalculate_plan_plans_recalculate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplanRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plans/export": {
+      "post": {
+        "summary": "Export Plan",
+        "operationId": "export_plan_plans_export_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OfflineRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfflinePlan"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plans/refresh": {
+      "post": {
+        "summary": "Refresh Plan",
+        "operationId": "refresh_plan_plans_refresh_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OfflineRefreshRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/comfort/search": {
+      "post": {
+        "summary": "Comfort Search",
+        "operationId": "comfort_search_comfort_search_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ComfortRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ComfortView"
+                  },
+                  "type": "array",
+                  "title": "Response Comfort Search Comfort Search Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/atmosphere/examples": {
+      "get": {
+        "summary": "Atmosphere Examples",
+        "operationId": "atmosphere_examples_atmosphere_examples_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/atmosphere/profiles": {
+      "get": {
+        "summary": "Atmosphere Profiles",
+        "operationId": "atmosphere_profiles_atmosphere_profiles_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/places/identities": {
+      "post": {
+        "summary": "Identities",
+        "operationId": "identities_places_identities_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdentityRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/features/status": {
+      "get": {
+        "summary": "Feature Status",
+        "operationId": "feature_status_features_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/city/stories": {
+      "get": {
+        "summary": "Story Catalog",
+        "operationId": "story_catalog_city_stories_get",
+        "parameters": [
+          {
+            "name": "lang",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "ru",
+                "kk",
+                "en"
+              ],
+              "type": "string",
+              "default": "ru",
+              "title": "Lang"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/city/history": {
+      "post": {
+        "summary": "History",
+        "operationId": "history_city_history_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HistoryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/meet/search": {
+      "post": {
+        "summary": "Meeting",
+        "operationId": "meeting_meet_search_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MeetRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plans/winter": {
+      "post": {
+        "summary": "Winter",
+        "operationId": "winter_plans_winter_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WinterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health",
@@ -508,6 +939,74 @@
   },
   "components": {
     "schemas": {
+      "AtmosphereMatch": {
+        "properties": {
+          "matched_features": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Matched Features"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "gemini",
+              "none"
+            ],
+            "title": "Source",
+            "default": "none"
+          },
+          "checked_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checked At"
+          },
+          "photo_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Photo Ids"
+          },
+          "requested_features": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Requested Features"
+          },
+          "unconfirmed_features": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Unconfirmed Features"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "confirmed",
+              "partial",
+              "unknown",
+              "not_requested"
+            ],
+            "title": "Status",
+            "default": "not_requested"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "AtmosphereMatch"
+      },
       "Attribution": {
         "properties": {
           "provider": {
@@ -553,6 +1052,18 @@
             "type": "integer",
             "minimum": 0.0,
             "title": "Walk Back Min"
+          },
+          "walk_to_end_min": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Walk To End Min"
           },
           "reserve_min": {
             "type": "integer",
@@ -653,6 +1164,17 @@
           "poi_id": {
             "type": "string",
             "title": "Poi Id"
+          },
+          "canonical_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Canonical Id"
           },
           "name": {
             "type": "string",
@@ -760,6 +1282,184 @@
           "links"
         ],
         "title": "CatalogPlace"
+      },
+      "ComfortRequest": {
+        "properties": {
+          "location": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "on_route_only": {
+            "type": "boolean",
+            "title": "On Route Only",
+            "default": false
+          },
+          "route_points": {
+            "items": {
+              "$ref": "#/components/schemas/Location"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Route Points"
+          },
+          "kinds": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "warming",
+                "toilet",
+                "bench",
+                "water",
+                "entrance"
+              ]
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Kinds"
+          },
+          "radius_m": {
+            "type": "integer",
+            "maximum": 2000.0,
+            "minimum": 50.0,
+            "title": "Radius M",
+            "default": 500
+          },
+          "public_only": {
+            "type": "boolean",
+            "title": "Public Only",
+            "default": false
+          },
+          "verified_only": {
+            "type": "boolean",
+            "title": "Verified Only",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "location"
+        ],
+        "title": "ComfortRequest"
+      },
+      "ComfortView": {
+        "properties": {
+          "poi_id": {
+            "type": "string",
+            "title": "Poi Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "coords": {
+            "$ref": "#/components/schemas/Coords"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "warming",
+              "toilet",
+              "bench",
+              "water",
+              "entrance"
+            ],
+            "title": "Kind"
+          },
+          "access": {
+            "type": "string",
+            "enum": [
+              "public",
+              "customers_only",
+              "paid",
+              "unknown"
+            ],
+            "title": "Access"
+          },
+          "extra_walk_min": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Extra Walk Min"
+          },
+          "distance_to_route_m": {
+            "type": "integer",
+            "title": "Distance To Route M"
+          },
+          "floor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Floor"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note"
+          },
+          "source_url": {
+            "type": "string",
+            "title": "Source Url"
+          },
+          "checked_at": {
+            "type": "string",
+            "format": "date",
+            "title": "Checked At"
+          },
+          "verified": {
+            "type": "boolean",
+            "title": "Verified"
+          },
+          "distance_m": {
+            "type": "integer",
+            "title": "Distance M",
+            "default": 0
+          },
+          "walk_min": {
+            "type": "integer",
+            "title": "Walk Min",
+            "default": 0
+          },
+          "indoor": {
+            "type": "boolean",
+            "title": "Indoor",
+            "default": false
+          },
+          "open_status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OpenStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "poi_id",
+          "name",
+          "coords",
+          "kind",
+          "access",
+          "distance_to_route_m",
+          "floor",
+          "note",
+          "source_url",
+          "checked_at",
+          "verified"
+        ],
+        "title": "ComfortView"
       },
       "Considered": {
         "properties": {
@@ -1041,6 +1741,78 @@
         ],
         "title": "DayHours"
       },
+      "Feedback": {
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "too_far",
+              "already_visited",
+              "different_place",
+              "wrong_type",
+              "no_expense"
+            ],
+            "title": "Reason"
+          },
+          "poi_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Poi Id"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "coffee",
+                  "food",
+                  "park",
+                  "kids",
+                  "culture",
+                  "viewpoint",
+                  "shopping",
+                  "sport",
+                  "night",
+                  "unusual",
+                  "library",
+                  "cowork"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "max_walk_min": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 120.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Walk Min"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "title": "Feedback"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -1120,6 +1892,18 @@
                 "type": "null"
               }
             ]
+          },
+          "feature_contract_version": {
+            "type": "integer",
+            "title": "Feature Contract Version",
+            "default": 2
+          },
+          "features": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Features"
           }
         },
         "additionalProperties": false,
@@ -1133,6 +1917,36 @@
           "mock"
         ],
         "title": "Health"
+      },
+      "HistoryRequest": {
+        "properties": {
+          "location": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "radius_m": {
+            "type": "integer",
+            "maximum": 10000.0,
+            "minimum": 100.0,
+            "title": "Radius M",
+            "default": 3000
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kk",
+              "en"
+            ],
+            "title": "Lang",
+            "default": "ru"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "location"
+        ],
+        "title": "HistoryRequest"
       },
       "HoursInterval": {
         "properties": {
@@ -1154,6 +1968,24 @@
           "end"
         ],
         "title": "HoursInterval"
+      },
+      "IdentityRequest": {
+        "properties": {
+          "poi_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 200,
+            "title": "Poi Ids"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "poi_ids"
+        ],
+        "title": "IdentityRequest"
       },
       "Location": {
         "properties": {
@@ -1195,8 +2027,330 @@
         ],
         "title": "Location"
       },
+      "MeetRequest": {
+        "properties": {
+          "request": {
+            "$ref": "#/components/schemas/RecommendRequest"
+          },
+          "second_location": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "max_walk_min": {
+            "type": "integer",
+            "maximum": 60.0,
+            "minimum": 1.0,
+            "title": "Max Walk Min",
+            "default": 30
+          },
+          "stay_min": {
+            "type": "integer",
+            "maximum": 120.0,
+            "minimum": 10.0,
+            "title": "Stay Min",
+            "default": 30
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "request",
+          "second_location"
+        ],
+        "title": "MeetRequest"
+      },
+      "NearPlace": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "lat": {
+            "type": "number",
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat"
+          },
+          "lon": {
+            "type": "number",
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon"
+          },
+          "category": {
+            "type": "string",
+            "maxLength": 40,
+            "title": "Category",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "lat",
+          "lon"
+        ],
+        "title": "NearPlace",
+        "description": "A 2GIS place from the answer: its own name and position, never the person's."
+      },
+      "OfflinePlan": {
+        "properties": {
+          "schema_version": {
+            "type": "integer",
+            "const": 1,
+            "title": "Schema Version",
+            "default": 1
+          },
+          "saved_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Saved At"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "saved",
+              "not_exportable",
+              "revalidation_failed"
+            ],
+            "title": "Status"
+          },
+          "stops": {
+            "items": {
+              "$ref": "#/components/schemas/OfflineStop"
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Stops"
+          },
+          "omitted_ids": {
+            "items": {
+              "type": "string",
+              "maxLength": 120,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Omitted Ids"
+          },
+          "contains_full_route": {
+            "type": "boolean",
+            "title": "Contains Full Route"
+          },
+          "budget": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlanBudget"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "origin": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Location"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "finish": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Location"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "warning_codes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Warning Codes"
+          },
+          "notes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Notes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "saved_at",
+          "status",
+          "stops",
+          "omitted_ids",
+          "contains_full_route",
+          "warning_codes",
+          "notes"
+        ],
+        "title": "OfflinePlan"
+      },
+      "OfflineRefreshRequest": {
+        "properties": {
+          "saved": {
+            "$ref": "#/components/schemas/OfflinePlan"
+          },
+          "request": {
+            "$ref": "#/components/schemas/RecommendRequest"
+          },
+          "reserve_min": {
+            "type": "integer",
+            "maximum": 120.0,
+            "minimum": 0.0,
+            "title": "Reserve Min",
+            "default": 5
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "saved",
+          "request"
+        ],
+        "title": "OfflineRefreshRequest"
+      },
+      "OfflineRequest": {
+        "properties": {
+          "schema_version": {
+            "type": "integer",
+            "const": 1,
+            "title": "Schema Version",
+            "default": 1
+          },
+          "plan": {
+            "$ref": "#/components/schemas/PlanRequest"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "plan"
+        ],
+        "title": "OfflineRequest"
+      },
+      "OfflineStop": {
+        "properties": {
+          "poi_id": {
+            "type": "string",
+            "title": "Poi Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "coords": {
+            "$ref": "#/components/schemas/Coords"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "stay_min": {
+            "type": "integer",
+            "title": "Stay Min"
+          },
+          "sources": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Sources"
+          },
+          "checked_at": {
+            "type": "string",
+            "format": "date",
+            "title": "Checked At"
+          },
+          "license": {
+            "type": "string",
+            "title": "License"
+          },
+          "attribution": {
+            "type": "string",
+            "title": "Attribution"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "poi_id",
+          "name",
+          "coords",
+          "category",
+          "stay_min",
+          "sources",
+          "checked_at",
+          "license",
+          "attribution"
+        ],
+        "title": "OfflineStop"
+      },
       "OpenStatus": {
         "properties": {
+          "today_hours": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Today Hours"
+          },
+          "for_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "For Date"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
+          "schedule_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Schedule Note"
+          },
+          "schedule_has_exceptions": {
+            "type": "boolean",
+            "title": "Schedule Has Exceptions",
+            "default": false
+          },
           "state": {
             "type": "string",
             "enum": [
@@ -1362,6 +2516,16 @@
             ],
             "title": "Companions",
             "default": "alone"
+          },
+          "near": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NearPlace"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "additionalProperties": false,
@@ -1620,10 +2784,702 @@
         ],
         "title": "PlacesStatus"
       },
+      "PlanBudget": {
+        "properties": {
+          "available_min": {
+            "type": "integer",
+            "title": "Available Min"
+          },
+          "walking_min": {
+            "type": "integer",
+            "title": "Walking Min"
+          },
+          "visiting_min": {
+            "type": "integer",
+            "title": "Visiting Min"
+          },
+          "reserve_min": {
+            "type": "integer",
+            "title": "Reserve Min"
+          },
+          "total_min": {
+            "type": "integer",
+            "title": "Total Min"
+          },
+          "spare_min": {
+            "type": "integer",
+            "title": "Spare Min"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "available_min",
+          "walking_min",
+          "visiting_min",
+          "reserve_min",
+          "total_min",
+          "spare_min"
+        ],
+        "title": "PlanBudget"
+      },
+      "PlanExclusion": {
+        "properties": {
+          "poi_id": {
+            "type": "string",
+            "title": "Poi Id"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "poi_id",
+          "reason"
+        ],
+        "title": "PlanExclusion"
+      },
+      "PlanLeg": {
+        "properties": {
+          "from_id": {
+            "type": "string",
+            "title": "From Id"
+          },
+          "to_id": {
+            "type": "string",
+            "title": "To Id"
+          },
+          "distance_m": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Distance M"
+          },
+          "walk_min": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Walk Min"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "osrm_foot",
+              "distance_estimate"
+            ],
+            "title": "Source"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "from_id",
+          "to_id",
+          "distance_m",
+          "walk_min",
+          "source"
+        ],
+        "title": "PlanLeg"
+      },
+      "PlanRequest": {
+        "properties": {
+          "request": {
+            "$ref": "#/components/schemas/RecommendRequest"
+          },
+          "finish_mode": {
+            "type": "string",
+            "enum": [
+              "return",
+              "destination"
+            ],
+            "title": "Finish Mode",
+            "default": "return"
+          },
+          "destination": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Location"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "origin": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Location"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "stop_ids": {
+            "items": {
+              "type": "string",
+              "maxLength": 120,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Stop Ids"
+          },
+          "completed_ids": {
+            "items": {
+              "type": "string",
+              "maxLength": 120,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 200,
+            "title": "Completed Ids"
+          },
+          "skipped_ids": {
+            "items": {
+              "type": "string",
+              "maxLength": 120,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 200,
+            "title": "Skipped Ids"
+          },
+          "reserve_min": {
+            "type": "integer",
+            "maximum": 120.0,
+            "minimum": 0.0,
+            "title": "Reserve Min",
+            "default": 5
+          },
+          "max_stops": {
+            "type": "integer",
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Max Stops",
+            "default": 3
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "request"
+        ],
+        "title": "PlanRequest"
+      },
+      "PlanResponse": {
+        "properties": {
+          "schema_version": {
+            "type": "integer",
+            "const": 1,
+            "title": "Schema Version",
+            "default": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "partial",
+              "impossible",
+              "no_matches",
+              "unavailable",
+              "refused"
+            ],
+            "title": "Status"
+          },
+          "fits": {
+            "type": "boolean",
+            "title": "Fits"
+          },
+          "stops": {
+            "items": {
+              "$ref": "#/components/schemas/PlanStop"
+            },
+            "type": "array",
+            "title": "Stops"
+          },
+          "legs": {
+            "items": {
+              "$ref": "#/components/schemas/PlanLeg"
+            },
+            "type": "array",
+            "title": "Legs"
+          },
+          "budget": {
+            "$ref": "#/components/schemas/PlanBudget"
+          },
+          "state": {
+            "$ref": "#/components/schemas/PlanState"
+          },
+          "departure_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Departure At"
+          },
+          "estimated_arrival_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Estimated Arrival At"
+          },
+          "routing_source": {
+            "type": "string",
+            "enum": [
+              "osrm_foot",
+              "distance_estimate"
+            ],
+            "title": "Routing Source"
+          },
+          "routing_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Routing Error"
+          },
+          "geometry": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array",
+            "maxItems": 5000,
+            "title": "Geometry"
+          },
+          "exclusions": {
+            "items": {
+              "$ref": "#/components/schemas/PlanExclusion"
+            },
+            "type": "array",
+            "title": "Exclusions"
+          },
+          "notes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Notes"
+          },
+          "warning_codes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warning Codes"
+          },
+          "applied_preferences": {
+            "$ref": "#/components/schemas/Preferences"
+          },
+          "change_codes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Change Codes"
+          },
+          "relaxation_options": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Relaxation Options"
+          },
+          "data_kind": {
+            "type": "string",
+            "enum": [
+              "sample",
+              "real"
+            ],
+            "title": "Data Kind"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "local",
+              "2gis"
+            ],
+            "title": "Source"
+          },
+          "source_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Error"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "fits",
+          "stops",
+          "legs",
+          "budget",
+          "state",
+          "departure_at",
+          "estimated_arrival_at",
+          "routing_source",
+          "applied_preferences",
+          "data_kind",
+          "source"
+        ],
+        "title": "PlanResponse"
+      },
+      "PlanState": {
+        "properties": {
+          "schema_version": {
+            "type": "integer",
+            "const": 1,
+            "title": "Schema Version",
+            "default": 1
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "origin": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "finish_mode": {
+            "type": "string",
+            "enum": [
+              "return",
+              "destination"
+            ],
+            "title": "Finish Mode"
+          },
+          "finish": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "remaining_ids": {
+            "items": {
+              "type": "string",
+              "maxLength": 120,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Remaining Ids"
+          },
+          "completed_ids": {
+            "items": {
+              "type": "string",
+              "maxLength": 120,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 200,
+            "title": "Completed Ids"
+          },
+          "skipped_ids": {
+            "items": {
+              "type": "string",
+              "maxLength": 120,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 200,
+            "title": "Skipped Ids"
+          },
+          "preferences": {
+            "$ref": "#/components/schemas/Preferences"
+          },
+          "exclude_categories": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "coffee",
+                "food",
+                "park",
+                "kids",
+                "culture",
+                "viewpoint",
+                "shopping",
+                "sport",
+                "night",
+                "unusual",
+                "library",
+                "cowork"
+              ]
+            },
+            "type": "array",
+            "maxItems": 12,
+            "title": "Exclude Categories"
+          },
+          "companions": {
+            "type": "string",
+            "enum": [
+              "alone",
+              "child",
+              "group"
+            ],
+            "title": "Companions",
+            "default": "alone"
+          },
+          "accessibility": {
+            "type": "boolean",
+            "title": "Accessibility",
+            "default": false
+          },
+          "reserve_min": {
+            "type": "integer",
+            "maximum": 120.0,
+            "minimum": 0.0,
+            "title": "Reserve Min",
+            "default": 5
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "created_at",
+          "origin",
+          "finish_mode",
+          "finish"
+        ],
+        "title": "PlanState"
+      },
+      "PlanStop": {
+        "properties": {
+          "poi_id": {
+            "type": "string",
+            "title": "Poi Id"
+          },
+          "canonical_id": {
+            "type": "string",
+            "title": "Canonical Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "coords": {
+            "$ref": "#/components/schemas/Coords"
+          },
+          "arrival_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Arrival At"
+          },
+          "departure_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Departure At"
+          },
+          "stay_min": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Stay Min"
+          },
+          "open_status": {
+            "$ref": "#/components/schemas/OpenStatus"
+          },
+          "visit_condition": {
+            "$ref": "#/components/schemas/VisitConditionView"
+          },
+          "atmosphere_match": {
+            "$ref": "#/components/schemas/AtmosphereMatch"
+          },
+          "sources": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Sources"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "poi_id",
+          "canonical_id",
+          "name",
+          "category",
+          "coords",
+          "arrival_at",
+          "departure_at",
+          "stay_min",
+          "open_status",
+          "visit_condition",
+          "atmosphere_match",
+          "sources"
+        ],
+        "title": "PlanStop"
+      },
+      "Preferences": {
+        "properties": {
+          "exclude_poi_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 200,
+            "title": "Exclude Poi Ids"
+          },
+          "visited_poi_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 200,
+            "title": "Visited Poi Ids"
+          },
+          "exclude_visited": {
+            "type": "boolean",
+            "title": "Exclude Visited",
+            "default": false
+          },
+          "preferred_categories": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "coffee",
+                "food",
+                "park",
+                "kids",
+                "culture",
+                "viewpoint",
+                "shopping",
+                "sport",
+                "night",
+                "unusual",
+                "library",
+                "cowork"
+              ]
+            },
+            "type": "array",
+            "maxItems": 12,
+            "title": "Preferred Categories"
+          },
+          "max_walk_min": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 120.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Walk Min"
+          },
+          "max_distance_m": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 10000.0,
+                "minimum": 50.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Distance M"
+          },
+          "indoor_only": {
+            "type": "boolean",
+            "title": "Indoor Only",
+            "default": false
+          },
+          "winter_mode": {
+            "type": "boolean",
+            "title": "Winter Mode",
+            "default": false
+          },
+          "expense_mode": {
+            "type": "string",
+            "enum": [
+              "any",
+              "free_only",
+              "no_required_purchase"
+            ],
+            "title": "Expense Mode",
+            "default": "any"
+          },
+          "atmosphere_example_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Atmosphere Example Id"
+          },
+          "atmosphere_profile": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "light_cafe",
+                  "green_inside",
+                  "spacious_inside",
+                  "green_walk"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Atmosphere Profile"
+          },
+          "atmosphere_verified_only": {
+            "type": "boolean",
+            "title": "Atmosphere Verified Only",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "Preferences"
+      },
       "RecommendRequest": {
         "properties": {
+          "request_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Id"
+          },
           "location": {
             "$ref": "#/components/schemas/Location"
+          },
+          "end": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Location"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "query": {
             "type": "string",
@@ -1655,6 +3511,19 @@
               }
             ],
             "title": "Cursor"
+          },
+          "preferences": {
+            "$ref": "#/components/schemas/Preferences"
+          },
+          "feedback": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Feedback"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "additionalProperties": false,
@@ -1666,6 +3535,19 @@
       },
       "RecommendResponse": {
         "properties": {
+          "request_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Id"
+          },
           "candidates": {
             "items": {
               "$ref": "#/components/schemas/Candidate"
@@ -1803,6 +3685,33 @@
               }
             ],
             "title": "Catalog Total"
+          },
+          "applied_preferences": {
+            "$ref": "#/components/schemas/Preferences"
+          },
+          "change_codes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Change Codes"
+          },
+          "relaxation_options": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Relaxation Options"
+          },
+          "route_impossible": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RouteImpossible"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "additionalProperties": false,
@@ -1824,6 +3733,17 @@
           "poi_id": {
             "type": "string",
             "title": "Poi Id"
+          },
+          "canonical_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Canonical Id"
           },
           "name": {
             "type": "string",
@@ -1872,6 +3792,15 @@
               "template"
             ],
             "title": "Why Source"
+          },
+          "selection_source": {
+            "type": "string",
+            "enum": [
+              "ai",
+              "rules"
+            ],
+            "title": "Selection Source",
+            "default": "rules"
           },
           "time_to_spend_min": {
             "type": "integer",
@@ -1999,6 +3928,29 @@
           },
           "budget_breakdown": {
             "$ref": "#/components/schemas/Budget"
+          },
+          "visit_condition": {
+            "$ref": "#/components/schemas/VisitConditionView"
+          },
+          "atmosphere_match": {
+            "$ref": "#/components/schemas/AtmosphereMatch"
+          },
+          "arrival_estimate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Arrival Estimate"
+          },
+          "offline_allowed": {
+            "type": "boolean",
+            "title": "Offline Allowed",
+            "default": false
           }
         },
         "additionalProperties": false,
@@ -2024,6 +3976,143 @@
           "budget_breakdown"
         ],
         "title": "Recommendation"
+      },
+      "ReplanRequest": {
+        "properties": {
+          "request": {
+            "$ref": "#/components/schemas/RecommendRequest"
+          },
+          "previous": {
+            "$ref": "#/components/schemas/PlanState"
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "less_time",
+              "cold",
+              "tired",
+              "closed",
+              "busy",
+              "skip",
+              "add_stop",
+              "refresh"
+            ],
+            "title": "Reason"
+          },
+          "remaining_time_min": {
+            "type": "integer",
+            "maximum": 480.0,
+            "minimum": 5.0,
+            "title": "Remaining Time Min"
+          },
+          "completed_ids": {
+            "items": {
+              "type": "string",
+              "maxLength": 120,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Completed Ids"
+          },
+          "poi_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Poi Id"
+          },
+          "reserve_min": {
+            "type": "integer",
+            "maximum": 120.0,
+            "minimum": 0.0,
+            "title": "Reserve Min",
+            "default": 5
+          },
+          "keep_stops": {
+            "type": "boolean",
+            "title": "Keep Stops",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "request",
+          "previous",
+          "reason",
+          "remaining_time_min"
+        ],
+        "title": "ReplanRequest"
+      },
+      "RouteImpossible": {
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "budget",
+              "distance"
+            ],
+            "title": "Reason"
+          },
+          "need_min": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Need Min"
+          },
+          "suggestions": {
+            "items": {
+              "$ref": "#/components/schemas/RouteSuggestion"
+            },
+            "type": "array",
+            "maxItems": 2,
+            "title": "Suggestions"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "reason",
+          "need_min"
+        ],
+        "title": "RouteImpossible"
+      },
+      "RouteSuggestion": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "more_time",
+              "fewer_stops"
+            ],
+            "title": "Kind"
+          },
+          "min": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 480.0,
+                "minimum": 5.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind"
+        ],
+        "title": "RouteSuggestion"
       },
       "SpecialHours": {
         "properties": {
@@ -2295,6 +4384,83 @@
         ],
         "title": "ValidationError"
       },
+      "VisitConditionView": {
+        "properties": {
+          "provider_attributes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Provider Attributes"
+          },
+          "provider_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider Url"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "free",
+              "optional_purchase",
+              "paid",
+              "unknown"
+            ],
+            "title": "Kind",
+            "default": "unknown"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note",
+            "default": ""
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
+          "checked_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checked At"
+          },
+          "verification": {
+            "type": "string",
+            "enum": [
+              "verified",
+              "unverified",
+              "conflicting",
+              "stale",
+              "unknown"
+            ],
+            "title": "Verification",
+            "default": "unknown"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "VisitConditionView"
+      },
       "Weather": {
         "properties": {
           "temp_c": {
@@ -2324,6 +4490,29 @@
           "wind_ms"
         ],
         "title": "Weather"
+      },
+      "WinterRequest": {
+        "properties": {
+          "plan": {
+            "$ref": "#/components/schemas/PlanRequest"
+          },
+          "max_outdoor_min": {
+            "type": "integer",
+            "enum": [
+              5,
+              10,
+              15
+            ],
+            "title": "Max Outdoor Min",
+            "default": 10
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "plan"
+        ],
+        "title": "WinterRequest"
       }
     }
   }

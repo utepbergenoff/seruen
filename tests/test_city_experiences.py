@@ -18,15 +18,17 @@ def test_history_is_curated_localized_and_wikipedia_links_are_place_specific(api
     result = post(api, "/city/history", {"location": ASK["location"], "lang": lang})
     assert not result["generated_by_ai"] and len(result["items"]) >= 3
     assert [p["distance_m"] for p in result["items"]] == sorted(p["distance_m"] for p in result["items"])
-    assert len({p["wikipedia_url"] for p in result["items"]}) == len(result["items"])
+    links = [p['wikipedia_url'] for p in result['items'] if p.get('wikipedia_url')]
+    assert len(set(links)) == len(links)
     for p in result["items"]:
         assert p["title"] and p["story"] and p["look_for"] and p["checked_at"]
-        assert urlparse(p["wikipedia_url"]).hostname in {"ru.wikipedia.org", "kk.wikipedia.org", "en.wikipedia.org"}
+        if p.get("wikipedia_url"):
+            assert urlparse(p["wikipedia_url"]).hostname in {"ru.wikipedia.org", "kk.wikipedia.org", "en.wikipedia.org"}
         assert p["source_url"].startswith("https://")
     assert api.post("/city/history", json={"location": {"lat": 40, "lon": 40}}).status_code == 422
     assert post(api, "/city/history", {"location": {"lat": 51.02, "lon": 71.45}, "radius_m": 100})["items"] == []
     catalog = api.get('/city/stories', params={'lang': lang}).json()
-    assert len(catalog['items']) == result['total_stories'] == 20
+    assert len(catalog['items']) == result['total_stories'] == 26
     assert all(s['aliases'] for s in catalog['items'])
 
 
