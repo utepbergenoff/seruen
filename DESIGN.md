@@ -45,13 +45,23 @@ No state emblems (eagle, sun from the flag): only the flag's colours.
 
 ## Components
 
-- Buttons: white, 1px line, 10px radius; card actions are pills. The main action («Подобрать») is sun gold
-  with ink text. Focus: 3px sky outline.
+- Buttons: one shape, full pills. Secondary buttons are white with a 1px line; actions inside a card are soft
+  filled pills (ground tone, no outline). The main action («Подобрать») is sun gold with ink text.
+  Focus: 3px sky outline. On a phone every button and fold line is at least 44px tall.
 - Icons: one drawn set (`<symbol id="i-…">` in `index.html`, 24px grid, 1.8 stroke, round caps), used via
   `icon(name)` in `app.js`. No emoji as icons.
-- Cards: white, 18px radius, soft two-layer shadow; active/hover card gets a sky border and a lifted shadow.
-  No coloured side borders on cards or notes.
+- Cards: white, 18px radius, flat (no shadow at rest); hover and the active card change only the border to
+  sky. Shadows are kept for what floats: menus and the map tools. No coloured side borders on cards or notes.
 - Photos: a mosaic, one large frame and two small ones; facts as sky-tint chips with icons; credits under it.
-- Notes from the server: one sky-tint block, items divided by hairlines; safety notes amber.
+- Notes from the server: plain small muted text, one line each; safety notes in amber text.
 - Details the spec requires but people rarely need (what to do, time on site, budget, sources, accessibility)
   live in the «Подробнее» fold at the bottom of each card.
+
+## Polish 19.10 (no control removed)
+
+- The brand name in sentence case; header actions without outlines.
+- Phone: the header is two compact rows; all actions sit in one row that scrolls sideways inside itself
+  (the page never scrolls sideways). The welcome is shorter so «Чего хотите?» is on the first screen; the
+  map tools hide their label and take less of the map. «О данных и приватности» is reachable on the phone.
+- Fixed: the selected atmosphere chip («Любая атмосфера») was white text on white (an undefined `--bg`).
+- Checked by replaying a recorded session on laptop and phone: same controls before and after (0 missing).
