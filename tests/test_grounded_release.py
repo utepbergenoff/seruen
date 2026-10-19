@@ -90,6 +90,21 @@ def test_confirmed_bench_and_plain_walk_remain_useful_suggestions(service, req):
     assert supports_draft(d.model_copy(update={"why": "Парк рядом для короткой прогулки."}), h, req, intent)
 
 
+@pytest.mark.parametrize("name,idea,check", [
+    ("Chaplin Cinema", "Идея: дойти туда и посмотреть текущий фильм в зале.",
+     "Проверьте расписание и полную длительность сеанса перед покупкой билета."),
+    ("City Theatre", "Attend a performance during your visit.",
+     "Check the programme and full performance duration before buying a ticket."),
+])
+def test_generic_visit_budget_does_not_promise_a_full_screening(service, req, name, idea, check):
+    intent, _, search = service.inspect(req)
+    h = search.hits[0]
+    h.poi = h.poi.model_copy(update={"name": name, "category": "culture"})
+    d = draft(h).model_copy(update={"what_to_do": idea})
+    assert not supports_draft(d, h, req, intent)
+    assert supports_draft(d.model_copy(update={"what_to_do": check}), h, req, intent)
+
+
 @pytest.mark.parametrize("lang,why,todo,claim", [
     ("ru", "Парк рядом для прогулки.", "Погуляйте на открытом воздухе.", "Парк открыт сейчас."),
     ("en", "A nearby park for a walk.", "Enjoy an open-air walk.", "The park is open now."),
