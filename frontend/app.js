@@ -402,6 +402,7 @@
       state.last = data; state.selectedPlaceId = null;
       $("#status").innerHTML = "";
       render(data);
+      if (!healthReady) void refreshHealth(); // Recover features after a cold start or deployment.
       $("#results").scrollIntoView({behavior: "smooth", block: "start"});
     } catch (err) {
       if (version !== state.requestVersion) return;
@@ -877,6 +878,25 @@
     try { const r = await fetch(url, {signal: ctrl.signal, cache: "no-store"}); if (!r.ok) throw new Error(r.status); return await r.json(); }
     finally { clearTimeout(timer); }
   }
+  let healthReady = false, healthPending = null;
+  function refreshHealth() {
+    if (healthPending) return healthPending;
+    healthPending = (async () => {
+      try {
+        const h = await getJSON(API + "/health");
+        state.features = h.feature_contract_version === 2 && h.features && typeof h.features === "object" ? h.features : {};
+        if (ext.onHealth) ext.onHealth(h);
+        const avail = h.mode_available || [];
+        state.apiMode = h.ai === "gemini" || avail.includes("ai") ? "ai" : h.ai === "no_ai" || avail.includes("no_ai") ? "no_ai" : (h.mode || null);
+        const snap = h.data_snapshot || h.data_snapshot_date, places = h.places || h.poi_count;
+        if (snap && !h.twogis?.search_enabled) $("#snapshot").textContent = `· ${T().snapshot}: ${snap}${places ? " (" + places + ")" : ""}`;
+        healthReady = true;
+        renderModeBadge(state.last ? state.last.mode : null);
+      } catch { /* Retry after a successful search; do not poll a sleeping free server. */ }
+      finally { healthPending = null; }
+    })();
+    return healthPending;
+  }
   async function init() {
     applyLang(); // Labels and inputs must work even while Render wakes up.
     if (!FEAT.languages) $(".lang").hidden = true;
@@ -913,18 +933,7 @@
     }
     if (initialPointUnchanged && params.get("scenario")) runScenario(params.get("scenario").toUpperCase());
     else if (initialPointUnchanged && params.get("chip") !== null) $$("#chips button")[+params.get("chip")]?.click();
-    void (async () => {
-    try {
-      const h = await getJSON(API + "/health");
-      state.features = h.feature_contract_version === 2 && h.features && typeof h.features === "object" ? h.features : {};
-      if (ext.onHealth) ext.onHealth(h);
-      const avail = h.mode_available || [];
-      state.apiMode = h.ai === "gemini" || avail.includes("ai") ? "ai" : h.ai === "no_ai" || avail.includes("no_ai") ? "no_ai" : (h.mode || null);
-      const snap = h.data_snapshot || h.data_snapshot_date, places = h.places || h.poi_count;
-      if (snap && !h.twogis?.search_enabled) $("#snapshot").textContent = `· ${T().snapshot}: ${snap}${places ? " (" + places + ")" : ""}`;
-      renderModeBadge(state.last ? state.last.mode : null);
-    } catch { /* Recommendation requests provide their own retry state. */ }
-    })();
+    void refreshHealth();
     if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
       navigator.serviceWorker.register("sw.js").catch(() => {});
     }

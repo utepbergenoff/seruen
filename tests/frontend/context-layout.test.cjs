@@ -4,6 +4,16 @@ const clone=x=>JSON.parse(JSON.stringify(x));
 const opts={healthData:FX.health_with_features,build:FX.build_ok};
 const change=(b,id,val)=>{const el=b.w.document.querySelector(id);el.value=val;el.dispatchEvent(new b.w.Event('change',{bubbles:true}));};
 const tick=async()=>{for(let i=0;i<8;i++)await new Promise(r=>setImmediate(r));};
+test('a successful search restores walk controls after initial health failure',async t=>{
+ const b=await boot(t,{health:{promise:Promise.resolve({ok:false,status:503})}});
+ assert.equal(b.w.document.querySelector('#finishMode'),null);
+ const fetch=b.w.fetch;
+ b.w.fetch=(url,options)=>url.endsWith('/health') ? Promise.resolve({ok:true,json:async()=>clone(FX.health_with_features)}) : fetch(url,options);
+ b.click('#goBtn');await tick();b.requests[0].resolve({ok:true,json:async()=>clone(FX.recommend_normal)});await tick();
+ assert.ok(b.w.document.querySelector('#finishMode'));
+ assert.ok(b.w.document.querySelector('#startWalkBtn'));
+ assert.equal(b.w.document.querySelectorAll('.rec').length,FX.recommend_normal.recommendations.length);
+});
 test('context stays expanded and marker follows custom finish, drag, and reset',async t=>{
  const b=await boot(t,opts),doc=b.w.document;
  assert.equal(doc.querySelector('#ctxBox').tagName,'SECTION');
