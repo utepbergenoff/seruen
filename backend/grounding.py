@@ -29,6 +29,26 @@ def unknown_note(hit, intent):
     return prefix + ", ".join(UNKNOWN[intent.lang][tag] for tag in missing) + "." if missing else ""
 
 
+def supported_numbers(text, hit):
+    """Accept exact supplied walk/visit times, never arbitrary numeric claims."""
+    text = text.replace(hit.poi.name.casefold(), "")
+    for clause in re.split(r"[.!?;]", text):
+        for number in re.finditer(r"\d+", clause):
+            rest = clause[number.start():]
+            if not re.match(r"\d+\s*[-–]?\s*(?:minutes?|mins?|минут\w*|мин\b)", rest):
+                return False
+            n = int(number.group())
+            if re.search(r"пеш|ходьб|\bwalk|жаяу", clause):
+                if n != hit.candidate.walk_min:
+                    return False
+            elif re.search(r"посещ|провед|побы|остать|\bvisit|\bspend|өткіз|болыңыз", clause):
+                if n != hit.stay:
+                    return False
+            else:
+                return False
+    return True
+
+
 def evidence(hit, request, intent, features=None):
     p = hit.poi
     facts = {"category": p.category, "walk": {"minutes": hit.candidate.walk_min},
@@ -59,7 +79,7 @@ def draft_failure(draft, hit, request, intent, features=None):
                  r"сегодня.{0,18}(выстав|концерт|вечерин)|event today|live music|живая музыка|"
                  r"лучший|идеальн|\bbest\b|\bperfect\b", text):
         return "unsupported_claim"
-    if re.search(r"\d", text.replace(hit.poi.name.casefold(), "")):
+    if not supported_numbers(text, hit):
         return "numeric_claim"
     known = confirmed_tags(hit.poi)
     uncertain = r"уточн|провер|не подтверж|неизвест|не гаран|\bcheck\b|\bask\b|unconfirm|unknown|нақтыла|тексер|расталма|белгісіз"
