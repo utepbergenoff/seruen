@@ -6,6 +6,7 @@ import socket
 import subprocess
 import threading
 import time
+from datetime import datetime
 
 import pytest
 import uvicorn
@@ -114,8 +115,16 @@ def test_atmosphere_does_not_match_a_contradictory_scene(api, wanted, opposite):
     assert [p['poi_id'] for p in result['recommendations']] == ['team_coffee']
 
 
-def test_actual_frontend_forms_against_fastapi(expanded):
+def test_actual_frontend_forms_against_fastapi(expanded, monkeypatch):
     """Use the real browser scripts and real API over loopback, not matching mocks."""
+    # This daytime bench case should not fail when the suite runs after 22:00.
+    # Replanning intentionally uses current time; night exclusions have separate tests.
+    class Daytime(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return datetime.now(tz).replace(hour=15, minute=0, second=0, microsecond=0)
+
+    monkeypatch.setattr('backend.geo.datetime', Daytime)
     assert shutil.which('node') and (ROOT / 'node_modules/jsdom').exists(), 'Run npm ci before this integration test'
     expanded.photos_enabled = False
     sock = socket.socket()

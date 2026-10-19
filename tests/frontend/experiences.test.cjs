@@ -64,7 +64,8 @@ test('late meeting answer after changing participant cannot replace new inputs',
   const b=await boot(t,{...base,experiences:()=>new Promise(r=>resolve=r)});
   b.click('[name="searchIntent"][value="meet"]');change(b,'#meetPreset','khan');b.click('#goBtn');await settle();
   change(b,'#meetPreset','expo');resolve(json({items:[{name:'OLD RESULT'}]}));await settle();
-  assert.doesNotMatch(b.w.document.querySelector('#experienceResult').textContent,/OLD RESULT/);
+  assert.doesNotMatch(b.w.document.querySelector('#experienceBody').textContent,/OLD RESULT/);
+  assert.equal(b.w.document.querySelector('#meetPreset').value,'expo');
 });
 
 test('new sections have labels in all languages and satellite does not upscale beyond zoom14',async t=>{

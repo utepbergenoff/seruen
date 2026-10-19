@@ -105,7 +105,8 @@
     if (active) {
       map.removeLayer(suggestionRoutes);
       if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
-    } else suggestionRoutes.addTo(map);
+    } else if (ext.hideSuggestionRoutes?.()) map.removeLayer(suggestionRoutes);
+    else suggestionRoutes.addTo(map);
   }
 
   // source goes to the backend (gps | map | preset); locKind is only for the line under the title
@@ -122,6 +123,7 @@
     me.setLatLng([lat, lon]);
     if (pan) showAt([lat, lon], Math.max(map.getZoom(), 15));
     renderLocLine();
+    ext.onLocationChange?.();
   }
   // ---------- language ----------
   function applyLang() {

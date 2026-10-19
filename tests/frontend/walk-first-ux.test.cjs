@@ -78,7 +78,7 @@ async function meeting(b){b.click('[name="searchIntent"][value="meet"]');change(
 test('meeting labels identify B; cards and pins select a place and back restores both choices',async t=>{
  const items=meetingPlaces(),b=await boot(t,{...opts,experiences:()=>json({items,source:'local'})});await meeting(b);
  assert.doesNotMatch(b.w.document.querySelector('#meetPreset').textContent,/Я у/);
- assert.match(b.w.document.querySelector('#meetPoint').textContent,/точка B/);
+ assert.match(b.w.document.querySelector('#meetPoint').textContent,/точка B/i);
  b.click('[data-meet-map="1"]');let cards=[...b.w.document.querySelectorAll('[data-meet-id]')];assert.deepEqual(cards.map(c=>c.hidden),[true,false]);
  b.click('#meetBack');assert.ok(cards.every(c=>!c.hidden));
  b.pins.find(p=>p.options.title==='SYNTHETIC Meeting 0').fire('click');assert.deepEqual(cards.map(c=>c.hidden),[false,true]);

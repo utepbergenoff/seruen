@@ -7,16 +7,20 @@
   const X = () => window.SeruenExperienceText[state.lang] || window.SeruenExperienceText.ru;
   const has = f => !!state.features?.[f];
   const overlays = L.layerGroup().addTo(map);
+  const participants = L.layerGroup().addTo(map);
   let tab = null, sequence = 0, second = null, picking = false, preview = null;
+  let meetingResults = null, previewMeeting = null, activeMeeting = null, startingMeeting = null;
   let mode = "walk", winterEnabled = false, winterLimit = 10, meetLimit = 30, showStories = false;
   let activeStory = null;
   const storyLayer = L.layerGroup().addTo(map);
   let storyIndex = [], storyLang = null, storyPending = false;
   const point = p => ({lat: A.round3(p.lat), lon: A.round3(p.lon), precision_m: p.precision_m || 100, source: p.source || "map"});
-  const stamp = () => JSON.stringify([state.locVersion, state.requestVersion, state.selectedPlaceId, state.lang,
-    F.walk?.plan?.server || null, mode, winterEnabled, winterLimit, meetLimit, second,
+  const inputsKey = () => JSON.stringify([point(state.loc), state.contextVersion, state.lang,
+    mode, winterEnabled, winterLimit, meetLimit, second,
     ["query","budget","whenSel","whenAt","companions","weather"].map(id => $("#"+id)?.value),
     $("#budgetAuto").checked, $("#access").checked]);
+  const stamp = () => JSON.stringify([state.locVersion, state.requestVersion, state.selectedPlaceId,
+    F.walk?.plan?.server || null, inputsKey()]);
   const link = (url, label) => {
     try { if (new URL(url).protocol !== "https:") return ""; } catch { return ""; }
     return `<a class="btn small" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)}</a>`;
@@ -88,7 +92,20 @@
     $("#results").hidden = mode === "meet";
     if (mode === "meet") map.removeLayer(A.layer); else A.layer.addTo(map);
     $("#scenarioStrip").hidden = mode === "meet" || !state.scenarios.length;
-    if ($("#finishField")) $("#finishField").hidden = false;
+    if ($("#finishField")) $("#finishField").hidden = mode === "meet";
+    F.syncFinishMarker();
+    A.setWalkActive(!!F.walk);
+    drawParticipants();
+  }
+  E.hideSuggestionRoutes = () => mode === "meet" || tab === "preview";
+  E.hideSearchFinish = () => mode === "meet";
+  function drawParticipants() {
+    participants.clearLayers();
+    if (activeMeeting && activeMeeting.walk !== F.walk) activeMeeting = null;
+    const pair = mode === "meet" ? (previewMeeting || {first: point(state.loc), second}) : activeMeeting;
+    if (!pair) return;
+    pin(pair.first, "A", null, participants);
+    if (pair.second) pin(pair.second, "B", null, participants);
   }
   function mount() {
     const x = X();
@@ -99,16 +116,16 @@
       <label><input type="radio" name="searchIntent" value="walk"${mode === "walk" ? " checked" : ""}><span>${esc(x.walkMode)}</span></label>
       <label><input type="radio" name="searchIntent" value="meet"${mode === "meet" ? " checked" : ""}><span>${esc(x.meetMode)}</span></label></fieldset>` : "";
     $("#searchModeField").querySelectorAll("input").forEach(el => el.onchange = () => {
-      A.freezeLocation(); E.cancelMapPick?.(); state.requestVersion++; mode = el.value; $("#goBtn").disabled = false; open(null); mount();
+      A.freezeLocation(); E.cancelMapPick?.(); state.requestVersion++; mode = el.value; meetingResults = null; $("#goBtn").disabled = false; open(null); mount();
     });
     $("#meetingFields").innerHTML = has("meet_halfway") ? `<p class="meta">${esc(x.first)} <strong>${esc(A.presetName(state.presets.find(p=>p.id===state.preset)) || `${state.loc.lat}, ${state.loc.lon}`)}</strong></p>
       <label for="meetPreset">${esc(x.second)}</label><div class="row"><select id="meetPreset"><option value="">${esc(x.choose)}</option>${state.presets.map(p => `<option value="${esc(p.id)}"${second?.preset === p.id ? " selected" : ""}>${esc(A.presetName(p))}</option>`).join("")}</select>
       <button type="button" class="btn small" id="meetPick">${esc(x.pick)}</button><button type="button" class="btn small" id="meetCancel" hidden>${esc(x.cancel)}</button></div>
-      <p class="meta" id="meetPoint">${second ? esc(x.chosen) + ": " + esc(second.label) : ""}</p>
+      <p class="meta" id="meetPoint">${second ? esc(x.chosen) + ": " + esc(second.label) + ` (${second.lat}, ${second.lon})` : ""}</p>
       <label>${esc(x.limit)} <select id="meetLimit">${[15,30,45,60].map(n => `<option value="${n}"${n === meetLimit ? " selected" : ""}>${n} ${esc(x.minutes)}</option>`).join("")}</select></label>
       <details class="meeting-privacy"><summary>${esc(x.privacyTitle)}</summary><p class="meta">${esc(x.privacy)}</p></details>` : "";
     if (has("meet_halfway")) {
-      $("#meetPreset").onchange = e => { const p = state.presets.find(p => p.id === e.target.value); if (p) setSecond(p, A.presetName(p)); };
+      $("#meetPreset").onchange = e => { const p = state.presets.find(p => p.id === e.target.value); setSecond(p || null, p ? A.presetName(p) : ""); };
       $("#meetLimit").onchange = e => { meetLimit = +e.target.value; open(null); };
       $("#meetPick").onclick = () => { picking = true; $("#meetPoint").textContent = x.picking; $("#meetCancel").hidden = false; $("#map").scrollIntoView({block:"center",behavior:"smooth"}); };
       $("#meetCancel").onclick = () => { picking = false; $("#meetCancel").hidden = true; $("#meetPoint").textContent = second ? `${x.chosen}: ${second.label}` : ""; };
@@ -127,8 +144,9 @@
     if (!$("#experienceBody")) $("#experiences").innerHTML = '<div id="experienceBody" hidden></div>';
     syncMode(); drawStories();
   }
-  function open(next) {
-    sequence++; picking = false; preview = null; overlays.clearLayers(); tab = next;
+  function open(next, meeting = null) {
+    sequence++; picking = false; preview = null; previewMeeting = meeting; overlays.clearLayers(); tab = next;
+    drawParticipants(); A.setWalkActive(!!F.walk);
     document.body.classList.toggle("route-review-open", tab === "preview");
     $("#goBtn").disabled = false;
     $("#experiences").hidden = !tab;
@@ -139,9 +157,15 @@
     const x = X(), body = $("#experienceBody");
     if (!body || !tab) return;
     const heading = tab === "history" ? activeStory?.title || x.history : tab === "meet" ? x.meetingResults : x.preview;
-    body.innerHTML = `<div class="experience-head"><h3>${esc(heading)}</h3><button class="btn small" id="experienceClose" type="button">${esc(x.backToPlaces)}</button></div>
+    body.innerHTML = `<div class="experience-head"><h3>${esc(heading)}</h3><button class="btn small" id="experienceClose" type="button">${esc(tab === "preview" && previewMeeting ? x.meetBack : x.backToPlaces)}</button></div>
       <p id="experienceMessage" role="status" class="meta"></p><div id="experienceResult"></div>`;
     $("#experienceClose").onclick = () => {
+      if (tab === "preview" && previewMeeting) {
+        const saved = meetingResults;
+        open(saved?.key === inputsKey() ? "meet" : null);
+        if (tab === "meet") renderMeeting(saved);
+        mount(); return;
+      }
       if(tab === "history" && activeStory){activeStory=null;renderTab();return;}
       mode = "walk"; open(null); mount();
       (state.last ? $("#results") : $("#askForm")).scrollIntoView({block:"start",behavior:"smooth"});
@@ -156,14 +180,13 @@
     } else if (tab === "meet") say(x.fairness);
   }
   function setSecond(p, label) {
-    sequence++; preview = null; second = {...point(p), label, preset: p.id || null}; picking = false;
-    $("#meetCancel").hidden = true; $("#meetPoint").textContent = `${X().second}: ${label} (${second.lat}, ${second.lon})`;
-    if ($("#experienceResult")) $("#experienceResult").innerHTML = "";
-    $("#goBtn").disabled = false; overlays.clearLayers(); pin(second, "B");
+    A.freezeLocation(); second = p ? {...point(p), label, preset: p.id || null} : null;
+    meetingResults = null; open(null); mount();
+    if (second) A.fitTo([[state.loc.lat,state.loc.lon],[second.lat,second.lon]]);
   }
-  function pin(coords, name, click) {
+  function pin(coords, name, click, target = overlays) {
     const icon = L.divIcon({className: "", iconSize: [30, 30], iconAnchor: [15, 15], html: `<div class="cpin experience-pin">${esc(click ? "●" : name)}</div>`});
-    const marker=L.marker([coords.lat, coords.lon], {icon, title: name, interactive: !!click, bubblingMouseEvents:false}).addTo(overlays);
+    const marker=L.marker([coords.lat, coords.lon], {icon, title: name, alt: name, zIndexOffset:1200, interactive: !!click, bubblingMouseEvents:false}).addTo(target);
     if(click) marker.on("click", click);
     return marker;
   }
@@ -192,8 +215,16 @@
       if (!current()) return;
       const data = await A.postJSON("/meet/search", {request: req, second_location: point(second), max_walk_min: meetLimit}, 40000);
       if (!current()) return;
-      const x = X(); overlays.clearLayers();
-      say(data.items.length ? x.estimate + (req.context.simulate ? " " + x.simulated : "") : x.noMeet);
+      meetingResults = {data, req, second: {...second}, key: inputsKey()};
+      renderMeeting(meetingResults);
+    });
+  }
+  function renderMeeting(saved) {
+      const {data,req,second:meetingSecond} = saved, x = X(); overlays.clearLayers();
+      const current = () => meetingResults === saved && saved.key === inputsKey() && tab === "meet";
+      const valid = () => { if (current()) return true; say(X().stale); return false; };
+      const fallback = data.warning_codes?.includes("local_catalog_fallback") ? " " + x.localFallback : "";
+      say((data.items.length ? x.estimate + (req.context.simulate ? " " + x.simulated : "") : x.noMeet) + fallback);
       // Same place facts as a recommendation card: what it is, where, its photos and what Gemini sees on them.
       $("#experienceResult").innerHTML = data.items.map((p, i) => `<article class="story-card meet-place" data-meet-id="${esc(p.poi_id)}"><h3>${esc(p.name)}</h3>
         <p class="meta">${esc(A.catLabel(p.category))}${p.rating ? ` · ${A.icon("star")} ${esc(p.rating)}` : ""}</p>
@@ -211,12 +242,13 @@
       const back=document.createElement("button");back.className="btn";back.id="meetBack";back.textContent=x.meetBack;back.hidden=true;
       $("#experienceResult").prepend(back);
       const draw = selected => {
-        overlays.clearLayers();pin(req.location,"A");pin(second,"B");
+        overlays.clearLayers();drawParticipants();
         data.items.forEach((p,i)=>pin(p.coords,p.name,()=>selectMeeting(i)));
         if(selected){selected.paths.forEach((path,i)=>L.polyline(path.map(([lon,lat])=>[lat,lon]),{color:i?"#BD6C00":"#00708A",weight:3,dashArray:"6 6"}).addTo(overlays));
           A.fitTo(L.latLngBounds([...selected.paths[0],...selected.paths[1]].map(([lon,lat])=>[lat,lon])));}
       };
       const selectMeeting=index=>{
+        if (!valid()) return;
         $("#experienceResult").querySelectorAll("[data-meet-id]").forEach((card,i)=>card.hidden=index!==null&&index!==i);
         back.hidden=index===null;draw(index===null?null:data.items[index]);
         $("#experiences").scrollIntoView({block:"start",behavior:"smooth"});
@@ -225,16 +257,21 @@
       $("#experiences").scrollIntoView({block:"start",behavior:"smooth"});
       $("#experienceResult").querySelectorAll("[data-meet-map]").forEach(b=>b.onclick=()=>selectMeeting(+b.dataset.meetMap));
       $("#experienceResult").querySelectorAll("[data-meet-route]").forEach(b => b.onclick = () => {
-        const poi = data.items[+b.dataset.meetRoute]; open("preview");
+        if (!valid()) return;
+        A.freezeLocation();
+        const poi = data.items[+b.dataset.meetRoute]; open("preview", {first: req.location, second: meetingSecond});
         buildPreview({poi, source: data.source});
       });
-    });
   }
   async function buildPreview({winter = winterEnabled && has("winter_plan"), poi = null, source = null}) {
     if (!winter && !poi && !state.last?.recommendations?.length && !state.selectedPlaceId) { say(X().needPlan); return; }
     const lastPlace=poi || [...(state.last?.recommendations||[]),...(state.last?.nearby_places||[])].find(p=>p.poi_id===state.selectedPlaceId) || state.last?.recommendations?.at(-1);
     if(!lastPlace) {say(X().needPlan);return;}
-    const pendingChoice=F.chooseFinish({...lastPlace,name:lastPlace.name||lastPlace.title}), before=stamp(), choice=await pendingChoice;
+    const meeting = previewMeeting;
+    const pendingChoice = meeting ? Promise.resolve({finish_mode:"destination", destination:{...lastPlace.coords,source:"preset"},
+      ...(has("finish_preferences") ? {finish_poi_id:lastPlace.poi_id} : {}), label:lastPlace.name})
+      : F.chooseFinish({...lastPlace,name:lastPlace.name||lastPlace.title});
+    const before=stamp(), choice=await pendingChoice;
     if(!choice || before!==stamp()) return;
     return run("#previewBuild", async current => {
       const req = await makeRequest(winter ? "кофе в помещении" : "прогулка");
@@ -251,13 +288,14 @@
         ? {plan: payload, max_outdoor_min: winterLimit} : payload, 40000);
       if (!current()) return;
       if (!result.fits || !result.stops.length || !["ok","partial"].includes(result.status)
+          || (selected && result.stops.length !== 1)
           || ids.some(id => !result.stops.some(s => s.poi_id === id))) { say(X().noPlan); return; }
-      showPreview(result, req, false, choice.label);
+      showPreview(result, req, false, choice.label, meeting);
     });
   }
-  function showPreview(result, req, active, finishLabel) {
+  function showPreview(result, req, active, finishLabel, meeting) {
     sequence++; overlays.clearLayers();
-    const x=X();say("");preview={result,req,active,stamp:stamp(),made:Date.now(),finishLabel};
+    const x=X();say("");preview={result,req,active,stamp:stamp(),made:Date.now(),finishLabel,meeting};
     $("#experienceResult").innerHTML=`<section class="route-review">
       <p class="walk-left">≈${result.budget.total_min} ${esc(x.minutes)}</p>
       <ol>${result.stops.map((p,i)=>`<li><strong>${esc(p.name)}</strong> · ≈${result.legs[i]?.walk_min||0} ${esc(x.minutes)} ${esc(x.walk)}${A.statusPill(p.open_status)}</li>`).join("")}</ol>
@@ -265,11 +303,16 @@
       <p class="meta">${result.routing_source==="distance_estimate"?esc(x.routeEstimate):""}</p>
       <details><summary>${esc(x.source)}</summary><p class="meta">${esc(result.notes.join(" "))}</p></details>
       ${active?"":`<button id="previewStart" class="btn primary" type="button">${esc(x.start)}</button>`}</section>`;
-    if(result.geometry?.length){L.polyline(result.geometry.map(([lon,lat])=>[lat,lon]),{color:"#00708A",weight:4,dashArray:result.routing_source==="osrm_foot"?null:"5 5"}).addTo(overlays);A.fitTo(L.latLngBounds(result.geometry.map(([lon,lat])=>[lat,lon])));}
+    if(result.geometry?.length){L.polyline(result.geometry.map(([lon,lat])=>[lat,lon]),{color:"#00708A",weight:4,dashArray:result.routing_source==="osrm_foot"?null:"5 5"}).addTo(overlays);
+      const bounds=result.geometry.map(([lon,lat])=>[lat,lon]);
+      if(meeting) bounds.push([meeting.second.lat,meeting.second.lon]);
+      A.fitTo(L.latLngBounds(bounds));}
+    drawParticipants();
     if($("#previewStart")) $("#previewStart").onclick=()=>{
       if(!preview||preview.stamp!==stamp()||Date.now()-preview.made>60000){say(x.stale);return;}
       const chosen=preview, plan=F.planView(chosen.result,chosen.req);plan.finish_label=chosen.finishLabel;
-      mode="walk";open(null);mount();F.startWalk(plan,null);
+      startingMeeting=chosen.meeting;
+      try { F.startWalk(plan,null); } finally { startingMeeting=null; }
     };
   }
   const oldClick=E.onMapClick;
@@ -286,19 +329,28 @@
   const oldHealth=E.onHealth, oldLang=E.onLang;
   E.onHealth=h=>{ oldHealth?.(h); mount(); void loadStories(); };
   E.onLang=()=>{F.cancelSetup(); oldLang?.(); open(null); mount(); void loadStories(); };
+  const oldLocation=E.onLocationChange;
+  E.onLocationChange=()=>{oldLocation?.();if(mode==="meet"){meetingResults=null;open(null);mount();}};
   const oldRender=E.afterRender;
   E.afterRender=d=>{oldRender?.(d);syncMode();};
   const oldSearch=E.onSearch, oldScenario=E.onScenario;
   const oldWalkStart=E.onWalkStart;
-  E.onWalkStart=()=>{ oldWalkStart?.(); open(null); };
+  E.onWalkStart=()=>{
+    oldWalkStart?.(); activeMeeting=startingMeeting ? {...startingMeeting,walk:F.walk} : null;
+    mode="walk";open(null);mount();
+  };
+  const oldWalkContext=E.walkContext;
+  E.walkContext=()=> (oldWalkContext?.() || "") + (activeMeeting?.walk === F.walk && activeMeeting
+    ? `<p class="meta meeting-walk-context"><strong>${esc(X().second)}:</strong> ${esc(activeMeeting.second.label || X().chosen)} (${activeMeeting.second.lat}, ${activeMeeting.second.lon}). ${esc(X().meetingWalkInfo)}</p>` : "");
   E.onSearch=()=>{
     F.cancelSetup();
-    if (mode === "meet" && has("meet_halfway")) { state.requestVersion++; open("meet"); void meet(); return true; }
+    if (mode === "meet" && has("meet_halfway")) { state.requestVersion++; meetingResults=null;open("meet"); void meet(); return true; }
     open(null); return oldSearch?.() || false;
   };
   E.onScenario=()=>{ oldScenario?.(); winterEnabled=false; mode="walk"; open(null); mount(); };
   window.addEventListener("seruen:walk-change",()=>{
     if (preview && preview.stamp !== stamp()) { preview=null; overlays.clearLayers(); if ($("#experienceResult")) $("#experienceResult").innerHTML=""; say(X().stale); }
+    drawParticipants();
   });
   mount();
   void loadStories();

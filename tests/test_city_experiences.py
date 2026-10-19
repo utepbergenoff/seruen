@@ -101,6 +101,60 @@ def test_meeting_provider_failure_is_honest_and_not_synthetic(api, monkeypatch):
     assert result.status_code == 503 and result.json()["error"]["code"] == "twogis_unavailable"
 
 
+@pytest.mark.parametrize("catalog_result", ["denied", "empty", "ineligible"])
+def test_auto_meeting_falls_back_to_local_with_the_same_constraints(api, monkeypatch, catalog_result):
+    from backend.places import PlacesError
+
+    planner = api.app.state.planner
+    original_pool = planner.pool
+    calls = []
+
+    async def catalogue(req, destination):
+        calls.append(req.source)
+        if req.source == "local":
+            return await original_pool(req, destination)
+        if catalog_result == "denied":
+            raise PlacesError("twogis_access_denied", 503)
+        return ([planner.local("team_paid")] if catalog_result == "ineligible" else []), "2gis"
+
+    monkeypatch.setattr(planner, "pool", catalogue)
+    data = meeting()
+    data["request"]["source"] = "auto"
+    data["request"]["preferences"] = {"expense_mode": "free_only", "max_distance_m": 200}
+    assert post(api, "/meet/search", data)["items"] == []  # Too far for B, even with fallback.
+    data["second_location"] = ASK["location"]
+    result = post(api, "/meet/search", data)
+    assert result["source"] == "local" and "local_catalog_fallback" in result["warning_codes"]
+    assert [p["poi_id"] for p in result["items"]] == ["team_coffee"]
+    assert calls == ["auto", "local", "auto", "local"]
+
+
+@pytest.mark.parametrize("denied", [True, False])
+def test_explicit_2gis_meeting_does_not_silently_change_source(api, monkeypatch, denied):
+    from backend.places import PlacesError
+
+    async def catalogue(req, destination):
+        assert req.source == "2gis"
+        if denied:
+            raise PlacesError("twogis_access_denied", 503)
+        return [], "2gis"
+
+    monkeypatch.setattr(api.app.state.planner, "pool", catalogue)
+    data = meeting()
+    data["request"]["source"] = "2gis"
+    result = api.post("/meet/search", json=data)
+    assert result.status_code == (503 if denied else 200)
+    if not denied:
+        assert result.json()["source"] == "2gis"
+        assert "local_catalog_fallback" not in result.json()["warning_codes"]
+
+
+def test_meeting_rejects_silently_ignored_return_preference(api):
+    data = meeting()
+    data["request"]["finish_mode"] = "return"
+    assert api.post("/meet/search", json=data).status_code == 422
+
+
 def test_winter_has_indoor_stops_limits_every_leg_and_does_not_invent_weather(api):
     data = {"plan": plan(), "max_outdoor_min": 5}
     result = post(api, "/plans/winter", data)

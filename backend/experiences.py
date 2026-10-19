@@ -31,7 +31,7 @@ class MeetRequest(Model):
 
     @model_validator(mode="after")
     def no_unhandled_constraints(self):
-        if self.request.cursor or self.request.end:
+        if self.request.cursor or self.request.end or self.request.finish_mode in ("return", "destination"):
             raise ValueError("meeting_has_no_cursor_or_finish")
         return self
 
@@ -78,42 +78,58 @@ def register_experiences(app):
         pace = speed(req, intent, now)
         limit = min(payload.max_walk_min, req.preferences.max_walk_min or 60)
         reserve = planner.settings.airport_reserve_min if intent.before_flight else 5
+        warnings = ["estimated_walking_times", "check_crossings_and_hours", "no_return_trip"]
+        other_req = req.model_copy(update={"location": b})
+
+        def eligible(pool):
+            candidates, seen = [], set()
+            for poi in pool:
+                canonical = planner.features.canonical(poi.poi_id)
+                if canonical in seen:
+                    continue
+                seen.add(canonical)
+                point = Coords(lat=poi.lat, lon=poi.lon)
+                # Compare both people using the SAME model, never road routing for
+                # one person and a straight-line estimate for the other.
+                routes = [planner.router.estimate([p, point], pace) for p in (a, b)]
+                minutes = [r.minutes[0] for r in routes]
+                longest = max(minutes)
+                if longest > limit or longest + payload.stay_min + reserve > intent.time_budget_min:
+                    continue
+                meeting_at = now + timedelta(minutes=longest)
+                end = meeting_at + timedelta(minutes=payload.stay_min)
+                if any(planner.rejection(poi, r, intent, now + timedelta(minutes=m), end, m)
+                       for r, m in zip((req, other_req), minutes)):
+                    continue
+                candidates.append({"poi_id": poi.poi_id, "name": poi.name, "category": poi.category,
+                                   "coords": point.model_dump(), "walk_min": minutes,
+                                   "difference_min": abs(minutes[0]-minutes[1]), "max_walk_min": longest,
+                                   "meeting_at": meeting_at, "stay_min": payload.stay_min,
+                                   "open_status": open_status(poi, meeting_at),
+                                   "visit_condition": planner.features.condition(poi.poi_id, now.date(), poi),
+                                   "paths": [r.geometry for r in routes], "sources": poi.sources})
+            return candidates
+
         try:
-            pool, source = await planner.pool(req, b)
+            try:
+                pool, source = await planner.pool(req, b)
+            except PlacesError:
+                if req.source != "auto":
+                    raise
+                pool, source = await planner.pool(req.model_copy(update={"source": "local"}), b)
+                warnings.append("local_catalog_fallback")
+            candidates = eligible(pool)
+            if not candidates and req.source == "auto" and source == "2gis":
+                pool, source = await planner.pool(req.model_copy(update={"source": "local"}), b)
+                candidates = eligible(pool)
+                warnings.append("local_catalog_fallback")
         except PlacesError as exc:
             raise PlanError(exc.code, exc.status) from None
-        candidates, seen = [], set()
-        other_req = req.model_copy(update={"location": b})
-        for poi in pool:
-            canonical = planner.features.canonical(poi.poi_id)
-            if canonical in seen:
-                continue
-            seen.add(canonical)
-            point = Coords(lat=poi.lat, lon=poi.lon)
-            # Deliberately compare both people using the SAME model, rather than mix an
-            # OSRM distance for one with a straight-line fallback for the other.
-            routes = [planner.router.estimate([p, point], pace) for p in (a, b)]
-            minutes = [r.minutes[0] for r in routes]
-            longest = max(minutes)
-            if longest > limit or longest + payload.stay_min + reserve > intent.time_budget_min:
-                continue
-            meeting_at = now + timedelta(minutes=longest)
-            end = meeting_at + timedelta(minutes=payload.stay_min)
-            if any(planner.rejection(poi, r, intent, now + timedelta(minutes=m), end, m)
-                   for r, m in zip((req, other_req), minutes)):
-                continue
-            candidates.append({"poi_id": poi.poi_id, "name": poi.name, "category": poi.category,
-                               "coords": point.model_dump(), "walk_min": minutes,
-                               "difference_min": abs(minutes[0]-minutes[1]), "max_walk_min": longest,
-                               "meeting_at": meeting_at, "stay_min": payload.stay_min,
-                               "open_status": open_status(poi, meeting_at),
-                               "visit_condition": planner.features.condition(poi.poi_id, now.date(), poi),
-                               "paths": [r.geometry for r in routes], "sources": poi.sources})
         candidates.sort(key=lambda p: (p["max_walk_min"], p["difference_min"], sum(p["walk_min"]), p["poi_id"]))
         return {"status": "ok" if candidates else "no_matches", "items": candidates[:3],
                 "ranking": "minimize_longest_walk_then_difference", "source": source,
                 "routing_source": "distance_estimate", "includes_return": False,
-                "warning_codes": ["estimated_walking_times", "check_crossings_and_hours", "no_return_trip"],
+                "warning_codes": warnings,
                 "data_kind": planner.settings.data_kind}
 
     @app.post("/plans/winter", response_model=PlanResponse)
