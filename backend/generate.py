@@ -26,6 +26,8 @@ what_to_do <=35 words. Use the requested language (ru/kk/en). Stay duration must
 candidate's supplied min_stay/max_stay. Explain using only supplied facts; label suggestions as ideas.
 Respect activity_hint when present: a cinema is not a museum or exhibition. If visit duration is
 unknown (film, performance, event), do not promise attending it within a short visit budget.
+For cinemas/theatres, suggest checking the schedule and full duration before choosing a screening;
+do not suggest watching a film or performance within the generic visit time.
 Do not use category assumptions as evidence for facilities. Missing facilities are unknown.
 Prefer a concrete reason tied to the request and a useful next action. No generic praise, superlatives,
 claims about crowds or free seats, or guarantees. Your why and what_to_do WILL be shown to the user.

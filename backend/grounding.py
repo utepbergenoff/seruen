@@ -95,6 +95,13 @@ def draft_failure(draft, hit, request, intent, features=None):
         return "internal_label"
     known = confirmed_tags(hit.poi)
     uncertain = r"уточн|провер|не подтверж|неизвест|не гаран|\bcheck\b|\bask\b|unconfirm|unknown|нақтыла|тексер|расталма|белгісіз"
+    # A short stop at a cinema/theatre is not enough evidence that a complete
+    # screening or performance fits. An "idea" label must not bypass this.
+    todo = draft.what_to_do.casefold()
+    if (activity(hit.poi) in {"cinema", "theatre"}
+            and re.search(r"фильм|сеанс|спектак|кинопоказ|\bfilm\b|\bmovie\b|screening|performance|қойылым", todo)
+            and not re.search(uncertain, todo)):
+        return "unconfirmed_program"
     for clause in re.split(r"[.!?;]", text):
         for tag, pattern in FACILITIES.items():
             if tag not in known and re.search(pattern, clause) and not re.search(uncertain, clause):
