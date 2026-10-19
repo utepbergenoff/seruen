@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 from .activities import outdoor_walk_place
 from .discovery import ENDPOINT, QUERIES, search_intent, to_poi
 from .feature_data import apply_feedback, relaxation_options
-from .geo import ALMATY, haversine, in_astana, speed, target_time
+from .geo import ALMATY, haversine, in_astana, speed, target_time, visit_minutes
 from .hours import open_status, schedule_open
 from .intent import rule_intent
 from .places import PlacesError
@@ -17,9 +17,10 @@ from .safety import message, safety_notes
 from .schemas import Coords, Location
 from .twogis import FIELDS, IDENTIFIER
 
-STAY = {"coffee": 20, "food": 30, "park": 20, "kids": 25, "culture": 30, "viewpoint": 15,
-        "shopping": 20, "sport": 25, "night": 30, "unusual": 20, "library": 30, "cowork": 40}
 TEXT = {
+    "nearby_indoor": ("Место в помещении находится в пределах точности стартовой точки. Показана оценка перехода, а не путь по этажам: уточните вход и этаж в карточке места.",
+                      "The indoor venue is within the start point’s location uncertainty. This is a transfer estimate, not floor navigation: check its entrance and floor.",
+                      "Ғимарат ішіндегі орын бастапқы нүктенің дәлдік шегінде. Бұл қабаттар бойынша жол емес, өту уақытының бағасы: кіреберіс пен қабатты тексеріңіз."),
     "changed": ("План пересчитан по оставшемуся времени; выполненные и пропущенные места исключены.",
                 "The plan uses remaining time and excludes completed and skipped places.",
                 "Жоспар қалған уақытқа сай жаңартылды; барған және өткізіп жіберген орындар алынып тасталды."),
@@ -198,17 +199,24 @@ class Planner:
             # A verified explicit place ID is sufficient intent for building a route.
             # Unsafe requests and points outside Astana still refuse normally.
             refusal = None
-        source_error, candidates = None, []
+        source_error, candidates, resolved_finish = None, [], None
         if refusal:
             notes.append(message(refusal, intent.lang))
         else:
             try:
+                if payload.finish_poi_id:
+                    resolved_finish = await self.resolve(payload.finish_poi_id, req)
+                    if not in_astana(resolved_finish.lat, resolved_finish.lon):
+                        raise PlanError("outside_astana")
+                    # Exact coordinates come only from a verified public venue, never user input.
+                    finish = Location(lat=resolved_finish.lat, lon=resolved_finish.lon, source="preset").model_copy(
+                        update={"lat":resolved_finish.lat, "lon":resolved_finish.lon})
                 if payload.stop_ids:
                     for pid in payload.stop_ids:
                         if self.features.canonical(pid) in {self.features.canonical(x) for x in combined}:
                             excluded.append(PlanExclusion(poi_id=pid, reason="completed_or_skipped"))
                             continue
-                        candidates.append(await self.resolve(pid, req))
+                        candidates.append(resolved_finish if resolved_finish and pid == resolved_finish.poi_id else await self.resolve(pid, req))
                     if any(p.poi_id.startswith("2gis_") for p in candidates):
                         source = "2gis"
                 else:
@@ -235,7 +243,7 @@ class Planner:
             seen.add(canonical)
             if len(chosen) >= payload.max_stops:
                 break
-            stay = 5 if poi.poi_id in self.features.comfort else STAY.get(poi.category, 20)
+            stay = 5 if poi.poi_id in self.features.comfort else visit_minutes(poi.category, available)
             trial = [*chosen, (poi, stay)]
             est = self.router.estimate([req.location, *[Coords(lat=p.lat, lon=p.lon) for p, _ in trial], finish], walking_speed)
             arrival = now + timedelta(minutes=sum(est.minutes[:-1]) + sum(s for _, s in chosen))
@@ -252,7 +260,14 @@ class Planner:
         # Two bounded calls maximum: initial selected route, one repair after dropping invalid stops.
         for attempt in range(2):
             points = [req.location, *[Coords(lat=p.lat, lon=p.lon) for p, _ in chosen], finish]
-            routed = (self.router.estimate(points, walking_speed) if refusal or source_error
+            # Street snapping cannot resolve a nearby indoor venue within a 100 m
+            # privacy-rounded start point. Do not send users on an artificial street loop.
+            # This is explicitly an estimate, never a claim of a shared building or accessible passage.
+            nearby_indoor = (len(chosen) == 1 and chosen[0][0].indoor
+                             and all(haversine(a.lat,a.lon,b.lat,b.lon) <= min(100, req.location.precision_m)
+                                     for a,b in zip(points,points[1:])))
+            routed = (self.router.estimate(points, walking_speed, "nearby_indoor_estimate") if nearby_indoor
+                      else self.router.estimate(points, walking_speed) if refusal or source_error
                       else await self.router.route(points, walking_speed))
             cursor, invalid = now, []
             for i, (poi, stay) in enumerate(chosen):
@@ -313,6 +328,8 @@ class Planner:
             status = "unavailable"
         if refusal:
             status = "refused"
+        if routed.error == "nearby_indoor_estimate":
+            notes.append(text("nearby_indoor", intent.lang))
         warning_codes = ["estimated_arrival", "plan_not_navigation"]
         if routed.source == "distance_estimate":
             warning_codes.append("street_route_unavailable")
@@ -321,7 +338,7 @@ class Planner:
         if not fits:
             warning_codes.append("do_not_start_plan")
         state = PlanState(created_at=datetime.now(timezone.utc), origin=origin, finish_mode=payload.finish_mode,
-                          finish=finish, remaining_ids=[p.poi_id for p in stops], completed_ids=payload.completed_ids,
+                          finish=finish, finish_poi_id=payload.finish_poi_id, remaining_ids=[p.poi_id for p in stops], completed_ids=payload.completed_ids,
                           skipped_ids=payload.skipped_ids, preferences=prefs,
                           exclude_categories=intent.exclude_categories, companions=intent.companions,
                           accessibility=req.context.accessibility, reserve_min=reserve)
@@ -384,7 +401,7 @@ class Planner:
         if payload.reason in ("cold", "closed", "busy"):
             remaining = []  # Request a replacement under preserved exclusions and current preferences.
         result = await self.build(PlanRequest(request=req, origin=state.origin,
-                                              finish_mode=state.finish_mode, destination=state.finish,
+                                              finish_mode=state.finish_mode, destination=state.finish, finish_poi_id=state.finish_poi_id,
                                               stop_ids=remaining, completed_ids=completed, skipped_ids=skipped,
                                               reserve_min=reserve, max_stops=5), use_current_time=True)
         # A fitting return leg without stops is not a replacement walking plan.
@@ -460,7 +477,7 @@ class Planner:
         req.preferences.preferred_categories = []
         required = [pause_id, *remaining]
         result = await self.build(PlanRequest(request=req, origin=state.origin,
-            finish_mode=state.finish_mode, destination=state.finish, stop_ids=required,
+            finish_mode=state.finish_mode, destination=state.finish, finish_poi_id=state.finish_poi_id, stop_ids=required,
             completed_ids=completed, skipped_ids=skipped, reserve_min=reserve, max_stops=len(required)),
             use_current_time=True)
         if (not result.fits or [p.poi_id for p in result.stops] != required
@@ -489,7 +506,7 @@ class Planner:
         if not payload.saved.stops:
             raise PlanError("empty_saved_plan")
         finish = payload.saved.finish or payload.request.location
-        return await self.build(PlanRequest(request=payload.request, finish_mode="destination", destination=finish,
+        return await self.build(PlanRequest(request=payload.request, finish_mode="destination", destination=finish, finish_poi_id=payload.saved.finish_poi_id,
                                             stop_ids=[s.poi_id for s in payload.saved.stops],
                                             reserve_min=payload.reserve_min, max_stops=5))
 
@@ -550,6 +567,7 @@ class Planner:
                            stops=stops if valid else [], omitted_ids=omitted, contains_full_route=complete,
                            budget=result.budget if complete else None,
                            origin=result.state.origin if complete else None, finish=result.state.finish if complete else None,
+                           finish_poi_id=result.state.finish_poi_id if complete else None,
                            warning_codes=["snapshot_not_current", "offline_map_not_included",
                                           *(["restricted_content_omitted"] if omitted else [])],
                            notes=[text("offline", lang)])

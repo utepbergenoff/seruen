@@ -26,7 +26,7 @@ test('starting the selected walk removes suggestion lines but keeps all place ma
   assert.equal(routes(b).length,FX.recommend_normal.recommendations.length);
   const markers=Object.values(b.w.SeruenApp.markers);
   b.w.SeruenApp.markers[selected.poi_id].fire('click');
-  b.click('#startSelectedWalk');b.click('#routeFinishConfirm');await settle();
+  b.click('#startSelectedWalk');await settle();
   assert.equal(routes(b).length,1);assert.equal(routes(b)[0].options.weight,5);
   assert.deepEqual(b.builds[0].stop_ids,[selected.poi_id]);
   assert.deepEqual(clone(routes(b)[0].coords),plan.geometry.map(([lon,lat])=>[lat,lon]));
@@ -49,9 +49,9 @@ test('language, new results and failed replan cannot bring alternatives back dur
 });
 
 test('finish confirmation replaces preview and keeps only the chosen route after starting',async t=>{
- const b=await boot(t,{...opts,build:planFor(FX.recommend_normal.recommendations)});await search(b);
+ const b=await boot(t,{...opts,build:planFor([FX.recommend_normal.recommendations[0]])});await search(b);
  assert.equal(b.w.document.querySelector('[data-plan-preview]'),null);
- b.click('#startWalkBtn');assert.equal(b.builds.length,0);b.click('#routeFinishConfirm');await settle();
+ b.click('#startWalkBtn');assert.equal(b.builds.length,0);await settle();
  assert.equal(routes(b).length,1);assert.equal(routes(b)[0].options.weight,5);
 });
 

@@ -219,3 +219,11 @@ SW v25: быстрый ответ браузера применяется сра
 ## Одна активная линия — 19.10.2026
 
 SW v26: при начале прогулки пунктирные связи с рекомендациями скрываются отдельным слоем; маркеры и список мест сохраняются. Закрытие панели, смена языка, новые результаты и пересчёт не возвращают этот слой. После явного «Закончить» он снова показывает актуальные рекомендации. При старте также очищаются линии превью/встречи и отменяется применение их запоздавших ответов. Геометрия и обозначение точности активного маршрута не меняются. Публикуется весь frontend; обновление Render не требуется.
+
+## 2026-10-19: context finish and deterministic ranking
+
+`/health.features.finish_preferences=1` enables `RecommendRequest.finish_mode` (`place|return|destination`). `place` leaves the person at each recommended venue; `return` includes the return leg; `destination` requires `end`. Omitted field retains previous behavior. `place/return` with `end` is rejected as contradictory.
+
+`PlanRequest.finish_poi_id`, `PlanState.finish_poi_id`, `OfflinePlan.finish_poi_id` are optional. For staying at a selected place, send plan `finish_mode=destination`, `destination` and its verified ID. The server resolves exact public POI coordinates instead of using rounded private coordinates as the venue's finish. Retain the ID in replans/export requests. Only a complete permitted offline route exports it.
+
+Recommendation order/durations now come from deterministic rules; `ai_reviewed` identifies a validated Gemini draft, while `selection_source=rules`. Shared time formula, UI behavior, backward compatibility and limits: [context_map_release.md](context_map_release.md).

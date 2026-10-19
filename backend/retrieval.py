@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from .activities import outdoor_walk_place
 from .embeddings import Embeddings, poi_text, tokenize
-from .geo import default_stay, haversine, radius_for, speed, walk_minutes
+from .geo import finish_preference, haversine, search_radius, speed, visit_minutes, walk_minutes
 from .hours import open_status
 from .loader import canonical_name
 from .schemas import Candidate, OpenStatus, POI
@@ -64,15 +64,11 @@ class Retriever:
         return [0.5 * b + 0.5 * float(e) for b, e in zip(bm25, similarities)]
 
     def search(self, request, intent, now, airport_reserve=60, diversify=True):
-        reserve = min(airport_reserve, intent.time_budget_min) if intent.before_flight else 0
+        reserve = min(airport_reserve, intent.time_budget_min) if intent.before_flight else 5
         available = intent.time_budget_min - reserve
-        stay = default_stay(available)
         walking_speed = speed(request, intent, now)
         night = now.hour >= 22 or now.hour < 6
-        radius = radius_for(available, walking_speed, night)
-        if request.end:
-            # A one-way visit can lie outside the old round-trip circle.
-            radius = min(1000 if night else 5000, 2 * radius)
+        radius = search_radius(request, intent, now, reserve)
         weather = request.context.weather
         severe = weather is not None and (weather.temp_c <= -15 or weather.wind_ms >= 10)
         if severe:
@@ -98,10 +94,11 @@ class Retriever:
                 inferred = set(tokenize(" ".join(p.tags_inferred)))
                 matched = sorted(set(intent.tags) & tags)
                 reason = None
-                to_end = walk_minutes(haversine(p.lat, p.lon, request.end.lat, request.end.lon), walking_speed) if request.end else None
+                to_end = walk_minutes(haversine(p.lat, p.lon, request.end.lat, request.end.lon), walking_speed) if request.end else (0 if finish_preference(request) == "place" else None)
+                stay = visit_minutes(p.category, intent.time_budget_min)
                 final_walk = walk if to_end is None else to_end
                 chosen_stay = min(stay, available - walk - final_walk)
-                min_stay = max(1, math.ceil(stay * 0.7)) if expanded else stay
+                min_stay = stay  # Widen discovery, never silently shorten the visit to make it fit.
                 feature_reason = self.features.constraint(p, request.preferences, walk, now.date()) if self.features else None
                 if feature_reason:
                     reason = feature_reason

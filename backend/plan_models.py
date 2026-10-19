@@ -18,6 +18,7 @@ class PlanState(Model):
     origin: Location
     finish_mode: Literal["return", "destination"]
     finish: Location
+    finish_poi_id: Id | None = None
     remaining_ids: list[Id] = Field(default_factory=list, max_length=5)
     completed_ids: list[Id] = Field(default_factory=list, max_length=200)
     skipped_ids: list[Id] = Field(default_factory=list, max_length=200)
@@ -32,6 +33,7 @@ class PlanRequest(Model):
     request: RecommendRequest
     finish_mode: Literal["return", "destination"] = "return"
     destination: Location | None = None
+    finish_poi_id: Id | None = None
     origin: Location | None = None
     stop_ids: list[Id] = Field(default_factory=list, max_length=5)
     completed_ids: list[Id] = Field(default_factory=list, max_length=200)
@@ -41,6 +43,8 @@ class PlanRequest(Model):
 
     @model_validator(mode="after")
     def coherent(self):
+        if self.finish_poi_id and self.finish_mode != "destination":
+            raise ValueError("finish_poi_requires_destination")
         if self.finish_mode == "destination" and self.destination is None:
             raise ValueError("destination_required")
         if self.request.cursor:
@@ -187,6 +191,7 @@ class OfflinePlan(Model):
     budget: PlanBudget | None = None
     origin: Location | None = None
     finish: Location | None = None
+    finish_poi_id: Id | None = None
     warning_codes: list[str] = Field(max_length=20)
     notes: list[str] = Field(max_length=20)
 

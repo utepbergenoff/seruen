@@ -373,13 +373,15 @@ test('impossible route shows the reason and "allow more time" re-asks with that 
 });
 
 test('save a walk, reopen it from my places with its date and the stale warning', async t => {
-  const b = await boot(t, withFeatures); await settle(); b.click('#goBtn'); await tick();
+  const single=JSON.parse(JSON.stringify(FX.build_ok)); single.stops=single.stops.slice(0,1);
+  const exported=JSON.parse(JSON.stringify(withFeatures.export)); exported.stops=exported.stops.slice(0,1);
+  const b = await boot(t, {...withFeatures,build:single,export:exported}); await settle(); b.click('#goBtn'); await tick();
   const recommendations = FX.build_ok.stops.map((s,i) => ({...FX.recommend_normal.recommendations[i], ...s}));
   b.requests[0].resolve(json({...FX.recommend_normal, recommendations})); await settle();
-  b.click('#saveWalkBtn');b.click('#routeFinishConfirm'); await settle();
+  b.click('#saveWalkBtn'); await settle();
   assert.match(b.w.document.querySelector('#saveWalkMsg').textContent, /сохранена|не даёт сохранять/);  // jsdom has no IndexedDB
   const walks = await b.w.SeruenStore.allWalks();
-  assert.equal(walks.length, 1); assert.equal(walks[0].version, 2); assert.equal(walks[0].stops.length, 2);
+  assert.equal(walks.length, 1); assert.equal(walks[0].version, 2); assert.equal(walks[0].stops.length, 1);
   assert.equal('photos' in walks[0].stops[0], false);
   b.click('#mineBtn'); await settle(); b.click('#mine [data-tab="walks"]'); await settle();
   b.click('#mine [data-walk-open]'); await settle();

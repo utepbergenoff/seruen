@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from .fallback import drafts
 from .feature_data import apply_feedback
 from .generate import AIError, validate_drafts
-from .geo import haversine, in_astana, radius_for, speed, target_time
+from .geo import haversine, in_astana, search_radius, speed, target_time
 from .hours import open_status
 from .intent import rule_intent
 from .loader import Dataset
@@ -194,7 +194,8 @@ def to_poi(item, request, radius):
                rating=rating, rating_count=count, popularity=(rating or 0)/5,
                last_checked=datetime.now(timezone.utc).date(),
                kid_friendly=bool({"kids", "park"} & set(categories)), adult_only="night" in categories,
-               indoor=category in ("coffee", "food", "library", "cowork", "shopping", "night"))
+               indoor=category in ("coffee", "food", "library", "cowork", "shopping", "night") or bool(
+                   category == "kids" and re.search(r"игров\w*\s+(?:зал|комнат)|indoor\s+play", rubrics, re.I)))
 
 
 class Discovery:
@@ -277,7 +278,7 @@ class Discovery:
                     generated = cached[1]
                 else:
                     async with asyncio.timeout(settings.ai_timeout_s):
-                        generated = await self.service.provider.generate(request, intent, hits)
+                        generated = await self.service.provider.generate(request, intent, hits[:3])
                     self.ai_cache[cache_key] = (time.monotonic(), generated)
                     while len(self.ai_cache) > 64:
                         self.ai_cache.popitem(last=False)
@@ -316,11 +317,8 @@ class Discovery:
             intent.categories.append("food")
         now = target_time(request, intent, current)
         msg = MESSAGES[intent.lang]
-        reserve = min(self.service.settings.airport_reserve_min, intent.time_budget_min) if intent.before_flight else 0
-        radius = min(5000, radius_for(intent.time_budget_min - reserve, speed(request, intent, now),
-                                     now.hour >= 22 or now.hour < 6) * 1.5)
-        if request.end:
-            radius = min(5000, radius * 2)
+        reserve = min(self.service.settings.airport_reserve_min, intent.time_budget_min) if intent.before_flight else 5
+        radius = min(5000, search_radius(request, intent, now, reserve) * 1.5)
         if request.preferences.max_distance_m is not None:
             radius = min(radius, request.preferences.max_distance_m)
         empty = SearchResult([], [], radius, False, 0, reserve, "2gis")

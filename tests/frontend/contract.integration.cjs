@@ -27,7 +27,7 @@ test('all eight features use real server shapes and preserve offline/privacy bou
   assert.match($('.rec').textContent,/Бесплатно/);
   assert.ok(w.SeruenApp.state.last.recommendations[0].atmosphere_match.matched_features.length);
 
-  b.click('#startWalkBtn');b.click('#routeFinishConfirm'); await until(()=>w.SeruenFeatures.walk?.plan?.server);
+  b.click('#startWalkBtn'); await until(()=>w.SeruenFeatures.walk?.plan?.server);
   assert.ok(w.SeruenFeatures.walk.plan.server.fits);
   b.click('#walk [data-ch="tired"]'); await until(()=>calls.some(c=>c.path==='/plans/recalculate'));
   await until(()=>!$('#walk .loading'));

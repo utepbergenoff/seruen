@@ -22,7 +22,7 @@ async function boot(t, opts = {}) {
   const map={setView(){return this;},setMaxZoom(z){this.maxZoom=z;return this;},on(){return this;},getZoom(){return 15;},invalidateSize(){},fitBounds(){},removeLayer(l){layers.delete(l);}};
   const events=()=>{const handlers={};return {on(e,cb){handlers[e]=cb;return this;},fire(e,payload={}){handlers[e]?.(payload);return this;}};};
   w.L={map:()=>map,tileLayer:(url,options)=>{const l={url,options,...events(),addTo(){layers.add(this);return this;}};tiles.push(l);return l;},divIcon:x=>x,
-    marker:(coords,options)=>{const p={coords,options,...events(),addTo(target){this.target=target;if(target===map)layers.add(this);else target.addLayer?.(this);return this;},bindTooltip(){return this;},bindPopup(){return this;},getLatLng(){return coords;},openPopup(){},setLatLng(){},setTooltipContent(){}};pins.push(p);return p;},
+    marker:(coords,options)=>{const p={coords,options,...events(),addTo(target){this.target=target;if(target===map)layers.add(this);else target.addLayer?.(this);return this;},bindTooltip(){return this;},bindPopup(){return this;},getLatLng(){return {lat:this.coords[0],lng:this.coords[1]};},openPopup(){},setLatLng(){},setTooltipContent(){}};pins.push(p);return p;},
     polyline:(coords,options)=>{const l={coords,options,addTo(target){this.target=target;if(target===map)layers.add(this);else target.addLayer?.(this);return this;}};lines.push(l);return l;},
     layerGroup:()=>({members:new Set(),addLayer(l){this.members.add(l);return this;},addTo(){layers.add(this);return this;},clearLayers(){this.members.clear();return this;}}),latLngBounds:x=>x,
     Control:{extend:cfg=>class{addTo(){w.document.body.appendChild(cfg.onAdd());}}},
@@ -52,7 +52,7 @@ async function boot(t, opts = {}) {
     if(opts.experiences && ['/city/history','/meet/search','/plans/winter'].some(p=>url.endsWith(p))) return opts.experiences(url,JSON.parse(options.body));
     throw Error('Unexpected request '+url);
   };
-  for(const file of ['theme.js','storage.js','i18n.js','route.js','app.js','features.js','experiences-i18n.js','experiences.js']) w.eval(fs.readFileSync('frontend/'+file,'utf8'));
+  for(const file of ['theme.js','storage.js','i18n.js','route.js','app.js','features.js','experiences-i18n.js','experiences.js','layout.js']) w.eval(fs.readFileSync('frontend/'+file,'utf8'));
   await tick(); await tick();
   return {w,requests,gps,gis,photos,replans,comforts,builds,tiles,lines,pins,layers,media,click:s=>w.document.querySelector(s).click()};
 }

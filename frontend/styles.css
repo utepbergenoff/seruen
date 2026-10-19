@@ -619,3 +619,59 @@ body.route-setup-open #scenariosBtn, body.route-setup-open #scenariosMenu {displ
 body.route-review-open #welcome, body.route-review-open #askForm,
 body.route-review-open #scenarioStrip, body.route-review-open #scenariosBtn,
 body.route-review-open #scenariosMenu, body.route-review-open #results {display:none !important;}
+
+/* Visible context, one finish selector, adaptable workspace. */
+.ctx { background:var(--ground); border:1px solid var(--line); border-radius:12px; padding:12px; }
+.ctx h3 { font-size:14px; margin:0 0 10px; color:var(--ink); }
+.ctx-grid { margin-top:0; gap:10px; grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+.ctx-grid > *, .ctx-grid select { min-width:0; }
+.ctx-grid input[type=range] { min-width:60px; width:65px; }
+.ctx-grid .finish-field { grid-column:1/-1; }
+.finish-field > select { width:100%; margin-top:4px; }
+.finish-pick { margin-top:8px; }
+.finish-pick select { flex:1; width:120px; }
+.context-submit { width:100%; margin-top:12px; min-height:46px; }
+.context-changed { margin-bottom:0; color:var(--sky-deep); }
+.quick-ideas summary { color:var(--muted); cursor:pointer; font-size:13px; padding:4px 0 10px; }
+.ask input { width:100%; }
+#askForm > h2 { margin-bottom:10px; }
+.welcome { min-height:110px; max-height:145px; }
+.map-pick-hint { position:absolute; left:50%; bottom:24px; transform:translateX(-50%); width:max-content; max-width:85%; z-index:850; background:var(--surface); color:var(--ink); border:2px solid var(--sky-deep); padding:12px 16px; border-radius:12px; box-shadow:var(--shadow); pointer-events:none; }
+.picking-finish { cursor:crosshair; }
+.finish-label { background:var(--surface); color:var(--ink); border-color:var(--line); font-weight:700; }
+.map-layout-actions { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.panel-divider { display:none; }
+@media(min-width:861px) {
+  .layout { grid-template-columns:var(--panel-width,440px) 8px minmax(0,1fr); grid-template-areas:"panel divider map"; }
+  .layout.panel-right { grid-template-columns:minmax(0,1fr) 8px var(--panel-width,440px); grid-template-areas:"map divider panel"; }
+  .panel-divider { display:block; grid-area:divider; cursor:col-resize; background:var(--ground); touch-action:none; position:relative; }
+  .panel-divider::after { content:""; position:absolute; top:40%; bottom:40%; left:2px; right:2px; border-radius:6px; background:var(--line); }
+  .panel-divider:hover::after,.panel-divider:focus-visible::after { background:var(--sky-deep); }
+  .panel-divider:focus-visible { outline:2px solid var(--sky-deep); outline-offset:-2px; }
+}
+body.resizing-panel { user-select:none; cursor:col-resize; }
+body.map-expanded { overflow:hidden; }
+body.map-expanded .map-wrap { position:fixed; inset:0; z-index:5000; height:100dvh; border-radius:0; }
+body.map-expanded #panelSide { display:none; }
+@media(max-width:860px) { #panelSide { display:none; } .ctx-grid { grid-template-columns:minmax(0,1fr) minmax(0,1fr); } }
+@media(max-width:380px) { .ctx-grid { grid-template-columns:minmax(0,1fr); } }
+
+.welcome { flex-shrink:0; min-height:64px; max-height:none; }
+.welcome-text { padding:12px 18px; }
+.welcome h2 { font-size:17px; line-height:1.25; margin:0; text-wrap:balance; }
+.welcome p { display:none; }
+.ctx-grid .finish-field { grid-column:auto; min-width:0; }
+.finish-field:has(.finish-pick:not([hidden])) { grid-column:1/-1; }
+.finish-field > label { display:block; color:var(--muted); font-size:13px; }
+.context-more { margin-top:10px; font-size:13px; }
+.context-more > summary, #atmosphereOptions > summary { cursor:pointer; color:var(--sky-deep); font-size:13px; }
+.context-more .ctx-grid { margin-top:10px; }
+#privacyHint { font-size:11px; line-height:1.4; margin:8px 0; }
+#atmosphereOptions { margin-top:8px; }
+#atmosphereOptions:has(.chip-btn.on:not([data-mood=""]):not([data-atmos=""])) > summary { font-weight:700; }
+.ctx > .ctx-grid > label:first-child { min-height:64px; }
+#whenAt { width:100%; }
+
+.ctx-grid .finish-field { grid-column:1/-1; display:grid; grid-template-columns:auto minmax(0,1fr); gap:8px; align-items:center; }
+.finish-field > select { margin-top:0; }
+.finish-field .finish-pick { grid-column:1/-1; }

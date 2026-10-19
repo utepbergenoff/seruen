@@ -61,7 +61,7 @@ async def test_valid_ai_selection_cannot_invent_facilities_or_prices(settings, r
     response, _ = await service.recommend(req)
     assert response.mode == 'ai'
     chosen = response.recommendations[0]
-    assert chosen.selection_source == 'ai'
+    assert chosen.selection_source == 'rules' and chosen.ai_reviewed
     assert chosen.why_source == chosen.what_to_do_source == 'template'
     assert 'гарантированы' not in chosen.why and 'бесплатн' not in chosen.what_to_do
     assert chosen.time_to_spend_min < 480

@@ -12,7 +12,8 @@
       "atmosphere": 1,
       "plan_export": 1,
       "nearby_break": 1,
-      "on_route_breaks": 1
+      "on_route_breaks": 1,
+      "finish_preferences": 1
     },
     "feature_contract_version": 2
   },

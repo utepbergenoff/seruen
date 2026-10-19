@@ -36,15 +36,16 @@ def test_hybrid_index_and_stale_rejection(service, settings, tmp_path):
     assert Retriever(service.dataset, path).mode == "bm25"
 
 
-async def test_fr9_empty_radius_expands_without_overbudget(service, req):
-    # A single eligible point ~956m away: outside 865m, inside expanded radius.
+async def test_category_visit_time_does_not_artificially_exclude_a_fitting_nearby_park(service, req):
+    # A park ~956 m away fits 60 min: visit 20 + walk 34 + reserve 5.
+    # The former half-budget stay made the initial search circle too small.
     p = service.dataset.pois[3].model_copy(update={"lat": 51.0976, "lon": 71.417, "category": "park"})
     service.dataset.pois = [p]
     service.retriever = Retriever(service.dataset, ROOT / "data/index/missing.json")
     req.query = "прогулка"
     req.context.time_budget_min = 60
     response, _ = await service.recommend(req)
-    assert response.considered.radius_expanded
+    assert not response.considered.radius_expanded
     assert response.recommendations
     assert response.recommendations[0].budget_breakdown.total_min <= 60
 
@@ -117,6 +118,10 @@ class FakeGemini:
         return rules
 
     async def generate(self, request, intent, hits):
+        if self.behavior == "timeout":
+            await asyncio.sleep(1)
+        if self.behavior == "error":
+            raise RuntimeError("private secret provider message")
         d = Draft(
             poi_id=hits[0].poi.poi_id,
             why="Подходит по категории.",
@@ -163,7 +168,7 @@ async def test_single_ai_pick_is_filled_up_to_three_with_honest_sources(settings
     assert response.mode == "ai" and error == "none"
     assert len(recs) == min(3, len(search.hits)) >= 2
     assert recs[0].poi_id == search.hits[0].poi.poi_id
-    assert recs[0].selection_source == "ai"
+    assert recs[0].ai_reviewed and recs[0].selection_source == "rules"
     assert recs[0].why_source == recs[0].what_to_do_source == "template"
     assert all(r.selection_source == "rules" for r in recs[1:])
     assert all(r.why_source == r.what_to_do_source == "template" for r in recs[1:])

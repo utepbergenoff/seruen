@@ -82,7 +82,10 @@ class WalkingRouter:
                 # Include snapping uncertainty; never return less than direct distance.
                 offsets = sum(haversine(p.lat, p.lon, w["location"][1], w["location"][0])
                               for p, w in zip(points[i:i+2], waypoints[i:i+2]))
-                distances.append(math.ceil(max(straight, d + offsets)))
+                # A repeated venue/finish is the same place, not a trip to the street and back.
+                # OSRM snaps indoor POIs to a street; charging both offsets here made a
+                # zero-length finish leg take several minutes.
+                distances.append(0 if straight < 0.5 else math.ceil(max(straight, d + offsets)))
             geometry = route["geometry"]["coordinates"]
             if len(geometry) > 5000 or len(geometry) < 2 or any(
                 len(p) != 2 or not in_astana(p[1], p[0]) for p in geometry

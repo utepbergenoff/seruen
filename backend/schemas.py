@@ -126,6 +126,7 @@ class AtmosphereMatch(Model):
 class RecommendRequest(Correlated):
     location: Location
     end: Location | None = None
+    finish_mode: Literal["return", "place", "destination"] | None = None
     query: str = Field(default="", max_length=1000)
     context: Context = Field(default_factory=Context)
     source: Literal["auto", "local", "2gis"] = "auto"
@@ -135,6 +136,10 @@ class RecommendRequest(Correlated):
 
     @model_validator(mode="after")
     def feedback_capacity(self):
+        if self.finish_mode == "destination" and self.end is None:
+            raise ValueError("destination_required")
+        if self.finish_mode in ("return", "place") and self.end is not None:
+            raise ValueError("finish_conflict")
         if self.feedback and self.feedback.reason in ("different_place", "already_visited"):
             ids = (self.preferences.exclude_poi_ids if self.feedback.reason == "different_place"
                    else self.preferences.visited_poi_ids)
@@ -230,6 +235,7 @@ class Recommendation(Model):
     walk_min: int = Field(ge=0)
     why: str = Field(min_length=1)
     why_source: Literal["ai", "template"]
+    ai_reviewed: bool = False
     selection_source: Literal["ai", "rules"] = "rules"
     time_to_spend_min: int = Field(ge=1)
     what_to_do: str = Field(min_length=1)
@@ -364,7 +370,7 @@ class Health(Model):
     twogis: "TwoGisStatus | None" = None
     feature_contract_version: int = 2
     features: dict[str, int] = Field(default_factory=lambda: {
-        "replan": 1, "end_point": 1, "constraints": 1, "comfort": 1,
+        "replan": 1, "end_point": 1, "finish_preferences": 1, "constraints": 1, "comfort": 1,
         "cost": 1, "atmosphere": 1, "atmosphere_profiles": 1, "comfort_breaks": 1, "on_route_breaks": 1, "plan_export": 1, "nearby_break": 1,
         "city_history": 1, "meet_halfway": 1, "winter_plan": 1,
     })

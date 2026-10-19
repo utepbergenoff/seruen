@@ -22,7 +22,7 @@
     onMap: false, confirmClear: false, error: null};
   // F3/F5: what the person asked to avoid, shown above the answer with "Undo"
   let cons = {exclude_ids: [], max_distance_m: null, exclude_categories: [], no_spend: null};
-  let finish = null, picking = false, atmosphere = null, atmosExamples = [], comfortKinds = new Set(), comfortMsg = "";
+  let finishMode = "place", finish = null, picking = false, atmosphere = null, atmosExamples = [], comfortKinds = new Set(), comfortMsg = "";
   let atmosProfiles = [], atmosProfile = null, atmosStrict = false, atmosLoading = false, atmosFailed = false;
   let walk = null, walkVersion = 0, walkMsg = "", walkBusy = false, reqSeq = 0;
   const personal = L.layerGroup().addTo(map), comfortLayer = L.layerGroup().addTo(map), pauseLayer = L.layerGroup().addTo(map);
@@ -72,7 +72,9 @@
     if (c.no_spend) preferences.expense_mode = c.no_spend === "strict" ? "free_only" : "no_required_purchase";
     if (c.exclude_categories) out.context = {...body.context,
       exclude_categories: [...new Set([...(body.context?.exclude_categories || []), ...c.exclude_categories])]};
-    if (has("end_point") && finish) out.end = {lat: r3(finish.lat), lon: r3(finish.lon), precision_m: 100,
+    if (finishMode === "destination" && !finish) throw Object.assign(new Error("finish_required"), {userMessage: X().finishPickMissing});
+    if (has("finish_preferences")) out.finish_mode = finishMode;
+    if (has("end_point") && finishMode === "destination" && finish) out.end = {lat: r3(finish.lat), lon: r3(finish.lon), precision_m: 100,
       source: finish.source === "landmark" ? "preset" : finish.source || "map"};
     if (has("atmosphere") && atmosphere) preferences.atmosphere_example_id = atmosphere;
     if (has("atmosphere_profiles") && atmosProfile) {
@@ -181,7 +183,7 @@
     const x = X();
     if (!(d.recommendations || []).length) return "";
     let html = has("plan_export") ? `<div class="row walk-actions"><button type="button" class="btn" id="saveWalkBtn">${icon("save")} ${esc(x.saveWalk)}</button>
-      <button type="button" class="btn" id="startWalkBtn">${icon("play")} ${esc(x.startWalk)}</button>${ext.previewAction?.("results") || ""}</div><p class="src" id="saveWalkMsg" aria-live="polite"></p>` : "";
+      <button type="button" class="btn" id="startWalkBtn">${icon("play")} ${esc(fmt(x.startBest,{name:d.recommendations[0].name}))}</button>${ext.previewAction?.("results") || ""}</div><p class="src" id="saveWalkMsg" aria-live="polite"></p>` : "";
     if (has("comfort")) {
       const kinds = [["warm", "fire", x.kWarm], ["toilet", "toilet", x.kToilet], ["sit", "bench", x.kSit], ["water", "water", x.kWater], ["entrance", "door", x.kEntrance]];
       html += `<div class="card block comfort"><h3>${esc(x.comfort)}</h3><div class="row">${kinds.map(([k, ic, l]) =>
@@ -281,7 +283,7 @@
     lab.id = "noSpendField";
     lab.innerHTML = `<span>${esc(x.noSpend)}</span><select id="noSpend"><option value="">${esc(x.noSpendOff)}</option>
       <option value="lenient">${esc(x.noSpendLenient)}</option><option value="strict">${esc(x.noSpendStrict)}</option></select>`;
-    $(".ctx-grid").appendChild(lab);
+    $("#contextMoreGrid").appendChild(lab);
     $("#noSpend").addEventListener("change", (e) => { cons.no_spend = e.target.value || null; });
     syncSpend();
   }
@@ -297,38 +299,51 @@
   function renderFinish() {
     const box = $("#finishField"); if (!box) return;
     const x = X(), p = finish && finish.presetLabel ? finish.presetLabel : finish ? `${r3(finish.lat)}, ${r3(finish.lon)}` : "";
-    box.innerHTML = `<span class="lbl">${esc(x.finish)}</span>
-      <label class="check"><input type="radio" name="finishMode" value="back" ${finish ? "" : "checked"}> ${esc(x.finishBack)}</label>
-      <label class="check"><input type="radio" name="finishMode" value="other" ${finish || picking ? "checked" : ""}> ${esc(x.finishOther)}</label>
-      <div class="row finish-pick" ${finish || picking ? "" : "hidden"}>
-        <button type="button" class="btn small" id="pickFinish">${icon("finish")} ${esc(picking ? x.pickHint : x.pickOnMap)}</button>
-        <select id="finishPreset"><option value="">${esc(x.finishLandmark)}</option>${state.presets.map((q) =>
-          `<option value="${esc(q.id)}">${esc((q.label && (q.label[state.lang] || q.label.ru)) || q.name || q.id)}</option>`).join("")}</select>
-        ${finish ? `<span class="meta">${esc(fmt(x.finishSet, {p}))}</span> <button type="button" class="btn small" id="resetFinish">${esc(x.reset)}</button>` : ""}</div>`;
-    box.querySelectorAll('[name="finishMode"]').forEach((r) => r.addEventListener("change", () => {
-      if (r.value === "back") { finish = null; picking = false; drawFinish(); }
-      else picking = !finish;
-      renderFinish();
-    }));
-    const pf = $("#pickFinish"); if (pf) pf.addEventListener("click", () => { picking = true; renderFinish(); });
-    const fp = $("#finishPreset"); if (fp) fp.addEventListener("change", () => {
-      const q = state.presets.find((z) => z.id === fp.value);
-      if (q) { finish = {lat: q.lat, lon: q.lon, source: "landmark", presetLabel: fp.selectedOptions[0].textContent}; picking = false; drawFinish(); renderFinish(); }
-    });
-    const rf = $("#resetFinish"); if (rf) rf.addEventListener("click", () => { finish = null; picking = false; drawFinish(); renderFinish(); });
+    box.innerHTML = `<label for="finishMode">${esc(x.finishSummary)}</label>
+      <select id="finishMode"><option value="place">${esc(x.finishAtPlace)}</option><option value="return">${esc(x.finishReturn)}</option><option value="destination">${esc(x.finishCustom)}</option></select>
+      <div class="finish-pick" ${finishMode === "destination" ? "" : "hidden"}>
+        <div class="row"><button type="button" class="btn small" id="pickFinish">${icon("finish")} ${esc(picking ? x.pickHint : x.pickOnMap)}</button>
+        <select id="finishPreset" aria-label="${esc(x.finishLandmark)}"><option value="">${esc(x.finishLandmark)}</option>${state.presets.map(q =>
+          `<option value="${esc(q.id)}">${esc(A.presetName(q))}</option>`).join("")}</select></div>
+        <p class="meta" role="status">${esc(finish ? fmt(x.finishSet, {p}) : x.finishPickMissing)}</p></div>`;
+    $("#finishMode").value = finishMode;
+    $("#finishMode").onchange = e => {
+      finishMode = e.target.value; picking = false;
+      if (finishMode !== "destination") finish = null;
+      drawFinish(); renderFinish();
+    };
+    $("#pickFinish").onclick = () => { picking = true; renderFinish(); mapHint(); $("#map").scrollIntoView({block:"center",behavior:"smooth"}); $("#map").focus(); };
+    $("#finishPreset").onchange = e => {
+      const q = state.presets.find(z => z.id === e.target.value);
+      if (q) { finish = {lat:q.lat,lon:q.lon,source:"preset",presetLabel:A.presetName(q)}; picking = false; drawFinish(); renderFinish(); A.fitTo([[state.loc.lat,state.loc.lon],[finish.lat,finish.lon]]); }
+    };
+    mapHint();
   }
-  ext.onMapClick = (e) => {
+  function mapHint() {
+    let el = $("#finishMapHint");
+    if (!el) { el = document.createElement("p"); el.id="finishMapHint"; el.className="map-pick-hint"; el.setAttribute("role","status"); $(".map-wrap").appendChild(el); }
+    el.hidden=!picking; el.textContent=X().finishPickHint;
+    $("#map").classList.toggle("picking-finish",picking);
+  }
+  ext.onMapClick = e => {
     if (!picking) return false;
-    finish = {lat: e.latlng.lat, lon: e.latlng.lng, source: "map"}; picking = false;
+    A.freezeLocation();
+    finish = {lat:e.latlng.lat,lon:e.latlng.lng,source:"map"}; picking = false;
     drawFinish(); renderFinish();
+    $("#ctxBox").dispatchEvent(new Event("change", {bubbles:true}));
     return true;
   };
   ext.cancelMapPick = () => { picking = false; renderFinish(); };
   function drawFinish() {
     if (finishMarker) { map.removeLayer(finishMarker); finishMarker = null; }
-    if (!finish) return;
-    const fi = L.divIcon({className: "", iconSize: [30, 30], iconAnchor: [15, 15], html: `<div class="pin finish-pin">${icon("finish")}</div>`});
-    finishMarker = L.marker([finish.lat, finish.lon], {icon: fi, title: X().finish}).addTo(map);
+    if (!finish || finishMode !== "destination") return;
+    const fi = L.divIcon({className:"",iconSize:[34,34],iconAnchor:[17,17],html:`<div class="pin finish-pin">${icon("finish")}</div>`});
+    finishMarker = L.marker([finish.lat,finish.lon], {icon:fi,title:X().finishSummary,draggable:true,zIndexOffset:2000,keyboard:true}).addTo(map);
+    finishMarker.bindTooltip(X().finishSummary, {permanent:true,direction:"bottom",offset:[0,14],className:"finish-label"});
+    finishMarker.on("dragend", () => {
+      const point=finishMarker.getLatLng(); finish={lat:point.lat,lon:point.lng,source:"map"}; renderFinish();
+      $("#ctxBox").dispatchEvent(new Event("change",{bubbles:true}));
+    });
   }
 
   // ---------- F7: search by atmosphere ----------
@@ -337,7 +352,7 @@
     atmosLoading = true; atmosFailed = false;
     if (!$("#atmosField")) {
       const box = document.createElement("div"); box.id = "atmosField"; box.className = "atmos";
-      $(".ask").insertAdjacentElement("afterend", box);
+      $("#atmosphereOptions").appendChild(box);
     }
     renderAtmosphere();
     const results = await Promise.allSettled([
@@ -424,6 +439,7 @@
       companions: result.state.companions, accessibility: result.state.accessibility};
     delete request.feedback;
     const build = {request, finish_mode: result.state.finish_mode, destination: result.state.finish,
+      ...(result.state.finish_poi_id ? {finish_poi_id:result.state.finish_poi_id} : {}),
       origin: result.state.origin, stop_ids: result.stops.map(s => s.poi_id),
       completed_ids: result.state.completed_ids, skipped_ids: result.state.skipped_ids,
       reserve_min: result.budget.reserve_min, max_stops: 5};
@@ -438,55 +454,22 @@
   function usablePlan(result) {
     return result.fits && ["ok", "partial"].includes(result.status) && result.stops.length;
   }
-  // A visible, explicit finish choice shared by solo, meeting and landmark routes.
-  let setup = null;
-  function cancelSetup() {
-    if (!setup) return;
-    const old = setup; setup = null;
-    $("#routeSetup").hidden = true; $("#routeSetup").innerHTML = "";
-    document.body.classList.remove("route-setup-open");
-    old.resolve(null); old.focus?.focus();
+  // Context is the single source of truth; starting a walk never opens a second dialog.
+  function cancelSetup() { /* Kept for existing extension hooks. No modal state remains. */ }
+  async function chooseFinish(lastPlace) {
+    A.freezeLocation();
+    if (finishMode === "destination" && !finish) {
+      picking=true; renderFinish(); $("#ctxBox").scrollIntoView({block:"center",behavior:"smooth"}); $("#pickFinish").focus();
+      return null;
+    }
+    const dest=finishMode === "place" ? lastPlace.coords : finishMode === "destination" ? finish : null;
+    if (finishMode !== "return" && !dest) return null;
+    // Public venue coordinates stay exact. Only the user's custom point is rounded for privacy.
+    return {finish_mode:finishMode === "return" ? "return" : "destination",
+      ...(has("finish_preferences") && finishMode==="place" && lastPlace.poi_id ? {finish_poi_id:lastPlace.poi_id} : {}),
+      destination:dest ? {lat:finishMode==="place"?dest.lat:r3(dest.lat),lon:finishMode==="place"?dest.lon:r3(dest.lon),source:dest.source==="map"?"map":"preset"} : null,
+      label:finishMode==="return"?X().finishReturn:finishMode==="place"?lastPlace.name:(dest.presetLabel||`${r3(dest.lat)}, ${r3(dest.lon)}`)};
   }
-  function chooseFinish(lastPlace) {
-    cancelSetup(); A.freezeLocation();
-    return new Promise(resolve => {
-      setup = {resolve, lastPlace, mode: finish ? "custom" : "place", destination: finish, picking: false,
-        focus: document.activeElement};
-      document.body.classList.add("route-setup-open");
-      renderSetup(); $("#routeSetup").scrollIntoView({block:"start",behavior:"smooth"}); $("#routeSetupTitle").focus();
-    });
-  }
-  function renderSetup() {
-    if (!setup) return;
-    const x = X(), box = $("#routeSetup"), q = setup;
-    box.hidden = false;
-    box.innerHTML = `<h2 id="routeSetupTitle" tabindex="-1">${esc(x.finishQuestion)}</h2><p class="meta">${esc(x.finishExplain)}</p>
-      <fieldset class="finish-choices"><legend class="sr-only">${esc(x.finishQuestion)}</legend>
-        ${[["place",x.finishAtPlace,q.lastPlace?.name],["return",x.finishReturn,""],["custom",x.finishCustom,""]].map(([v,label,n]) =>
-          `<label><input type="radio" name="routeFinish" value="${v}"${q.mode===v?" checked":""}><span>${esc(label)}${n?`<small>${esc(n)}</small>`:""}</span></label>`).join("")}</fieldset>
-      <div${q.mode==="custom"?"":" hidden"}><select id="routeFinishPreset" aria-label="${esc(x.finishLandmark)}"><option value="">${esc(x.finishLandmark)}</option>
-        ${state.presets.map(p=>`<option value="${esc(p.id)}">${esc(A.presetName(p))}</option>`).join("")}</select>
-        <button type="button" class="btn" id="routeFinishMap">${esc(x.pickOnMap)}</button>
-        <p class="meta" role="status">${esc(q.picking?x.finishPickHint:q.destination?(q.destination.presetLabel||`${r3(q.destination.lat)}, ${r3(q.destination.lon)}`):x.finishPickMissing)}</p></div>
-      <div class="row"><button type="button" class="btn primary" id="routeFinishConfirm"${q.mode==="custom"&&!q.destination?" disabled":""}>${esc(x.finishBuild)}</button>
-        <button type="button" class="btn" id="routeFinishCancel">${esc(x.no)}</button></div>`;
-    box.querySelectorAll('[name="routeFinish"]').forEach(el=>el.onchange=()=>{q.mode=el.value;q.picking=false;renderSetup();});
-    $("#routeFinishMap").onclick=()=>{q.picking=true;renderSetup();$("#map").scrollIntoView({block:"center",behavior:"smooth"});};
-    $("#routeFinishPreset").onchange=e=>{const p=state.presets.find(p=>p.id===e.target.value);if(p){q.destination={lat:p.lat,lon:p.lon,source:"preset",presetLabel:A.presetName(p)};q.picking=false;renderSetup();}};
-    $("#routeFinishCancel").onclick=cancelSetup;
-    $("#routeFinishConfirm").onclick=()=>{
-      const dest=q.mode==="place"?q.lastPlace?.coords:q.mode==="custom"?q.destination:null;
-      if(q.mode!=="return"&&!dest) return;
-      const answer={finish_mode:q.mode==="return"?"return":"destination",destination:dest?{lat:r3(dest.lat),lon:r3(dest.lon),source:dest.source==="gps"?"gps":dest.source==="map"?"map":"preset"}:null,
-        label:q.mode==="return"?x.finishReturn:q.mode==="place"?q.lastPlace.name:(dest.presetLabel||`${r3(dest.lat)}, ${r3(dest.lon)}`)};
-      setup=null;box.hidden=true;box.innerHTML="";document.body.classList.remove("route-setup-open");q.resolve(answer);
-    };
-  }
-  const finishMapClick = ext.onMapClick;
-  ext.onMapClick = e => {
-    if(setup?.picking){setup.destination={lat:e.latlng.lat,lon:e.latlng.lng,source:"map"};setup.picking=false;renderSetup();$("#routeSetup").scrollIntoView({block:"start",behavior:"smooth"});return true;}
-    return finishMapClick?.(e)||false;
-  };
   function focusWalk(browse=false, search=false) {
     document.body.classList.toggle("walk-browse", !!walk && browse);
     document.body.classList.toggle("walk-search", !!walk && search);
@@ -495,8 +478,8 @@
   let buildVersion = 0;
   async function buildAnswer(d, saving, selectedId = state.selectedPlaceId) {
     const msg = selectedId ? $("#selectedWalkMsg") : $("#saveWalkMsg"), version = state.requestVersion;
-    const build = ++buildVersion;
-    const place = selectedId ? [...(d.recommendations||[]), ...(d.nearby_places||[]), ...(state.extraCands?.items||[])].find(p=>p.poi_id===selectedId) : d.recommendations.at(-1);
+    const build = ++buildVersion, contextVersion = state.contextVersion;
+    const place = selectedId ? [...(d.recommendations||[]), ...(d.nearby_places||[]), ...(state.extraCands?.items||[])].find(p=>p.poi_id===selectedId) : d.recommendations[0];
     if (!place) return;
     const pendingChoice = chooseFinish(place), locationVersion = state.locVersion;
     const choice = await pendingChoice;
@@ -506,13 +489,20 @@
     if (msg) msg.textContent = X().replanning;
     try {
       const request = JSON.parse(JSON.stringify(state.lastReq));
+      request.location = {lat:r3(state.loc.lat),lon:r3(state.loc.lon),precision_m:100,source:state.loc.source||"map"};
+      request.context = await A.context();
+      delete request.preferences; delete request.end; delete request.finish_mode;
+      Object.assign(request, ext.requestExtras(request));
+      if (contextVersion !== state.contextVersion || locationVersion !== state.locVersion || version !== state.requestVersion || build !== buildVersion) return;
       delete request.cursor; delete request.request_id;
       if (choice.destination) request.end = choice.destination; else delete request.end;
-      const payload = {request, stop_ids: selectedId ? [selectedId] : d.recommendations.map(r => r.poi_id), max_stops: selectedId ? 1 : 3,
-        finish_mode: choice.finish_mode, destination: choice.destination};
+      if (has("finish_preferences")) request.finish_mode = choice.finish_mode;
+      const payload = {request, stop_ids: [place.poi_id], max_stops: 1,
+        finish_mode: choice.finish_mode, destination: choice.destination,
+        ...(choice.finish_poi_id ? {finish_poi_id:choice.finish_poi_id} : {})};
       const result = await A.postJSON("/plans/build", payload, 40000);
-      if (version !== state.requestVersion || build !== buildVersion || selectedId !== state.selectedPlaceId) return;
-      if (!usablePlan(result) || payload.stop_ids.some(id=>!result.stops.some(s=>s.poi_id===id)) || (selectedId && (result.stops.length !== 1 || result.stops[0].poi_id !== selectedId))) {
+      if (version !== state.requestVersion || contextVersion !== state.contextVersion || locationVersion !== state.locVersion || build !== buildVersion || selectedId !== state.selectedPlaceId) return;
+      if (!usablePlan(result) || payload.stop_ids.some(id=>!result.stops.some(s=>s.poi_id===id)) || (result.stops.length !== 1 || result.stops[0].poi_id !== place.poi_id)) {
         if (msg) msg.textContent = X().planUnavailable; return;
       }
       const plan = planView(result, request); plan.finish_label = choice.label;
@@ -892,7 +882,13 @@
 
   // ---------- wiring ----------
   ext.onHealth = () => { mountSpend(); mountFinish(); mountAtmosphere(); A.rerender(); if (walk) renderWalk(); };
-  ext.onLang = () => { cancelSetup(); renderFinish(); renderAtmosphere(); renderMine(); renderWalk(); };
+  ext.onLang = () => { cancelSetup(); drawFinish(); renderFinish(); renderAtmosphere(); renderMine(); renderWalk(); };
+  ext.onScenario = () => {
+    finishMode="place"; finish=null; picking=false;
+    cons={exclude_ids:[],max_distance_m:null,exclude_categories:[],no_spend:null};
+    atmosphere=null; atmosProfile=null; atmosStrict=false;
+    drawFinish(); renderFinish(); syncSpend(); renderAtmosphere();
+  };
   // app.js has already started when this file runs, so wire up now
   function ready() {
     $("#mineBtn").addEventListener("click", toggleMine);
@@ -901,7 +897,7 @@
     S.init().then(loadMine).then(() => { renderMine(); A.rerender(); }).catch(() => { mine.error = X().storeBlocked; });
   }
   window.SeruenFeatures = {mine, chooseFinish, cancelSetup, startWalk, saveWalk, planView, renderWalk, get walk() { return walk; }, get cons() { return cons; },
-    setFinish: (f) => { finish = f; drawFinish(); renderFinish(); }, setAtmosphere: (a) => { atmosphere = a; }};
+    setFinish: (f) => { finish = f; finishMode=f?"destination":"place"; drawFinish(); renderFinish(); }, setAtmosphere: (a) => { atmosphere = a; }};
   ready();
   if (Object.keys(state.features || {}).length) ext.onHealth();
 })();

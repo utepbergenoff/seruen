@@ -1,0 +1,53 @@
+const {test}=require('node:test'), assert=require('node:assert/strict');
+const {boot}=require('./helpers.cjs'), FX=require('./fixtures/feature_examples.json');
+const clone=x=>JSON.parse(JSON.stringify(x));
+const opts={healthData:FX.health_with_features,build:FX.build_ok};
+const change=(b,id,val)=>{const el=b.w.document.querySelector(id);el.value=val;el.dispatchEvent(new b.w.Event('change',{bubbles:true}));};
+const tick=async()=>{for(let i=0;i<8;i++)await new Promise(r=>setImmediate(r));};
+test('context stays expanded and marker follows custom finish, drag, and reset',async t=>{
+ const b=await boot(t,opts),doc=b.w.document;
+ assert.equal(doc.querySelector('#ctxBox').tagName,'SECTION');
+ change(b,'#finishMode','destination');b.click('#pickFinish');
+ const origin=clone(b.w.SeruenApp.state.loc);
+ b.w.SeruenExt.onMapClick({latlng:{lat:51.13412,lng:71.40844}});
+ const pin=b.pins.findLast(p=>p.options.title==='Финиш');
+ assert.ok(b.layers.has(pin)&&pin.options.draggable&&pin.options.zIndexOffset>1000);
+ assert.equal(doc.querySelector('#finishMapHint').hidden,true);
+ pin.coords=[51.13523,71.40967];pin.fire('dragend');
+ const extras=b.w.SeruenExt.requestExtras({});
+ assert.equal(extras.finish_mode,'destination');assert.equal(extras.end.lat,51.135);
+ assert.deepEqual(clone(b.w.SeruenApp.state.loc),origin);
+ change(b,'#finishMode','place');assert.ok(!b.layers.has(pin));
+ assert.equal(b.w.SeruenExt.requestExtras({}).end,undefined);
+ assert.equal(b.w.SeruenExt.requestExtras({}).finish_mode,'place');
+});
+test('scenario cannot inherit an old destination or expense filter',async t=>{
+ const b=await boot(t,opts);
+ b.w.SeruenFeatures.setFinish({lat:51.2,lon:71.6,source:'map'});change(b,'#noSpend','strict');
+ b.click('#scenariosMenu [data-id="S2"]');await tick();
+ assert.equal(b.requests.at(-1).body.finish_mode,'place');assert.equal(b.requests.at(-1).body.end,undefined);
+ assert.equal(b.requests.at(-1).body.preferences?.expense_mode,undefined);
+ assert.equal(b.requests.at(-1).body.context.companions,'child');
+ assert.equal(b.requests.at(-1).body.context.time_budget_min,60);
+});
+test('resizing, swapping and full-screen keep the route and selection intact',async t=>{
+ const b=await boot(t,opts),doc=b.w.document;
+ b.w.SeruenFeatures.startWalk(b.w.SeruenFeatures.planView(clone(FX.build_ok),{location:{lat:51.128,lon:71.43},context:{time_budget_min:90}}),null);
+ const plan=JSON.stringify(b.w.SeruenFeatures.walk.plan),div=doc.querySelector('#panelDivider');
+ div.dispatchEvent(new b.w.KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}));
+ assert.equal(div.getAttribute('aria-valuenow'),'464');
+ b.click('#panelSide');assert.ok(doc.querySelector('.layout').classList.contains('panel-right'));
+ div.dispatchEvent(new b.w.KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true}));assert.equal(div.getAttribute('aria-valuenow'),'488');
+ b.click('#mapFullscreen');assert.ok(doc.body.classList.contains('map-expanded'));assert.ok(doc.querySelector('.panel').hasAttribute('inert'));
+ doc.dispatchEvent(new b.w.KeyboardEvent('keydown',{key:'Escape'}));
+ assert.ok(!doc.body.classList.contains('map-expanded'));assert.ok(!doc.querySelector('.panel').hasAttribute('inert'));
+ assert.equal(JSON.stringify(b.w.SeruenFeatures.walk.plan),plan);
+ assert.equal(b.w.localStorage.getItem('seruen_panel_width'),'488');
+});
+test('current time setting, not a stale recommendation request, is used when starting',async t=>{
+ const b=await boot(t,opts);b.click('#goBtn');await tick();b.requests[0].resolve({ok:true,json:async()=>clone(FX.recommend_normal)});await tick();
+ const budget=b.w.document.querySelector('#budget');budget.value='45';budget.dispatchEvent(new b.w.Event('input',{bubbles:true}));
+ b.click('#startWalkBtn');await tick();assert.equal(b.builds[0].request.context.time_budget_min,45);
+ assert.equal(b.builds[0].request.finish_mode,'destination');
+ assert.deepEqual(b.builds[0].stop_ids,[FX.recommend_normal.recommendations[0].poi_id]);
+});

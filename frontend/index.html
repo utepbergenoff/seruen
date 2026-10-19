@@ -96,10 +96,12 @@
         <p id="mapNotice" class="meta" role="status" hidden></p>
         <button id="mapDetailBtn" type="button" class="btn small" data-i18n="mapDetails" hidden></button>
         <div id="storyLayerField" hidden></div>
+        <div class="map-layout-actions"><button id="mapFullscreen" type="button" class="btn small" aria-pressed="false"></button><button id="panelSide" type="button" class="btn small"></button></div>
       </div>
     </section>
 
-    <section class="panel">
+    <div id="panelDivider" class="panel-divider" role="separator" tabindex="0" aria-orientation="vertical" aria-controls="searchPanel map"></div>
+    <section class="panel" id="searchPanel">
       <section id="welcome" class="welcome" aria-labelledby="welcomeTitle">
         <img src="img/hero-baiterek-night.jpg" alt="" class="welcome-img welcome-night" width="1280" height="960">
         <img src="img/hero-baiterek-day.jpg" alt="" class="welcome-img welcome-day" width="960" height="1440">
@@ -110,7 +112,7 @@
       </section>
 
       <form id="askForm" class="card block" autocomplete="off">
-        <h2 data-i18n="what"></h2>
+        <h2 class="sr-only" data-i18n="what"></h2>
         <div id="searchModeField" hidden></div>
         <p id="locLine" class="loc-line" aria-live="polite"></p>
         <p id="geoMsg" class="msg warn" role="status" hidden></p>
@@ -119,15 +121,12 @@
           <button id="geoMap" type="button" class="btn small" data-i18n="geoPickMap"></button>
         </div>
         <div id="meetingFields" hidden></div>
-        <div id="chips" class="chips"></div>
+        <details class="quick-ideas"><summary data-i18n="quickIdeas"></summary><div id="chips" class="chips"></div></details>
         <div class="ask">
           <input id="query" type="text" maxlength="500" data-i18n-placeholder="placeholder" aria-label="Query" aria-describedby="privacyHint">
-          <button id="goBtn" class="btn primary" type="submit" data-i18n="go"></button>
         </div>
-        <p id="privacyHint" class="meta" data-i18n="privacyHint"></p>
-        <div id="winterField" hidden></div>
-        <details id="ctxBox" class="ctx">
-          <summary data-i18n="settings"></summary>
+        <section id="ctxBox" class="ctx" aria-labelledby="contextTitle">
+          <h3 id="contextTitle" data-i18n="settings"></h3>
           <div class="ctx-grid">
             <label><span data-i18n="budget"></span>
               <span class="row"><input id="budget" type="range" min="15" max="180" step="5" value="60">
@@ -141,10 +140,6 @@
                 <option value="group" data-i18n="group"></option>
               </select>
             </label>
-            <label><span data-i18n="when"></span>
-              <span class="row"><select id="whenSel"><option value="now" data-i18n="now"></option><option value="other" data-i18n="other"></option></select>
-              <input id="whenAt" type="datetime-local" hidden></span>
-            </label>
             <label id="weatherField"><span data-i18n="weather"></span>
               <select id="weather">
                 <option value="auto" data-i18n="wAuto"></option>
@@ -153,14 +148,23 @@
                 <option value="mild" data-i18n="wMild"></option>
               </select>
             </label>
-            <label class="check"><input id="access" type="checkbox"> <span data-i18n="access"></span></label>
           </div>
-        </details>
+          <details class="context-more"><summary data-i18n="extraSettings"></summary><div id="contextMoreGrid" class="ctx-grid">
+            <label><span data-i18n="when"></span>
+              <span class="row"><select id="whenSel"><option value="now" data-i18n="now"></option><option value="other" data-i18n="other"></option></select>
+              <input id="whenAt" type="datetime-local" hidden></span>
+            </label>
+            <label class="check"><input id="access" type="checkbox"> <span data-i18n="access"></span></label>
+          </div><div id="winterField" hidden></div></details>
+        </section>
+        <button id="goBtn" class="btn primary context-submit" type="submit" data-i18n="go"></button>
+        <p id="privacyHint" class="meta" data-i18n="privacyHint"></p>
+        <details id="atmosphereOptions"><summary data-i18n="atmosOptions"></summary></details>
+        <p id="contextChanged" class="meta context-changed" role="status" hidden data-i18n="contextChanged"></p>
       </form>
 
       <section id="mine" class="card block mine" hidden aria-labelledby="mineTitle"></section>
       <section id="experiences" class="card block experiences" hidden></section>
-      <section id="routeSetup" class="card block route-setup" hidden aria-labelledby="routeSetupTitle"></section>
       <section id="walk" class="card block walk-panel" hidden aria-live="polite"></section>
 
       <section id="scenarioStrip" class="strip" aria-labelledby="stripTitle" hidden>
@@ -183,5 +187,6 @@
   <script src="features.js"></script>
   <script src="experiences-i18n.js"></script>
   <script src="experiences.js"></script>
+  <script src="layout.js"></script>
 </body>
 </html>
