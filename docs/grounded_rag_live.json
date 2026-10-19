@@ -1,0 +1,1390 @@
+{
+  "checked_at": "2026-10-19T16:53:37.243846+00:00",
+  "api": "https://seruen-backend-f36d.onrender.com",
+  "deployed_code_commit": "4eb093b3673052c1ff9b1242c5902a352f787aab",
+  "deploy": "dep-dbb4lee1egvs7393k7s0",
+  "plan": "free",
+  "current_health": {
+    "status": "ok",
+    "mode_available": [
+      "no_ai",
+      "ai"
+    ],
+    "data_snapshot_date": "2026-10-17",
+    "poi_count": 1251,
+    "data_kind": "real",
+    "retrieval_mode": "bm25+lsa",
+    "mock": false,
+    "google_places": {
+      "configured": true,
+      "details_enabled": false,
+      "ids_probe": "ok"
+    },
+    "twogis": {
+      "configured": true,
+      "enabled": true,
+      "last_status": "twogis_access_denied",
+      "photos_supported": false,
+      "search_enabled": true
+    },
+    "feature_contract_version": 2,
+    "features": {
+      "replan": 1,
+      "end_point": 1,
+      "finish_preferences": 1,
+      "constraints": 1,
+      "comfort": 1,
+      "cost": 1,
+      "atmosphere": 1,
+      "atmosphere_profiles": 1,
+      "comfort_breaks": 1,
+      "on_route_breaks": 1,
+      "plan_export": 1,
+      "nearby_break": 1,
+      "city_history": 1,
+      "meet_halfway": 1,
+      "winter_plan": 1
+    }
+  },
+  "current_limitations": [
+    "2GIS returns 403 / twogis_access_denied. The user declined a paid key. No reset time or full catalogue coverage is promised.",
+    "Normal auto search uses the 1251-place local snapshot; fresh 2GIS hours/ratings and missing branches are unavailable.",
+    "Google Places details are disabled. Gemini uses a separate quota and may fall back per card.",
+    "Heuristic prose validation is not a proof of factual correctness; no human usefulness score or load-test claim."
+  ],
+  "local_checks": {
+    "python_tests_passed": 482,
+    "javascript_tests_passed": 123,
+    "ruff": "passed",
+    "original_fixtures": {
+      "queries": 30,
+      "passed": 30,
+      "cards_in_budget": 78,
+      "cards_total": 78,
+      "invented_ids": 0,
+      "unsupported_open_claims": 0,
+      "report": "eval/real/report.json"
+    },
+    "erlan_scenarios": {
+      "queries": 30,
+      "passed": 30,
+      "report": "eval/real_spec/report.json"
+    }
+  },
+  "final_code_smoke": {
+    "checked_at": "2026-10-19T16:53:37.243846+00:00",
+    "commit": "4eb093b3673052c1ff9b1242c5902a352f787aab",
+    "deploy": "dep-dbb4lee1egvs7393k7s0",
+    "health": {
+      "status": "ok",
+      "mode_available": [
+        "no_ai",
+        "ai"
+      ],
+      "data_snapshot_date": "2026-10-17",
+      "poi_count": 1251,
+      "data_kind": "real",
+      "retrieval_mode": "bm25+lsa",
+      "mock": false,
+      "google_places": {
+        "configured": true,
+        "details_enabled": false,
+        "ids_probe": "ok"
+      },
+      "twogis": {
+        "configured": true,
+        "enabled": true,
+        "last_status": "twogis_access_denied",
+        "photos_supported": false,
+        "search_enabled": true
+      },
+      "feature_contract_version": 2,
+      "features": {
+        "replan": 1,
+        "end_point": 1,
+        "finish_preferences": 1,
+        "constraints": 1,
+        "comfort": 1,
+        "cost": 1,
+        "atmosphere": 1,
+        "atmosphere_profiles": 1,
+        "comfort_breaks": 1,
+        "on_route_breaks": 1,
+        "plan_export": 1,
+        "nearby_break": 1,
+        "city_history": 1,
+        "meet_halfway": 1,
+        "winter_plan": 1
+      }
+    },
+    "source": "local",
+    "mode": "ai",
+    "ai_cards": 3,
+    "passed": true,
+    "recommendations": [
+      {
+        "poi_id": "osm_node_5880883097",
+        "canonical_id": "osm_node_5880883097",
+        "name": "Chaplin Cinema",
+        "category": "culture",
+        "coords": {
+          "lat": 51.0883192,
+          "lon": 71.40973
+        },
+        "distance_m": 514,
+        "walk_min": 9,
+        "why": "Это место находится в 9 минут пешком.",
+        "why_source": "ai",
+        "ai_reviewed": true,
+        "explanation_evidence": [
+          "walk",
+          "visit",
+          "category",
+          "activity",
+          "indoor",
+          "tag:indoor",
+          "tag:ночью"
+        ],
+        "selection_source": "rules",
+        "time_to_spend_min": 30,
+        "what_to_do": "Проверьте расписание сеансов и продолжительность фильма перед посещением.",
+        "what_to_do_source": "ai",
+        "open_status": {
+          "today_hours": null,
+          "for_date": "2026-10-19",
+          "source_url": null,
+          "schedule_note": null,
+          "schedule_has_exceptions": false,
+          "state": "open",
+          "confidence": "high",
+          "hours": "Mo-Su 10:00-02:00",
+          "source": "osm",
+          "checked_at": "2026-10-17"
+        },
+        "facts_source": "poi_db",
+        "address": null,
+        "description_source": "generated",
+        "description": "Место культуры \"Chaplin Cinema\" работает допоздна.",
+        "description_url": null,
+        "sources": [
+          "osm",
+          "gemini"
+        ],
+        "last_checked": "2026-10-17",
+        "accessibility": "unknown",
+        "links": {
+          "2gis": "https://2gis.kz/astana/geo/71.40973,51.0883192",
+          "google": "https://www.google.com/maps/search/?api=1&query=51.0883192%2C71.40973"
+        },
+        "rating": null,
+        "rating_count": null,
+        "budget_breakdown": {
+          "walk_there_min": 9,
+          "stay_min": 30,
+          "walk_back_min": 0,
+          "walk_to_end_min": 0,
+          "reserve_min": 5,
+          "total_min": 44
+        },
+        "visit_condition": {
+          "provider_attributes": [],
+          "provider_url": null,
+          "kind": "unknown",
+          "note": "",
+          "source_url": null,
+          "checked_at": null,
+          "verification": "unknown"
+        },
+        "atmosphere_match": {
+          "matched_features": [],
+          "source": "none",
+          "checked_at": null,
+          "photo_ids": [],
+          "requested_features": [],
+          "unconfirmed_features": [],
+          "status": "not_requested"
+        },
+        "arrival_estimate": null,
+        "offline_allowed": false
+      },
+      {
+        "poi_id": "osm_way_1460763574",
+        "canonical_id": "osm_way_1460763574",
+        "name": "Тәуелсіздіктің 25 жылдығы",
+        "category": "viewpoint",
+        "coords": {
+          "lat": 51.0934524,
+          "lon": 71.4175645
+        },
+        "distance_m": 497,
+        "walk_min": 9,
+        "why": "Объект расположен в 9 минут пешком от вашей точки.",
+        "why_source": "ai",
+        "ai_reviewed": true,
+        "explanation_evidence": [
+          "walk",
+          "visit",
+          "category",
+          "activity"
+        ],
+        "selection_source": "rules",
+        "time_to_spend_min": 15,
+        "what_to_do": "Сделайте прогулочную паузу рядом с памятником.",
+        "what_to_do_source": "ai",
+        "open_status": {
+          "today_hours": null,
+          "for_date": "2026-10-19",
+          "source_url": null,
+          "schedule_note": null,
+          "schedule_has_exceptions": false,
+          "state": "unknown",
+          "confidence": "low",
+          "hours": null,
+          "source": "none",
+          "checked_at": "2026-10-17"
+        },
+        "facts_source": "poi_db",
+        "address": null,
+        "description_source": "generated",
+        "description": "Тәуелсіздіктің 25 жылдығы — достопримечательность.",
+        "description_url": null,
+        "sources": [
+          "osm",
+          "gemini"
+        ],
+        "last_checked": "2026-10-17",
+        "accessibility": "unknown",
+        "links": {
+          "2gis": "https://2gis.kz/astana/geo/71.4175645,51.0934524",
+          "google": "https://www.google.com/maps/search/?api=1&query=51.0934524%2C71.4175645"
+        },
+        "rating": null,
+        "rating_count": null,
+        "budget_breakdown": {
+          "walk_there_min": 9,
+          "stay_min": 15,
+          "walk_back_min": 0,
+          "walk_to_end_min": 0,
+          "reserve_min": 5,
+          "total_min": 29
+        },
+        "visit_condition": {
+          "provider_attributes": [],
+          "provider_url": null,
+          "kind": "unknown",
+          "note": "",
+          "source_url": null,
+          "checked_at": null,
+          "verification": "unknown"
+        },
+        "atmosphere_match": {
+          "matched_features": [],
+          "source": "none",
+          "checked_at": null,
+          "photo_ids": [],
+          "requested_features": [],
+          "unconfirmed_features": [],
+          "status": "not_requested"
+        },
+        "arrival_estimate": null,
+        "offline_allowed": false
+      },
+      {
+        "poi_id": "osm_way_499328449",
+        "canonical_id": "osm_way_499328449",
+        "name": "Астана балет",
+        "category": "culture",
+        "coords": {
+          "lat": 51.0992346,
+          "lon": 71.4196527
+        },
+        "distance_m": 1154,
+        "walk_min": 21,
+        "why": "Достопримечательность расположена в 21 минут пешком.",
+        "why_source": "ai",
+        "ai_reviewed": true,
+        "explanation_evidence": [
+          "walk",
+          "visit",
+          "category",
+          "activity",
+          "indoor",
+          "tag:indoor"
+        ],
+        "selection_source": "rules",
+        "time_to_spend_min": 30,
+        "what_to_do": "Изучите афишу и расписание представлений перед выбором сеанса.",
+        "what_to_do_source": "ai",
+        "open_status": {
+          "today_hours": null,
+          "for_date": "2026-10-19",
+          "source_url": null,
+          "schedule_note": null,
+          "schedule_has_exceptions": false,
+          "state": "unknown",
+          "confidence": "low",
+          "hours": null,
+          "source": "none",
+          "checked_at": "2026-10-17"
+        },
+        "facts_source": "poi_db",
+        "address": null,
+        "description_source": "generated",
+        "description": "Место культуры Астана балет.",
+        "description_url": null,
+        "sources": [
+          "osm",
+          "gemini"
+        ],
+        "last_checked": "2026-10-17",
+        "accessibility": "unknown",
+        "links": {
+          "2gis": "https://2gis.kz/astana/geo/71.4196527,51.0992346",
+          "google": "https://www.google.com/maps/search/?api=1&query=51.0992346%2C71.4196527"
+        },
+        "rating": null,
+        "rating_count": null,
+        "budget_breakdown": {
+          "walk_there_min": 21,
+          "stay_min": 30,
+          "walk_back_min": 0,
+          "walk_to_end_min": 0,
+          "reserve_min": 5,
+          "total_min": 56
+        },
+        "visit_condition": {
+          "provider_attributes": [],
+          "provider_url": null,
+          "kind": "unknown",
+          "note": "",
+          "source_url": null,
+          "checked_at": null,
+          "verification": "unknown"
+        },
+        "atmosphere_match": {
+          "matched_features": [],
+          "source": "none",
+          "checked_at": null,
+          "photo_ids": [],
+          "requested_features": [],
+          "unconfirmed_features": [],
+          "status": "not_requested"
+        },
+        "arrival_estimate": null,
+        "offline_allowed": false
+      }
+    ]
+  },
+  "preceding_four_query_verification": {
+    "transport_errors": [],
+    "verification_scope": "Final targeted verification after prose guards: auto fallback S1, corrected activities S4, night claims S6, English S3; the previous eight-case run is retained separately, including discovered prose defects and one client timeout.",
+    "health_after": {
+      "status": "ok",
+      "mode_available": [
+        "no_ai",
+        "ai"
+      ],
+      "data_snapshot_date": "2026-10-17",
+      "poi_count": 1251,
+      "data_kind": "real",
+      "retrieval_mode": "bm25+lsa",
+      "mock": false,
+      "google_places": {
+        "configured": true,
+        "details_enabled": false,
+        "ids_probe": "ok"
+      },
+      "twogis": {
+        "configured": true,
+        "enabled": true,
+        "last_status": "twogis_access_denied",
+        "photos_supported": false,
+        "search_enabled": true
+      },
+      "feature_contract_version": 2,
+      "features": {
+        "replan": 1,
+        "end_point": 1,
+        "finish_preferences": 1,
+        "constraints": 1,
+        "comfort": 1,
+        "cost": 1,
+        "atmosphere": 1,
+        "atmosphere_profiles": 1,
+        "comfort_breaks": 1,
+        "on_route_breaks": 1,
+        "plan_export": 1,
+        "nearby_break": 1,
+        "city_history": 1,
+        "meet_halfway": 1,
+        "winter_plan": 1
+      }
+    },
+    "checked_at": "2026-10-19T16:50:54.614438+00:00",
+    "api": "https://seruen-backend-f36d.onrender.com",
+    "commit": "5ef490145a9e2ba9de262c5f39ee9f45984aa169",
+    "deploy": "dep-dbb4jg2jnfac73evkobg",
+    "plan": "free",
+    "health": {
+      "status": "ok",
+      "mode_available": [
+        "no_ai",
+        "ai"
+      ],
+      "data_snapshot_date": "2026-10-17",
+      "poi_count": 1251,
+      "data_kind": "real",
+      "retrieval_mode": "bm25+lsa",
+      "mock": false,
+      "google_places": {
+        "configured": true,
+        "details_enabled": false,
+        "ids_probe": "ok"
+      },
+      "twogis": {
+        "configured": true,
+        "enabled": true,
+        "last_status": "not_checked",
+        "photos_supported": false,
+        "search_enabled": true
+      },
+      "feature_contract_version": 2,
+      "features": {
+        "replan": 1,
+        "end_point": 1,
+        "finish_preferences": 1,
+        "constraints": 1,
+        "comfort": 1,
+        "cost": 1,
+        "atmosphere": 1,
+        "atmosphere_profiles": 1,
+        "comfort_breaks": 1,
+        "on_route_breaks": 1,
+        "plan_export": 1,
+        "nearby_break": 1,
+        "city_history": 1,
+        "meet_halfway": 1,
+        "winter_plan": 1
+      }
+    },
+    "queries": 4,
+    "passed": 4,
+    "with_generated_text": 4,
+    "ai_cards": 12,
+    "cases": [
+      {
+        "id": "S1",
+        "requested_source": "auto",
+        "source": "local",
+        "mode": "ai",
+        "ai_cards": 3,
+        "cards": 3,
+        "seconds": 3.14,
+        "issues": [],
+        "recommendations": [
+          {
+            "name": "Coffee BOOM (EXPO, Мангилик Ел 55/1)",
+            "why": "Идея: место предлагает кофе в крытом помещении близко от вас. Не подтверждены: тишина, розетки, Wi-Fi.",
+            "what_to_do": "Проверьте наличие розеток перед тем, как расположиться с ноутбуком.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "indoor",
+              "visit",
+              "walk"
+            ],
+            "time_to_spend_min": 20
+          },
+          {
+            "name": "Drinkit",
+            "why": "Идея: здесь доступен Wi-Fi для работы. Не подтверждены: тишина, розетки.",
+            "what_to_do": "Закажите напиток и проверьте уровень шума.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "tag:wifi",
+              "tag:coffee",
+              "tag:indoor"
+            ],
+            "time_to_spend_min": 20
+          },
+          {
+            "name": "Starbucks",
+            "why": "Идея: кофейня подходит для короткого визита с кофе. Не подтверждены: тишина, розетки, Wi-Fi.",
+            "what_to_do": "Зайдите за кофе и уточните детали размещения с ноутбуком.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "tag:coffee",
+              "tag:indoor",
+              "visit"
+            ],
+            "time_to_spend_min": 20
+          }
+        ]
+      },
+      {
+        "id": "S4",
+        "requested_source": "local",
+        "source": "local",
+        "mode": "ai",
+        "ai_cards": 3,
+        "cards": 3,
+        "seconds": 2.67,
+        "issues": [],
+        "recommendations": [
+          {
+            "name": "Chaplin Cinema",
+            "why": "Это крытое пространство находится в 9 минут ходьбы.",
+            "what_to_do": "Идея: дойти туда пешком и посмотреть текущий фильм в зале.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "walk",
+              "visit",
+              "tag:indoor",
+              "indoor"
+            ],
+            "time_to_spend_min": 30
+          },
+          {
+            "name": "Тәуелсіздіктің 25 жылдығы",
+            "why": "Это место находится в 9 минут ходьбы.",
+            "what_to_do": "Идея: прогуляться пешком до объекта и осмотреть его.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "walk",
+              "visit"
+            ],
+            "time_to_spend_min": 15
+          },
+          {
+            "name": "Астана балет",
+            "why": "Это крытое культурное пространство расположено в 21 минут ходьбы.",
+            "what_to_do": "Идея: прогуляться туда пешком и оценить архитектуру здания.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "walk",
+              "visit",
+              "tag:indoor",
+              "indoor"
+            ],
+            "time_to_spend_min": 30
+          }
+        ]
+      },
+      {
+        "id": "S6",
+        "requested_source": "local",
+        "source": "local",
+        "mode": "ai",
+        "ai_cards": 3,
+        "cards": 3,
+        "seconds": 3.38,
+        "issues": [],
+        "recommendations": [
+          {
+            "name": "Лигалайф",
+            "why": "Идея для вечернего отдыха в закрытом помещении.",
+            "what_to_do": "Проведите время внутри и сделайте паузу для отдыха.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "tag:indoor",
+              "visit"
+            ],
+            "time_to_spend_min": 30
+          },
+          {
+            "name": "Leto Cafe",
+            "why": "Идея перекусить в закрытом зале.",
+            "what_to_do": "Закажите еду и посидите за столиком.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "tag:indoor",
+              "visit"
+            ],
+            "time_to_spend_min": 30
+          },
+          {
+            "name": "CrepeCafe",
+            "why": "Идея выпить кофе в уютном крытом помещении.",
+            "what_to_do": "Закажите напиток и отдохните во время прогулки.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "tag:indoor",
+              "visit"
+            ],
+            "time_to_spend_min": 20
+          }
+        ]
+      },
+      {
+        "id": "S3-en",
+        "requested_source": "local",
+        "source": "local",
+        "mode": "ai",
+        "ai_cards": 3,
+        "cards": 3,
+        "seconds": 3.51,
+        "issues": [],
+        "recommendations": [
+          {
+            "name": "NU Park",
+            "why": "This park is located 6 min away from your current location, making it ideal for a short walk.",
+            "what_to_do": "Take a walking break along the paths.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "walk",
+              "visit"
+            ],
+            "time_to_spend_min": 20
+          },
+          {
+            "name": "Japanese garden",
+            "why": "You can reach this park after an 8 min walk for another outdoor option.",
+            "what_to_do": "Go for a short stroll.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "walk",
+              "visit"
+            ],
+            "time_to_spend_min": 20
+          },
+          {
+            "name": "25th Anniversary of Independence",
+            "why": "This viewpoint is reachable within a 20 min walk if you want to extend your route.",
+            "what_to_do": "Take a look around the area.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "walk",
+              "visit"
+            ],
+            "time_to_spend_min": 15
+          }
+        ]
+      }
+    ],
+    "photos": {
+      "osm_way_1449322354": {
+        "status": "no_photos",
+        "photos": 0
+      },
+      "baiterek": {
+        "status": "ok",
+        "photos": 1,
+        "analysis_source": "gemini"
+      }
+    },
+    "cors_origin": "https://seruen-astana.netlify.app",
+    "manual_user_scores": null,
+    "manual_review_findings": [
+      "S4 proposed watching a film within a generic visit duration. Fixed in PR #59 and verified separately below."
+    ]
+  },
+  "preceding_eight_query_verification": {
+    "transport_errors": [
+      {
+        "case": "S3",
+        "attempt": 1,
+        "error": "ReadTimeout",
+        "timeout_s": 70,
+        "note": "Original final-release run interrupted; remaining cases resumed on the same deploy."
+      }
+    ],
+    "verification_scope": "Auto fallback in S1; local RAG for other cases because catalogue returns 403. Previous catalogue AI verification is recorded separately.",
+    "health_after": {
+      "status": "ok",
+      "mode_available": [
+        "no_ai",
+        "ai"
+      ],
+      "data_snapshot_date": "2026-10-17",
+      "poi_count": 1251,
+      "data_kind": "real",
+      "retrieval_mode": "bm25+lsa",
+      "mock": false,
+      "google_places": {
+        "configured": true,
+        "details_enabled": false,
+        "ids_probe": "ok"
+      },
+      "twogis": {
+        "configured": true,
+        "enabled": true,
+        "last_status": "twogis_access_denied",
+        "photos_supported": false,
+        "search_enabled": true
+      },
+      "feature_contract_version": 2,
+      "features": {
+        "replan": 1,
+        "end_point": 1,
+        "finish_preferences": 1,
+        "constraints": 1,
+        "comfort": 1,
+        "cost": 1,
+        "atmosphere": 1,
+        "atmosphere_profiles": 1,
+        "comfort_breaks": 1,
+        "on_route_breaks": 1,
+        "plan_export": 1,
+        "nearby_break": 1,
+        "city_history": 1,
+        "meet_halfway": 1,
+        "winter_plan": 1
+      }
+    },
+    "checked_at": "2026-10-19T16:46:28.079277+00:00",
+    "api": "https://seruen-backend-f36d.onrender.com",
+    "commit": "1104f4c2fa0b246726bcd94eda29f28d9a6efa8e",
+    "deploy": "dep-dbb45r3l550s73ca4qj0",
+    "plan": "free",
+    "health": {
+      "status": "ok",
+      "mode_available": [
+        "no_ai",
+        "ai"
+      ],
+      "data_snapshot_date": "2026-10-17",
+      "poi_count": 1251,
+      "data_kind": "real",
+      "retrieval_mode": "bm25+lsa",
+      "mock": false,
+      "google_places": {
+        "configured": true,
+        "details_enabled": false,
+        "ids_probe": "ok"
+      },
+      "twogis": {
+        "configured": true,
+        "enabled": true,
+        "last_status": "twogis_access_denied",
+        "photos_supported": false,
+        "search_enabled": true
+      },
+      "feature_contract_version": 2,
+      "features": {
+        "replan": 1,
+        "end_point": 1,
+        "finish_preferences": 1,
+        "constraints": 1,
+        "comfort": 1,
+        "cost": 1,
+        "atmosphere": 1,
+        "atmosphere_profiles": 1,
+        "comfort_breaks": 1,
+        "on_route_breaks": 1,
+        "plan_export": 1,
+        "nearby_break": 1,
+        "city_history": 1,
+        "meet_halfway": 1,
+        "winter_plan": 1
+      }
+    },
+    "queries": 8,
+    "passed": 8,
+    "with_generated_text": 8,
+    "ai_cards": 16,
+    "cases": [
+      {
+        "id": "S1",
+        "requested_source": "auto",
+        "source": "local",
+        "mode": "ai",
+        "ai_cards": 1,
+        "cards": 3,
+        "seconds": 2.74,
+        "issues": [],
+        "recommendations": [
+          {
+            "name": "Coffee BOOM (EXPO, Мангилик Ел 55/1)",
+            "why": "Кофейня. ≈4 мин пешком; всего 29/120 мин до финиша. Не подтверждены: тишина, розетки, Wi-Fi.",
+            "what_to_do": "Перед работой уточните Wi-Fi, розетки и свободные места; условия посещения — у сотрудников.",
+            "why_source": "template",
+            "what_to_do_source": "template",
+            "explanation_evidence": [],
+            "time_to_spend_min": 20
+          },
+          {
+            "name": "Drinkit",
+            "why": "Идея: это кофейня с Wi-Fi, подходящая для заказа напитка. Не подтверждены: тишина, розетки.",
+            "what_to_do": "Закажите кофе и проверьте наличие нужных условий перед размещением.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "tag:wifi",
+              "tag:coffee",
+              "category"
+            ],
+            "time_to_spend_min": 20
+          },
+          {
+            "name": "Starbucks",
+            "why": "Кофейня. ≈10 мин пешком; всего 35/120 мин до финиша. Не подтверждены: тишина, розетки, Wi-Fi.",
+            "what_to_do": "Перед работой уточните Wi-Fi, розетки и свободные места; условия посещения — у сотрудников.",
+            "why_source": "template",
+            "what_to_do_source": "template",
+            "explanation_evidence": [],
+            "time_to_spend_min": 20
+          }
+        ]
+      },
+      {
+        "id": "S2",
+        "requested_source": "local",
+        "source": "local",
+        "mode": "ai",
+        "ai_cards": 2,
+        "cards": 3,
+        "seconds": 6.17,
+        "issues": [],
+        "recommendations": [
+          {
+            "name": "Детская площадка",
+            "why": "Поскольку вы с ребенком, это место подходит для отдыха детей.",
+            "what_to_do": "Идея: провести время на детской площадке.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "child_friendly",
+              "visit",
+              "walk"
+            ],
+            "time_to_spend_min": 25
+          },
+          {
+            "name": "Fame City",
+            "why": "В базе отмечено для детей. ≈2 мин пешком; всего 32/60 мин до финиша.",
+            "what_to_do": "Проведите время с ребёнком; проверьте возрастные ограничения на месте.",
+            "why_source": "template",
+            "what_to_do_source": "template",
+            "explanation_evidence": [],
+            "time_to_spend_min": 25
+          },
+          {
+            "name": "Дубовая аллея",
+            "why": "Этот парк подходит для прогулок с ребенком.",
+            "what_to_do": "Идея: прогуляться по аллее.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "child_friendly",
+              "visit",
+              "walk"
+            ],
+            "time_to_spend_min": 20
+          }
+        ]
+      },
+      {
+        "id": "S3",
+        "requested_source": "local",
+        "source": "local",
+        "mode": "ai",
+        "ai_cards": 2,
+        "cards": 3,
+        "seconds": 2.8,
+        "issues": [],
+        "recommendations": [
+          {
+            "name": "NU Park",
+            "why": "Прогулка в парке. ≈6 мин пешком; всего 31/60 мин до финиша.",
+            "what_to_do": "Уточните условия посещения; после остановки продолжайте путь к выбранному финишу.",
+            "why_source": "template",
+            "what_to_do_source": "template",
+            "explanation_evidence": [],
+            "time_to_spend_min": 20
+          },
+          {
+            "name": "Сквер",
+            "why": "Небольшой сквер рядом с вами отлично подойдет для спокойного отдыха на улице.",
+            "what_to_do": "Пройдитесь по дорожкам и отдохните на скамейке.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "walk",
+              "visit",
+              "activity"
+            ],
+            "time_to_spend_min": 20
+          },
+          {
+            "name": "Тәуелсіздіктің 25 жылдығы",
+            "why": "Эта смотровая площадка позволяет совместить прогулку с осмотром окрестностей.",
+            "what_to_do": "Осмотрите панорамные виды вокруг.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "walk",
+              "visit",
+              "activity"
+            ],
+            "time_to_spend_min": 15
+          }
+        ]
+      },
+      {
+        "id": "S4",
+        "requested_source": "local",
+        "source": "local",
+        "mode": "ai",
+        "ai_cards": 3,
+        "cards": 3,
+        "seconds": 2.88,
+        "issues": [],
+        "recommendations": [
+          {
+            "name": "Chaplin Cinema",
+            "why": "Идея для короткого визита: культурое место в девяти минутах ходьбы.",
+            "what_to_do": "Рассмотрите идею посетить кинопоказ в качестве варианта отдыха.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "walk",
+              "visit",
+              "activity"
+            ],
+            "time_to_spend_min": 30
+          },
+          {
+            "name": "Тәуелсіздіктің 25 жылдығы",
+            "why": "Смотровая площадка расположена в девяти минутах пешком от вашей локации.",
+            "what_to_do": "Оцените панорамный вид с этой точки.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "walk",
+              "visit"
+            ],
+            "time_to_spend_min": 15
+          },
+          {
+            "name": "Астана балет",
+            "why": "Культурный объект находится в двадцати одном шаге ходьбы.",
+            "what_to_do": "Исследуйте здание театра во время прогулки.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "walk",
+              "visit"
+            ],
+            "time_to_spend_min": 30
+          }
+        ]
+      },
+      {
+        "id": "S5",
+        "requested_source": "local",
+        "source": "local",
+        "mode": "ai",
+        "ai_cards": 2,
+        "cards": 3,
+        "seconds": 2.76,
+        "issues": [],
+        "recommendations": [
+          {
+            "name": "Культура Диктует",
+            "why": "Кофейня. ≈12 мин пешком; всего 92/120 мин до финиша.",
+            "what_to_do": "Выпейте кофе; перед заказом уточните наличие свободных мест.",
+            "why_source": "template",
+            "what_to_do_source": "template",
+            "explanation_evidence": [],
+            "time_to_spend_min": 20
+          },
+          {
+            "name": "Starbucks",
+            "why": "Этот вариант категории кофе подходит благодаря тегам кофе и крытое помещение.",
+            "what_to_do": "Загляните сюда за чашкой напитка перед дорогой.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "walk",
+              "visit",
+              "activity",
+              "tag:coffee",
+              "tag:indoor",
+              "indoor"
+            ],
+            "time_to_spend_min": 20
+          },
+          {
+            "name": "IMAX Кинопарк7",
+            "why": "Объект относится к категории культура и находится недалеко от вас.",
+            "what_to_do": "Проверьте текущее расписание сеансов.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "walk",
+              "visit",
+              "activity",
+              "tag:indoor",
+              "indoor"
+            ],
+            "time_to_spend_min": 30
+          }
+        ]
+      },
+      {
+        "id": "S6",
+        "requested_source": "local",
+        "source": "local",
+        "mode": "ai",
+        "ai_cards": 3,
+        "cards": 3,
+        "seconds": 2.97,
+        "issues": [],
+        "recommendations": [
+          {
+            "name": "Лигалайф",
+            "why": "Это ночное место подойдет для позднего времени.",
+            "what_to_do": "Загляните сюда ночью, чтобы провести время в помещении.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "tag:ночью",
+              "indoor"
+            ],
+            "time_to_spend_min": 30
+          },
+          {
+            "name": "Leto Cafe",
+            "why": "Кафе работает ночью и подходит для перекуса.",
+            "what_to_do": "Устройте ночной перекус в помещении этого кафе.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "tag:ночью",
+              "indoor"
+            ],
+            "time_to_spend_min": 30
+          },
+          {
+            "name": "CrepeCafe",
+            "why": "Кофейня работает в ночное время и находится близко.",
+            "what_to_do": "Закажите чашку кофе в помещении кофейни.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "tag:ночью",
+              "indoor"
+            ],
+            "time_to_spend_min": 20
+          }
+        ]
+      },
+      {
+        "id": "S3-en",
+        "requested_source": "local",
+        "source": "local",
+        "mode": "ai",
+        "ai_cards": 2,
+        "cards": 3,
+        "seconds": 3.5,
+        "issues": [],
+        "recommendations": [
+          {
+            "name": "NU Park",
+            "why": "This park is six minutes away, fitting your walk request.",
+            "what_to_do": "Take a short walk along the paths.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "walk",
+              "category",
+              "visit"
+            ],
+            "time_to_spend_min": 20
+          },
+          {
+            "name": "Japanese garden",
+            "why": "This square is eight minutes away for an outdoor stroll.",
+            "what_to_do": "Walk around the area to stretch your legs.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "walk",
+              "category",
+              "visit"
+            ],
+            "time_to_spend_min": 20
+          },
+          {
+            "name": "25th Anniversary of Independence",
+            "why": "Landmark visit. ≈20 min walking; 40/60 min total to your finish.",
+            "what_to_do": "Explore from public areas; check visitor details beforehand.",
+            "why_source": "template",
+            "what_to_do_source": "template",
+            "explanation_evidence": [],
+            "time_to_spend_min": 15
+          }
+        ]
+      },
+      {
+        "id": "S2-kk",
+        "requested_source": "local",
+        "source": "local",
+        "mode": "ai",
+        "ai_cards": 1,
+        "cards": 3,
+        "seconds": 5.02,
+        "issues": [],
+        "recommendations": [
+          {
+            "name": "Детская площадка",
+            "why": "Деректе балаларға қолайлы деп белгіленген. Жаяу ≈3 мин; мәреге дейін барлығы 33/60 мин.",
+            "what_to_do": "Баламен уақыт өткізіңіз; жас шектеулерін сол жерде тексеріңіз.",
+            "why_source": "template",
+            "what_to_do_source": "template",
+            "explanation_evidence": [],
+            "time_to_spend_min": 25
+          },
+          {
+            "name": "Fame City",
+            "why": "Балаларға арналған орын, жақын жерде орналасқан.",
+            "what_to_do": "Баламен бірге барып, аттракциондардың жұмыс істеу жағдайын тексеріп көріңіз.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "child_friendly",
+              "walk",
+              "visit",
+              "activity"
+            ],
+            "time_to_spend_min": 25
+          },
+          {
+            "name": "Дубовая аллея",
+            "why": "Деректе балаларға қолайлы деп белгіленген. Жаяу ≈10 мин; мәреге дейін барлығы 35/60 мин.",
+            "what_to_do": "Келу шарттарын нақтылап, аялдамадан кейін таңдалған мәреге барыңыз.",
+            "why_source": "template",
+            "what_to_do_source": "template",
+            "explanation_evidence": [],
+            "time_to_spend_min": 20
+          }
+        ]
+      }
+    ],
+    "photos": {
+      "osm_way_1449322354": {
+        "status": "no_photos",
+        "photos": 0
+      },
+      "baiterek": {
+        "status": "ok",
+        "photos": 1,
+        "analysis_source": "gemini"
+      }
+    },
+    "cors_origin": "https://seruen-astana.netlify.app",
+    "manual_user_scores": null,
+    "manual_review_findings": [
+      "Spelled-out quantities bypassed minute validation; one duration became steps. Fixed in PR #58.",
+      "Night tags became opening claims; unverified benches and internal tag labels appeared. Fixed in PR #58."
+    ]
+  },
+  "historical_catalogue_verification": {
+    "checked_at": "2026-10-19T16:11:12.851660+00:00",
+    "commit": "7ba4a69b176672f5197dcb266d1bc3c2673d898b",
+    "scope": "Earlier successful 2GIS+Gemini calls before access failed; NOT current provider availability.",
+    "cases": [
+      {
+        "id": "S1",
+        "requested_source": "auto",
+        "source": "2gis",
+        "mode": "ai",
+        "ai_cards": 2,
+        "cards": 3,
+        "seconds": 3.65,
+        "issues": [],
+        "recommendations": [
+          {
+            "name": "Urpaq Coffee & Tea, кофейня",
+            "why": "Здесь доступен Wi-Fi для работы. Не подтверждены: тишина, розетки.",
+            "what_to_do": "Закажите напиток и уточните наличие свободных розеток перед тем, как расположиться с ноутбуком.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "tag:wifi"
+            ],
+            "time_to_spend_min": 20
+          },
+          {
+            "name": "Tañgy brew",
+            "why": "Поддерживает беспроводной интернет по сети Wi-Fi. Не подтверждены: тишина, розетки.",
+            "what_to_do": "Возьмите кофе и проверьте доступность розеток для зарядки устройств.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "tag:wifi"
+            ],
+            "time_to_spend_min": 20
+          },
+          {
+            "name": "ONESHOTT COFFEE",
+            "why": "По данным места: Wi-Fi. ≈9 мин пешком; всего 34/120 мин до финиша. Не подтверждены: тишина, розетки.",
+            "what_to_do": "Перед работой уточните Wi-Fi, розетки и свободные места; условия посещения — у сотрудников.",
+            "why_source": "template",
+            "what_to_do_source": "template",
+            "explanation_evidence": [],
+            "time_to_spend_min": 20
+          }
+        ]
+      },
+      {
+        "id": "S2",
+        "requested_source": "auto",
+        "source": "2gis",
+        "mode": "ai",
+        "ai_cards": 3,
+        "cards": 3,
+        "seconds": 4.52,
+        "issues": [],
+        "recommendations": [
+          {
+            "name": "Игровой клуб",
+            "why": "Идея для отдыха с ребенком: это место подходит для детей и находится недалеко от вас.",
+            "what_to_do": "Идея: зайдите с ребенком в детские игровые залы.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "child_friendly",
+              "walk"
+            ],
+            "time_to_spend_min": 25
+          },
+          {
+            "name": "Fame City, игровой центр",
+            "why": "Идея для визита с ребенком: игровой центр предлагает детские игровые залы и аттракционы.",
+            "what_to_do": "Идея: посмотрите аттракционы и игровые залы.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "child_friendly",
+              "description"
+            ],
+            "time_to_spend_min": 25
+          },
+          {
+            "name": "Детская площадка",
+            "why": "Идея для прогулки с ребенком: площадка ориентирована на детей и расположена близко.",
+            "what_to_do": "Идея: проведите время на детской площадке.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "child_friendly",
+              "walk"
+            ],
+            "time_to_spend_min": 25
+          }
+        ]
+      },
+      {
+        "id": "S5",
+        "requested_source": "auto",
+        "source": "2gis",
+        "mode": "ai",
+        "ai_cards": 2,
+        "cards": 3,
+        "seconds": 5.2,
+        "issues": [],
+        "recommendations": [
+          {
+            "name": "Монумент-Бәйтерек",
+            "why": "Находится в непосредственной близости и имеет категорию смотровой площадки.",
+            "what_to_do": "Осмотрите панораму города с высоты и сделайте памятные снимки перед вылетом.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "walk",
+              "visit",
+              "activity",
+              "description"
+            ],
+            "time_to_spend_min": 15
+          },
+          {
+            "name": "Фонтан",
+            "why": "Расположен близко к вам и относится к культурным объектам.",
+            "what_to_do": "Прогуляйтесь рядом с фонтаном и отдохните на свежем воздухе.",
+            "why_source": "ai",
+            "what_to_do_source": "ai",
+            "explanation_evidence": [
+              "category",
+              "walk",
+              "visit",
+              "activity",
+              "description"
+            ],
+            "time_to_spend_min": 30
+          },
+          {
+            "name": "Львы",
+            "why": "Культурное место. ≈6 мин пешком; всего 96/120 мин до финиша.",
+            "what_to_do": "Осмотрите место с общедоступной территории; детали посещения уточните заранее.",
+            "why_source": "template",
+            "what_to_do_source": "template",
+            "explanation_evidence": [],
+            "time_to_spend_min": 30
+          }
+        ]
+      }
+    ]
+  },
+  "frontend": {
+    "url": "https://seruen-astana.netlify.app",
+    "service_worker": "seruen-v31-grounded-rag",
+    "exact_file_matches": [
+      "app.js",
+      "sw.js",
+      "styles.css",
+      "config.js",
+      "img/places/index.json"
+    ],
+    "html_differences": "Only Netlify hosting comment / pretty URL rewrites in index.html and about.html.",
+    "browser_checks": [
+      "S2 returns three local places with a visible 2GIS fallback note and actual Gemini text.",
+      "Select second card Fame City: selected panel and goal match.",
+      "Start walk: finish stays Fame City; search/scenarios panel is hidden.",
+      "Back restores top three and offers continuing the saved walk.",
+      "2GIS hours denial stays inside the details panel; card and route remain.",
+      "Fame City has no borrowed mall photo."
+    ],
+    "latest_backend_changes_require_frontend_deploy": false
+  },
+  "photo_policy": {
+    "approved_assignments": 39,
+    "places": 15
+  },
+  "manual_user_scores": null,
+  "presentation_and_video": "Excluded by user request; not completed."
+}
