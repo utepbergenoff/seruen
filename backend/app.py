@@ -140,6 +140,21 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
         discovery = request.app.state.discovery
         if payload.source == "2gis" or (payload.source == "auto" and discovery.active()):
             response, error = await discovery.recommend(payload)
+            # Auto may use the local snapshot after a completed, empty catalogue search.
+            # Explicit 2GIS and pagination never silently change their source. Apply the
+            # original budget/preferences again; never fill a card by relaxing filters.
+            if (payload.source == "auto" and not payload.cursor
+                    and not response.recommendations and not response.next_cursor):
+                local, local_error = await request.app.state.service.recommend(
+                    payload.model_copy(update={"source": "local"}))
+                if local.recommendations:
+                    note = {
+                        "ru": "В 2ГИС не получены подходящие варианты. Показаны места из локальной базы с теми же ограничениями.",
+                        "kk": "2ГИС-тен сәйкес нұсқалар алынбады. Сол шектеулермен жергілікті база орындары көрсетілді.",
+                        "en": "No suitable options were obtained from 2GIS. Showing local database places with the same constraints.",
+                    }[local.considered.lang]
+                    local.notes.insert(0, note)
+                    response, error = local, local_error
         else:
             response, error = await request.app.state.service.recommend(payload)
         request.state.mode, request.state.candidates, request.state.error = (

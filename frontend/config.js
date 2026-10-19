@@ -4,11 +4,11 @@ window.SERUEN_CONFIG = {
   // Set it with: python scripts/set_api_url.py https://...   ("" = same address as this site).
   API_URL: "https://seruen-backend-f36d.onrender.com",
 
-  // Level-1 extras. Anything not finished by Monday 13:00 -> set to false.
+  // Available interface features; optional backend features also check /health.
   FEATURES: {
     mapLinks: true,   // "Route in 2GIS / Google Maps" buttons on each card
     weather: true,    // Astana weather from Open-Meteo -> context.weather
-    route: true,      // "Build a route" from 3 places, line on the map (computed in the browser)
+    route: true,      // Start a server-planned walk to the selected place, including confirmed stops
     languages: true,  // KZ / RU / EN switch
     twogis: true,     // "2GIS rating & hours" button on each card: asks the backend only when pressed
     photos: true,     // photos of each place + what Gemini sees on them (lighting, seats, kids' area, space)
