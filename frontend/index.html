@@ -121,7 +121,7 @@
         <div id="meetingFields" hidden></div>
         <div id="chips" class="chips"></div>
         <div class="ask">
-          <input id="query" type="text" maxlength="500" data-i18n-placeholder="placeholder" aria-label="Query" aria-describedby="privacyHint">
+          <textarea id="query" rows="1" maxlength="500" data-i18n-placeholder="placeholder" aria-label="Query" aria-describedby="privacyHint"></textarea>
           <button id="goBtn" class="btn primary" type="submit" data-i18n="go"></button>
         </div>
         <p id="privacyHint" class="meta" data-i18n="privacyHint"></p>
@@ -163,6 +163,7 @@
       <section id="routeSetup" class="card block route-setup" hidden aria-labelledby="routeSetupTitle"></section>
       <section id="walk" class="card block walk-panel" hidden aria-live="polite"></section>
 
+      <!-- kept empty for older code paths: the scenarios live in the header menu, with their photos -->
       <section id="scenarioStrip" class="strip" aria-labelledby="stripTitle" hidden>
         <h2 id="stripTitle" data-i18n="scenariosTitle"></h2>
         <div id="scenarioCards" class="strip-cards"></div>

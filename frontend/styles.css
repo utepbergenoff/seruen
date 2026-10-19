@@ -46,7 +46,7 @@ h2 { font: 500 19px/1.25 var(--display); letter-spacing: -.01em; margin-bottom: 
 
 /* header: the city-blue bar */
 .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 20px; min-height: 64px;
-  background: var(--sky-deep); color: #fff; position: sticky; top: 0; z-index: 1000; }
+  background: var(--sky-deep); color: #fff; position: sticky; top: 0; z-index: 1100; }
 .brand { display: flex; align-items: center; gap: 11px; min-width: 0; text-decoration: none; color: inherit; }
 .logo { flex: none; width: 36px; height: 36px; border-radius: 10px; box-shadow: 0 0 0 2px rgba(255, 255, 255, .25); }
 .brand h1 { font: 700 20px/1 var(--display); letter-spacing: -.01em; color: #fff; }
@@ -77,8 +77,10 @@ h2 { font: 500 19px/1.25 var(--display); letter-spacing: -.01em; margin-bottom: 
 .dropdown { position: relative; }
 .menu { position: absolute; right: 0; top: calc(100% + 8px); background: var(--surface); border: 1px solid var(--line);
   border-radius: var(--r); box-shadow: var(--shadow-lift); min-width: 340px; padding: 6px; z-index: 1100; color: var(--ink); }
-.menu button { display: block; width: 100%; text-align: left; border: 0; background: transparent; color: var(--ink);
-  padding: 10px 12px; border-radius: var(--r-s); font: 14px var(--font); cursor: pointer; }
+.menu button { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 12px; align-items: center; width: 100%; text-align: left;
+  border: 0; background: transparent; color: var(--ink); padding: 8px; border-radius: var(--r-s); font: 14px var(--font); cursor: pointer; }
+.menu button img { width: 76px; height: 56px; object-fit: cover; border-radius: var(--r-s); display: block; background: var(--line-soft); }
+.menu .menu-text { display: block; min-width: 0; }
 .menu button:hover { background: var(--sky-tint); }
 .menu button b { font: 700 12px var(--display); color: var(--sky-deep); margin-right: 2px; }
 .menu small { color: var(--muted); display: block; margin-top: 2px; }
@@ -126,12 +128,13 @@ h2 { font: 500 19px/1.25 var(--display); letter-spacing: -.01em; margin-bottom: 
 .tile span { position: absolute; left: 10px; right: 10px; bottom: 8px; z-index: 1; color: #fff; font: 600 13.5px/1.25 var(--font); }
 .tile:hover { box-shadow: 0 0 0 3px var(--sun); }
 .tile:hover img { transform: scale(1.06); }
-.ask { display: flex; gap: 8px; }
-.ask input { flex: 1; min-width: 0; border: 1.5px solid var(--line); border-radius: 999px; padding: 11px 18px; font: 15px var(--font);
+.ask { display: flex; gap: 8px; align-items: flex-end; }
+.ask input, .ask textarea { flex: 1; min-width: 0; border: 1.5px solid var(--line); border-radius: 24px; padding: 12px 18px; font: 15px/1.4 var(--font);
+  display: block; resize: none; overflow-y: auto; max-height: 260px;
   background: var(--surface); color: var(--ink); min-height: 48px; transition: border-color .2s var(--ease); }
-.ask input:hover { border-color: #B5CDD6; }
-.ask input:focus { border-color: var(--sky-deep); outline: none; box-shadow: 0 0 0 4px rgba(0, 175, 202, .18); }
-.ask input::placeholder { color: #6E828C; }
+.ask input:hover, .ask textarea:hover { border-color: #B5CDD6; }
+.ask input:focus, .ask textarea:focus { border-color: var(--sky-deep); outline: none; box-shadow: 0 0 0 4px rgba(0, 175, 202, .18); }
+.ask input::placeholder, .ask textarea::placeholder { color: #6E828C; }
 .ask .btn.primary { min-height: 48px; padding: 0 22px; }
 .ctx { margin-top: 12px; }
 .ctx summary { cursor: pointer; color: var(--sky-deep); font-weight: 600; font-size: 13.5px; }
@@ -360,7 +363,7 @@ table.cands { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-
   .ruler { padding: 30px 20px 12px; }
   .ph-strip { grid-auto-rows: 74px; }
   /* iOS does not zoom into inputs with 16px text; touch targets >= 44px */
-  .ask input, .ctx-grid select, .ctx-grid input[type=datetime-local] { font-size: 16px; }
+  .ask input, .ask textarea, .ctx-grid select, .ctx-grid input[type=datetime-local] { font-size: 16px; }
   .btn, .chips button, .lang button, .actions .btn { min-height: 44px; }
   .locate-btn { width: 44px; height: 44px; }
 }
@@ -619,3 +622,10 @@ body.route-setup-open #scenariosBtn, body.route-setup-open #scenariosMenu {displ
 body.route-review-open #welcome, body.route-review-open #askForm,
 body.route-review-open #scenarioStrip, body.route-review-open #scenariosBtn,
 body.route-review-open #scenariosMenu, body.route-review-open #results {display:none !important;}
+
+/* 19.10 evening: one place for scenarios (the header menu), no AI badge in the header */
+#scenarioStrip { display: none !important; }
+.top #modeBadge { display: none !important; }
+.menu { max-height: calc(100vh - var(--header-h) - 24px); overflow-y: auto; }
+/* the empty box keeps its hint on one line; typed text wraps */
+.ask textarea:placeholder-shown { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

@@ -9,18 +9,18 @@ const {boot} = require('./helpers.cjs');
 test('shell and six demos stay usable while backend health is pending', async t=>{
   const b=await boot(t,{health:pending()});
   assert.match(b.w.document.querySelector('#goBtn').textContent,/Подобрать/);
-  assert.equal(b.w.document.querySelectorAll('#scenarioCards button').length,6);
-  b.click('#scenarioCards button'); await tick(); assert.equal(b.requests.length,1);
+  assert.equal(b.w.document.querySelectorAll('#scenariosMenu button').length,6);
+  b.click('#scenariosMenu button'); await tick(); assert.equal(b.requests.length,1);
 });
 test('late GPS cannot replace a selected demo',async t=>{
-  const b=await boot(t); b.click('#scenarioCards button');await tick();
+  const b=await boot(t); b.click('#scenariosMenu button');await tick();
   b.gps.ok({coords:{latitude:51.15,longitude:71.44,accuracy:80}});
   b.click('#chips button');await tick();
   assert.equal(b.requests[1].body.location.source,'preset');
   assert.deepEqual(b.requests[1].body.location,b.requests[0].body.location);
 });
 test('only the newest request may render, even if older request arrives last',async t=>{
-  const b=await boot(t);b.click('#scenarioCards button');await tick();
+  const b=await boot(t);b.click('#scenariosMenu button');await tick();
   b.click('#chips button');await tick();assert.equal(b.requests.length,2);
   b.requests[1].resolve(json(answer('NEWEST')));await tick();
   b.requests[0].resolve(json(answer('STALE')));await tick();

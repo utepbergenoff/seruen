@@ -153,7 +153,7 @@
     }).join("");
     $$("#chips button").forEach((b) => b.addEventListener("click", () => {
       const c = T().chips[+b.dataset.i];
-      $("#query").value = c[1];
+      $("#query").value = c[1]; fitQuery();
       state.chipCtx = {...(c[2] || {})};
       // "with a child" from a tile applies to that tile only: the next tile goes back to the person's own choice
       if (c[2] && c[2].companions) { $("#companions").value = c[2].companions; state.compFromTile = true; }
@@ -165,8 +165,9 @@
     $("#scenariosMenu").innerHTML = state.scenarios.map((s) => {
       const p = state.presets.find((x) => x.id === s.preset);
       const title = typeof s.title === "string" ? s.title : (s.title && (s.title[state.lang] || s.title.ru)) || s.id;
-      return `<button type="button" role="menuitem" data-id="${esc(s.id)}"><b>${esc(s.id)}</b> · ${esc(title)}
-        <small>${esc(p ? plabel(p) : "")}${p ? " — " : ""}«${esc(s.query)}»</small></button>`;
+      return `<button type="button" role="menuitem" data-id="${esc(s.id)}"><img src="img/${scenarioPhoto(s)}.jpg" alt="" loading="lazy" decoding="async">
+        <span class="menu-text"><b>${esc(s.id)}</b> · ${esc(title)}
+        <small>${esc(p ? plabel(p) : "")}${p ? " — " : ""}«${esc(s.query)}»</small></span></button>`;
     }).join("");
     $$("#scenariosMenu button").forEach((b) => b.addEventListener("click", () => { toggleMenu(false); runScenario(b.dataset.id); }));
   }
@@ -179,7 +180,9 @@
     if (s.preset === "expo" && /необыч|unusual|ерекше/i.test(`${s.query} ${typeof s.title === "string" ? s.title : ""}`)) return "cat-unusual";
     return LOC_PHOTO[s.preset] || "hero-baiterek-night";
   }
+  // the same scenarios used to repeat here as cards; they now live only in the header menu (with photos)
   function renderScenarioStrip() {
+    $("#scenarioStrip").hidden = true; $("#scenarioCards").innerHTML = ""; return;
     $("#scenarioStrip").hidden = !state.scenarios.length;
     $("#scenarioCards").innerHTML = state.scenarios.map((s) => {
       const p = state.presets.find((x) => x.id === s.preset);
@@ -189,6 +192,12 @@
         <span class="scard-text"><b>${esc(title)}</b><small>${esc(place)}</small></span></button>`;
     }).join("");
     $$("#scenarioCards .scard").forEach((b) => b.addEventListener("click", () => runScenario(b.dataset.id)));
+  }
+  // the search box shows the whole request: it grows line by line (up to a limit, then scrolls)
+  function fitQuery() {
+    const q = $("#query"); if (!q) return;
+    q.style.height = "";
+    if (q.value && q.scrollHeight > q.clientHeight) q.style.height = Math.min(q.scrollHeight + 3, 260) + "px";
   }
   function toggleMenu(open) { $("#scenariosMenu").hidden = !open; $("#scenariosBtn").setAttribute("aria-expanded", String(open)); }
   $("#scenariosBtn").addEventListener("click", (e) => { e.stopPropagation(); toggleMenu($("#scenariosMenu").hidden); });
@@ -202,7 +211,7 @@
     const p = state.presets.find((x) => x.id === s.preset);
     if (p) setLoc(p.lat, p.lon, "preset", p.id);
     else if (s.location) setLoc(s.location.lat, s.location.lon, "preset", null);
-    $("#query").value = s.query;
+    $("#query").value = s.query; fitQuery();
     const ctx = s.context || {};
     if (ctx.time_budget_min) { $("#budget").value = ctx.time_budget_min; $("#budgetOut").textContent = ctx.time_budget_min; $("#budgetAuto").checked = false; }
     if (ctx.now) { $("#whenSel").value = "other"; $("#whenAt").hidden = false; $("#whenAt").value = ctx.now.slice(0, 16); }
@@ -344,6 +353,10 @@
 
   // ---------- request ----------
   $("#askForm").addEventListener("submit", (e) => { e.preventDefault(); ask(); });
+  $("#query").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); $("#askForm").requestSubmit(); }
+  });
+  $("#query").addEventListener("input", fitQuery);
   $("#query").addEventListener("input", () => {
     state.chipCtx = {};
     if (state.compFromTile) { $("#companions").value = state.companionsChoice || "alone"; state.compFromTile = false; }
