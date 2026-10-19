@@ -390,7 +390,7 @@
       if (version !== state.requestVersion) return;
       // a 2GIS answer that lists nearby places or can load more is kept: the person sees them on the map
       if (data.source === "2gis" && !(data.recommendations || []).length
-          && (data.source_error || (body.preferences?.atmosphere_example_id || (body.preferences?.atmosphere_profile && body.preferences?.atmosphere_verified_only)) || (!(data.nearby_places || []).length && !data.next_cursor))) {
+          && (data.source_error || (!(data.nearby_places || []).length && !data.next_cursor))) {
         const local = await postJSON("/recommend", {...body, source: "local"});
         if (version !== state.requestVersion) return;
         if ((local.recommendations || []).length || data.source_error) {

@@ -76,9 +76,14 @@ class Preferences(Model):
     indoor_only: bool = False
     winter_mode: bool = False
     expense_mode: Literal["any", "free_only", "no_required_purchase"] = "any"
-    atmosphere_example_id: str | None = Field(default=None, min_length=1, max_length=120)
-    atmosphere_profile: Literal["light_cafe", "green_inside", "spacious_inside", "green_walk"] | None = None
-    atmosphere_verified_only: bool = False
+
+    @model_validator(mode="before")
+    @classmethod
+    def discard_retired_preferences(cls, value):
+        # Saved walks and already-open clients can contain the removed feature.
+        # Accept only these legacy keys without restoring its filters or ranking.
+        retired = {"atmosphere_example_id", "atmosphere_profile", "atmosphere_verified_only"}
+        return {k: v for k, v in value.items() if k not in retired} if isinstance(value, dict) else value
 
     @field_validator("exclude_poi_ids", "visited_poi_ids")
     @classmethod
@@ -111,16 +116,6 @@ class VisitConditionView(Model):
     source_url: str | None = None
     checked_at: date | None = None
     verification: Literal["verified", "unverified", "conflicting", "stale", "unknown"] = "unknown"
-
-
-class AtmosphereMatch(Model):
-    matched_features: list[str] = Field(default_factory=list)
-    source: Literal["manual", "gemini", "none"] = "none"
-    checked_at: date | None = None
-    photo_ids: list[str] = Field(default_factory=list)
-    requested_features: list[str] = Field(default_factory=list)
-    unconfirmed_features: list[str] = Field(default_factory=list)
-    status: Literal["confirmed", "partial", "unknown", "not_requested"] = "not_requested"
 
 
 class RecommendRequest(Correlated):
@@ -255,7 +250,6 @@ class Recommendation(Model):
     rating_count: int | None
     budget_breakdown: Budget
     visit_condition: VisitConditionView = Field(default_factory=VisitConditionView)
-    atmosphere_match: AtmosphereMatch = Field(default_factory=AtmosphereMatch)
     arrival_estimate: datetime | None = None
     offline_allowed: bool = False
 
@@ -372,7 +366,7 @@ class Health(Model):
     feature_contract_version: int = 2
     features: dict[str, int] = Field(default_factory=lambda: {
         "replan": 1, "end_point": 1, "finish_preferences": 1, "constraints": 1, "comfort": 1,
-        "cost": 1, "atmosphere": 1, "atmosphere_profiles": 1, "comfort_breaks": 1, "on_route_breaks": 1, "plan_export": 1, "nearby_break": 1,
+        "cost": 1, "comfort_breaks": 1, "on_route_breaks": 1, "plan_export": 1, "nearby_break": 1,
         "city_history": 1, "meet_halfway": 1, "winter_plan": 1,
     })
 

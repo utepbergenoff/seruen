@@ -6,7 +6,6 @@ Calculations, hours, prices and missing-facility warnings remain server-owned.
 import re
 from .activities import activity
 from .embeddings import tokenize
-from .geo import target_time
 
 FACILITIES = {"quiet": r"тишин|тих\w*|quiet|silent|тыныш",
               "sockets": r"розет\w*|sockets?|outlets?", "wifi": r"wi-?fi|интернет|internet"}
@@ -69,11 +68,6 @@ def evidence(hit, request, intent, features=None):
                        ("wheelchair", p.wheelchair == "yes")):
         if value:
             facts[key] = True
-    if features:
-        match = features.match(p.poi_id, request.preferences.atmosphere_example_id,
-                               target_time(request, intent).date(), request.preferences.atmosphere_profile)
-        for feature in match.matched_features:
-            facts["photo:" + feature] = True
     return facts
 
 

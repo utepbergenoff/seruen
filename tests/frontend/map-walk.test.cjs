@@ -5,7 +5,7 @@ const FX = require('./fixtures/feature_examples.json');
 const json=data=>({ok:true,json:async()=>data});
 const tick=()=>new Promise(r=>setImmediate(r));
 const settle=async()=>{for(let i=0;i<6;i++)await tick();};
-const opts={healthData:FX.health_with_features,atmos:FX.atmosphere_examples,build:FX.build_ok};
+const opts={healthData:FX.health_with_features,build:FX.build_ok};
 const clone=x=>JSON.parse(JSON.stringify(x));
 const request={location:{lat:51.128,lon:71.43},query:'coffee',context:{lang:'ru',time_budget_min:90}};
 const walkLine=b=>[...b.layers].find(l=>l.options?.weight===5);

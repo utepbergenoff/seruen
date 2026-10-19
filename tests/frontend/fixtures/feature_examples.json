@@ -9,7 +9,6 @@
       "constraints": 1,
       "comfort": 1,
       "cost": 1,
-      "atmosphere": 1,
       "plan_export": 1,
       "nearby_break": 1,
       "on_route_breaks": 1,
@@ -231,12 +230,6 @@
           "checked_at": null,
           "verification": "unknown"
         },
-        "atmosphere_match": {
-          "matched_features": [],
-          "source": "none",
-          "checked_at": null,
-          "photo_ids": []
-        },
         "sources": [
           "synthetic_fixture_not_osm"
         ]
@@ -266,12 +259,6 @@
           "source_url": "https://example.org/synthetic-evidence",
           "checked_at": "2026-10-19",
           "verification": "verified"
-        },
-        "atmosphere_match": {
-          "matched_features": [],
-          "source": "none",
-          "checked_at": null,
-          "photo_ids": []
         },
         "sources": [
           "synthetic-test"
@@ -343,8 +330,7 @@
         "max_walk_min": 5,
         "max_distance_m": null,
         "indoor_only": true,
-        "expense_mode": "any",
-        "atmosphere_example_id": null
+        "expense_mode": "any"
       },
       "exclude_categories": [],
       "companions": "alone",
@@ -501,8 +487,7 @@
       "max_walk_min": 5,
       "max_distance_m": null,
       "indoor_only": true,
-      "expense_mode": "any",
-      "atmosphere_example_id": null
+      "expense_mode": "any"
     },
     "change_codes": [
       "cold"
@@ -560,49 +545,6 @@
       "floor": null
     }
   ],
-  "atmosphere_examples": {
-    "schema_version": 1,
-    "status": "ready",
-    "examples": [
-      {
-        "example_id": "bright_interior",
-        "title": "Светлый интерьер",
-        "titles": {
-          "ru": "Светлый интерьер",
-          "kk": "Жарық интерьер",
-          "en": "Bright interior"
-        },
-        "features": [
-          "bright"
-        ],
-        "photos": [
-          {
-            "url": "img/places/c/team-coffeeboom-expo-1.jpg",
-            "attribution": "команда Серуен"
-          }
-        ]
-      },
-      {
-        "example_id": "greenery",
-        "title": "Зелень",
-        "titles": {
-          "ru": "Зелень",
-          "kk": "Жасыл желек",
-          "en": "Greenery"
-        },
-        "features": [
-          "greenery",
-          "open_space"
-        ],
-        "photos": [
-          {
-            "url": "img/cat-walk.jpg",
-            "attribution": "Wikimedia Commons"
-          }
-        ]
-      }
-    ]
-  },
   "build_ok": {
     "schema_version": 1,
     "status": "ok",
@@ -634,12 +576,6 @@
           "checked_at": "2026-10-19",
           "verification": "verified"
         },
-        "atmosphere_match": {
-          "matched_features": [],
-          "source": "none",
-          "checked_at": null,
-          "photo_ids": []
-        },
         "sources": [
           "synthetic-test"
         ]
@@ -669,12 +605,6 @@
           "source_url": "https://example.org/synthetic-evidence",
           "checked_at": "2026-10-19",
           "verification": "verified"
-        },
-        "atmosphere_match": {
-          "matched_features": [],
-          "source": "none",
-          "checked_at": null,
-          "photo_ids": []
         },
         "sources": [
           "synthetic-test"
@@ -742,8 +672,7 @@
         "max_walk_min": null,
         "max_distance_m": null,
         "indoor_only": false,
-        "expense_mode": "any",
-        "atmosphere_example_id": null
+        "expense_mode": "any"
       },
       "exclude_categories": [],
       "companions": "alone",
@@ -789,8 +718,7 @@
       "max_walk_min": null,
       "max_distance_m": null,
       "indoor_only": false,
-      "expense_mode": "any",
-      "atmosphere_example_id": null
+      "expense_mode": "any"
     },
     "change_codes": [],
     "relaxation_options": [],

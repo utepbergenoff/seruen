@@ -5,7 +5,7 @@ const {boot}=require('./helpers.cjs');
 const FX=require('./fixtures/feature_examples.json');
 const clone=x=>JSON.parse(JSON.stringify(x)), json=x=>({ok:true,json:async()=>x});
 const settle=async()=>{for(let i=0;i<8;i++)await new Promise(r=>setImmediate(r));};
-const base={healthData:{...FX.health_with_features,features:{...FX.health_with_features.features,city_history:1,meet_halfway:1,winter_plan:1}},atmos:FX.atmosphere_examples,build:FX.build_ok};
+const base={healthData:{...FX.health_with_features,features:{...FX.health_with_features.features,city_history:1,meet_halfway:1,winter_plan:1}},build:FX.build_ok};
 const req={location:{lat:51.128,lon:71.43},query:'coffee',context:{lang:'ru',time_budget_min:90}};
 const active=b=>b.w.SeruenFeatures.startWalk(b.w.SeruenFeatures.planView(clone(FX.build_ok),req),null);
 async function search(b) {

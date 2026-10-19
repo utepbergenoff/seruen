@@ -29,6 +29,7 @@ async function boot(t, opts = {}) {
     DomUtil:{create:(tag,cl)=>{const el=w.document.createElement(tag);el.className=cl;return el;}},
     DomEvent:{disableClickPropagation(){},on:(el,event,cb)=>el.addEventListener(event,cb),stop:e=>e.stopPropagation()}};
   w.fetch=async(url,options)=>{
+    opts.onFetch?.(url,options);
     if(url==='presets.json'||url==='scenarios.json') return opts.staticFiles?.[url]?.promise || json(JSON.parse(fs.readFileSync('frontend/'+url,'utf8')));
     if(opts.live && url.startsWith('https://api.example.test')) {
       let response;
@@ -40,8 +41,6 @@ async function boot(t, opts = {}) {
     if(url.endsWith('/health')) return opts.health ? opts.health.promise : json(opts.healthData||{mode_available:['no_ai']});
     if(url.endsWith('/plans/recalculate')) {const p=pending();replans.push({body:JSON.parse(options.body),...p});return p.promise;}
     if(url.endsWith('/comfort/search')) {comforts.push(JSON.parse(options.body));return json(opts.comfort||[]);}
-    if(url.endsWith('/atmosphere/profiles')) return opts.atmosProfileResponse?.promise || json(opts.atmosProfiles || {profiles:[]});
-    if(url.endsWith('/atmosphere/examples')) return json(opts.atmos||[]);
     if(url.includes('/city/stories?')) return json({items: opts.stories || []});
     if(url.endsWith('/plans/build')) {builds.push(JSON.parse(options.body));return opts.buildResponse ? opts.buildResponse.promise : json(opts.build);}
     if(url.endsWith('/plans/export')) return json(opts.export);

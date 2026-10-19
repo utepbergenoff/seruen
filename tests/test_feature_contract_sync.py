@@ -20,8 +20,8 @@ from test_feature_expansion import api as api, expanded as expanded
 def test_health_announces_agreed_contract(api):
     health = api.get('/health').json()
     assert health['feature_contract_version'] == 2
-    assert set(health['features']) == {'replan', 'end_point', 'finish_preferences', 'constraints', 'comfort', 'cost', 'atmosphere',
-                                       'plan_export', 'nearby_break', 'city_history', 'meet_halfway', 'winter_plan', 'atmosphere_profiles', 'comfort_breaks', 'on_route_breaks'}
+    assert set(health['features']) == {'replan', 'end_point', 'finish_preferences', 'constraints', 'comfort', 'cost',
+                                       'plan_export', 'nearby_break', 'city_history', 'meet_halfway', 'winter_plan', 'comfort_breaks', 'on_route_breaks'}
 
 
 def test_request_id_echo_does_not_split_recommendation_cache(api):
@@ -102,17 +102,6 @@ def test_offline_flag_requires_owned_rights(api):
     assert result['recommendations'] and result['recommendations'][0]['offline_allowed'] is False
 
 
-@pytest.mark.parametrize('wanted,opposite', [('indoor', 'outdoor'), ('outdoor', 'indoor'), ('bright', 'dim')])
-def test_atmosphere_does_not_match_a_contradictory_scene(api, wanted, opposite):
-    data = api.app.state.service.features
-    reference = data.atmosphere['bright-reference']
-    reference.features = ['visible_seating', wanted]
-    other = reference.model_copy(deep=True, update={'example_id': 'opposite', 'poi_id': 'team_second',
-                                                   'features': ['visible_seating', opposite]})
-    data.atmosphere['opposite'] = other
-    assert not data.match('team_second', 'bright-reference', reference.evidence.checked_at).matched_features
-    result = post(api, '/recommend', {**ASK, 'preferences': {'atmosphere_example_id': 'bright-reference'}})
-    assert [p['poi_id'] for p in result['recommendations']] == ['team_coffee']
 
 
 def test_actual_frontend_forms_against_fastapi(expanded, monkeypatch):

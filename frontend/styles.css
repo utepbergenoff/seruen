@@ -375,7 +375,7 @@ table.cands { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
 
-/* ---------- eight features: my places, saved walks, changes on the way, comfort, cost, atmosphere ---------- */
+/* ---------- my places, saved walks, changes on the way, comfort, cost ---------- */
 .pills { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .cost { display: inline-flex; align-items: center; gap: 6px; border-radius: 10px; padding: 4px 11px; font-size: 12.5px; font-weight: 600; line-height: 1.4; }
 .cost-free { background: var(--ok-bg); color: var(--ok); }
@@ -430,17 +430,9 @@ table.cands { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-
 .ws::marker { font: 700 13px var(--display); color: var(--sky-deep); }
 .changes { gap: 6px; }
 .finish-field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--muted); grid-column: 1 / -1; }
-.finish-field .lbl, .atmos .lbl { font-weight: 600; color: var(--ink); font-size: 13px; margin: 0; }
+.finish-field .lbl { font-weight: 600; color: var(--ink); font-size: 13px; margin: 0; }
 .finish-field label.check { flex-direction: row; display: flex; align-items: center; gap: 6px; color: var(--ink); }
 .finish-pick[hidden] { display: none; }
-.atmos { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
-.atmos-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
-.atmos-tile { position: relative; flex: 0 0 auto; width: 104px; height: 74px; border: 0; border-radius: var(--r); overflow: hidden; padding: 0; cursor: pointer;
-  background: var(--line-soft); color: var(--ink); font: 600 12px/1.2 var(--font); }
-.atmos-tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.atmos-tile span { position: absolute; left: 6px; right: 6px; bottom: 5px; z-index: 1; color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, .6); text-align: left; }
-.atmos-tile.none span { position: static; color: var(--ink); text-shadow: none; text-align: center; }
-.atmos-tile.on { box-shadow: 0 0 0 3px var(--sun); }
 .ppin, .cpin { display: grid; place-items: center; width: 24px; height: 24px; background: #fff; color: var(--sky-deep);
   box-shadow: 0 2px 6px rgba(15, 34, 48, .3); }
 .ppin { border-radius: 50%; border: 2px solid var(--sun); }
@@ -536,18 +528,7 @@ table.cands { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-
 #previewStage { min-height:126px; border-left:3px solid #B87900; padding-left:14px; }
 #mapDetailBtn { margin-top:6px; }
 
-/* Atmosphere belongs to the search; nearby rest belongs to the current walk. */
-.atmos-moods { border: 0; padding: 0; margin: 14px 0 0; min-width: 0; }
-.atmos-moods legend { font-weight: 650; font-size: 14px; }
-.atmos-options { display: flex; flex-wrap: wrap; gap: 7px; margin: 9px 0; }
-.atmos-options .chip-btn { white-space: normal; text-align: left; }
-.atmos-options .chip-btn.on { border-color: var(--sky-deep); background: var(--sky-tint); color: var(--sky-ink); }
-.atmos-options .chip-btn.on .ic { color: var(--sky-deep); }
-.atmos-summary { font-size: 13px; font-weight: 600; }
-.atmos-examples { margin: 10px 0; font-size: 13px; }
-.atmos-sample { flex: 0 0 150px; margin: 10px 0; }
-.atmos-sample img { width: 150px; height: 100px; object-fit: cover; border-radius: 8px; }
-.atmos-sample small { display: block; font-size: 10px; opacity: .8; }
+/* Rest stops belong to the current walk. */
 .rest-options { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 14px; }
 .rest-list { display: grid; gap: 10px; }
 .rest-card { padding: 12px; border: 1px solid var(--line); border-radius: 12px; }
@@ -667,11 +648,9 @@ body.map-expanded #panelSide { display:none; }
 .finish-field:has(.finish-pick:not([hidden])) { grid-column:1/-1; }
 .finish-field > label { display:block; color:var(--muted); font-size:13px; }
 .context-more { margin-top:10px; font-size:13px; }
-.context-more > summary, #atmosphereOptions > summary { cursor:pointer; color:var(--sky-deep); font-size:13px; }
+.context-more > summary { cursor:pointer; color:var(--sky-deep); font-size:13px; }
 .context-more .ctx-grid { margin-top:10px; }
 #privacyHint { font-size:11px; line-height:1.4; margin:8px 0; }
-#atmosphereOptions { margin-top:8px; }
-#atmosphereOptions:has(.chip-btn.on:not([data-mood=""]):not([data-atmos=""])) > summary { font-weight:700; }
 .ctx > .ctx-grid > label:first-child { min-height:64px; }
 #whenAt { width:100%; }
 

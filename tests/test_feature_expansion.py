@@ -47,12 +47,6 @@ def expanded(settings, tmp_path):
         ],
         "poi_identity_links.json": [{"canonical_id": "team_coffee", "aliases": ["2gis_7000001"],
                                      "evidence": evidence()}],
-        "atmosphere_catalog.json": [{"example_id": "bright-reference", "poi_id": "team_coffee",
-            "title": "Synthetic bright room", "features": ["indoor", "natural_light", "visible_seating"],
-            "analysis_source": "manual", "analysis_version": "test-v1", "evidence": evidence(),
-            "photos": [{"photo_id": "photo-1", "url": "https://example.org/synthetic.jpg",
-                        "content_sha256": "a" * 64, "license": "synthetic-test", "attribution": "TEST ONLY",
-                        "offline_allowed": True}]}],
     }
     for name, rows in records.items():
         (tmp_path / name).write_text(json.dumps({"version": 1, "items": rows}))
@@ -79,10 +73,8 @@ def post(client, path, payload):
 def test_new_endpoints_and_empty_production_collections(client):
     status = client.get("/features/status").json()
     assert not status["gamification"] and not status["server_history"]
-    assert client.get("/atmosphere/examples").json()["status"] == "awaiting_data"
     assert post(client, "/comfort/search", {"location": ASK["location"]}) == []
-    assert client.post("/recommend", json={**ASK, "preferences": {
-        "atmosphere_example_id": "nonexistent"}}).status_code == 404
+
 
 
 @pytest.mark.parametrize("reason,field", [("different_place", "exclude_poi_ids"),
@@ -120,16 +112,6 @@ def test_oversized_saved_plan_is_422(api):
     assert api.post("/plans/refresh", json={"request": ASK, "saved": saved}).status_code == 422
 
 
-def test_same_photo_cannot_describe_different_places(expanded):
-    path = expanded.feature_data_dir / "atmosphere_catalog.json"
-    body = json.loads(path.read_text())
-    other = copy.deepcopy(body["items"][0])
-    other.update(example_id="different-reference", poi_id="team_second")
-    other["photos"][0]["photo_id"] = "different-photo-id"
-    body["items"].append(other)
-    path.write_text(json.dumps(body))
-    with pytest.raises(ValueError, match="atmosphere_photo_multiple_places"):
-        FeatureData(expanded.feature_data_dir)
 
 
 async def test_ai_budget_reserves_capacity_and_cools_down(settings):
@@ -303,14 +285,6 @@ def test_add_comfort_stop_recalculates_budget(api):
     assert new["budget"]["total_min"] > old["budget"]["total_min"]
 
 
-def test_atmosphere_precomputed_features_work_without_ai(api):
-    examples = api.get("/atmosphere/examples").json()
-    assert examples["status"] == "ready" and examples["examples"][0]["analysis_source"] == "manual"
-    result = post(api, "/recommend", {**ASK, "preferences": {"atmosphere_example_id": "bright-reference"}})
-    assert [p["poi_id"] for p in result["recommendations"]] == ["team_coffee"]
-    match = result["recommendations"][0]["atmosphere_match"]
-    assert match["source"] == "manual" and match["matched_features"] == ["natural_light", "visible_seating"]
-    assert result["mode"] == "no_ai"
 
 
 def test_export_only_licensed_facts_and_refresh_ignores_forged_names(api):
@@ -347,7 +321,7 @@ def test_deny_unknown_offline_rights_and_impossible_plan(api):
 
 
 def test_invalid_data_rejected_and_schemas_have_all_collections(expanded):
-    assert len(MODELS) == 5
+    assert len(MODELS) == 4
     path = expanded.feature_data_dir / "poi_identity_links.json"
     body = json.loads(path.read_text())
     body["items"].append(body["items"][0])

@@ -199,38 +199,6 @@
         }
       }
     },
-    "/atmosphere/examples": {
-      "get": {
-        "summary": "Atmosphere Examples",
-        "operationId": "atmosphere_examples_atmosphere_examples_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        }
-      }
-    },
-    "/atmosphere/profiles": {
-      "get": {
-        "summary": "Atmosphere Profiles",
-        "operationId": "atmosphere_profiles_atmosphere_profiles_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        }
-      }
-    },
     "/places/identities": {
       "post": {
         "summary": "Identities",
@@ -939,74 +907,6 @@
   },
   "components": {
     "schemas": {
-      "AtmosphereMatch": {
-        "properties": {
-          "matched_features": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Matched Features"
-          },
-          "source": {
-            "type": "string",
-            "enum": [
-              "manual",
-              "gemini",
-              "none"
-            ],
-            "title": "Source",
-            "default": "none"
-          },
-          "checked_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Checked At"
-          },
-          "photo_ids": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Photo Ids"
-          },
-          "requested_features": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Requested Features"
-          },
-          "unconfirmed_features": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Unconfirmed Features"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "confirmed",
-              "partial",
-              "unknown",
-              "not_requested"
-            ],
-            "title": "Status",
-            "default": "not_requested"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "title": "AtmosphereMatch"
-      },
       "Attribution": {
         "properties": {
           "provider": {
@@ -3335,9 +3235,6 @@
           "visit_condition": {
             "$ref": "#/components/schemas/VisitConditionView"
           },
-          "atmosphere_match": {
-            "$ref": "#/components/schemas/AtmosphereMatch"
-          },
           "sources": {
             "items": {
               "type": "string"
@@ -3359,7 +3256,6 @@
           "stay_min",
           "open_status",
           "visit_condition",
-          "atmosphere_match",
           "sources"
         ],
         "title": "PlanStop"
@@ -3454,41 +3350,6 @@
             ],
             "title": "Expense Mode",
             "default": "any"
-          },
-          "atmosphere_example_id": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 120,
-                "minLength": 1
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Atmosphere Example Id"
-          },
-          "atmosphere_profile": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "light_cafe",
-                  "green_inside",
-                  "spacious_inside",
-                  "green_walk"
-                ]
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Atmosphere Profile"
-          },
-          "atmosphere_verified_only": {
-            "type": "boolean",
-            "title": "Atmosphere Verified Only",
-            "default": false
           }
         },
         "additionalProperties": false,
@@ -3856,6 +3717,13 @@
             "title": "Ai Reviewed",
             "default": false
           },
+          "explanation_evidence": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Explanation Evidence"
+          },
           "selection_source": {
             "type": "string",
             "enum": [
@@ -3994,9 +3862,6 @@
           },
           "visit_condition": {
             "$ref": "#/components/schemas/VisitConditionView"
-          },
-          "atmosphere_match": {
-            "$ref": "#/components/schemas/AtmosphereMatch"
           },
           "arrival_estimate": {
             "anyOf": [

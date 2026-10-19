@@ -138,10 +138,6 @@ class Retriever:
                 # Direct evidence of requested amenities outranks generic descriptive similarity.
                 if requested_facilities:
                     rank += 0.4 * len(proven) / len(requested_facilities)
-                if self.features and (request.preferences.atmosphere_example_id or request.preferences.atmosphere_profile):
-                    match = self.features.match(p.poi_id, request.preferences.atmosphere_example_id, now.date(), request.preferences.atmosphere_profile)
-                    rank += ({"confirmed": .6, "partial": .3}.get(match.status, 0)
-                             if request.preferences.atmosphere_profile else min(.3, len(match.matched_features) * .05))
                 reasons = [f"inferred_tag:{t}" if t in inferred else f"tag:{t}" for t in matched]
                 reasons += ["confirmed_requested_facility:" + t for t in sorted(proven)]
                 if severe and p.indoor:

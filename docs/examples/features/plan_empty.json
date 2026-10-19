@@ -80,8 +80,7 @@
         "preferred_categories": [],
         "max_walk_min": null,
         "indoor_only": false,
-        "expense_mode": "any",
-        "atmosphere_example_id": null
+        "expense_mode": "any"
       },
       "exclude_categories": []
     },
@@ -128,8 +127,7 @@
       "preferred_categories": [],
       "max_walk_min": null,
       "indoor_only": false,
-      "expense_mode": "any",
-      "atmosphere_example_id": null
+      "expense_mode": "any"
     },
     "change_codes": [],
     "relaxation_options": [

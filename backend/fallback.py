@@ -84,18 +84,6 @@ FACILITIES = {
     'sockets': ('розетки', 'sockets', 'розеткалар'),
     'wifi': ('Wi-Fi', 'Wi-Fi', 'Wi-Fi'),
 }
-VISUAL = {
-    'natural_light': ('дневной свет', 'daylight', 'күндізгі жарық'),
-    'bright': ('светло', 'bright', 'жарық'), 'dim': ('приглушённый свет', 'dim lighting', 'бәсең жарық'),
-    'greenery': ('зелень', 'greenery', 'өсімдіктер'), 'open_space': ('простор', 'spacious', 'кеңістік'),
-    'small_space': ('небольшое пространство', 'small space', 'шағын кеңістік'),
-    'visible_seating': ('видимые сиденья', 'visible seats', 'көрінетін орындықтар'),
-    'modern': ('современный стиль', 'modern style', 'заманауи стиль'),
-    'traditional': ('традиционный стиль', 'traditional style', 'дәстүрлі стиль'),
-    'unusual_architecture': ('необычная архитектура', 'unusual architecture', 'ерекше сәулет'),
-    'outdoor': ('снаружи', 'outdoors', 'сыртта'), 'indoor': ('в помещении', 'indoors', 'ғимарат ішінде'),
-}
-
 
 def action(hit, intent):
     index = {'ru': 0, 'en': 1, 'kk': 2}[intent.lang]
@@ -126,7 +114,7 @@ def drafts(hits, intent):
                   time_to_spend_min=h.stay, what_to_do=action(h, intent)) for h in hits[:3]]
 
 
-def explanation(hit, request, intent, budget, condition, visual, category_relaxed=False):
+def explanation(hit, request, intent, budget, condition, category_relaxed=False):
     """Explain observable matches and the exact final budget. No free-form model claims."""
     index = {'ru': 0, 'en': 1, 'kk': 2}[intent.lang]
     category = CATEGORIES.get(hit.poi.category, ('Место', 'Place', 'Орын'))[index]
@@ -138,10 +126,6 @@ def explanation(hit, request, intent, budget, condition, visual, category_relaxe
     unknown = [FACILITIES[tag][index] for tag in wanted if tag not in confirmed]
     if category_relaxed:
         head = ('Альтернатива: ', 'Alternative: ', 'Балама: ')[index] + category.lower() + '.'
-    elif (request.preferences.atmosphere_example_id or request.preferences.atmosphere_profile) and visual.matched_features:
-        labels = [VISUAL[f][index] for f in visual.matched_features if f in VISUAL][:2]
-        if labels:
-            head = ('По фото: ', 'From photos: ', 'Фото бойынша: ')[index] + ', '.join(labels) + '.'
     elif request.preferences.expense_mode != 'any' and condition.kind in ('free', 'optional_purchase'):
         head = (('Вход бесплатный по проверенным данным.', 'Verified free entry.', 'Расталған дерек бойынша кіру тегін.')
                 if condition.kind == 'free' else

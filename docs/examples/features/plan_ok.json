@@ -54,12 +54,6 @@
           "checked_at": "2026-10-18",
           "verification": "verified"
         },
-        "atmosphere_match": {
-          "matched_features": [],
-          "source": "none",
-          "checked_at": null,
-          "photo_ids": []
-        },
         "sources": [
           "synthetic-test"
         ]
@@ -89,12 +83,6 @@
           "source_url": "https://example.org/synthetic-evidence",
           "checked_at": "2026-10-18",
           "verification": "verified"
-        },
-        "atmosphere_match": {
-          "matched_features": [],
-          "source": "none",
-          "checked_at": null,
-          "photo_ids": []
         },
         "sources": [
           "synthetic-test"
@@ -161,8 +149,7 @@
         "preferred_categories": [],
         "max_walk_min": null,
         "indoor_only": false,
-        "expense_mode": "any",
-        "atmosphere_example_id": null
+        "expense_mode": "any"
       },
       "exclude_categories": []
     },
@@ -204,8 +191,7 @@
       "preferred_categories": [],
       "max_walk_min": null,
       "indoor_only": false,
-      "expense_mode": "any",
-      "atmosphere_example_id": null
+      "expense_mode": "any"
     },
     "change_codes": [],
     "relaxation_options": [],

@@ -181,8 +181,7 @@ class RecommendationService:
                 continue
             budget = budget_for(c.walk_min, stay, search.reserve, hit.to_end)
             condition = self.features.condition(p.poi_id, now.date(), p)
-            visual = self.features.match(p.poi_id, request.preferences.atmosphere_example_id, now.date(), request.preferences.atmosphere_profile)
-            why, todo = explanation(hit, request, intent, budget, condition, visual, search.category_relaxed)
+            why, todo = explanation(hit, request, intent, budget, condition, search.category_relaxed)
             if source == "ai" and supports_draft(draft, hit, request, intent, self.features):
                 why = " ".join(filter(None, [draft.why.strip(), unknown_note(hit, intent)]))
                 todo = draft.what_to_do.strip()
@@ -223,7 +222,6 @@ class RecommendationService:
                     rating_count=p.rating_count,
                     budget_breakdown=budget,
                     visit_condition=condition,
-                    atmosphere_match=visual,
                     arrival_estimate=now + timedelta(minutes=budget.total_min-search.reserve) if request.end else None,
                     offline_allowed=self.features.can_export(p.poi_id, now.date()) and not p.poi_id.startswith("2gis_"),
                 )

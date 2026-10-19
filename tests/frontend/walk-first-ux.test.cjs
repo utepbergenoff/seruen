@@ -4,7 +4,7 @@ const {boot}=require('./helpers.cjs');
 const FX=require('./fixtures/feature_examples.json');
 const clone=x=>JSON.parse(JSON.stringify(x)), json=x=>({ok:true,json:async()=>x});
 const settle=async()=>{for(let i=0;i<8;i++)await new Promise(r=>setImmediate(r));};
-const opts={healthData:{...FX.health_with_features,features:{...FX.health_with_features.features,winter_plan:1,meet_halfway:1,city_history:1}},atmos:FX.atmosphere_examples,build:FX.build_ok};
+const opts={healthData:{...FX.health_with_features,features:{...FX.health_with_features.features,winter_plan:1,meet_halfway:1,city_history:1}},build:FX.build_ok};
 const change=(b,s,value)=>{const e=b.w.document.querySelector(s);e.value=value;e.dispatchEvent(new b.w.Event('change'));};
 async function search(b){b.click('#goBtn');await settle();b.requests.at(-1).resolve(json(clone(FX.recommend_normal)));await settle();}
 function active(b){b.w.SeruenFeatures.startWalk(b.w.SeruenFeatures.planView(clone(FX.build_ok),{location:{lat:51.128,lon:71.43},query:'coffee',context:{lang:'ru',time_budget_min:90}}),null);}
