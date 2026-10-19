@@ -122,7 +122,9 @@ def main() -> int:
         # error state: backend not reachable
         page.route("**/recommend", lambda route: route.abort())
         page.goto(f"{BASE}/?at={DAY}{THEME}")
-        page.wait_for_selector("#chips button")
+        # since #52 the idea tiles sit in a collapsible «Идеи для поиска»; open it like a person would
+        page.wait_for_selector("#chips button", state="attached")
+        page.evaluate("() => document.querySelectorAll('details.quick-ideas').forEach(d => d.open = true)")
         page.click("#chips button >> nth=0")
         page.wait_for_selector(".msg.err", timeout=15000)
         check("error state: server unreachable shows a message", "Сервер" in page.inner_text("#status") or
@@ -189,6 +191,7 @@ def main() -> int:
         page.goto(f"{BASE}/?at={DAY}")
         page.wait_for_function("() => /рядом с вами/.test(document.querySelector('#locLine').textContent)", timeout=15000)
         check("location detected automatically on open", True, page.inner_text("#locLine"))
+        page.evaluate("() => document.querySelectorAll('details.quick-ideas').forEach(d => d.open = true)")
         page.click("#chips button >> nth=0")
         page.wait_for_selector(".rec, .empty", timeout=30000)
         loc = json.loads(bodies[0])["location"] if bodies else {}
