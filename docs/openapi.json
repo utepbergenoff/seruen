@@ -1245,6 +1245,9 @@
           "open_status": {
             "$ref": "#/components/schemas/OpenStatus"
           },
+          "visit_condition": {
+            "$ref": "#/components/schemas/VisitConditionView"
+          },
           "eligible": {
             "type": "boolean",
             "title": "Eligible"

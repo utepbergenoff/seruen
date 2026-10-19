@@ -40,7 +40,8 @@ def enabled(settings):
 
 def test_catalog_places_not_in_local_db_are_returned_and_paginated(enabled):
     seen = []
-    with TestClient(create_app(enabled, twogis_transport=transport(seen=seen))) as c:
+    items=[place(n, attribute_groups=[{'attributes':[{'name':'Wi-Fi'}]}]) for n in range(1,8)]
+    with TestClient(create_app(enabled, twogis_transport=transport(items, seen=seen))) as c:
         assert c.get("/health").json()["twogis"]["search_enabled"]
         assert seen == []
         r = c.post("/recommend", json=ASK, headers={"Origin": "http://localhost:5173"})
@@ -56,6 +57,8 @@ def test_catalog_places_not_in_local_db_are_returned_and_paginated(enabled):
         ids = [x["poi_id"] for x in first["nearby_places"]]
         assert len(ids) == len(set(ids)) == 7 and first["next_cursor"] is None
         assert {x["poi_id"] for x in first["recommendations"]} <= set(ids)
+        assert all(p['visit_condition']['provider_attributes']==['Wi-Fi'] for p in first['nearby_places'])
+        assert all(p['visit_condition']['kind']=='unknown' for p in first['nearby_places'])
         c.post("/recommend", json=ASK)
         assert len(seen) == 1  # repeated browsing reuses the short-lived page cache
         params = seen[0].url.params
