@@ -75,6 +75,9 @@ def finish_preference(request):
 def search_radius(request, intent, now, reserve):
     walking_speed = speed(request, intent, now)
     visit = min((visit_minutes(c, intent.time_budget_min) for c in intent.categories), default=10)
+    # Start nearby: keep at least half the usable time for the visit/options.
+    # An empty search may widen 1.5x, but each actual full budget is still checked.
+    visit = max(visit, default_stay(intent.time_budget_min - reserve))
     available = max(0, intent.time_budget_min - reserve - visit)
     legs = 2 if finish_preference(request) == "return" else 1
     radius = available * walking_speed / (1.3 * legs)

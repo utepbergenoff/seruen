@@ -36,16 +36,16 @@ def test_hybrid_index_and_stale_rejection(service, settings, tmp_path):
     assert Retriever(service.dataset, path).mode == "bm25"
 
 
-async def test_category_visit_time_does_not_artificially_exclude_a_fitting_nearby_park(service, req):
+async def test_empty_nearby_radius_expands_but_keeps_the_actual_visit_and_budget(service, req):
     # A park ~956 m away fits 60 min: visit 20 + walk 34 + reserve 5.
-    # The former half-budget stay made the initial search circle too small.
+    # Widen discovery when empty; keep the same 20-minute visit and 5-minute reserve.
     p = service.dataset.pois[3].model_copy(update={"lat": 51.0976, "lon": 71.417, "category": "park"})
     service.dataset.pois = [p]
     service.retriever = Retriever(service.dataset, ROOT / "data/index/missing.json")
     req.query = "прогулка"
     req.context.time_budget_min = 60
     response, _ = await service.recommend(req)
-    assert not response.considered.radius_expanded
+    assert response.considered.radius_expanded
     assert response.recommendations
     assert response.recommendations[0].budget_breakdown.total_min <= 60
 

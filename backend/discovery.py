@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from .fallback import drafts
 from .feature_data import apply_feedback
 from .generate import AIError, validate_drafts
-from .geo import haversine, in_astana, search_radius, speed, target_time
+from .geo import haversine, in_astana, search_radius, target_time
 from .hours import open_status
 from .intent import rule_intent
 from .loader import Dataset
