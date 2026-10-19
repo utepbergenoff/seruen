@@ -35,7 +35,7 @@ class Settings:
     ai_requests_per_day: int = 400
     photo_ai_reserved_requests: int = 100
     gemini_model: str = "gemini-3.5-flash-lite"
-    ai_timeout_s: float = 8.0
+    ai_timeout_s: float = 12.0
     airport_reserve_min: int = 60
     cache_size: int = 256
     mock: bool = False

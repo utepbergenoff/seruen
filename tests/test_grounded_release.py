@@ -57,6 +57,15 @@ def test_outdoor_activity_hint_does_not_erase_child_specific_action(service, req
     assert "ребёнком" in action(hit, intent)
 
 
+def test_exact_walk_minutes_are_allowed_but_invented_numbers_are_rejected(service, req):
+    intent, _, search = service.inspect(req)
+    h = search.hits[0]
+    d = draft(h).model_copy(update={"why": f"До кофейни {h.candidate.walk_min} минут пешком."})
+    assert supports_draft(d, h, req, intent)
+    for text in [f"До кофейни {h.candidate.walk_min + 1} минут пешком.", "Здесь 20 розеток."]:
+        assert not supports_draft(d.model_copy(update={"why": text}), h, req, intent)
+
+
 @pytest.mark.parametrize("lang,why,todo,claim", [
     ("ru", "Парк рядом для прогулки.", "Погуляйте на открытом воздухе.", "Парк открыт сейчас."),
     ("en", "A nearby park for a walk.", "Enjoy an open-air walk.", "The park is open now."),

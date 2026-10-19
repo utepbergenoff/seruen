@@ -32,8 +32,9 @@ claims about crowds or free seats, or guarantees. Your why and what_to_do WILL b
 Explain EACH supplied candidate without changing order or duration. Each has an evidence object:
 cite relevant existing keys in evidence_ids. why: at most 16 words, connect a known fact to the request.
 what_to_do: one concrete category-appropriate idea, at most 25 words. A bar is not an outdoor landmark.
-Don't repeat venue names or add other venues. Don't write numbers, prices, free-entry claims, hours or
-computed budgets: the UI shows these separately. The server appends missing-facility warnings; don't
+Don't repeat venue names or add other venues. Prefer no numbers: the UI shows times separately.
+If you mention walking/visit minutes, use their exact supplied value. Never invent any other numbers,
+prices, free-entry claims, hours or computed budgets. The server appends missing-facility warnings; don't
 repeat these in why. A suggestion is an idea, not evidence of an event or available service.
 In why, prioritize a confirmed feature the person requested (for example tag:wifi for laptop work),
 then explain its benefit. Do not merely repeat the venue category or list unknown facilities.
