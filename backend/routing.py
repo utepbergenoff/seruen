@@ -38,13 +38,19 @@ class WalkingRouter:
             return fallback
         if len(points) < 2 or all(d == 0 for d in fallback.distances):
             return fallback
-        # Do not queue requests containing user locations or retry a failing public demo service.
-        async with self.lock:
-            now = time.monotonic()
-            if now - self.last_call < 1:
-                fallback.error = "routing_local_limit"
-                return fallback
-            self.last_call = now
+        # Respect the public router's pace without turning rapid successive plan
+        # calculations into straight lines. Wait only within this request: no jobs,
+        # coordinate cache or retries. Under sustained load fail in bounded time.
+        try:
+            async with asyncio.timeout(2.5):
+                async with self.lock:
+                    delay = max(0, 1 - (time.monotonic() - self.last_call))
+                    if delay:
+                        await asyncio.sleep(delay)
+                    self.last_call = time.monotonic()
+        except TimeoutError:
+            fallback.error = "routing_busy"
+            return fallback
         coordinates = ";".join(f"{p.lon:.6f},{p.lat:.6f}" for p in points)
         try:
             async with httpx.AsyncClient(timeout=self.settings.routing_timeout_s, transport=self.transport,

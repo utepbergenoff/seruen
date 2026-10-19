@@ -502,3 +502,7 @@ Object.assign(window.I18N.kk,{extraSettings:"Басталу уақыты, шығ
 window.I18N.ru.x.startBest="Идти к: {name}";
 window.I18N.en.x.startBest="Walk to: {name}";
 window.I18N.kk.x.startBest="Бару: {name}";
+
+Object.assign(window.I18N.ru.x,{breakRoutingUnavailable:"Не удалось построить пешеходный путь через остановку. Прежний маршрут сохранён — попробуйте ещё раз.",retryBreakRoute:"Повторить построение",applyBreak:"Идти через эту остановку",breakAdded:"Маршрут перестроен через остановку. Конечная цель сохранена."});
+Object.assign(window.I18N.en.x,{breakRoutingUnavailable:"Could not route the walk through this stop. Your original route is kept — try again.",retryBreakRoute:"Retry routing",applyBreak:"Walk via this stop",breakAdded:"Route updated via the stop. Your destination is kept."});
+Object.assign(window.I18N.kk.x,{breakRoutingUnavailable:"Аялдама арқылы жаяу жолды құру мүмкін болмады. Бұрынғы маршрут сақталды — қайта көріңіз.",retryBreakRoute:"Маршрутты қайта құру",applyBreak:"Осы аялдама арқылы бару",breakAdded:"Маршрут аялдама арқылы жаңартылды. Соңғы мақсат сақталды."});

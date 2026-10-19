@@ -450,15 +450,23 @@ class Planner:
                 eligible.append((metric, poi))
         eligible.sort(key=lambda pair: (0 if payload.reason == "tired" and pair[1].poi_id in self.features.comfort else 1,
                                        pair[0], pair[1].poi_id))
+        baseline = await self.break_baseline(req, goal) if eligible else None
         for _, poi in eligible[:4]:
             try:
-                return await self.insert_break(payload, req, completed, skipped, reserve, poi.poi_id)
+                return await self.insert_break(payload, req, completed, skipped, reserve, poi.poi_id, baseline)
             except PlanError as exc:
-                if exc.status != 409:
+                if exc.status != 409 or exc.code == "break_routing_unavailable":
                     raise
         raise PlanError("no_on_route_break", 409)
 
-    async def insert_break(self, payload, req, completed, skipped, reserve, pause_id):
+    async def break_baseline(self, req, goal):
+        baseline = await self.router.route([req.location, Coords(lat=goal.lat, lon=goal.lon)],
+                                           speed(req, rule_intent(req), datetime.now(ALMATY)))
+        if self.settings.routing_enabled and not self.settings.mock and baseline.source != "osrm_foot":
+            raise PlanError("break_routing_unavailable", 409)
+        return baseline
+
+    async def insert_break(self, payload, req, completed, skipped, reserve, pause_id, baseline=None):
         state = payload.previous
         remaining = [p for p in state.remaining_ids if p not in completed and p not in skipped]
         if not remaining or len(remaining) >= 5 or pause_id in remaining + completed + skipped:
@@ -468,6 +476,7 @@ class Planner:
         goal_coords = Coords(lat=goal.lat, lon=goal.lon)
         if forward_break(req.location, goal_coords, pause) is None:
             raise PlanError("break_not_on_route", 409)
+        baseline = baseline or await self.break_baseline(req, goal)
         original_preferences = req.preferences.model_copy(deep=True)
         # An emergency rest need not match the café's decor. Keep budget, exclusions and safety filters.
         req = req.model_copy(deep=True)
@@ -480,14 +489,17 @@ class Planner:
             finish_mode=state.finish_mode, destination=state.finish, finish_poi_id=state.finish_poi_id, stop_ids=required,
             completed_ids=completed, skipped_ids=skipped, reserve_min=reserve, max_stops=len(required)),
             use_current_time=True)
+        if self.settings.routing_enabled and not self.settings.mock and result.routing_source != "osrm_foot":
+            # A confirmed stop must have a routed path through it. Never replace
+            # the user's existing street route with a straight-line fallback.
+            raise PlanError("break_routing_unavailable", 409)
         if (not result.fits or [p.poi_id for p in result.stops] != required
                 or not result.legs or result.legs[0].walk_min > min(req.preferences.max_walk_min or 120, 5 if payload.reason == "cold" else 10)):
             raise PlanError("no_replacement_found", 409)
-        # Reject actual street detours too. With an unavailable router this remains a labelled estimate.
-        direct = haversine(req.location.lat, req.location.lon, goal.lat, goal.lon) * 1.3
-        baseline_minutes = self.router.estimate([req.location, goal_coords], speed(req, rule_intent(req), result.departure_at)).minutes[0]
-        if (sum(leg.distance_m for leg in result.legs[:2]) - direct > 180
-                or sum(leg.walk_min for leg in result.legs[:2]) - baseline_minutes > 3):
+        # Compare street-to-street, not a real route to a straight-line estimate.
+        # Otherwise normal street bends look like a detour and reject valid stops.
+        if (sum(leg.distance_m for leg in result.legs[:2]) - sum(baseline.distances) > 180
+                or sum(leg.walk_min for leg in result.legs[:2]) - sum(baseline.minutes) > 3):
             raise PlanError("break_detour_too_long", 409)
         result.state.preferences = original_preferences
         result.applied_preferences = original_preferences

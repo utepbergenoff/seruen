@@ -684,3 +684,5 @@ body.map-expanded #panelSide { display:none; }
 .menu { max-height: calc(100vh - var(--header-h) - 24px); overflow-y: auto; }
 /* the empty box keeps its hint on one line; typed text wraps */
 .ask textarea:placeholder-shown { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.active-stop-pin { width:32px; height:32px; display:grid; place-items:center; border:3px solid white; border-radius:50%; background:#00708a; color:white; font:700 14px/1 sans-serif; box-shadow:0 2px 8px #0005; }
+[data-theme="dark"] .active-walk-path { stroke:#45cce0; }

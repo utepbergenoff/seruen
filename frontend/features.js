@@ -601,9 +601,16 @@
     const x = X(), p = walk.plan, saved = walk.savedId && p.saved_at;
     if (p.server?.geometry?.length && L.polyline) {
       walkLine = L.polyline(p.server.geometry.map(([lon, lat]) => [lat, lon]), {
-        color: "#00708A", weight: 5, dashArray: p.server.routing_source === "osrm_foot" ? null : "8 8",
+        color: "#00708A", weight: 5, className:"active-walk-path", dashArray: p.server.routing_source === "osrm_foot" ? null : "8 8",
       }).addTo(map);
     }
+    // Accepted stops stay visible on the active route, including a newly added break.
+    p.stops.forEach((s,i) => {
+      if(s.status !== "next" || !s.coords) return;
+      const pin=L.divIcon({className:"",iconSize:[32,32],iconAnchor:[16,16],html:`<div class="active-stop-pin">${i+1}</div>`});
+      L.marker([s.coords.lat,s.coords.lon],{icon:pin,title:s.name,zIndexOffset:1500,bubblingMouseEvents:false}).addTo(pauseLayer)
+        .bindPopup(`<b>${i+1}. ${esc(s.name)}</b>`).on("click",()=>{walk.collapsed=false;walk.searching=false;renderWalk();$(`#walkStop${i}`)?.scrollIntoView({block:"center",behavior:"smooth"});});
+    });
     const proposed = walk.proposal?.plan.stops.filter(s => !p.stops.some(old => old.poi_id === s.poi_id)) || [];
     proposed.forEach(s => {
       const pin = L.divIcon({className: "", iconSize: [30,30], iconAnchor: [15,15], html: `<div class="cpin">${icon("coffee")}</div>`});
@@ -643,7 +650,7 @@
       ${p.server?.legs?.length ? `<p class="meta">${p.server.legs.at(-1).walk_min > 0 ? esc(fmt(x.toEnd, {m:p.server.legs.at(-1).walk_min}))+" · " : ""}${esc(fmt(x.endEstimate, {
         t:new Intl.DateTimeFormat(state.lang === "en" ? "en-GB" : "ru-RU", {hour:"2-digit",minute:"2-digit",timeZone:"Asia/Almaty"}).format(new Date(p.server.estimated_arrival_at)),
       }))}</p>` : ""}
-      <ol class="walk-stops">${p.stops.map((s, i) => `<li class="ws ws-${esc(s.status)}"><div><b>${esc(s.name)}</b> <span class="meta">· ${esc(statusL[s.status] || s.status)}</span></div>
+      <ol class="walk-stops">${p.stops.map((s, i) => `<li class="ws ws-${esc(s.status)}" id="walkStop${i}"><div><b>${esc(s.name)}</b> <span class="meta">· ${esc(statusL[s.status] || s.status)}</span></div>
         <div class="meta">${s.address ? esc(s.address) + " · " : ""}${s.walk_min != null ? `${icon("walk")} ${esc(s.walk_min)} ${esc(T().minutes)} · ` : ""}${s.stay_min ? `${esc(s.stay_min)} ${esc(T().minutes)} ${esc(x.atStop)}` : ""}${!s.open_status && s.hours_text ? ` · ${esc(s.hours_text)}` : ""}</div>
         ${(mine.places.get(s.poi_id) || {}).note ? `<div class="meta">${icon("note")} ${esc(mine.places.get(s.poi_id).note)}</div>` : ""}
         ${s.open_status ? A.statusPill(s.open_status) : ""}
@@ -656,6 +663,7 @@
       ${walkBusy ? `<div class="loading"><div class="spinner"></div>${esc(x.replanning)}</div>
         <button type="button" class="btn small" id="walkCancel">${esc(x.cancelReplan)}</button>` : ""}
       <p class="src" id="walkMsg" aria-live="polite">${esc(walk.proposal && walkMsg===x.breakKeepsRoute ? "" : walkMsg)}</p>
+      ${walk.routeRetry && !walkBusy ? `<button type="button" class="btn" id="retryWalkRoute">${esc(x.retryBreakRoute)}</button>` : ""}
       ${walk.proposal ? `<section class="card block break-preview" id="walkProposal"><h3>${esc(x.breakPreview)}</h3>
         <p>${esc(x.breakKeepsRoute)}</p>
         ${proposed.map(s => `<p><b>${esc(s.name)}</b> · ${esc(s.walk_min)} ${esc(T().walk)}</p>
@@ -683,10 +691,17 @@
       if (!proposal || Date.now() - proposal.created > 60000 || proposal.plan.deadline_ms - Date.now() < 300000) {
         walk.proposal = null; walkMsg = X().breakExpired; renderWalk(); return;
       }
+      if(proposal.location !== JSON.stringify(currentLocation())) {
+        const pause=proposal.plan.stops.find(s=>!walk.plan.stops.some(p=>p.poi_id===s.poi_id));
+        walkMsg=X().restMoved; return replan("add_stop",pause?.poi_id);
+      }
       walkVersion++; walkBusy = false;
       walk.history.push(JSON.parse(JSON.stringify(walk.plan))); if (walk.history.length > 5) walk.history.shift();
       walk.plan = proposal.plan; walk.proposal = null; walk.rest = null; walkMsg = X().breakAdded; renderWalk();
+      if(walk.plan.server?.geometry?.length) A.fitTo(walk.plan.server.geometry.map(([lon,lat])=>[lat,lon]));
+      $("#walk").scrollIntoView({block:"start",behavior:"smooth"});
     });
+    $("#retryWalkRoute")?.addEventListener("click",()=>{const retry=walk.routeRetry;replan(retry.change,retry.target,retry.remaining);});
     $("#retryRest")?.addEventListener("click", () => loadRestOptions(walk.rest.reason));
     box.querySelectorAll("[data-rest-add]").forEach(b => b.addEventListener("click", () => {
       if (JSON.stringify(walk.rest.location) !== JSON.stringify(currentLocation())) {
@@ -739,7 +754,7 @@
       walkMsg = X().breakNeedsUpdate; renderWalk(); return;
     }
     const version = ++walkVersion, before = JSON.parse(JSON.stringify(walk.plan)), locationStamp=JSON.stringify(currentLocation());
-    walkBusy = true; walkMsg = ""; walk.proposal = null;
+    walkBusy = true; walkMsg = ""; walk.proposal = null; walk.routeRetry = null;
     if (["cold", "tired"].includes(change)) loadRestOptions(change);
     renderWalk();
     const left = remaining ?? Math.floor((before.deadline_ms - Date.now()) / 60000);
@@ -762,6 +777,9 @@
         if (res.status === "no_matches" || !res.stops?.length) error.code = "no_replacement_found";
         throw error;
       }
+      if(nearbyBreak && before.server.routing_source === "osrm_foot" && res.routing_source !== "osrm_foot") {
+        throw Object.assign(new Error("break_routing_unavailable"),{code:"break_routing_unavailable"});
+      }
       // Never accept an old/incompatible server's replacement as an additive break.
       if (nearbyBreak && (before.stops.some(s => s.status === "next" && !res.stops.some(p => p.poi_id === s.poi_id))
           || JSON.stringify(res.state.finish) !== JSON.stringify(before.server.state.finish))) throw new Error("lost_destination");
@@ -773,7 +791,7 @@
       replacement.finish_label = before.finish_label;
       if (nearbyBreak) {
         if (!replacement.stops.some(s => !before.stops.some(p => p.poi_id === s.poi_id))) throw new Error("no_new_stop");
-        walk.proposal = {plan: replacement, created: Date.now()}; walkMsg = X().breakKeepsRoute; return;
+        walk.proposal = {plan: replacement, created: Date.now(), location:locationStamp}; walkMsg = X().breakKeepsRoute; return;
       }
       walk.history.push(before); if (walk.history.length > 5) walk.history.shift();
       walk.plan = replacement; walk.rest = null;
@@ -781,7 +799,9 @@
     } catch (error) {
       if (version !== walkVersion || !walk) return;
       walk.plan = before;
-      walkMsg = ["no_on_route_break","break_not_on_route","break_detour_too_long"].includes(error.code) ? X().routeNoBreak : error.code === "no_replacement_found" ? (nearbyBreak && has("comfort_breaks") ? X().restNoFit : X().replanEmpty) : X().replanFail;
+      if(error.code === "break_routing_unavailable") {
+        walk.routeRetry={change,target,remaining}; walkMsg=X().breakRoutingUnavailable;
+      } else walkMsg = ["no_on_route_break","break_not_on_route","break_detour_too_long"].includes(error.code) ? X().routeNoBreak : error.code === "no_replacement_found" ? (nearbyBreak && has("comfort_breaks") ? X().restNoFit : X().replanEmpty) : X().replanFail;
     } finally { if (version === walkVersion) { walkBusy = false; renderWalk(); } }
   }
 
