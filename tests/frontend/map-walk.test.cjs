@@ -14,6 +14,7 @@ async function search(b) {
   const d=clone(FX.recommend_normal);
   d.source='2gis';d.next_cursor='page-two';
   d.nearby_places=[{...d.recommendations[0],poi_id:'2gis_extra',name:'Outside <top 3>',eligible:true,address:'Test street'}];
+  d.nearby_places[0].visit_condition={kind:'unknown',provider_url:'https://2gis.kz/astana/firm/123',provider_attributes:['Пицца','Бургеры','Wi-Fi','Чек 3500 ₸','Можно с ноутбуком','Детское меню']};
   b.requests[0].resolve(json(d));await settle();return d;
 }
 function start(b) {b.w.SeruenFeatures.startWalk(b.w.SeruenFeatures.planView(clone(FX.build_ok),request),null);}
@@ -29,6 +30,9 @@ test('markers open their own panel; Back restores top 3, catalog and pagination 
   a.markers['2gis_extra'].fire('click');
   assert.match(b.w.document.querySelector('#selectedPlaceCard').textContent,/Outside <top 3>/);
   assert.equal(b.w.document.querySelector('#selectedPlaceCard top'),null);
+  const conditions=b.w.document.querySelector('#selectedPlaceCard .provider-conditions');
+  assert.match(conditions.textContent,/Wi-Fi/);assert.equal(conditions.querySelector('details').open,false);
+  assert.match(conditions.querySelector('details').textContent,/Пицца.*Бургеры/);
   b.click('#backToPlaces');
   assert.equal(a.state.selectedPlaceId,null);
   assert.equal(b.w.document.querySelector('#resultsOverview').hidden,false);

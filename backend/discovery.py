@@ -390,6 +390,7 @@ class Discovery:
                     coords=Coords(lat=poi.lat, lon=poi.lon), distance_m=candidate.distance_m,
                     walk_min=candidate.walk_min, address=address[:1000] if isinstance(address, str) else None,
                     rating=poi.rating, rating_count=poi.rating_count, open_status=open_status(poi, now),
+                    visit_condition=self.service.features.condition(poi.poi_id, now.date(), poi),
                     eligible=candidate.excluded_because is None, excluded_because=candidate.excluded_because,
                     links={"2gis": poi.description_url}))
             response.catalog_total = total

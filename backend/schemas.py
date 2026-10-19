@@ -304,6 +304,7 @@ class CatalogPlace(Model):
     rating: float | None = None
     rating_count: int | None = None
     open_status: OpenStatus
+    visit_condition: VisitConditionView = Field(default_factory=VisitConditionView)
     eligible: bool
     excluded_because: str | None = None
     links: dict[str, str]

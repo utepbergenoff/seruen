@@ -98,10 +98,16 @@
     const st = COST[cost.kind] ? cost.kind : "unknown", x = X();
     const title = [cost.note, cost.source_url && `${T().sources}: ${cost.source_url}`, cost.checked_at].filter(Boolean).join(" · ");
     const provider = cost.provider_url && /^https:\/\/2gis\.kz\/astana\/(firm|geo)\/\d+$/.test(cost.provider_url);
-    const attrs=(cost.provider_attributes||[]).map(a=>`<span>${esc(a)}</span>`).join(" · ");
+    const labels=[...(cost.provider_attributes||[])].sort((a,b)=>{
+      const useful=/чек|wi.?fi|ноутбук|детск|коляс|пандус|туалет|мест|заказ|вход|доступ|оплат|розет|laptop|wheelchair|seat|toilet|entrance|payment/i;
+      return Number(useful.test(b))-Number(useful.test(a));
+    });
+    const attrHTML=values=>values.map(a=>`<span>${esc(a)}</span>`).join(" · ");
+    const attrs=attrHTML(labels.slice(0,4));
+    const more=labels.length>4 ? `<details class="provider-more"><summary>${esc(fmt(x.providerMore,{n:labels.length-4}))}</summary>${attrHTML(labels.slice(4))}</details>` : "";
     const unknown = st === "unknown" && provider ? x.providerCostUnknown : x[COST[st]];
     return `<span class="cost cost-${esc(st)}" title="${esc(title)}">${icon("wallet")} ${esc(unknown)}${cost.note ? ` · ${esc(cost.note)}` : ""}</span>
-      ${provider && attrs ? `<span class="provider-conditions">${attrs} · <a href="${esc(cost.provider_url)}" target="_blank" rel="noopener noreferrer">${esc(x.providerConditions)}</a></span>` : ""}
+      ${provider && attrs ? `<div class="provider-conditions">${attrs} · <a href="${esc(cost.provider_url)}" target="_blank" rel="noopener noreferrer">${esc(x.providerConditions)}</a>${more}</div>` : ""}
       ${cost.source_url && /^https:\/\//.test(cost.source_url) && cost.note ? `<small><a href="${esc(cost.source_url)}" target="_blank" rel="noopener noreferrer">${esc(T().sources)}</a>${cost.checked_at ? " · "+esc(cost.checked_at) : ""}</small>` : ""}`;
   };
   ext.cardExtras = (r) => {

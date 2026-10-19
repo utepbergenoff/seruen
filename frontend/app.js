@@ -527,6 +527,7 @@
         ${p.address ? `<p>${esc(p.address)}</p>` : ""}
         <p>${esc(p.distance_m)} ${esc(t.distance)}${p.walk_min != null ? ` · ${esc(p.walk_min)} ${esc(t.walk)}` : ""}</p>
         ${p.open_status ? statusPill(p.open_status) : ""}
+        ${ext.cardBadges?.(p) || ""}
         ${p.eligible === false ? `<p class="msg warn">${esc(t.catalog.filtered)} ${esc(codeLabel(p.excluded_because))}</p>` : ""}
         <div class="actions"><a class="btn" href="${esc(nav.gisPlace)}" target="_blank" rel="noopener">${esc(t.openIn2gis)}</a>
         ${FEAT.mapLinks ? `<a class="btn" href="${esc(nav.gis)}" target="_blank" rel="noopener">${esc(t.route2gis)}</a>` : ""}
