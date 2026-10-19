@@ -276,7 +276,7 @@
       "explanation_evidence": [],
       "selection_source": "rules",
       "time_to_spend_min": 25,
-      "what_to_do": "Осмотрите место с общедоступной территории; детали посещения уточните заранее.",
+      "what_to_do": "Проведите время с ребёнком; проверьте возрастные ограничения на месте.",
       "what_to_do_source": "template",
       "open_status": {
         "today_hours": null,
@@ -429,7 +429,7 @@
       "explanation_evidence": [],
       "selection_source": "rules",
       "time_to_spend_min": 20,
-      "what_to_do": "Осмотрите место с общедоступной территории; детали посещения уточните заранее.",
+      "what_to_do": "Прогуляйтесь по общедоступным дорожкам и вернитесь тем же путём.",
       "what_to_do_source": "template",
       "open_status": {
         "today_hours": null,

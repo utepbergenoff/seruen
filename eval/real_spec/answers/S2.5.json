@@ -276,7 +276,7 @@
       "explanation_evidence": [],
       "selection_source": "rules",
       "time_to_spend_min": 25,
-      "what_to_do": "Қоғамдық аумақтан тамашалаңыз; бару шарттарын алдын ала тексеріңіз.",
+      "what_to_do": "Баламен уақыт өткізіңіз; жас шектеулерін сол жерде тексеріңіз.",
       "what_to_do_source": "template",
       "open_status": {
         "today_hours": null,
@@ -429,7 +429,7 @@
       "explanation_evidence": [],
       "selection_source": "rules",
       "time_to_spend_min": 20,
-      "what_to_do": "Қоғамдық аумақтан тамашалаңыз; бару шарттарын алдын ала тексеріңіз.",
+      "what_to_do": "Қоғамдық жолдармен серуендеп, сол жолмен қайтыңыз.",
       "what_to_do_source": "template",
       "open_status": {
         "today_hours": null,

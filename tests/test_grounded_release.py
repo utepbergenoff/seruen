@@ -10,6 +10,7 @@ from backend.embeddings import poi_text
 from backend.generate import validate_drafts
 from backend.geo import ALMATY
 from backend.grounding import evidence, supports_draft
+from backend.fallback import action
 from backend.intent import rule_intent
 from backend.loader import Dataset
 from backend.photos import PhotoRequest
@@ -47,6 +48,26 @@ def test_generated_prose_reaches_response_but_not_ranking_or_budget(service, req
     bad = d.model_copy(update={"evidence_ids": ["tag:invented-fact"]})
     assert not validate_drafts(Generated(recommendations=[bad]), search.hits, intent.lang,
                                req, intent, service.features)[0]
+
+
+def test_outdoor_activity_hint_does_not_erase_child_specific_action(service, req):
+    intent, _, search = service.inspect(req)
+    hit = search.hits[0]
+    hit.poi = hit.poi.model_copy(update={"name": "Детская площадка", "category": "kids"})
+    assert "ребёнком" in action(hit, intent)
+
+
+@pytest.mark.parametrize("lang,why,todo,claim", [
+    ("ru", "Парк рядом для прогулки.", "Погуляйте на открытом воздухе.", "Парк открыт сейчас."),
+    ("en", "A nearby park for a walk.", "Enjoy an open-air walk.", "The park is open now."),
+    ("kk", "Жақын саябақта серуендеуге болады.", "Ашық ауада серуендеңіз.", "Саябақ қазір ашық."),
+])
+def test_outdoor_activity_is_not_mistaken_for_an_opening_hours_claim(service, req, lang, why, todo, claim):
+    intent, _, search = service.inspect(req)
+    d = draft(search.hits[0]).model_copy(update={"why": why, "what_to_do": todo})
+    assert validate_drafts(Generated(recommendations=[d]), search.hits, lang)[0]
+    d = d.model_copy(update={"what_to_do": claim})
+    assert not validate_drafts(Generated(recommendations=[d]), search.hits, lang)[0]
 
 
 def test_generated_descriptions_and_inferred_amenities_do_not_boost_retrieval(req):

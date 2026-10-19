@@ -135,6 +135,12 @@ class Gemini:
         for row, hit in zip(candidates, hits):
             row["evidence"] = evidence(hit, request, intent, features)
             row["unconfirmed_requested_facilities"] = unknown_facilities(hit, intent)
+        schema = Generated.model_json_schema()
+        draft_schema = schema["$defs"]["Draft"]
+        draft_schema["required"] = [*draft_schema.get("required", []), "evidence_ids"]
+        draft_schema["properties"]["evidence_ids"].update(minItems=1)
+        draft_schema["properties"]["evidence_ids"]["items"]["enum"] = sorted(
+            {key for row in candidates for key in row["evidence"]})
         if features:
             from .geo import target_time
             today = target_time(request, intent).date()
@@ -152,7 +158,7 @@ In what_to_do you may suggest checking a missing facility before ordering or set
         # Repair formatting/language failures once; never retry exhausted provider quotas here.
         for attempt in range(2):
             try:
-                data = await self.structured(system, payload, Generated.model_json_schema())
+                data = await self.structured(system, payload, schema)
                 generated = Generated.model_validate(data)
                 accepted, invented, _ = validate_drafts(generated, hits, intent.lang, request, intent, features)
                 # Preserve invented IDs for the caller's rejection counters.
@@ -203,7 +209,8 @@ def validate_drafts(generated, hits, lang="ru", request=None, intent=None, featu
             or len(draft.why.split()) > 25
             or len(draft.what_to_do.split()) > 35
             or re.search(
-                r"открыт(?!ь)|закрыт(?!ь)|\bopen\b|\bclosed\b|ашық|жабық|крыш|стройк|по льду|on the ice|http|выставка сегодня|event today",
+                r"\bоткрыт(?:о|а|ы)?\b|\bзакрыт(?:о|а|ы)?\b|\bopen\b(?![ -](?:air|space|area))|\bclosed\b|"
+                r"ашық(?!\s+ауада)|жабық|крыш|стройк|по льду|on the ice|http|выставка сегодня|event today",
                 text,
             )
             or (request is not None and not supports_draft(draft, lookup[draft.poi_id], request, intent, features))

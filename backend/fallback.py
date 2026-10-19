@@ -105,11 +105,11 @@ def action(hit, intent):
             'Before working, check Wi-Fi, sockets and available seating; ask staff about visitor rules.',
             'Жұмыс алдында Wi-Fi, розеткалар мен бос орынды тексеріңіз; келу шарттарын қызметкерлерден сұраңыз.',
         )[index]
-    result = ACTIONS.get(activity(hit.poi) or hit.poi.category, (
+    result = ACTIONS.get(activity(hit.poi), ACTIONS.get(hit.poi.category, (
         'Осмотрите место с общедоступной территории; детали посещения уточните заранее.',
         'Explore from public areas; check visitor details beforehand.',
         'Қоғамдық аумақтан тамашалаңыз; бару шарттарын алдын ала тексеріңіз.',
-    ))[index]
+    )))[index]
     if hit.to_end is not None and (activity(hit.poi) in ('cinema', 'theatre') or hit.poi.category == 'park'):
         result = (
             'Уточните условия посещения; после остановки продолжайте путь к выбранному финишу.',
