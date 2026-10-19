@@ -344,6 +344,12 @@
       const point=finishMarker.getLatLng(); finish={lat:point.lat,lon:point.lng,source:"map"}; renderFinish();
       $("#ctxBox").dispatchEvent(new Event("change",{bubbles:true}));
     });
+    syncFinishMarker();
+  }
+  function syncFinishMarker() {
+    if (!finishMarker) return;
+    if ((walk && !walk.searching) || ext.hideSearchFinish?.()) map.removeLayer(finishMarker);
+    else finishMarker.addTo(map);
   }
 
   // ---------- F7: search by atmosphere ----------
@@ -590,6 +596,7 @@
   }
   function renderWalk() {
     A.setWalkActive(!!walk);
+    syncFinishMarker();
     if (!walk) focusWalk();
     else focusWalk(!!walk.collapsed, !!walk.searching);
     const box = $("#walk"); if (!box) return;
@@ -638,6 +645,7 @@
     box.innerHTML = `<div class="walk-head"><h2>${icon("walk")} ${esc(x.activeWalk)}</h2>
         <button type="button" class="btn small" id="walkClose">${icon("back")} ${esc(x.backToPlaces)}</button></div>
       <p class="route-finish"><strong>${esc(x.finishSummary)}:</strong> ${esc(p.finish_label || (p.server?.state?.finish_mode === "return" ? x.finishReturn : p.stops.at(-1)?.name || x.finishOther))}</p>
+      ${ext.walkContext?.() || ""}
       <p class="meta">${esc(x.locationForRest)}</p>
       ${p.query ? `<p class="meta">«${esc(p.query)}»</p>` : ""}
       ${saved ? `<p class="src">${esc(fmt(x.savedAt, {d: new Date(p.saved_at).toLocaleString(state.lang === "en" ? "en-GB" : "ru-RU")}))}</p><p class="msg warn">${esc(x.stale)}</p>` : ""}
@@ -916,7 +924,7 @@
     window.addEventListener("offline", () => renderWalk());
     S.init().then(loadMine).then(() => { renderMine(); A.rerender(); }).catch(() => { mine.error = X().storeBlocked; });
   }
-  window.SeruenFeatures = {mine, chooseFinish, cancelSetup, startWalk, saveWalk, planView, renderWalk, get walk() { return walk; }, get cons() { return cons; },
+  window.SeruenFeatures = {mine, chooseFinish, cancelSetup, startWalk, saveWalk, planView, renderWalk, syncFinishMarker, get walk() { return walk; }, get cons() { return cons; },
     setFinish: (f) => { finish = f; finishMode=f?"destination":"place"; drawFinish(); renderFinish(); }, setAtmosphere: (a) => { atmosphere = a; }};
   ready();
   if (Object.keys(state.features || {}).length) ext.onHealth();

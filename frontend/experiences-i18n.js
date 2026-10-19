@@ -83,7 +83,9 @@ window.SeruenExperienceText = {
     "backToPlaces": "Назад к местам",
     "privacyTitle": "Как используем две точки",
     "meetDetails": "Выбрать место",
-    "meetBack": "← Все места встречи"
+    "meetBack": "← Все места встречи",
+    "localFallback": "Поиск 2ГИС недоступен или не дал подходящих мест. Показываем нашу базу с теми же ограничениями.",
+    "meetingWalkInfo": "На карте ваш путь к месту встречи. B — выбранный старт второго участника, а не его текущее положение."
   },
   "en": {
     "history": "Landmarks",
@@ -169,7 +171,9 @@ window.SeruenExperienceText = {
     "backToPlaces": "Back to places",
     "privacyTitle": "How we use both points",
     "meetDetails": "Choose this place",
-    "meetBack": "← All meeting places"
+    "meetBack": "← All meeting places",
+    "localFallback": "2GIS search is unavailable or found no suitable places. Showing our catalogue with the same constraints.",
+    "meetingWalkInfo": "The map shows your route to the meeting place. B marks the other person's chosen start, not their live location."
   },
   "kk": {
     "history": "Көрікті жерлер",
@@ -255,6 +259,8 @@ window.SeruenExperienceText = {
     "backToPlaces": "Орындарға оралу",
     "privacyTitle": "Екі нүктені қалай қолданамыз",
     "meetDetails": "Орынды таңдау",
-    "meetBack": "← Барлық кездесу орындары"
+    "meetBack": "← Барлық кездесу орындары",
+    "localFallback": "2GIS іздеуі қолжетімсіз немесе қолайлы орындар табылмады. Сол шектеулермен өз базамыздағы орындарды көрсетеміз.",
+    "meetingWalkInfo": "Картада кездесу орнына баратын жолыңыз көрсетілген. B — екінші адамның таңдалған бастапқы нүктесі, қазіргі орналасқан жері емес."
   }
 };
