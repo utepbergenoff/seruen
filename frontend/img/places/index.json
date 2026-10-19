@@ -1,6 +1,6 @@
 {
 "version": 1,
-"generated_at": "2026-10-18T13:51:12+00:00",
+"generated_at": "2026-10-19T11:29:20+00:00",
 "places": {
 "osm_node_11920102369": [
 {
@@ -2999,6 +2999,126 @@
 "license": "Собственное фото команды",
 "note": "Лепим и варим, ТРЦ Хан Шатыр"
 }
+],
+"2gis_70000001026933143": [
+{
+"url": "c/team-kango-expo-1.jpg",
+"source": "team",
+"author": "Алихан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Kango, батутно-развлекательный парк, Кабанбай батыр 62 (EXPO)"
+},
+{
+"url": "c/team-kango-expo-2.jpg",
+"source": "team",
+"author": "Алихан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Kango, батутно-развлекательный парк, Кабанбай батыр 62 (EXPO)"
+},
+{
+"url": "c/team-kango-expo-3.jpg",
+"source": "team",
+"author": "Алихан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Kango, батутно-развлекательный парк, Кабанбай батыр 62 (EXPO)"
+},
+{
+"url": "c/team-kango-expo-4.jpg",
+"source": "team",
+"author": "Алихан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Kango, батутно-развлекательный парк, Кабанбай батыр 62 (EXPO)"
+}
+],
+"2gis_70000001115035313": [
+{
+"url": "c/team-okadzaki-expo-1.jpg",
+"source": "team",
+"author": "Алихан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Okadzaki.kz, кафе, проспект Мангилик Ел 56 (EXPO)"
+},
+{
+"url": "c/team-okadzaki-expo-2.jpg",
+"source": "team",
+"author": "Алихан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Okadzaki.kz, кафе, проспект Мангилик Ел 56 (EXPO)"
+},
+{
+"url": "c/team-okadzaki-expo-3.jpg",
+"source": "team",
+"author": "Алихан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Okadzaki.kz, кафе, проспект Мангилик Ел 56 (EXPO)"
+},
+{
+"url": "c/team-okadzaki-expo-4.jpg",
+"source": "team",
+"author": "Алихан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Okadzaki.kz, кафе, проспект Мангилик Ел 56 (EXPO)"
+}
+],
+"2gis_70000001084319590": [
+{
+"url": "c/team-espressoday-expo-1.jpg",
+"source": "team",
+"author": "Алихан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Espresso Day, Кабанбай батыр 62 (EXPO)"
+},
+{
+"url": "c/team-espressoday-expo-2.jpg",
+"source": "team",
+"author": "Алихан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Espresso Day, Кабанбай батыр 62 (EXPO)"
+},
+{
+"url": "c/team-espressoday-expo-3.jpg",
+"source": "team",
+"author": "Алихан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Espresso Day, Кабанбай батыр 62 (EXPO)"
+}
+],
+"osm_way_1460763574": [
+{
+"url": "c/team-independence25-expo-1.jpg",
+"source": "team",
+"author": "Алихан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Тәуелсіздіктің 25 жылдығы, у EXPO"
+},
+{
+"url": "c/team-independence25-expo-2.jpg",
+"source": "team",
+"author": "Алихан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Тәуелсіздіктің 25 жылдығы, у EXPO"
+},
+{
+"url": "c/team-independence25-expo-3.jpg",
+"source": "team",
+"author": "Алихан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Тәуелсіздіктің 25 жылдығы, у EXPO"
+},
+{
+"url": "c/team-independence25-expo-4.jpg",
+"source": "team",
+"author": "Алихан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Тәуелсіздіктің 25 жылдығы, у EXPO"
+},
+{
+"url": "c/team-independence25-expo-5.jpg",
+"source": "team",
+"author": "Алихан, команда Серуен",
+"license": "Собственное фото команды",
+"note": "Тәуелсіздіктің 25 жылдығы, у EXPO"
+}
 ]
 },
 "names": {
@@ -3184,6 +3304,11 @@
 ],
 "osm_way_917478479": [
 "Astana Opera"
+],
+"osm_way_1460763574": [
+"Тәуелсіздіктің 25 жылдығы",
+"25 лет Независимости",
+"25 years of Independence"
 ]
 }
 }
