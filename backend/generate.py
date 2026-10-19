@@ -153,8 +153,6 @@ class Gemini:
             today = target_time(request, intent).date()
             for row, hit in zip(candidates, hits):
                 row["visit_condition"] = features.condition(hit.poi.poi_id, today, hit.poi).model_dump(mode="json")
-                row["visual_match"] = features.match(hit.poi.poi_id, request.preferences.atmosphere_example_id,
-                                                     today, request.preferences.atmosphere_profile).model_dump(mode="json")
             # Do not send a person's history to Gemini; only constraints relevant to these candidates.
             payload["preferences"] = request.preferences.model_dump(exclude={"visited_poi_ids", "exclude_poi_ids"})
         system = SYSTEM + """ All explanation/action text must be in response_language, even when

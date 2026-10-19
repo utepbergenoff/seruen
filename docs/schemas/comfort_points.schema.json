@@ -264,6 +264,53 @@
           "title": "Description Source",
           "type": "string"
         },
+        "provider_attributes": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Provider Attributes",
+          "type": "array"
+        },
+        "published_special_hours": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 100,
+          "title": "Published Special Hours",
+          "type": "object"
+        },
+        "published_hours": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Published Hours"
+        },
+        "schedule_note": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Schedule Note"
+        },
+        "schedule_has_exceptions": {
+          "default": false,
+          "title": "Schedule Has Exceptions",
+          "type": "boolean"
+        },
         "opening_hours_raw": {
           "anyOf": [
             {

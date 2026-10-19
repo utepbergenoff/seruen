@@ -5,7 +5,7 @@ from typing import Annotated, Literal
 
 from pydantic import AwareDatetime, Field, model_validator
 
-from .schemas import (AtmosphereMatch, Category, Coords, Location, Model, OpenStatus, Preferences,
+from .schemas import (Category, Coords, Location, Model, OpenStatus, Preferences,
                       RecommendRequest, VisitConditionView)
 from .feature_data import ComfortKind
 
@@ -93,7 +93,6 @@ class PlanStop(Model):
     stay_min: int = Field(ge=1)
     open_status: OpenStatus
     visit_condition: VisitConditionView
-    atmosphere_match: AtmosphereMatch
     sources: list[str]
 
 

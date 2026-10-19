@@ -185,9 +185,6 @@ class Planner:
         finish = payload.destination if payload.finish_mode == "destination" else origin
         if any(not in_astana(p.lat, p.lon) for p in (req.location, origin, finish)):
             raise PlanError("outside_astana")
-        if prefs.atmosphere_example_id and not any(r.example_id == prefs.atmosphere_example_id
-                                                  for r in self.features.examples(now.date())):
-            raise PlanError("atmosphere_example_unavailable", 404)
         available = intent.time_budget_min
         reserve = max(payload.reserve_min, self.settings.airport_reserve_min if intent.before_flight else 0)
         source = "2gis" if req.source == "2gis" or (req.source == "auto" and self.discovery.active()) else "local"
@@ -229,8 +226,7 @@ class Planner:
         if not payload.stop_ids:
             def priority(p):
                 detour = haversine(req.location.lat, req.location.lon, p.lat, p.lon) + haversine(p.lat, p.lon, finish.lat, finish.lon)
-                visual = self.features.match(p.poi_id, prefs.atmosphere_example_id, now.date(), prefs.atmosphere_profile)
-                return (-semantics.get(p.poi_id, 0) - .2 * len(visual.matched_features) + detour / 10000, p.poi_id)
+                return (-semantics.get(p.poi_id, 0) + detour / 10000, p.poi_id)
             candidates.sort(key=priority)
         chosen, seen = [], set()
         points = [req.location, finish]
@@ -298,8 +294,7 @@ class Planner:
                                   coords=Coords(lat=poi.lat, lon=poi.lon), arrival_at=arrival,
                                   departure_at=departure, stay_min=stay, open_status=open_status(poi, arrival),
                                   visit_condition=self.features.condition(poi.poi_id, arrival.date(), poi),
-                                  atmosphere_match=self.features.match(poi.poi_id, prefs.atmosphere_example_id,
-                                                                      arrival.date(), prefs.atmosphere_profile), sources=poi.sources))
+                                  sources=poi.sources))
             cursor = departure
         ids = ["start", *[p.poi_id for p, _ in chosen], "finish"]
         legs = [PlanLeg(from_id=ids[i], to_id=ids[i+1], distance_m=d, walk_min=routed.minutes[i], source=routed.source)
@@ -419,9 +414,6 @@ class Planner:
         if not remaining or len(remaining) >= 5:
             raise PlanError("no_replacement_found", 409)
         nearby = req.model_copy(deep=True)
-        nearby.preferences.atmosphere_example_id = None
-        nearby.preferences.atmosphere_profile = None
-        nearby.preferences.atmosphere_verified_only = False
         nearby.preferences.preferred_categories = []
         nearby.preferences.indoor_only = True
         nearby.preferences.max_walk_min = min(nearby.preferences.max_walk_min or 120, 5)
@@ -478,11 +470,8 @@ class Planner:
             raise PlanError("break_not_on_route", 409)
         baseline = baseline or await self.break_baseline(req, goal)
         original_preferences = req.preferences.model_copy(deep=True)
-        # An emergency rest need not match the café's decor. Keep budget, exclusions and safety filters.
+        # A rest stop may have another category. Keep budget, exclusions and safety filters.
         req = req.model_copy(deep=True)
-        req.preferences.atmosphere_example_id = None
-        req.preferences.atmosphere_profile = None
-        req.preferences.atmosphere_verified_only = False
         req.preferences.preferred_categories = []
         required = [pause_id, *remaining]
         result = await self.build(PlanRequest(request=req, origin=state.origin,
@@ -503,10 +492,6 @@ class Planner:
             raise PlanError("break_detour_too_long", 409)
         result.state.preferences = original_preferences
         result.applied_preferences = original_preferences
-        for stop in result.stops:
-            if stop.poi_id not in self.features.comfort:
-                stop.atmosphere_match = self.features.match(stop.poi_id, original_preferences.atmosphere_example_id,
-                    stop.arrival_at.date(), original_preferences.atmosphere_profile)
         result.change_codes = [payload.reason, "nearby_break_keeps_stops"]
         result.notes.insert(0, {"ru": "Предложена остановка по направлению к следующей цели (добавочный путь — не более 3 минут по оценке). Прежние остановки и финиш сохранены; проверьте условия доступа.",
             "en": "Suggested a break towards your next stop (estimated extra walk: at most 3 minutes). All remaining stops and the finish are kept; check access conditions.",

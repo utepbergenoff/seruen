@@ -1,4 +1,4 @@
-# Серуен: общий контракт восьми функций, редакция 2
+# Серуен: общий контракт функций прогулки, редакция 2
 
 Дополнение 19 октября: `/health.features.on_route_breaks=1` включает остановки по направлению к следующей цели с сохранением оставшихся точек и финиша. `/comfort/search` принимает `on_route_only=true` с минимум двумя `route_points`, возвращает `extra_walk_min`. Неподходящая остановка даёт 409 `no_on_route_break`, `break_not_on_route` или `break_detour_too_long`; клиент оставляет действующий план. `OpenStatus` дополнен `today_hours`, `for_date`, `source_url`, `schedule_note`, `schedule_has_exceptions`; `VisitConditionView` — `provider_attributes`, `provider_url`. Все поля совместимы со старым клиентом. Поведение и публикация: [walk_first_ux.md](walk_first_ux.md).
 
@@ -9,7 +9,7 @@
 
 Редакция 2 согласует код из `feat/frontend-eight-features` с сервером. Версии серверных PlanState/OfflinePlan и файлов данных остаются 1; локальная оболочка сохранённой прогулки в браузере — version=2.
 
-`GET /health` возвращает `feature_contract_version:2` и `features:{replan:1,end_point:1,constraints:1,comfort:1,cost:1,atmosphere:1,atmosphere_profiles:1,comfort_breaks:1,plan_export:1,nearby_break:1,city_history:1,meet_halfway:1,winter_plan:1}`. Флаги означают поддержку API, а не наличие новых данных или живой квоты Gemini. Подготовленный фронтенд включает функции только при этой редакции. Старый опубликованный интерфейс продолжает работать. Новые городские функции описаны в [city_experiences.md](city_experiences.md).
+`GET /health` возвращает `feature_contract_version:2` и `features:{replan:1,end_point:1,constraints:1,comfort:1,cost:1,comfort_breaks:1,plan_export:1,nearby_break:1,city_history:1,meet_halfway:1,winter_plan:1}`. Флаги означают поддержку API, а не наличие новых данных или живой квоты Gemini. Подготовленный фронтенд включает функции только при этой редакции. Старый опубликованный интерфейс продолжает работать. Новые городские функции описаны в [city_experiences.md](city_experiences.md).
 
 | Назначение | Согласованный формат (вместо черновика v0) |
 |---|---|
@@ -18,10 +18,9 @@
 | Пересчёт | `/plans/recalculate`, поле previous = серверный state, reason, remaining_time_min |
 | Удобства | `/comfort/search`, location и route_points; ответ массив, warming/bench вместо warm/sit |
 | Цена карточки | visit_condition.kind = free/optional_purchase/paid/unknown |
-| Атмосфера | объект `{schema_version,status,examples}`, выбор через preferences.atmosphere_example_id; совпадения в matched_features, source=manual/gemini/none |
 | Сохранение | `/plans/export`, хранить только OfflinePlan; обновление `/plans/refresh` |
 
-Пути `/walk/replan`, `/comfort` и поля constraints/atmosphere_id из черновика не используются. Соответствующие изменения уже внесены в `frontend/features.js` этой версии — Алихану нужно публиковать весь актуальный `frontend/` из main, не старую ветку отдельно.
+Пути `/walk/replan`, `/comfort` и поля constraints из черновика не используются. Соответствующие изменения уже внесены в `frontend/features.js` этой версии — Алихану нужно публиковать весь актуальный `frontend/` из main, не старую ветку отдельно.
 
 ## Интеграция для Алихана
 
@@ -30,7 +29,7 @@
 3. Передавать возвращённый `state` в `/plans/recalculate`, новую текущую точку и **оставшееся** время. Выполненные остановки — только из `state.remaining_ids`.
 4. Личные отметки/заметки и ID хранить в браузере. Для названия/адреса/координат требуется подтверждённый offline_allowed; факты 2ГИС пока остаются в памяти вкладки, закладка хранит ID и личную заметку со ссылкой на 2ГИС. На сервер отправлять только необходимые ID и ограничения, без заметок. Для отмены вернуть предыдущий снимок `preferences` и `context.exclude_categories`, убрать `feedback`.
 5. Показывать `unknown`, `verification`, дату и источник. Кнопка ослабления фильтра требует действия пользователя; сервер фильтры сам не снимает.
-6. F4/F5 и полный экспорт F6 требуют проверенных данных Ерлана. Включена проверка Ерлана `4b31bfb`: 8 примеров атмосферы, 16 удобств (15 verified), 24 условия (13 verified); 15 собственных проверенных точек доступны для офлайн-экспорта. Пустые ответы — штатное состояние, не ошибка сети. `/features/status.data` показывает количество загруженных записей, `ready` — проверенных и свежих; identity_aliases считает только алиасы без канонических ID. Новые API не создают монет, сундуков или аккаунтов.
+6. F4/F5 и полный экспорт F6 требуют проверенных данных Ерлана. Включена проверка Ерлана `4b31bfb`: 16 удобств (15 verified), 24 условия (13 verified); 15 собственных проверенных точек доступны для офлайн-экспорта. Пустые ответы — штатное состояние, не ошибка сети. `/features/status.data` показывает количество загруженных записей, `ready` — проверенных и свежих; identity_aliases считает только алиасы без канонических ID. Новые API не создают монет, сундуков или аккаунтов.
 
 ## F3, F5, F7, F8: общий запрос рекомендаций
 
@@ -49,7 +48,7 @@
   "preferences": {
     "exclude_poi_ids": [], "visited_poi_ids": [], "exclude_visited": false,
     "preferred_categories": [], "max_walk_min": 10, "indoor_only": false,
-    "expense_mode": "any", "atmosphere_example_id": null
+    "expense_mode": "any"
   }
 }
 ```
@@ -70,7 +69,7 @@
 | `wrong_type` | `category` обязательно | Добавить категорию в исключения |
 | `no_expense` | — | Включить `no_required_purchase` |
 
-Дополнения к ответу `/recommend`: `applied_preferences`, `change_codes`, `relaxation_options` и короткая локализованная заметка. Карточка содержит `canonical_id`, `visit_condition` (kind, note, source_url, checked_at, verification), `atmosphere_match` (matched_features, source, checked_at, photo_ids).
+Дополнения к ответу `/recommend`: `applied_preferences`, `change_codes`, `relaxation_options` и короткая локализованная заметка. Карточка содержит `canonical_id`, `visit_condition` (kind, note, source_url, checked_at, verification).
 Ограничения действуют до ранжирования, для локальных и 2ГИС-кандидатов; кандидат не возвращается через подтверждённый другой ID. История — заявление пользователя, не доказательство физического визита.
 
 ## F1–F2: маршрут и пересчёт
@@ -98,7 +97,7 @@
 - `status`: `ok`, `partial` (часть явно выбранных остановок исключена), `impossible`, `no_matches`, `unavailable`, `refused`.
 - `fits`: весь выданный маршрут помещается в бюджет и проходит проверки. Для `no_matches` может быть true для дороги к финишу, но остановок нет. `fits=false` и `do_not_start_plan` запрещают показывать план готовым к прогулке.
 - `budget`: available_min, walking_min, visiting_min, reserve_min, total_min, spare_min. `total=walking+visiting+reserve`. Перед вылетом запас минимум 60 минут. Запас не включён в `estimated_arrival_at`.
-- `stops`: ID и canonical_id, координаты, название/категория, arrival_at, departure_at, stay_min, open_status, visit_condition, atmosphere_match, sources.
+- `stops`: ID и canonical_id, координаты, название/категория, arrival_at, departure_at, stay_min, open_status, visit_condition, sources.
 - `legs`: from_id/to_id (`start`/`finish` либо ID), distance_m, walk_min, source.
 - `routing_source`: `osrm_foot` либо `distance_estimate`. Пешеходные расстояния берутся с существующего публичного OSRM; минуты считают с темпом пользователя, ребёнка/зимы. Резервный расчёт — расстояние по прямой × 1.3. Это оценка, не гарантия прохода/прибытия. `geometry` — массив `[lon,lat]`. `routing_error` сообщает о недоступности/локальном ограничении.
 - `state`: schema_version=1, created_at, origin, finish_mode, finish, remaining_ids, completed_ids, skipped_ids, preferences, exclude_categories, companions, accessibility, reserve_min.
@@ -141,13 +140,9 @@
 
 `POST /plans/refresh`: `{ "saved": <OfflinePlan>, "request": <RecommendRequest>, "reserve_min":5 }`. Обновляет только ID сохранённых мест из доверенных источников, игнорирует старые клиентские названия, координаты и длительности. Для частичного снимка задать финиш через новый `/plans/build`. Старые часы не показывать актуальными. Неизвестная версия формата → 422.
 
-## F7: атмосфера фото
+## F7: функция удалена
 
-`GET /atmosphere/examples`: `{schema_version:1,status:"ready"|"awaiting_data",examples:[...]}`.
-Каждый пример содержит example_id, poi_id, title, features, photos с лицензией/авторством/хешем, analysis_source (manual/gemini), analysis_version, evidence. Выбранный example_id передать в `preferences.atmosphere_example_id`.
-Дополнительно titles содержит переводы ru/kk/en (каждый 1–200 символов); при отсутствии перевода интерфейс использует title. При awaiting_data показано, что примеры ещё готовятся.
-Подбор идёт по пересечению проверенных видимых признаков. Источник `manual` подписывать «по размеченным фото», `gemini` — «по ранее проверенному анализу». Это не живой анализ загрузки пользователя. По фото не выводятся тишина, Wi-Fi, розетки, свободные столики, часы работы или безопасность. Произвольная загрузка фото не входит в выпуск.
-Существующий API анализа фото сохраняется; кеш анализа теперь зависит от содержимого фото, схемы/промпта и запроса. Общий лимит Gemini оставляет часть запросов для рекомендаций. При недоступном ИИ размеченные признаки продолжают работать без обращения к Gemini.
+По решению команды подбор по атмосфере удалён. Он не объявляется в `/health`, не влияет на поиск и маршруты; его API больше нет. Старые сохранённые preferences очищаются от трёх прежних полей при чтении сервером, остальные ограничения сохраняются. Фото и их Gemini-анализ работают независимо. [Публикация и совместимость](frontend/ATMOSPHERE_REMOVAL.md).
 
 ## F8: идентичность
 
@@ -156,7 +151,7 @@
 
 ## Ошибки, нагрузка, эксплуатация
 
-Структурные ошибки → 422 в прежнем формате валидации приложения. Ошибки новых операций → `{"error":{"code":"..."}}`: 404 poi_not_found/atmosphere_example_unavailable; 409 stale_plan/no_replacement_found; 422 outside_astana/duplicate_or_too_many_stops/completion_not_in_plan/stop_not_in_plan/too_many_exclusions/empty_saved_plan. Ошибки провайдера при построении плана → status=unavailable, source_error, fits=false. Ничего не принимать за пустой успешный подбор без проверки status.
+Структурные ошибки → 422 в прежнем формате валидации приложения. Ошибки новых операций → `{"error":{"code":"..."}}`: 404 poi_not_found; 409 stale_plan/no_replacement_found; 422 outside_astana/duplicate_or_too_many_stops/completion_not_in_plan/stop_not_in_plan/too_many_exclusions/empty_saved_plan. Ошибки провайдера при построении плана → status=unavailable, source_error, fits=false. Ничего не принимать за пустой успешный подбор без проверки status.
 
 Новые endpoint-ы используют существующий CORS и JSON Content-Type; размеры списков и текста ограничены схемами. GET/POST с опубликованного Netlify разрешены. Точные запросы, координаты и заметки не печатаются в прикладные логи. Планы не пишутся в файлы или БД сервера; временный кеш запросов/каталога сохраняет прежние ограничения.
 
@@ -192,17 +187,11 @@
 
 Явный `stop_ids` задаёт выбранные места и отменяет лишь выведенную из текста категорию поиска; заданные пользователем ограничения, расписания и проверки безопасности действуют по-прежнему.
 
-## Атмосфера и отдых — дополнение от 19.10.2026
+## Отдых — дополнение от 19.10.2026
 
-Новые необязательные флаги `/health.features`: `atmosphere_profiles:1`, `comfort_breaks:1`.
+Флаг `/health.features.comfort_breaks=1` включает удобства для остановки.
 
-`GET /atmosphere/profiles` возвращает четыре повседневных варианта: `light_cafe`, `green_inside`, `spacious_inside`, `green_walk`. В каждом — titles ru/kk/en, features, categories, scene, examples с реальными фото/авторством/датой и reviewed_places. Это примеры обстановки, а не обещание наличия рядом.
-
-В preferences: `atmosphere_profile` (один из ID или null), `atmosphere_verified_only` (false по умолчанию). Подбор ограничивает формат/помещение, расстояние, часы и бюджет. Проверенные фото конкретного филиала повышают приоритет; остальные места получают явное `status:unknown`. Строгий режим оставляет только полное подтверждение. `atmosphere_match` дополнен requested_features, unconfirmed_features, status=confirmed/partial/unknown/not_requested. Natural light считается светлым освещением; совпадение только indoor/outdoor не считается сходством фотографий. Старый atmosphere_example_id сохранён для совместимости. Отзывы, тишина, наличие свободных стульев, качество сервиса и доступность не выводятся из фото.
-
-Фронтенд больше не предлагает фасады достопримечательностей как основную форму выбора атмосферы. Нажатие варианта показывает условия и кнопку подбора, проверенные примеры раскрываются отдельно. Отключение снимает весь фильтр.
-
-При cold/tired фронтенд параллельно запрашивает `/comfort/search`: location текущей выбранной точки, radius_m=500, kinds=[warming,bench,toilet,water,entrance], verified_only=true; без route_points, чтобы не выдавать далёкую точку у финиша за ближайшую. ComfortView дополнен distance_m, walk_min (оценка по 60 м/мин и коэффициенту 1.3), indoor и open_status. Источник, дата, этаж и условия доступа видны в карточке. Скамейка на улице не обозначается как место согреться. Закрытые точки показаны с недоступной кнопкой; неизвестные часы подписаны честно.
+При cold/tired фронтенд параллельно запрашивает `/comfort/search`: location текущей выбранной точки, radius_m=100, kinds=[warming,bench,toilet,water,entrance], verified_only=true, on_route_only=true и route_points от текущей точки к следующей цели. Проверяется добавочный путь; первоначальная цель сохраняется. ComfortView дополнен distance_m, walk_min (оценка по 60 м/мин и коэффициенту 1.3), indoor и open_status. Источник, дата, этаж и условия доступа видны в карточке. Скамейка на улице не обозначается как место согреться. Закрытые точки показаны с недоступной кнопкой; неизвестные часы подписаны честно.
 
 `keep_stops:true` теперь поддерживает `reason:add_stop` и poi_id. Дополнительная остановка ставится **перед** оставшимися целями, после проверки всего бюджета/часов/расстояния. Ответ остаётся PlanResponse. Фронтенд сначала показывает предложение и применяет его только по подтверждению; проверяет сохранность всех оставшихся ID и финиша. Декор и предпочтительная категория не ограничивают остановку для отдыха; расходные, зимние и прочие ограничения сохраняются. При tired сначала проверяются реальные скамейки в пределах 300 м; cold продолжает искать помещение. Неудача поиска заведений не скрывает независимо загруженные удобства. Данные удобств ограничены обследованными точками команды; отсутствие ответа не означает отсутствие скамеек на местности.
 

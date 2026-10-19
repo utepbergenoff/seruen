@@ -235,7 +235,7 @@ test('the time ruler puts every pick at its walking minutes and opens its card',
 
 // ---------- the eight features (docs/feature_expansion_contract.md; examples in fixtures/feature_examples.json) ----------
 const FX = JSON.parse(fs.readFileSync('tests/frontend/fixtures/feature_examples.json','utf8'));
-const withFeatures = {healthData: FX.health_with_features, atmos: FX.atmosphere_examples, comfort: FX.comfort, build: FX.build_ok, export: FX.export_ok};
+const withFeatures = {healthData: FX.health_with_features, comfort: FX.comfort, build: FX.build_ok, export: FX.export_ok};
 const settle = async () => { for (let i = 0; i < 6; i++) await tick(); };
 
 test('late health enables features on cards already rendered during server wake-up', async t => {
@@ -248,16 +248,7 @@ test('late health enables features on cards already rendered during server wake-
   assert.equal(b.w.document.querySelector('#routeBtn'),null);
 });
 
-test('atmosphere falls back to reviewed local places when the 2GIS browse list has no matching card', async t => {
-  const b=await boot(t,withFeatures); await settle();
-  b.w.SeruenFeatures.setAtmosphere('greenery'); b.click('#goBtn'); await tick();
-  b.requests[0].resolve(json({...answer('no match'),source:'2gis',nearby_places:[{poi_id:'2gis_1',eligible:false}]}));
-  await settle(); assert.equal(b.requests.length,2);
-  assert.equal(b.requests[1].body.source,'local');
-  assert.equal(b.requests[1].body.preferences.atmosphere_example_id,'greenery');
-  b.requests[1].resolve(json(FX.recommend_normal)); await settle();
-  assert.equal(b.w.document.querySelectorAll('.rec').length,3);
-});
+
 
 test('no coins, chest or +10 anywhere, in all three languages', async t => {
   const b = await boot(t); b.click('#goBtn'); await tick();
@@ -311,7 +302,6 @@ test('old visit marks move into my places as visits; clearing history removes ev
 test('an old server never receives new fields', async t => {
   const b = await boot(t); await settle();
   b.w.SeruenFeatures.setFinish({lat: 51.13, lon: 71.44, source: 'map'});
-  b.w.SeruenFeatures.setAtmosphere('greenery');
   b.click('#goBtn'); await tick();
   const body = b.requests[0].body;
   for (const k of ['end', 'constraints', 'atmosphere_id', 'request_id']) assert.equal(k in body, false, k);
@@ -331,16 +321,15 @@ test('only new: without server support visited places are hidden here and counte
   assert.equal('constraints' in b.requests[1].body, false);
 });
 
-test('new server: finish, atmosphere, no-spend and "too far" travel as contract fields', async t => {
+test('new server: finish, no-spend and "too far" travel as contract fields', async t => {
   const b = await boot(t, withFeatures); await settle();
-  assert.ok(b.w.document.querySelector('#finishField')); assert.ok(b.w.document.querySelector('#atmosField'));
+  assert.ok(b.w.document.querySelector('#finishField'));
   b.w.SeruenFeatures.setFinish({lat: 51.1301, lon: 71.4402, source: 'map'});
-  b.click('#atmosField [data-atmos="greenery"]');
   const ns = b.w.document.querySelector('#noSpend'); ns.value = 'lenient'; ns.dispatchEvent(new b.w.Event('change'));
   b.click('#goBtn'); await tick();
   const body = b.requests[0].body;
   assert.deepEqual(body.end, {lat: 51.13, lon: 71.44, precision_m: 100, source: 'map'});
-  assert.equal(body.preferences.atmosphere_example_id, 'greenery'); assert.equal(body.preferences.expense_mode, 'no_required_purchase'); assert.ok(body.request_id);
+  assert.equal(body.preferences.expense_mode, 'no_required_purchase'); assert.ok(body.request_id);
   b.requests[0].resolve(json(FX.recommend_normal)); await settle();
   const cards = b.w.document.querySelectorAll('.rec');
   assert.match(cards[0].textContent, /Бесплатно/); assert.match(cards[1].textContent, /Платный вход/);

@@ -1,7 +1,7 @@
-/* Серуен: the eight features on top of app.js (docs/feature_expansion_contract.md).
+/* Серуен: walking features on top of app.js (docs/feature_expansion_contract.md).
    On this device only: my places (want to go, visited, favourite, note) and saved walks (F6, F8).
    Server-backed, shown only when /health announces them: plans changed (F1), finish point (F2),
-   "not for me" reasons (F3), comfort points (F4), no-spend filter (F5), search by atmosphere (F7).
+   "not for me" reasons (F3), comfort points (F4), no-spend filter (F5).
    An old server never receives a field it does not know. */
 (() => {
   "use strict";
@@ -22,8 +22,7 @@
     onMap: false, confirmClear: false, error: null};
   // F3/F5: what the person asked to avoid, shown above the answer with "Undo"
   let cons = {exclude_ids: [], max_distance_m: null, exclude_categories: [], no_spend: null};
-  let finishMode = "place", finish = null, picking = false, atmosphere = null, atmosExamples = [], comfortKinds = new Set(), comfortMsg = "";
-  let atmosProfiles = [], atmosProfile = null, atmosStrict = false, atmosLoading = false, atmosFailed = false;
+  let finishMode = "place", finish = null, picking = false, comfortKinds = new Set(), comfortMsg = "";
   let walk = null, walkVersion = 0, walkMsg = "", walkBusy = false, reqSeq = 0;
   const personal = L.layerGroup().addTo(map), comfortLayer = L.layerGroup().addTo(map), pauseLayer = L.layerGroup().addTo(map);
   let finishMarker = null, walkLine = null, comfortVersion = 0;
@@ -76,11 +75,6 @@
     if (has("finish_preferences")) out.finish_mode = finishMode;
     if (has("end_point") && finishMode === "destination" && finish) out.end = {lat: r3(finish.lat), lon: r3(finish.lon), precision_m: 100,
       source: finish.source === "landmark" ? "preset" : finish.source || "map"};
-    if (has("atmosphere") && atmosphere) preferences.atmosphere_example_id = atmosphere;
-    if (has("atmosphere_profiles") && atmosProfile) {
-      preferences.atmosphere_profile = atmosProfile;
-      preferences.atmosphere_verified_only = atmosStrict;
-    }
     if (Object.keys(preferences).length) out.preferences = preferences;
     if (Object.keys(out).length) out.request_id = `r${++reqSeq}`;
     return out;
@@ -119,14 +113,6 @@
     if (b.walk_to_end_min != null || r.arrival_estimate) {
       const at = r.arrival_estimate ? new Intl.DateTimeFormat("ru-RU", {hour: "2-digit", minute: "2-digit", timeZone: "Asia/Almaty"}).format(new Date(r.arrival_estimate)) : "";
       html += `<div class="meta finish-line">${icon("finish")} ${b.walk_to_end_min != null ? esc(fmt(x.toEnd, {m: b.walk_to_end_min})) : ""}${at ? ` · ${esc(fmt(x.arrival, {t: at}))}` : ""}</div>`;
-    }
-    if (r.atmosphere_match && (r.atmosphere_match.matched_features || []).length) {
-      const f = r.atmosphere_match.matched_features.map((k) => x.feat[k] || k).join(", ");
-      html += `<div class="meta">${icon("image")} ${esc(fmt(x.matched, {f}))} · ${esc(r.atmosphere_match.source === "gemini" ? x.srcAi : x.srcManual)}</div>`;
-    }
-    if (r.atmosphere_match?.unconfirmed_features?.length) {
-      const f = r.atmosphere_match.unconfirmed_features.map(k => x.feat[k] || k).join(", ");
-      html += `<p class="meta atmos-unknown">${esc(fmt(x.atmosUnknown, {f}))}</p>`;
     }
     html += `<div class="keep" role="group" aria-label="${esc(x.keepTitle)}">
       ${chip("want", "flag", !!p.want, x.want)}${chip("visited", "visit", !!p.visited_at, x.visited)}
@@ -172,7 +158,7 @@
           : s.kind === "fewer_stops" ? `<span class="meta">${esc(x.sugFewer)}</span>` : "").join("")}</div></div>`;
     }
     const relax = {increase_distance_limit: ["max_distance_m", x.nFar], allow_unknown_expenses: ["no_spend", x.cFree],
-      restore_excluded_places: ["exclude_ids", x.nBeen], remove_atmosphere_filter: ["atmosphere", x.atmos]};
+      restore_excluded_places: ["exclude_ids", x.nBeen]};
     if (has("constraints") && (d.relaxation_options || []).length) {
       html += `<div class="row relax">${d.relaxation_options.filter(k => relax[k]).map(k =>
         `<button type="button" class="btn small" data-relax="${esc(relax[k][0])}">${esc(x.undo)}: ${esc(relax[k][1])}</button>`).join("")}</div>`;
@@ -229,7 +215,6 @@
       const k = b.dataset.relax;
       if (k === "max_distance_m") cons.max_distance_m = null; else if (k === "no_spend") { cons.no_spend = null; syncSpend(); }
       else if (k === "exclude_categories") cons.exclude_categories = []; else if (k === "exclude_ids") cons.exclude_ids = [];
-      else if (k === "atmosphere") { atmosphere = null; atmosProfile = null; atmosStrict = false; renderAtmosphere(); }
       A.ask();
     }));
     $$("[data-more]").forEach((b) => b.addEventListener("click", () => {
@@ -350,57 +335,6 @@
     if (!finishMarker) return;
     if ((walk && !walk.searching) || ext.hideSearchFinish?.()) map.removeLayer(finishMarker);
     else finishMarker.addTo(map);
-  }
-
-  // ---------- F7: search by atmosphere ----------
-  async function mountAtmosphere(retry = false) {
-    if (atmosLoading || !has("atmosphere") || ($("#atmosField") && !retry)) return;
-    atmosLoading = true; atmosFailed = false;
-    if (!$("#atmosField")) {
-      const box = document.createElement("div"); box.id = "atmosField"; box.className = "atmos";
-      $("#atmosphereOptions").appendChild(box);
-    }
-    renderAtmosphere();
-    const results = await Promise.allSettled([
-      A.getJSON(A.API + "/atmosphere/examples"),
-      has("atmosphere_profiles") ? A.getJSON(A.API + "/atmosphere/profiles") : Promise.resolve({profiles: []}),
-    ]);
-    if (results[0].status === "fulfilled") atmosExamples = (results[0].value.examples || []).map(a => ({id: a.example_id, title: a.titles,
-      fallbackTitle: a.title, image_url: a.photos?.[0]?.url, credit: a.photos?.[0]?.attribution}));
-    if (results[1].status === "fulfilled") atmosProfiles = results[1].value.profiles || [];
-    atmosFailed = results.some(r => r.status === "rejected"); atmosLoading = false; renderAtmosphere();
-  }
-  function renderAtmosphere() {
-    const box = $("#atmosField"); if (!box) return;
-    const x = X(), safe = (u) => (/^(https:\/\/|img\/)/.test(u || "") ? u : "");
-    if (atmosLoading) { box.innerHTML = `<p class="meta" role="status">${esc(x.atmosLoading)}</p>`; return; }
-    const selected = atmosProfiles.find(p => p.id === atmosProfile);
-    const name = p => p.titles?.[state.lang] || p.titles?.ru || p.id;
-    if (atmosProfiles.length) {
-      box.innerHTML = `<fieldset class="atmos-moods"><legend>${icon("image")} ${esc(x.atmos)}</legend>
-        <p class="meta">${esc(x.atmosPurpose)}</p><div class="atmos-options">
-        <button type="button" class="chip-btn${!atmosProfile ? " on" : ""}" data-mood="" aria-pressed="${!atmosProfile}">${esc(x.atmosAny)}</button>
-        ${atmosProfiles.map(p => `<button type="button" class="chip-btn${atmosProfile === p.id ? " on" : ""}" data-mood="${esc(p.id)}" aria-pressed="${atmosProfile === p.id}">${esc(name(p))}</button>`).join("")}</div>
-        ${selected ? `<p class="atmos-summary" role="status">${esc(name(selected))} · ${esc(selected.features.map(k=>x.feat[k] || k).join(", "))}</p>
-          <label class="row"><input type="checkbox" id="atmosStrict" ${atmosStrict ? "checked" : ""}>${esc(x.atmosStrict)}</label>
-          <p class="meta">${esc(atmosStrict ? x.atmosStrictHint : x.atmosHonest)}</p>
-          ${selected.examples.length ? `<details class="atmos-examples"><summary>${esc(x.atmosExamples)}</summary><div class="atmos-row">${selected.examples.map(a => `<figure class="atmos-sample">${safe(a.photo_url) ? `<img src="${esc(safe(a.photo_url))}" alt="${esc(a.name)}" loading="lazy">` : ""}<figcaption>${esc(a.name)}<small>${esc(a.attribution)} · ${esc(a.checked_at)}</small></figcaption></figure>`).join("")}</div></details>` : `<p class="meta">${esc(x.atmosNoEvidence)}</p>`}
-          <button type="button" class="btn small" id="applyAtmosphere">${esc(x.atmosSearch)}</button>` : ""}</fieldset>`;
-      box.querySelectorAll("[data-mood]").forEach(b => b.addEventListener("click", () => {
-        atmosProfile = b.dataset.mood || null; atmosphere = null; renderAtmosphere();
-        box.dispatchEvent(new Event("change", {bubbles:true}));
-      }));
-      $("#atmosStrict")?.addEventListener("change", e => { atmosStrict = e.target.checked; renderAtmosphere(); box.dispatchEvent(new Event("change", {bubbles:true})); });
-      $("#applyAtmosphere")?.addEventListener("click", () => { if (!$("#goBtn").disabled) $("#goBtn").click(); });
-    } else if (atmosExamples.length && !has("atmosphere_profiles")) {
-      box.innerHTML = `<p class="lbl">${esc(x.atmos)}</p><div class="atmos-row"><button type="button" class="atmos-tile none" data-atmos="">${esc(x.atmosAny)}</button>
-        ${atmosExamples.map(a=>`<button type="button" class="atmos-tile" data-atmos="${esc(a.id)}">${safe(a.image_url) ? `<img src="${esc(a.image_url)}" alt="" loading="lazy">` : ""}<span>${esc(a.title?.[state.lang] || a.fallbackTitle || a.id)}</span></button>`).join("")}</div>`;
-      box.querySelectorAll("[data-atmos]").forEach(b => b.addEventListener("click", () => { atmosphere = b.dataset.atmos || null; renderAtmosphere(); }));
-    } else box.innerHTML = `<p class="meta">${esc(x.unavailableAtmosphere)}</p>`;
-    if (atmosFailed) {
-      box.insertAdjacentHTML("beforeend", `<button type="button" class="btn small" id="retryAtmosphere">${esc(T().retry)}</button>`);
-      $("#retryAtmosphere").addEventListener("click", () => mountAtmosphere(true));
-    }
   }
 
   // ---------- F4: comfort points ----------
@@ -909,13 +843,12 @@
   }
 
   // ---------- wiring ----------
-  ext.onHealth = () => { mountSpend(); mountFinish(); mountAtmosphere(); A.rerender(); if (walk) renderWalk(); };
-  ext.onLang = () => { cancelSetup(); drawFinish(); renderFinish(); renderAtmosphere(); renderMine(); renderWalk(); };
+  ext.onHealth = () => { mountSpend(); mountFinish(); A.rerender(); if (walk) renderWalk(); };
+  ext.onLang = () => { cancelSetup(); drawFinish(); renderFinish(); renderMine(); renderWalk(); };
   ext.onScenario = () => {
     finishMode="place"; finish=null; picking=false;
     cons={exclude_ids:[],max_distance_m:null,exclude_categories:[],no_spend:null};
-    atmosphere=null; atmosProfile=null; atmosStrict=false;
-    drawFinish(); renderFinish(); syncSpend(); renderAtmosphere();
+    drawFinish(); renderFinish(); syncSpend();
   };
   // app.js has already started when this file runs, so wire up now
   function ready() {
@@ -925,7 +858,7 @@
     S.init().then(loadMine).then(() => { renderMine(); A.rerender(); }).catch(() => { mine.error = X().storeBlocked; });
   }
   window.SeruenFeatures = {mine, chooseFinish, cancelSetup, startWalk, saveWalk, planView, renderWalk, syncFinishMarker, get walk() { return walk; }, get cons() { return cons; },
-    setFinish: (f) => { finish = f; finishMode=f?"destination":"place"; drawFinish(); renderFinish(); }, setAtmosphere: (a) => { atmosphere = a; }};
+    setFinish: (f) => { finish = f; finishMode=f?"destination":"place"; drawFinish(); renderFinish(); }};
   ready();
   if (Object.keys(state.features || {}).length) ext.onHealth();
 })();

@@ -47,7 +47,6 @@ def main():
         return 1
     print(json.dumps({"status": "valid", "licensed_places": len(data.owned),
                       "comfort_points": len(data.comfort), "visit_conditions": len(data.conditions),
-                      "atmosphere_examples": len(data.atmosphere),
                       "identity_aliases": sum(pid != canonical for pid, canonical in data.identities.items()),
                       "identity_groups": len(set(data.identities.values())), "fingerprint": data.fingerprint}))
     return 0

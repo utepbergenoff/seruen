@@ -20,8 +20,7 @@ from .photos import Photos, PhotoRequest, PlacePhotos
 from .discovery import Discovery
 from .feature_api import register_features
 from .experiences import register_experiences
-from .plans import Planner, PlanError
-from .geo import ALMATY
+from .plans import Planner
 
 logger = logging.getLogger("seruen")
 
@@ -133,10 +132,6 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
 
     @app.post("/recommend", response_model=RecommendResponse)
     async def recommend(payload: RecommendRequest, request: Request):
-        example = payload.preferences.atmosphere_example_id
-        if example and not any(r.example_id == example for r in request.app.state.service.features.examples(
-                datetime.now(ALMATY).date())):
-            raise PlanError("atmosphere_example_unavailable", 404)
         discovery = request.app.state.discovery
         if payload.source == "2gis" or (payload.source == "auto" and discovery.active()):
             response, error = await discovery.recommend(payload)
@@ -208,10 +203,6 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
 
     @app.post("/candidates")
     async def candidates_post(payload: RecommendRequest, request: Request):
-        example = payload.preferences.atmosphere_example_id
-        if example and not any(r.example_id == example for r in request.app.state.service.features.examples(
-                datetime.now(ALMATY).date())):
-            raise PlanError("atmosphere_example_unavailable", 404)
         if payload.source == "2gis" or (payload.source == "auto" and request.app.state.discovery.active()):
             response = await recommend(payload, request)
             return {"candidates": response.candidates, "excluded": response.excluded,

@@ -3,11 +3,11 @@ const {test} = require('node:test');
 const assert = require('node:assert/strict');
 const {boot} = require('./helpers.cjs');
 const until = async fn => { for (let i=0;i<150;i++) {if(fn()) return;await new Promise(r=>setTimeout(r,20));} assert.ok(fn(),'UI did not settle'); };
-test('all eight features use real server shapes and preserve offline/privacy boundaries', async t => {
+test('walking features use real server shapes and preserve offline/privacy boundaries', async t => {
   const calls=[];
   const b=await boot(t,{live:process.env.SERUEN_TEST_URL,calls}), w=b.w, $=s=>w.document.querySelector(s);
-  try { await until(()=>$('#finishField') && $('#atmosField [data-mood="light_cafe"]')); }
-  catch(e) { throw new Error(JSON.stringify({calls,features:w.SeruenApp.state.features,atmos:$('#atmosField')?.innerHTML}),{cause:e}); }
+  try { await until(()=>$('#finishField') && $('#noSpend')); }
+  catch(e) { throw new Error(JSON.stringify({calls,features:w.SeruenApp.state.features}),{cause:e}); }
   w.SeruenApp.state.loc={lat:51.128,lon:71.430,source:'map'};
   $('#query').value='Хочу кофе'; $('#budgetAuto').checked=false; $('#budget').value='90';
   w.SeruenFeatures.setFinish({lat:51.130,lon:71.430,source:'landmark'});
@@ -21,11 +21,10 @@ test('all eight features use real server shapes and preserve offline/privacy bou
 
   b.click('[data-comfort="toilet"]'); await until(()=>calls.some(c=>c.path==='/comfort/search'));
   const ns=$('#noSpend'); ns.value='strict'; ns.dispatchEvent(new w.Event('change'));
-  b.click('#atmosField [data-mood="light_cafe"]'); b.click('#goBtn');
+  b.click('#goBtn');
   await until(()=>!$('#goBtn').disabled && w.SeruenApp.state.lastReq.preferences?.expense_mode==='free_only');
   assert.deepEqual(w.SeruenApp.state.last.recommendations.map(r=>r.poi_id),['team_coffee']);
   assert.match($('.rec').textContent,/Бесплатно/);
-  assert.ok(w.SeruenApp.state.last.recommendations[0].atmosphere_match.matched_features.length);
 
   b.click('#startWalkBtn'); await until(()=>w.SeruenFeatures.walk?.plan?.server);
   assert.ok(w.SeruenFeatures.walk.plan.server.fits);
@@ -35,7 +34,7 @@ test('all eight features use real server shapes and preserve offline/privacy bou
   assert.ok(replan.body.remaining_time_min>0 && replan.body.previous.schema_version===1);
   assert.equal(replan.body.previous.finish_mode,'destination');
   assert.equal(replan.body.keep_stops,true);
-  // A free verified bench can be suggested without changing the goal or its atmosphere preference.
+  // A free verified bench can be suggested without changing the goal.
   assert.equal(replan.status,200);assert.ok(w.SeruenFeatures.walk.proposal);
   assert.equal(w.SeruenFeatures.walk.plan.stops.length,1);
   assert.ok(w.SeruenFeatures.walk.plan.server.stops.some(s=>s.poi_id==='team_coffee'));
@@ -55,7 +54,7 @@ test('all eight features use real server shapes and preserve offline/privacy bou
   const bookmark=await w.SeruenStore.getPlace('2gis_7000001');
   assert.equal(bookmark.name,undefined);assert.equal(bookmark.coords,undefined);assert.equal(bookmark.note,'My own note');
   assert.ok(calls.every(c=>c.status===200 || (c.path==='/plans/recalculate' && c.status===409)),JSON.stringify(calls.filter(c=>c.status!==200)));
-  for(const path of ['/health','/recommend','/comfort/search','/atmosphere/examples','/plans/build','/plans/recalculate','/plans/export','/plans/refresh']) {
+  for(const path of ['/health','/recommend','/comfort/search','/plans/build','/plans/recalculate','/plans/export','/plans/refresh']) {
     assert.ok(calls.some(c=>c.path===path),path);
   }
 });

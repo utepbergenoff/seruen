@@ -86,12 +86,6 @@ def rule_intent(request):
         q,
     )
     unrelated = unrelated or bool(q.strip() and not domain)
-    if request.preferences.atmosphere_profile:
-        from .atmosphere import PROFILES
-        profile = PROFILES[request.preferences.atmosphere_profile]
-        categories = request.preferences.preferred_categories or profile["categories"].copy()
-        if profile["scene"] == "indoor":
-            tags = [t for t in tags if t != "outdoor_walk"]
     return Intent(
         categories=categories,
         tags=tags,
@@ -111,9 +105,7 @@ def merge_intent(rules, generated, request):
     return generated.model_copy(
         update={
             "categories": rules.categories or generated.categories,
-            "tags": sorted(set(rules.tags + [t for t in generated.tags if not (
-                t == "outdoor_walk" and request.preferences.atmosphere_profile
-                and request.preferences.atmosphere_profile != "green_walk")])),
+            "tags": sorted(set(rules.tags + generated.tags)),
             "time_budget_min": rules.time_budget_min,
             "companions": rules.companions,
             "when": rules.when if rules.when != "now" else generated.when,

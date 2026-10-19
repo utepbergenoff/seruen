@@ -4,17 +4,12 @@ import hashlib
 import json
 from datetime import date
 from pathlib import Path
-from typing import Annotated, Literal
+from typing import Literal
 
 from pydantic import Field, HttpUrl, model_validator
 
-from .schemas import AtmosphereMatch, Model, POI, VisitConditionView
-from .atmosphere import PROFILES, apply_profile, visual_tags
+from .schemas import Model, POI, VisitConditionView
 
-VisualFeature = Literal[
-    "natural_light", "bright", "dim", "greenery", "open_space", "small_space",
-    "visible_seating", "modern", "traditional", "unusual_architecture", "outdoor", "indoor",
-]
 ComfortKind = Literal["warming", "toilet", "bench", "water", "entrance"]
 
 
@@ -60,40 +55,18 @@ class IdentityRecord(Model):
         return self
 
 
-class AtmospherePhoto(Model):
-    photo_id: str = Field(min_length=1, max_length=120)
-    url: HttpUrl
-    content_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
-    license: str = Field(min_length=1, max_length=200)
-    attribution: str = Field(min_length=1, max_length=500)
-    offline_allowed: bool = False
-
-
-class AtmosphereRecord(Model):
-    example_id: str = Field(min_length=1, max_length=120)
-    poi_id: str = Field(min_length=1, max_length=120)
-    title: str = Field(min_length=1, max_length=200)
-    titles: dict[Literal["ru", "kk", "en"], Annotated[str, Field(min_length=1, max_length=200)]] = Field(default_factory=dict)
-    features: list[VisualFeature] = Field(min_length=1, max_length=12)
-    photos: list[AtmospherePhoto] = Field(min_length=1, max_length=4)
-    evidence: Evidence
-    analysis_source: Literal["manual", "gemini"]
-    analysis_version: str = Field(min_length=1, max_length=80)
-
-
 MODELS = {
     "feature_pois.json": LicensedPlace,
     "comfort_points.json": ComfortRecord,
     "visit_conditions.json": VisitConditionRecord,
     "poi_identity_links.json": IdentityRecord,
-    "atmosphere_catalog.json": AtmosphereRecord,
 }
 
 
 class FeatureData:
     def __init__(self, directory: Path | None, base_pois=()):
         self.pois = {p.poi_id: p for p in base_pois}
-        self.owned, self.comfort, self.conditions, self.identities, self.atmosphere = {}, {}, {}, {}, {}
+        self.owned, self.comfort, self.conditions, self.identities = {}, {}, {}, {}
         self.errors = []
         self.fingerprint = "empty"
         if directory is not None:
@@ -146,20 +119,6 @@ class FeatureData:
             if key in self.conditions:
                 raise ValueError("conditions_duplicate_place")
             self.conditions[key] = record
-        photo_ids, photo_owners = set(), {}
-        for record in batches["atmosphere_catalog.json"]:
-            if record.example_id in self.atmosphere or self.canonical(record.poi_id) not in self.pois:
-                raise ValueError("atmosphere_duplicate_or_unknown_place")
-            ids = [p.photo_id for p in record.photos]
-            if len(set(ids)) != len(ids) or photo_ids.intersection(ids):
-                raise ValueError("atmosphere_duplicate_photo")
-            photo_ids.update(ids)
-            for photo in record.photos:
-                owner = self.canonical(record.poi_id)
-                if photo.content_sha256 in photo_owners and photo_owners[photo.content_sha256] != owner:
-                    raise ValueError("atmosphere_photo_multiple_places")
-                photo_owners[photo.content_sha256] = owner
-            self.atmosphere[record.example_id] = record
 
     def canonical(self, poi_id):
         return self.identities.get(poi_id, poi_id)
@@ -195,46 +154,6 @@ class FeatureData:
                                   source_url=str(record.evidence.source_url), checked_at=record.evidence.checked_at,
                                   verification=status)
 
-    def examples(self, today):
-        return [r for r in self.atmosphere.values() if self.verified(r.evidence, today)]
-
-    def match(self, poi_id, example_id, today, profile_id=None):
-        if profile_id in PROFILES:
-            profile = PROFILES[profile_id]
-            wanted = set(profile["features"])
-            best = AtmosphereMatch(requested_features=sorted(wanted), unconfirmed_features=sorted(wanted), status="unknown")
-            for row in self.examples(today):
-                if self.canonical(row.poi_id) != self.canonical(poi_id) or profile["scene"] not in row.features:
-                    continue
-                tags = visual_tags(row.features)
-                overlap = sorted(wanted & tags)
-                if len(overlap) > len(best.matched_features):
-                    missing = sorted(wanted - tags)
-                    best = AtmosphereMatch(matched_features=overlap, requested_features=sorted(wanted),
-                        unconfirmed_features=missing, status="partial" if missing else "confirmed",
-                        source=row.analysis_source, checked_at=row.evidence.checked_at,
-                        photo_ids=[p.photo_id for p in row.photos])
-            return best
-        example = self.atmosphere.get(example_id)
-        if not example or not self.verified(example.evidence, today):
-            return AtmosphereMatch()
-        best = AtmosphereMatch()
-        for row in self.examples(today):
-            if self.canonical(row.poi_id) != self.canonical(poi_id):
-                continue
-            # A shared generic tag must not turn an outdoor facade into an indoor match.
-            if any(f in example.features and f not in row.features for f in ("indoor", "outdoor")):
-                continue
-            if ("bright" in example.features and "dim" in row.features
-                    or "dim" in example.features and "bright" in row.features):
-                continue
-            # "Indoors" alone says nothing about the appearance of two interiors.
-            overlap = sorted((set(example.features) & set(row.features)) - {"indoor", "outdoor"})
-            if len(overlap) > len(best.matched_features):
-                best = AtmosphereMatch(matched_features=overlap, source=row.analysis_source, status="confirmed",
-                                       checked_at=row.evidence.checked_at, photo_ids=[p.photo_id for p in row.photos])
-        return best
-
     def constraint(self, poi, preferences, walk, today, comfort=False):
         pid = self.canonical(poi.poi_id)
         owned = self.owned.get(pid)
@@ -246,17 +165,6 @@ class FeatureData:
             return "already_visited"
         if not comfort and preferences.preferred_categories and poi.category not in preferences.preferred_categories:
             return "preferred_category_mismatch"
-        profile = PROFILES.get(preferences.atmosphere_profile) if not comfort else None
-        if profile:
-            if poi.category not in profile["categories"]:
-                return "preferred_category_mismatch"
-            if profile["scene"] == "indoor" and not poi.indoor:
-                return "indoor_required"
-            if profile["scene"] == "outdoor" and poi.indoor:
-                return "atmosphere_scene_mismatch"
-            if preferences.atmosphere_verified_only and self.match(poi.poi_id, None, today,
-                    preferences.atmosphere_profile).status != "confirmed":
-                return "atmosphere_unconfirmed"
         if preferences.max_walk_min is not None and walk > preferences.max_walk_min:
             return "walking_limit"
         if preferences.indoor_only and not poi.indoor:
@@ -266,16 +174,12 @@ class FeatureData:
             return "free_access_unconfirmed"
         if mode == "no_required_purchase" and kind not in ("free", "optional_purchase"):
             return "no_purchase_unconfirmed"
-        if not comfort and preferences.atmosphere_example_id and not self.match(poi.poi_id, preferences.atmosphere_example_id,
-                                                                today).matched_features:
-            return "atmosphere_unconfirmed"
         return None
 
 
 def apply_feedback(request):
     """Stateless: undo means resend the previous preferences without feedback."""
     request = request.model_copy(deep=True)
-    request = apply_profile(request)
     feedback, prefs = request.feedback, request.preferences
     if not feedback:
         return request
@@ -303,10 +207,6 @@ def relaxation_options(preferences):
         result.append("allow_outdoor")
     if preferences.expense_mode != "any":
         result.append("allow_unknown_expenses")
-    if preferences.atmosphere_example_id:
-        result.append("remove_atmosphere_filter")
-    if preferences.atmosphere_profile:
-        result.append("remove_atmosphere_filter")
     if preferences.exclude_visited:
         result.append("include_visited")
     if preferences.exclude_poi_ids:

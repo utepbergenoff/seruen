@@ -48,40 +48,6 @@ def register_features(app):
         request.state.mode = "comfort"
         return request.app.state.planner.comfort(payload)
 
-    @app.get("/atmosphere/examples")
-    async def atmosphere_examples(request: Request):
-        rows = request.app.state.service.features.examples(datetime.now(ALMATY).date())
-        return {"schema_version": 1, "status": "ready" if rows else "awaiting_data", "examples": [
-            {"example_id": r.example_id, "poi_id": r.poi_id, "title": r.title, "titles": r.titles, "features": r.features,
-             "photos": [p.model_dump(mode="json") for p in r.photos],
-             "analysis_source": r.analysis_source, "analysis_version": r.analysis_version,
-             "evidence": r.evidence.model_dump(mode="json")} for r in rows]}
-
-    @app.get("/atmosphere/profiles")
-    async def atmosphere_profiles(request: Request):
-        from .atmosphere import PROFILES
-        data = request.app.state.service.features
-        today = datetime.now(ALMATY).date()
-        profiles = []
-        for ident, profile in PROFILES.items():
-            # Examples illustrate this mood; they are not promises about every search result.
-            rows, seen = [], set()
-            for row in data.examples(today):
-                poi = data.pois[data.canonical(row.poi_id)]
-                if poi.category not in profile["categories"] or row.poi_id in seen:
-                    continue
-                match = data.match(row.poi_id, None, today, ident)
-                if match.status != "confirmed":
-                    continue
-                seen.add(row.poi_id)
-                photo = next((p for r in data.examples(today) for p in r.photos if p.photo_id in match.photo_ids), None)
-                if photo:
-                    rows.append({"poi_id": row.poi_id, "name": poi.name, "photo_url": str(photo.url),
-                                 "attribution": photo.attribution, "features": match.matched_features,
-                                 "checked_at": str(match.checked_at)})
-            profiles.append({"id": ident, **profile, "examples": rows[:3], "reviewed_places": len(rows)})
-        return {"schema_version": 1, "profiles": profiles}
-
     @app.post("/places/identities")
     async def identities(payload: IdentityRequest, request: Request):
         features = request.app.state.service.features
@@ -97,13 +63,11 @@ def register_features(app):
         return {"schema_version": 1, "gamification": False, "server_history": False,
                 "routing_enabled": service.settings.routing_enabled,
                 "data": {"comfort_points": len(data.comfort), "visit_conditions": len(data.conditions),
-                         "atmosphere_examples": len(data.examples(datetime.now(ALMATY).date())),
                          "licensed_places": len(data.owned)},
                 "ready": {"comfort_points": sum(data.verified(r.evidence, today, 30) for r in data.comfort.values()),
                           "visit_conditions": sum(data.condition(pid, today).kind != "unknown" for pid in data.conditions),
-                          "atmosphere_examples": len(data.examples(today)),
                           "offline_places": sum(data.can_export(pid, today) for pid in data.owned)},
                 "identity_aliases": sum(pid != canonical for pid, canonical in data.identities.items()),
                 "data_fingerprint": data.fingerprint,
                 "endpoints": ["/plans/build", "/plans/recalculate", "/plans/export", "/plans/refresh",
-                              "/comfort/search", "/atmosphere/examples", "/places/identities"]}
+                              "/comfort/search", "/places/identities"]}

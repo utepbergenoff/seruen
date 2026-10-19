@@ -5,7 +5,7 @@ import pytest
 
 from backend.fallback import explanation
 from backend.generate import Gemini
-from backend.schemas import AtmosphereMatch, Budget, Draft, Generated, VisitConditionView
+from backend.schemas import Budget, Draft, Generated, VisitConditionView
 from backend.service import RecommendationService
 
 
@@ -19,7 +19,7 @@ def test_missing_facilities_are_explicit_and_budget_is_final(service, req, lang,
     intent.lang, intent.tags = lang, ['wifi', 'sockets', 'quiet']
     budget = Budget(walk_there_min=4, stay_min=20, walk_back_min=0 if finish else 4,
                     walk_to_end_min=7 if finish else None, reserve_min=5, total_min=36 if finish else 33)
-    why, todo = explanation(hit, req, intent, budget, VisitConditionView(), AtmosphereMatch())
+    why, todo = explanation(hit, req, intent, budget, VisitConditionView())
     assert f'{budget.total_min}/{intent.time_budget_min}' in why
     assert ('Не подтверждены', 'Unconfirmed', 'Расталмаған')[['ru', 'en', 'kk'].index(lang)] in why
     assert len(why.split()) <= 25 and len(todo.split()) <= 35
@@ -27,21 +27,17 @@ def test_missing_facilities_are_explicit_and_budget_is_final(service, req, lang,
     assert 'Подходит по категории' not in why
 
 
-def test_expense_and_photo_reasons_only_use_matching_evidence(service, req):
+def test_expense_reasons_only_use_matching_evidence(service, req):
     intent, _, search = service.inspect(req)
     hit = search.hits[0]
     budget = Budget(walk_there_min=4, stay_min=20, walk_back_min=4, total_min=28)
     req.preferences.expense_mode = 'free_only'
-    unknown, _ = explanation(hit, req, intent, budget, VisitConditionView(), AtmosphereMatch())
+    unknown, _ = explanation(hit, req, intent, budget, VisitConditionView())
     assert 'бесплатн' not in unknown
     free, _ = explanation(hit, req, intent, budget,
-                          VisitConditionView(kind='free', verification='verified'), AtmosphereMatch())
+                          VisitConditionView(kind='free', verification='verified'))
     assert 'бесплатный по проверенным данным' in free
-    req.preferences.atmosphere_example_id = 'example'
-    photo, _ = explanation(hit, req, intent, budget, VisitConditionView(),
-                           AtmosphereMatch(matched_features=['greenery', 'natural_light']))
-    assert 'По фото: зелень, дневной свет' in photo
-    alternative, _ = explanation(hit, req, intent, budget, VisitConditionView(), AtmosphereMatch(), True)
+    alternative, _ = explanation(hit, req, intent, budget, VisitConditionView(), True)
     assert alternative.startswith('Альтернатива:')
 
 
