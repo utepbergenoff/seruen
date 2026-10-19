@@ -264,3 +264,8 @@ window.SeruenExperienceText = {
     "meetingWalkInfo": "Картада кездесу орнына баратын жолыңыз көрсетілген. B — екінші адамның таңдалған бастапқы нүктесі, қазіргі орналасқан жері емес."
   }
 };
+
+// 19.10 evening: one short sentence for the cold-weather switch
+Object.assign(window.SeruenExperienceText.ru, {winterShort: "Маршрут через тёплые места с короткими перебежками по улице", outdoors: "Максимум на улице за раз"});
+Object.assign(window.SeruenExperienceText.en, {winterShort: "A route through warm places with short dashes outside", outdoors: "Longest time outside at once"});
+Object.assign(window.SeruenExperienceText.kk, {winterShort: "Жылы орындар арқылы, көшеде қысқа ғана жүретін маршрут", outdoors: "Көшеде бір реттегі ең ұзақ уақыт"});

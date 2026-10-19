@@ -131,11 +131,17 @@
       $("#meetCancel").onclick = () => { picking = false; $("#meetCancel").hidden = true; $("#meetPoint").textContent = second ? `${x.chosen}: ${second.label}` : ""; };
     }
     $("#winterField").hidden = !has("winter_plan");
-    $("#winterField").innerHTML = has("winter_plan") ? `<label class="winter-toggle"><input id="winterMode" type="checkbox"${winterEnabled ? " checked" : ""}><span><strong>${esc(x.winterOption)}</strong><small>${esc(x.winterShort)}</small></span></label>
-      <div id="winterSettings"${winterEnabled ? "" : " hidden"}><label>${esc(x.outdoors)} <select id="winterLimit">${[5,10,15].map(n => `<option value="${n}"${n === winterLimit ? " selected" : ""}>${n} ${esc(x.minutes)}</option>`).join("")}</select></label><p class="meta">${esc(x.winterHint)}</p></div>` : "";
+    $("#winterField").innerHTML = has("winter_plan") ? `<label class="winter-toggle"><span class="winter-title">${esc(x.winterOption)}</span><input id="winterMode" type="checkbox" role="switch"${winterEnabled ? " checked" : ""}></label>
+      <p class="winter-short">${esc(x.winterShort)}</p>
+      <div id="winterSettings"${winterEnabled ? "" : " hidden"}><span class="winter-label">${esc(x.outdoors)}</span>
+        <div class="winter-tabs" role="group" aria-label="${esc(x.outdoors)}">${[5,10,15].map(n => `<button type="button" class="winter-tab${n === winterLimit ? " on" : ""}" data-winter-limit="${n}" aria-pressed="${n === winterLimit}">${n} ${esc(x.minutes)}</button>`).join("")}</div>
+        <select id="winterLimit" class="sr-only" tabindex="-1" aria-hidden="true">${[5,10,15].map(n => `<option value="${n}"${n === winterLimit ? " selected" : ""}>${n} ${esc(x.minutes)}</option>`).join("")}</select></div>` : "";
     if (has("winter_plan")) {
       $("#winterMode").onchange = e => { winterEnabled = e.target.checked; open(null); mount(); };
-      $("#winterLimit").onchange = e => { winterLimit = +e.target.value; open(null); };
+      $("#winterLimit").onchange = e => { winterLimit = +e.target.value; open(null); mount(); };
+      $("#winterField").querySelectorAll("[data-winter-limit]").forEach(b => b.onclick = () => {
+        $("#winterLimit").value = b.dataset.winterLimit; $("#winterLimit").dispatchEvent(new Event("change"));
+      });
     }
     $("#storyLayerField").hidden = !has("city_history");
     $("#storyLayerField").innerHTML = has("city_history") ? `<label class="story-layer-toggle"><input id="showCityStories" type="checkbox"${showStories ? " checked" : ""}> ${esc(x.storyLayer)}</label><button type="button" class="btn small" id="browseLandmarks">${esc(x.historyGo)}</button><p class="meta" id="storyLayerStatus" role="status"></p>` : "";
