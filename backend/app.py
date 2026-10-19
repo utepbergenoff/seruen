@@ -164,6 +164,14 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
         try:
             if poi_id.startswith("2gis_"):
                 return await request.app.state.discovery.details(poi_id, lang)
+            # A team place with a verified 2GIS identity (poi_identity_links) is asked by that 2GIS id,
+            # not matched by name: its own name ("Coffee BOOM (EXPO, ...)") rarely equals the 2GIS name.
+            features = request.app.state.service.features
+            canonical = features.canonical(poi_id)
+            alias = next((a for a, c in features.identities.items()
+                          if c == canonical and a != poi_id and a.startswith("2gis_")), None)
+            if alias:
+                return await request.app.state.discovery.details(alias, lang)
             return await request.app.state.twogis.details(poi_id, lang)
         except PlacesError as exc:
             request.state.error = exc.code
