@@ -750,3 +750,72 @@ body.map-expanded #panelSide { display:none; }
   .map-tools { max-width: 196px; }
   .story-layer-toggle { font-size: 12px; line-height: 1.25; hyphens: auto; overflow-wrap: anywhere; min-width: 0; }
 }
+
+/* round 4: results list, place card, active walk */
+/* the walking list: «Я здесь» on top, every pick below in card order, joined by a dashed walking line */
+.itinerary { list-style: none; margin: 0; padding: 14px 16px; background: var(--surface); border-radius: var(--r-l); box-shadow: var(--shadow); border: 1px solid var(--line-soft); }
+.itinerary li { position: relative; padding: 6px 0; }
+.itinerary li::before { content: ""; position: absolute; left: 14px; top: 0; bottom: 0; width: 3px;
+  background: repeating-linear-gradient(to bottom, var(--sky) 0 6px, transparent 6px 11px); }
+.itinerary li:first-child::before { top: 50%; }
+.itinerary li:last-child::before { bottom: 50%; }
+.it-start { display: flex; align-items: center; gap: 12px; min-height: 40px; }
+.it-me { position: relative; z-index: 1; width: 31px; height: 31px; flex: none; display: grid; place-items: center; }
+.it-me::after { content: ""; width: 14px; height: 14px; border-radius: 50%; background: var(--sun); box-shadow: 0 0 0 3px var(--surface), 0 0 0 5.5px var(--sky); }
+.it-start b { font: 700 14.5px var(--display); color: var(--ink); }
+.it-hint { font-size: 12.5px; color: var(--muted); margin-left: auto; text-align: right; }
+.it-row { position: relative; z-index: 1; display: grid; grid-template-columns: 31px minmax(0, 1fr) auto; align-items: center; gap: 12px; width: 100%;
+  padding: 6px 8px 6px 0; border: 0; border-radius: 12px; background: none; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.it-row:hover .it-name b, .it-row:focus-visible .it-name b { color: var(--sky-deep); text-decoration: underline; text-underline-offset: 3px; }
+.it-node { display: grid; place-items: center; width: 31px; height: 31px; border-radius: 50%; background: var(--surface); color: var(--sky-deep);
+  border: 2.5px solid var(--sky-deep); font: 700 14px var(--display); }
+.it-row:hover .it-node, .it-row:focus-visible .it-node { background: var(--sky-deep); color: #fff; }
+.it-name { display: grid; gap: 1px; min-width: 0; }
+.it-name b { font-weight: 700; font-size: 15px; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.it-name small { font-size: 12.5px; color: var(--muted); }
+.it-time { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; background: var(--sun-tint); color: var(--ink);
+  font-size: 13px; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.it-time .ic { width: 15px; height: 15px; }
+
+/* place card: airy, hours next to the walking time, one description paragraph */
+.rec { gap: 14px; padding: 20px; }
+.rec .walk { flex-wrap: wrap; row-gap: 8px; }
+.hours-fact { display: inline-flex; align-items: center; gap: 6px; flex-basis: auto; margin: 0; font-size: 12.5px; line-height: 1.3; }
+.hours-fact .hours-value { color: var(--muted); font-variant-numeric: tabular-nums; }
+.hours-fact[title] { cursor: help; }
+.rec .pills:empty { display: none; }
+.rec-desc { margin: 0; font-size: 15px; line-height: 1.6; color: var(--ink); }
+.rec-desc b { font-weight: inherit; }
+.rec-stay { margin-top: -6px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.card-start .btn { width: 100%; min-height: 48px; justify-content: center; font-size: 15.5px; border-radius: 14px; }
+#selectedPlaceCard .card-start { display: none; }
+.rec .actions, .rec .keep { gap: 8px; }
+.rec .finish-line { margin: 0; }
+/* «Не подходит?» and walk problems: one tight row that scrolls sideways */
+.chip-scroll { display: flex; flex-wrap: nowrap; gap: 6px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; padding: 2px 0 4px; -webkit-overflow-scrolling: touch; }
+.chip-scroll::-webkit-scrollbar { display: none; }
+.chip-scroll .btn { flex: none; min-height: 36px; padding: 6px 13px; font-size: 13px; white-space: nowrap; border-radius: 999px; }
+
+/* active walk */
+.walk-summary { display: grid; gap: 4px; margin: 6px 0 10px; padding: 14px 16px; border-radius: 16px; background: var(--sky-tint); }
+.walk-summary p { margin: 0; }
+.walk-summary .walk-left { font: 700 19px var(--display); color: var(--ink); }
+.walk-end { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--ink); }
+.walk-end .ic { color: var(--sky-deep); }
+.ws-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.ws-actions .btn { min-height: 46px; justify-content: center; font-size: 15px; }
+.walk-problems { display: grid; gap: 6px; margin-top: 12px; }
+.walk-problems-title { margin: 0; font-size: 13px; font-weight: 700; color: var(--muted); }
+.walk-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line-soft); }
+.walk-footer .btn { min-height: 48px; justify-content: center; font-size: 15px; }
+.walk-footer .btn:only-child { grid-column: 1 / -1; }
+.walk-end-btn { color: var(--bad); }
+
+/* «Ищу рядом с точкой на карте»: a location chip, not a radio button */
+.loc-line { display: inline-flex; width: fit-content; max-width: 100%; margin: 0 0 12px; padding: 6px 12px 6px 10px; border-radius: 999px; background: var(--ground); color: var(--ink); font-size: 13px; font-weight: 600; }
+.loc-line::before { width: 16px; height: 16px; border-radius: 0; box-shadow: none; background: var(--sky-deep); -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z'/%3E%3Ccircle cx='12' cy='10' r='2.4'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z'/%3E%3Ccircle cx='12' cy='10' r='2.4'/%3E%3C/svg%3E") center / contain no-repeat; }
+.loc-line:empty { display: none; }
+[data-theme="dark"] .loc-line { background: rgba(255,255,255,.07); }
+[data-theme="dark"] .loc-line::before, [data-theme="dark"] .it-node { color: var(--sky); }
+[data-theme="dark"] .walk-summary { background: rgba(0,175,202,.14); }
+[data-theme="dark"] .walk-end-btn { color: #F2A08E; }

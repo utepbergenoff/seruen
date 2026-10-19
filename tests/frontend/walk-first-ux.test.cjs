@@ -60,8 +60,8 @@ test('late replan after moving location cannot insert a stop for the old positio
 test('provider hours are visible with date, provenance and caution; HTML cannot execute',async t=>{
  const b=await boot(t,opts), A=b.w.SeruenApp;
  const el=b.w.document.createElement('div');el.innerHTML=A.statusPill({state:'likely_open',source:'2gis',hours:'Mo 09:00-18:00; Tu off',today_hours:'09:00–18:00',for_date:'2026-10-19',source_url:'https://2gis.kz/astana/firm/123',schedule_note:'<img src=x onerror=alert(1)>'});
- assert.match(el.textContent,/09:00–18:00/);assert.match(el.textContent,/Источник: 2ГИС/);assert.match(el.textContent,/Может отличаться/);
- assert.equal(el.querySelector('img'),null);assert.equal(el.querySelector('a').hostname,'2gis.kz');
+ assert.match(el.textContent,/09:00–18:00/);assert.match(el.firstElementChild.title,/Источник: 2ГИС/);assert.match(el.firstElementChild.title,/Может отличаться/);
+ assert.equal(el.querySelector('img'),null);
  el.innerHTML=b.w.SeruenExt.cardBadges({visit_condition:{kind:'unknown',provider_url:'https://2gis.kz/astana/firm/123',provider_attributes:['Wi-Fi','<script>bad</script>']}});
  assert.match(el.textContent,/нет цены входа/);assert.match(el.textContent,/Wi-Fi/);assert.equal(el.querySelector('script'),null);
 });

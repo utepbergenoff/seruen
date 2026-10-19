@@ -104,8 +104,10 @@
     const unknown = st === "unknown" && provider ? x.providerCostUnknown : x[COST[st]];
     return `<span class="cost cost-${esc(st)}" title="${esc(title)}">${icon("wallet")} ${esc(unknown)}${cost.note ? ` · ${esc(cost.note)}` : ""}</span>
       ${provider && attrs ? `<div class="provider-conditions">${attrs} · <a href="${esc(cost.provider_url)}" target="_blank" rel="noopener noreferrer">${esc(x.providerConditions)}</a>${more}</div>` : ""}
-      ${cost.source_url && /^https:\/\//.test(cost.source_url) && cost.note ? `<small><a href="${esc(cost.source_url)}" target="_blank" rel="noopener noreferrer">${esc(T().sources)}</a>${cost.checked_at ? " · "+esc(cost.checked_at) : ""}</small>` : ""}`;
+`;
   };
+  ext.cardPrimary = (r) => has("plan_export")
+    ? `<div class="card-start"><button type="button" class="btn primary" data-start-walk="${esc(r.poi_id)}">${icon("play")} ${esc(X().startWalk)}</button></div>` : "";
   ext.cardExtras = (r) => {
     const x = X(), p = mine.places.get(r.poi_id) || {}, b = r.budget_breakdown || {};
     const chip = (k, ic, on, label) => `<button type="button" class="chip-btn${on ? " on" : ""}" data-keep="${k}" aria-pressed="${on}">${icon(ic)} ${esc(label)}</button>`;
@@ -121,7 +123,7 @@
       <div class="row"><button type="button" class="btn small" data-note="save">${esc(x.noteSave)}</button>${p.note ? `<button type="button" class="btn small" data-note="del">${esc(x.noteDelete)}</button>` : ""}</div>
       <p class="src">${esc(x.deviceOnly)}</p></div>`;
     if (has("constraints")) {
-      html += `<details class="nope"><summary>${esc(x.nope)}</summary><div class="row">
+      html += `<details class="nope"><summary>${esc(x.nope)}</summary><div class="row chip-scroll">
         <button type="button" class="btn small" data-nope="far">${esc(x.nFar)}</button>
         <button type="button" class="btn small" data-nope="been">${esc(x.nBeen)}</button>
         <button type="button" class="btn small" data-nope="format">${esc(x.nFormat)}</button>
@@ -204,6 +206,8 @@
         keep(r, {note}).then(() => A.rerender());
       }));
       el.querySelectorAll("[data-nope]").forEach((b) => b.addEventListener("click", () => nope(b.dataset.nope, r, el, d)));
+      // open this place, then the usual «where to finish» question and the walk
+      el.querySelector("[data-start-walk]")?.addEventListener("click", () => { A.selectPlace(r.poi_id, false); buildAnswer(d, false, r.poi_id); });
     });
     $$("[data-undo]").forEach((b) => b.addEventListener("click", () => {
       const k = b.dataset.undo;
@@ -580,28 +584,26 @@
         <button type="button" class="btn small" id="walkClose">${icon("back")} ${esc(x.backToPlaces)}</button></div>
       <p class="route-finish"><strong>${esc(x.finishSummary)}:</strong> ${esc(p.finish_label || (p.server?.state?.finish_mode === "return" ? x.finishReturn : p.stops.at(-1)?.name || x.finishOther))}</p>
       ${ext.walkContext?.() || ""}
-      <p class="meta">${esc(x.locationForRest)}</p>
       ${p.query ? `<p class="meta">«${esc(p.query)}»</p>` : ""}
       ${saved ? `<p class="src">${esc(fmt(x.savedAt, {d: new Date(p.saved_at).toLocaleString(state.lang === "en" ? "en-GB" : "ru-RU")}))}</p><p class="msg warn">${esc(x.stale)}</p>` : ""}
       ${navigator.onLine === false ? `<p class="msg info">${esc(x.offline)}</p>` : saved ? `<div class="row"><span class="meta">${esc(x.backOnline)}</span><button type="button" class="btn small" id="walkRefresh">${icon("refresh")} ${esc(x.refresh)}</button></div>` : ""}
       ${p.offline && !p.offline.contains_full_route ? `<p class="msg warn">${esc(x.partialExport)}</p>` : ""}
-      ${p.total_min ? `<p class="walk-left">${esc(fmt(x.remaining, {m: p.total_min}))}</p>` : ""}
+      ${p.total_min || p.server?.legs?.length ? `<div class="walk-summary">${p.total_min ? `<p class="walk-left">${esc(fmt(x.remaining, {m: p.total_min}))}</p>` : ""}
+        ${p.server?.legs?.length ? `<p class="walk-end">${icon("clock")} ${esc(fmt(x.endEstimate, {
+          t:new Intl.DateTimeFormat(state.lang === "en" ? "en-GB" : "ru-RU", {hour:"2-digit",minute:"2-digit",timeZone:"Asia/Almaty"}).format(new Date(p.server.estimated_arrival_at)),
+        }))}${p.server.legs.at(-1).walk_min > 0 ? " · " + esc(fmt(x.toEnd, {m:p.server.legs.at(-1).walk_min})) : ""}</p>` : ""}
+        ${p.server?.routing_source === "distance_estimate" ? `<p class="meta">${esc(x.routeApprox)}</p>` : ""}</div>` : ""}
       ${p.server ? ext.previewAction?.("active") || "" : ""}
-      ${p.server ? `<details class="route-notes"><summary>${esc(T().sources)}</summary><p class="src">${esc(p.server.notes.join(" "))}</p></details>` : ""}
-      ${p.server?.routing_source === "distance_estimate" ? `<p class="meta">${esc(x.routeApprox)}</p>` : ""}
-      ${p.server?.legs?.length ? `<p class="meta">${p.server.legs.at(-1).walk_min > 0 ? esc(fmt(x.toEnd, {m:p.server.legs.at(-1).walk_min}))+" · " : ""}${esc(fmt(x.endEstimate, {
-        t:new Intl.DateTimeFormat(state.lang === "en" ? "en-GB" : "ru-RU", {hour:"2-digit",minute:"2-digit",timeZone:"Asia/Almaty"}).format(new Date(p.server.estimated_arrival_at)),
-      }))}</p>` : ""}
       <ol class="walk-stops">${p.stops.map((s, i) => `<li class="ws ws-${esc(s.status)}" id="walkStop${i}"><div><b>${esc(s.name)}</b> <span class="meta">· ${esc(statusL[s.status] || s.status)}</span></div>
         <div class="meta">${s.address ? esc(s.address) + " · " : ""}${s.walk_min != null ? `${icon("walk")} ${esc(s.walk_min)} ${esc(T().minutes)} · ` : ""}${s.stay_min ? `${esc(s.stay_min)} ${esc(T().minutes)} ${esc(x.atStop)}` : ""}${!s.open_status && s.hours_text ? ` · ${esc(s.hours_text)}` : ""}</div>
         ${(mine.places.get(s.poi_id) || {}).note ? `<div class="meta">${icon("note")} ${esc(mine.places.get(s.poi_id).note)}</div>` : ""}
         ${s.open_status ? A.statusPill(s.open_status) : ""}
         ${ext.cardBadges(s)}${ext.walkStopExtras?.(s) || ""}
-        ${s.status === "next" ? `<div class="row"><button type="button" class="btn small" data-ws="done" data-i="${i}">${icon("check")} ${esc(x.done)}</button>
-          <button type="button" class="btn small" data-ws="skip" data-i="${i}">${esc(x.skip)}</button></div>` : ""}</li>`).join("")}</ol>
-      ${can && next.length ? `<div class="row changes"><button type="button" class="btn small" data-ch="less_time">${esc(x.chLess)}</button>
+        ${s.status === "next" ? `<div class="ws-actions"><button type="button" class="btn primary" data-ws="done" data-i="${i}">${icon("check")} ${esc(x.done)}</button>
+          <button type="button" class="btn" data-ws="skip" data-i="${i}">${esc(x.skip)}</button></div>` : ""}</li>`).join("")}</ol>
+      ${can && next.length ? `<div class="walk-problems"><p class="walk-problems-title">${esc(x.somethingWrong)}</p><div class="row changes chip-scroll"><button type="button" class="btn small" data-ch="less_time">${esc(x.chLess)}</button>
         <button type="button" class="btn small" data-ch="cold">${esc(x.chCold)}</button><button type="button" class="btn small" data-ch="tired">${esc(x.chTired)}</button>
-        <button type="button" class="btn small" data-ch="closed">${esc(x.chClosed)}</button></div>` : ""}
+        <button type="button" class="btn small" data-ch="closed">${esc(x.chClosed)}</button></div></div>` : ""}
       ${walkBusy ? `<div class="loading"><div class="spinner"></div>${esc(x.replanning)}</div>
         <button type="button" class="btn small" id="walkCancel">${esc(x.cancelReplan)}</button>` : ""}
       <p class="src" id="walkMsg" aria-live="polite">${esc(walk.proposal && walkMsg===x.breakKeepsRoute ? "" : walkMsg)}</p>
@@ -611,13 +613,12 @@
         ${proposed.map(s => `<p><b>${esc(s.name)}</b> · ${esc(s.walk_min)} ${esc(T().walk)}</p>
           ${ext.cardBadges(walk.proposal.plan.server.stops.find(p => p.poi_id === s.poi_id) || {})}`).join("")}
         <p>${esc(fmt(x.remaining, {m: walk.proposal.plan.total_min}))}</p>
-        <details><summary>${esc(T().sources)}</summary><p class="meta">${esc(walk.proposal.plan.server.notes.join(" "))}</p></details>
         <div class="row"><button type="button" class="btn primary" id="applyWalkProposal">${esc(x.applyBreak)}</button>
         <button type="button" class="btn" id="discardWalkProposal">${esc(x.keepCurrentRoute)}</button></div></section>` : ""}
       ${restHTML()}
       ${walk.history.length ? `<button type="button" class="btn small" id="walkUndo">${esc(x.undoReplan)}</button>` : ""}
-      <div class="row">${p.build_request ? `<button type="button" class="btn" id="walkSave">${icon("save")} ${esc(x.saveWalk)}</button>` : ""}
-        <button type="button" class="btn" id="walkEnd">${esc(x.endWalk)}</button></div>`;
+      <div class="walk-footer">${p.build_request ? `<button type="button" class="btn" id="walkSave">${icon("save")} ${esc(x.saveWalk)}</button>` : ""}
+        <button type="button" class="btn walk-end-btn" id="walkEnd">${esc(x.endWalk)}</button></div>`;
     $("#walkClose").addEventListener("click", () => {
       walkVersion++; walkBusy = false; walk.collapsed = true; walk.searching=false; renderWalk();
     });

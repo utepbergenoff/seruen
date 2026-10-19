@@ -496,3 +496,11 @@ Object.assign(window.I18N.kk.x,{breakRoutingUnavailable:"Аялдама арқы
 Object.assign(window.I18N.ru, {askLabel: "Опишите место, куда хотите сходить", budgetAuto: "неважно", extraSettings: "Ещё: расходы, доступность, мороз"});
 Object.assign(window.I18N.en, {askLabel: "Describe the place you'd like to go to", budgetAuto: "doesn't matter", extraSettings: "More: cost, accessibility, cold"});
 Object.assign(window.I18N.kk, {askLabel: "Барғыңыз келетін орынды сипаттаңыз", budgetAuto: "маңызды емес", extraSettings: "Тағы: шығын, қолжетімділік, аяз"});
+
+// round 4: results list and active walk
+Object.assign(window.I18N.ru, {walkFromHere: "время пешком отсюда"});
+Object.assign(window.I18N.en, {walkFromHere: "walking time from here"});
+Object.assign(window.I18N.kk, {walkFromHere: "осы жерден жаяу уақыт"});
+Object.assign(window.I18N.ru.x, {somethingWrong: "Что-то пошло не так?"});
+Object.assign(window.I18N.en.x, {somethingWrong: "Something wrong?"});
+Object.assign(window.I18N.kk.x, {somethingWrong: "Бірдеңе дұрыс болмады ма?"});

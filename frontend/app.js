@@ -483,14 +483,13 @@
     const readable = raw => String(raw || "").replace(/\b(Mo|Tu|We|Th|Fr|Sa|Su)\b/g, d => days[["Mo","Tu","We","Th","Fr","Sa","Su"].indexOf(d)])
       .replace(/\boff\b/g,t.hoursOff).replace(/(\d)-(\d)/g,"$1–$2");
     const date = st.for_date ? fmt(t.hoursDate, {d: st.for_date}) + ": " : "";
-    const hours = st.today_hours != null ? readable(st.today_hours) : readable(st.hours);
+    // the pill shows today's hours only; a whole week is too long for it and goes to the tooltip
+    const hours = st.today_hours != null ? readable(st.today_hours) : st.hours === "24/7" ? "24/7" : "";
     const source = st.source === "2gis" ? (state.lang==="en"?"2GIS":"2ГИС") : st.source && st.source !== "none" ? srcName(st.source) : "";
-    const url = /^https:\/\/2gis\.kz\/astana\/(firm|geo)\/\d+$/.test(st.source_url || "") ? st.source_url : null;
-    const provenance = source ? `${t.hoursSource}: ${url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(source)}</a>` : esc(source)}` : "";
-    return `<div class="hours-fact"><span class="status-pill st-${esc(st.state)}">${esc(t.status[st.state] || st.state)}</span>
-      <span class="hours-value">${esc(hours ? date + hours : t.hoursMissing)}</span>
-      ${st.today_hours && st.hours && st.hours !== "24/7" ? `<details><summary>${esc(t.weekSchedule)}</summary>${esc(readable(st.hours))}</details>` : ""}
-      <small>${provenance}${source ? " · " : ""}${esc(st.schedule_has_exceptions ? t.hoursExceptions : t.hoursCaution)}${st.schedule_note ? " " + esc(st.schedule_note) : ""}</small></div>`;
+    // one compact pill next to the walking time; where the hours come from and the caution live in the tooltip
+    const tip = [source && `${t.hoursSource}: ${source}`, st.schedule_has_exceptions ? t.hoursExceptions : hours ? t.hoursCaution : "", st.schedule_note,
+      st.hours && st.hours !== "24/7" ? `${t.weekSchedule}: ${readable(st.hours)}` : ""].filter(Boolean).join(" · ");
+    return `<span class="hours-fact"${tip ? ` title="${esc(tip)}"` : ""}><span class="status-pill st-${esc(st.state)}">${esc(t.status[st.state] || st.state)}</span>${hours ? `<span class="hours-value">${esc(date + hours)}</span>` : ""}</span>`;
   }
 
   const srcBadge = (src) => src === "ai" ? `<span class="badge ai">${esc(T().aiIdea)}</span>` : `<span class="badge tpl">${esc(T().template)}</span>`;
@@ -563,9 +562,9 @@
     let html = `<div class="result-head"><span class="badge mode-${esc(d.mode)}">${esc(t.mode)}: ${esc(t.modes[d.mode] || d.mode)}${d.cached_from ? " (" + esc(t.modes[d.cached_from] || d.cached_from) + ")" : ""}</span>
       <span class="meta">${d.timing_ms != null ? esc(Math.round(d.timing_ms)) + " ms" : ""}</span></div>`;
     if (d.source === "2gis") html += `<p class="badge gis">${esc(t.catalog.source)}</p>`;
-    const notes = (d.notes || []).map((n) => `<div class="note info">${esc(n)}</div>`).join("") +
+    const notes = (recs.length ? [] : d.notes || []).map((n) => `<div class="note info">${esc(n)}</div>`).join("") +
       (d.safety || []).map((n) => `<div class="note safety">${esc(n)}</div>`).join("");
-    // the answer opens with the walking-time ruler; the server's notes follow it
+    // the answer opens with the walking list: from «I'm here» to each pick in card order
     html += timeRuler(recs);
     if (notes) html += `<div class="notes">${notes}</div>`;
     if (ext.resultsTop) html += ext.resultsTop(d);
@@ -575,28 +574,26 @@
     const mixed = recs.some((r) => r.ai_reviewed || (r.selection_source || r.why_source) === "ai");
     recs.forEach((r, i) => {
       const L2 = links(r);
-      const b = cardBudget(r, d);
       const kind = r.kind_label || r.category_label || catLabel(r.category);
       const rating = r.rating ? ` · ${icon("star")} ${esc(r.rating)}${r.rating_count ? " (" + esc(r.rating_count) + ")" : ""}` : "";
-      // The four required parts are visible without opening More.
-      const realDesc = r.description && !/^generated/.test(r.description_source || "");
-      const desc = !realDesc ? "" : `<div class="desc">${esc(r.description)} <span class="src">(${r.description_url && /^https:\/\/(?:[a-z-]+\.)?wikipedia\.org\//i.test(r.description_url) ? `<a href="${esc(r.description_url)}" target="_blank" rel="noopener">${esc(t.descSrc[r.description_source] || r.description_source)}</a>` : esc(t.descSrc[r.description_source] || r.description_source || "")})</span></div>`;
+      // why and what to do read as one short description; who picked the place and the sources stay in the tooltip of the AI/template mark
       const picked = r.why_source === "ai" ? t.pickAi : r.ai_reviewed ? t.reviewAiGrounded : r.selection_source ? (r.selection_source === "ai" ? t.pickAiGrounded : t.pickRulesGrounded)
         : r.why_source === "ai" ? t.pickAi : mixed ? t.pickCode : t.pickTpl;
-      const acc = r.accessibility && r.accessibility !== "unknown" ? t.accessL[r.accessibility] : t.accessL.unknown;
+      const origin = `${picked} · ${t.sources}: ${(r.sources || [r.facts_source || "poi_db"]).map(srcName).join(", ")}${r.last_checked ? " · " + r.last_checked : ""}`;
       html += `<article class="card rec" data-id="${esc(r.poi_id)}" tabindex="0" aria-label="${esc(r.name)}" style="--i:${i}">
         <div class="rec-title"><span class="num">${i + 1}</span><div class="rec-name">
           <h3><a class="plain" href="${esc(L2.gisPlace)}" target="_blank" rel="noopener" title="${esc(t.openIn2gis)}">${esc(r.name)}</a></h3>
           <div class="meta">${esc(kind)}${rating}</div>
         </div></div>
         <div class="walk"><span class="walk-line" aria-hidden="true"><i></i></span>
-          <span class="walk-txt">${icon("walk")} <b>${esc(r.walk_min)}</b> ${esc(t.walk)} · ${esc(r.distance_m)} ${esc(t.distance)}</span></div>
+          <span class="walk-txt">${icon("walk")} <b>${esc(r.walk_min)}</b> ${esc(t.walk)} · ${esc(r.distance_m)} ${esc(t.distance)}</span>
+          ${r.open_status ? statusPill(r.open_status) : ""}</div>
         ${r.address ? `<div class="meta">${icon("pin")} ${esc(r.address)}</div>` : ""}
-        <div class="pills">${r.open_status ? statusPill(r.open_status) : ""}${ext.cardBadges ? ext.cardBadges(r) : ""}</div>
-        <div class="field why"><b>${esc(t.why)}:</b> ${esc(r.why)}</div>
-        <div class="field"><b>${esc(t.todo)}:</b> ${esc(r.what_to_do)}</div>
-        <div class="meta">⏱ ${esc(t.stay)}: ~${esc(r.time_to_spend_min)} ${esc(t.minutes)} · ${srcBadge(r.what_to_do_source)}</div>
+        ${ext.cardBadges ? `<div class="pills">${ext.cardBadges(r)}</div>` : ""}
+        <p class="field why rec-desc">${esc(sentences(r.why, r.what_to_do))}</p>
+        <div class="meta rec-stay" title="${esc(origin)}">⏱ ${esc(t.stay)}: ~${esc(r.time_to_spend_min)} ${esc(t.minutes)} · ${srcBadge(r.what_to_do_source)}</div>
         ${FEAT.photos ? `<div class="photos" aria-live="polite"></div>` : ""}
+        ${ext.cardPrimary ? ext.cardPrimary(r, i, d) : ""}
         <div class="actions">
           ${FEAT.mapLinks ? `<a class="btn" href="${esc(L2.gis)}" target="_blank" rel="noopener">${icon("map")} ${esc(t.route2gis)}</a>
           <a class="btn" href="${esc(L2.google)}" target="_blank" rel="noopener">${icon("nav")} ${esc(t.routeGoogle)}</a>` : ""}
@@ -605,12 +602,6 @@
         </div>
         ${FEAT.twogis ? `<div class="gis-box" id="gis-${i}" aria-live="polite" hidden></div>` : ""}
         ${ext.cardExtras ? ext.cardExtras(r, i, d) : ""}
-        <details class="more"><summary>${esc(t.more)}</summary>
-          ${budgetBar(b)}
-          ${desc}
-          <div class="src">${esc(acc)}</div>
-          <div class="src">${esc(t.sources)}: ${(r.sources || [r.facts_source || "poi_db"]).map(srcName).map(esc).join(", ")}${r.last_checked ? " · " + esc(r.last_checked) : ""} · ${esc(picked)}</div>
-        </details>
       </article>`;
       const pinIcon = L.divIcon({className: "", iconSize: [30, 30], iconAnchor: [15, 15], html: `<div class="pin"><b>${i + 1}</b></div>`});
       // a thin dashed line from the person to each pick: every place is measured from where they stand
@@ -671,7 +662,7 @@
       const g = el.querySelector('[data-act="gis"]');
       if (g) g.addEventListener("click", () => toggleGis(el, id, g));
     });
-    $$(".ruler-stop").forEach((b) => b.addEventListener("click", () => {
+    $$(".it-row").forEach((b) => b.addEventListener("click", () => {
       const el = $$(".rec").find((x) => x.dataset.id === b.dataset.stop), m = markers[b.dataset.stop];
       $$(".rec").forEach((x) => x.classList.toggle("active", x === el));
       if (el) el.scrollIntoView({behavior: "smooth", block: "start"});
@@ -799,22 +790,18 @@
     if (current() && box.isConnected) box.innerHTML = photosHtml(state.photos[key]);
   }
 
-  // the signature: every pick on one walking-time scale that starts where the person stands
+  // why + what to do as one paragraph: each part ends with a full stop
+  const sentences = (...parts) => parts.map((x) => String(x || "").trim()).filter(Boolean).map((x) => /[.!?…»)]$/.test(x) ? x : x + ".").join(" ");
+
+  // the walking list: «I'm here», then every pick in card order with its own walking time from that point
   function timeRuler(recs) {
     if (!recs.length) return "";
-    const t = T(), max = Math.max(...recs.map((r) => r.walk_min || 0));
-    const end = Math.max(10, Math.ceil(max * 1.12 / 5) * 5);
-    // stops keep their order by minutes; ones that are only a minute or two apart are spread so their labels never overlap
-    const order = recs.map((r, i) => ({r, i, x: (r.walk_min || 0) / end * 100})).sort((a, b) => a.x - b.x);
-    let prev = 3;
-    order.forEach((o) => { o.x = Math.max(o.x, prev + 19); prev = o.x; });
-    const over = order.length ? order[order.length - 1].x - 97 : 0;
-    if (over > 0) order.forEach((o) => { o.x -= over; });
-    const stops = order.sort((a, b) => a.i - b.i).map(({r, i, x}) =>
-      `<button type="button" class="ruler-stop" data-stop="${esc(r.poi_id)}" style="--x:${x.toFixed(1)}%;--k:${i}" aria-label="${esc(`${i + 1}. ${r.name}: ${r.walk_min} ${t.walk}`)}"><b>${i + 1}</b><span>${esc(r.walk_min)} ${esc(t.minutes)}</span></button>`).join("");
-    return `<div class="ruler" role="group" aria-label="${esc(fmt(t.rulerLabel || "", {list: recs.map((r, i) => `${i + 1} — ${r.walk_min} ${t.minutes}`).join(", ")}))}">
-      <div class="ruler-track"><span class="ruler-me" aria-hidden="true"></span><span class="ruler-fill" aria-hidden="true"></span>${stops}</div>
-      <div class="ruler-scale"><span>${esc(t.youAreHere)}</span><span>${esc(end)} ${esc(t.minutes)}</span></div></div>`;
+    const t = T();
+    const stops = recs.map((r, i) => `<li class="it-stop"><button type="button" class="it-row" data-stop="${esc(r.poi_id)}" aria-label="${esc(`${i + 1}. ${r.name}: ${r.walk_min} ${t.walk}`)}">
+      <span class="it-node" aria-hidden="true">${i + 1}</span><span class="it-name"><b>${esc(r.name)}</b><small>${esc(r.kind_label || r.category_label || catLabel(r.category))}</small></span>
+      <span class="it-time">${icon("walk")} ${esc(r.walk_min)} ${esc(t.minutes)}</span></button></li>`).join("");
+    return `<ol class="itinerary" aria-label="${esc(fmt(t.rulerLabel || "", {list: recs.map((r, i) => `${i + 1} — ${r.walk_min} ${t.minutes}`).join(", ")}))}">
+      <li class="it-start"><span class="it-me" aria-hidden="true"></span><b>${esc(t.youAreHere)}</b><span class="it-hint">${esc(t.walkFromHere || "")}</span></li>${stops}</ol>`;
   }
 
   function considered(d) {
@@ -945,7 +932,7 @@
   window.SeruenApp = {state, FEAT, API, T, fmt, esc, icon, $, $$, map, layer, markers, L, showAt, fitTo, round3, setWalkActive,
     freezeLocation: () => { if (state.locating) { cancelLocation(); renderLocLine(); } },
     postJSON, getJSON, context, ask: () => ask(), render: (d) => render(d), rerender: () => { if (state.last) render(state.last); }, catLabel,
-    statusPill, links, fillPhotos, presetName: p => p?.name?.[state.lang] || p?.name?.ru || p?.label?.[state.lang] || p?.id || ""};
+    statusPill, links, fillPhotos, selectPlace: (id, focus) => selectPlace(id, focus), presetName: p => p?.name?.[state.lang] || p?.name?.ru || p?.label?.[state.lang] || p?.id || ""};
   init();
   if (ext.onReady) ext.onReady();
 })();
