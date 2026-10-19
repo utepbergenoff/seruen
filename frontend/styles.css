@@ -819,3 +819,67 @@ body.map-expanded #panelSide { display:none; }
 [data-theme="dark"] .loc-line::before, [data-theme="dark"] .it-node { color: var(--sky); }
 [data-theme="dark"] .walk-summary { background: rgba(0,175,202,.14); }
 [data-theme="dark"] .walk-end-btn { color: #F2A08E; }
+
+/* round 4: meeting for two */
+/* A→B as in a routing app: two stacked 44px fields joined by a line, names instead of coordinates,
+   a round map-pin button for B, 15/30/45/60 pills and a small «i» for how both points are used. */
+#askForm:has(#meetingFields:not([hidden])) #locLine { display: none; }  /* the A field already names the start */
+#meetingFields { padding: 0 0 18px; margin-bottom: 16px; border-bottom: 1px solid var(--line-soft); }
+.meet-route { display: grid; grid-template-columns: 26px minmax(0, 1fr) 44px; grid-template-rows: auto 44px auto 44px;
+  column-gap: 10px; row-gap: 6px; align-items: center; }
+.meet-label { grid-column: 2 / 4; display: block; margin: 0; font: 600 13px/1.3 var(--font); color: var(--muted); }
+.meet-label-a { grid-row: 1; }
+.meet-label-b { grid-row: 3; margin-top: 8px; }
+.meet-dot { grid-column: 1; position: relative; z-index: 1; justify-self: center; display: grid; place-items: center; width: 26px; height: 26px;
+  border-radius: 50%; font: 700 12px/1 var(--display); box-shadow: 0 0 0 3px var(--surface); }
+.meet-dot-a { grid-row: 2; background: var(--sky-deep); color: var(--surface); }
+.meet-dot-b { grid-row: 4; background: var(--sun); color: #0F2230; }
+.meet-line { grid-column: 1; grid-row: 2 / 5; justify-self: center; align-self: stretch; width: 2px; margin: 22px 0; border-radius: 2px; background: var(--line); }
+.meet-field { grid-column: 2; grid-row: 2; display: block; min-width: 0; height: 44px; padding: 0 14px; border-radius: 12px; background: var(--ground);
+  border: 1px solid var(--line-soft); font: 500 14.5px/42px var(--font); color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#meetingFields #meetPreset { grid-column: 2; grid-row: 4; width: 100%; max-width: none; min-width: 0; height: 44px; margin: 0;
+  -webkit-appearance: none; appearance: none; padding: 0 38px 0 14px; border: 1px solid var(--line); border-radius: 12px;
+  background: var(--surface) no-repeat right 14px center / 12px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2300708A' stroke-width='2'/%3E%3C/svg%3E");
+  font: 500 14.5px var(--font); color: var(--ink); cursor: pointer; text-overflow: ellipsis; transition: border-color .2s var(--ease); }
+#meetingFields #meetPreset:hover { border-color: var(--sky-deep); }
+:root[data-theme="dark"] #meetingFields #meetPreset {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%236ED5EA' stroke-width='2'/%3E%3C/svg%3E"); }
+.meet-icon { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; margin: 0; border-radius: 50%; border: 1px solid transparent;
+  cursor: pointer; transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease); }
+.meet-icon::before { content: ""; width: 20px; height: 20px; background: currentColor; }
+.meet-pick { grid-column: 3; grid-row: 4; background: var(--sky-tint); color: var(--sky-deep); }
+.meet-pick::before { -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21.5s-7-6-7-11.5a7 7 0 0 1 14 0c0 5.5-7 11.5-7 11.5z'/%3E%3Ccircle cx='12' cy='10' r='2.6'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21.5s-7-6-7-11.5a7 7 0 0 1 14 0c0 5.5-7 11.5-7 11.5z'/%3E%3Ccircle cx='12' cy='10' r='2.6'/%3E%3C/svg%3E") center / contain no-repeat; }
+.meet-pick:hover { border-color: var(--sky-deep); }
+.meet-pick.on { background: var(--sky-deep); border-color: var(--sky-deep); color: var(--surface); }
+.meet-info-wrap { grid-column: 3; grid-row: 2; position: relative; display: grid; place-items: center; }
+.meet-info { background: transparent; color: var(--muted); }
+.meet-info::before { width: 21px; height: 21px; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v5.5'/%3E%3Cpath d='M12 7.6v.01' stroke-width='2.6'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v5.5'/%3E%3Cpath d='M12 7.6v.01' stroke-width='2.6'/%3E%3C/svg%3E") center / contain no-repeat; }
+.meet-info:hover, .meet-info[aria-expanded="true"] { background: var(--ground); color: var(--sky-deep); }
+.meet-pop { position: absolute; z-index: 30; top: calc(100% + 6px); right: 2px; width: min(300px, calc(100vw - 72px)); padding: 12px 14px;
+  border-radius: 12px; background: var(--ink); color: var(--surface); font: 500 13px/1.45 var(--font); text-align: left; box-shadow: var(--shadow-lift); }
+.meet-pop::before { content: ""; position: absolute; top: -5px; right: 16px; width: 10px; height: 10px; border-radius: 2px; background: inherit; transform: rotate(45deg); }
+.meet-picking { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 6px 6px 6px 14px; border-radius: 12px; background: var(--sky-tint); }
+.meet-picking p { flex: 1; min-width: 0; margin: 0; font: 600 13.5px/1.35 var(--font); color: var(--sky-ink); }
+.meet-picking .btn { flex: none; }
+.meet-limit { margin-top: 16px; }
+.meet-limit-label { display: block; margin-bottom: 8px; font: 600 13px/1.3 var(--font); color: var(--muted); }
+.meet-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.meet-tab { min-height: 40px; padding: 0 4px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  font: 600 14px var(--font); font-variant-numeric: tabular-nums; white-space: nowrap; cursor: pointer;
+  transition: background .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease); }
+.meet-tab:hover { border-color: var(--sky-deep); }
+.meet-tab.on { background: var(--sky-deep); border-color: var(--sky-deep); color: #fff; }
+:root[data-theme="dark"] .meet-tab.on { background: #176174; border-color: #176174; }
+/* map: A and B match the form's dots and sit centred on their exact points */
+.cpin.experience-pin:not(.participant-pin) { margin: 2px; }
+.cpin.participant-pin { width: 30px; height: 30px; border-radius: 50%; border: 3px solid #fff; font: 700 13px/1 var(--display); box-shadow: 0 2px 8px rgba(15, 34, 48, .35); }
+.cpin.participant-a { background: var(--sky-deep); color: #fff; }
+.cpin.participant-b { background: var(--sun); color: #0F2230; }
+:root[data-theme="dark"] .cpin.participant-a { color: #0F2230; }
+#map.picking-meet, #map.picking-meet .leaflet-interactive { cursor: crosshair; }
+@media (max-width: 860px) {
+  .meet-tab { min-height: 44px; }
+  #meetingFields #meetPreset, .meet-field { font-size: 16px; }  /* iOS does not zoom into 16px fields */
+  #meetMapHint { bottom: 32px; padding: 8px 12px; font-size: 13.5px; border-width: 1.5px; max-width: calc(100% - 24px); }  /* the phone map is short */
+}

@@ -102,11 +102,91 @@
   function drawParticipants() {
     participants.clearLayers();
     if (activeMeeting && activeMeeting.walk !== F.walk) activeMeeting = null;
-    const pair = mode === "meet" ? (previewMeeting || {first: point(state.loc), second}) : activeMeeting;
+    const pair = mode === "meet" ? (previewMeeting || {first: exactStart(), second}) : activeMeeting;
     if (!pair) return;
-    pin(pair.first, "A", null, participants);
-    if (pair.second) pin(pair.second, "B", null, participants);
+    pin(pair.first, "A", null, participants, "participant-pin participant-a");
+    if (pair.second) pin(pair.second, "B", null, participants, "participant-pin participant-b");
   }
+  // The «I'm here» dot sits on the exact point; state.loc keeps it rounded (~100 m) for the server only.
+  function exactStart() {
+    let me = null;
+    map.eachLayer?.(l => { if (!me && l.getLatLng && /class="me"/.test(l.options?.icon?.options?.html || "")) me = l.getLatLng(); });
+    return me && A.round3(me.lat) === state.loc.lat && A.round3(me.lng) === state.loc.lon ? {lat: me.lat, lon: me.lng} : state.loc;
+  }
+  const LIMITS = [15, 30, 45, 60];
+  // Names only: the form never shows raw coordinates and makes no reverse-geocoding call.
+  function startLabel() {
+    const x = X(), p = state.presets.find(p => p.id === state.preset);
+    return p ? A.presetName(p) : state.locKind === "gps" ? x.myLocation : x.pointOnMap;
+  }
+  function secondLabel(s) {
+    const p = s?.preset && state.presets.find(q => q.id === s.preset);
+    return p ? A.presetName(p) : X().pointOnMap;
+  }
+  function meetingForm(x) {
+    const presets = state.presets.map(p => `<option value="${esc(p.id)}"${second?.preset === p.id ? " selected" : ""}>${esc(A.presetName(p))}</option>`).join("");
+    const limits = LIMITS.map(n => [n, n === meetLimit, `${n} ${esc(x.minutes)}`]);
+    return `<div class="meet-route">
+        <span class="meet-label meet-label-a">${esc(x.startA)}</span>
+        <span class="meet-dot meet-dot-a" aria-hidden="true">A</span>
+        <span class="meet-field" id="meetStart">${esc(startLabel())}</span>
+        <span class="meet-info-wrap"><button type="button" class="meet-icon meet-info" id="meetInfo" aria-label="${esc(x.privacyTitle)}" title="${esc(x.privacyTitle)}" aria-expanded="false" aria-controls="meetPrivacy"></button>
+          <span class="meet-pop" id="meetPrivacy" role="note" hidden>${esc(x.privacy)}</span></span>
+        <label class="meet-label meet-label-b" for="meetPreset">${esc(x.startB)}</label>
+        <span class="meet-dot meet-dot-b" aria-hidden="true">B</span>
+        <select id="meetPreset"><option value="">${esc(second ? secondLabel(second) : x.choose)}</option>${presets}</select>
+        <button type="button" class="meet-icon meet-pick" id="meetPick" aria-label="${esc(x.pick)}" title="${esc(x.pick)}" aria-pressed="false"></button>
+        <span class="meet-line" aria-hidden="true"></span>
+      </div>
+      <div class="meet-picking" hidden><p id="meetPoint" role="status"></p><button type="button" class="btn small" id="meetCancel" hidden>${esc(x.cancel)}</button></div>
+      <div class="meet-limit"><span class="meet-limit-label" id="meetLimitLabel">${esc(x.walkMax)}</span>
+        <div class="meet-tabs" role="group" aria-labelledby="meetLimitLabel">${limits.map(([n, on, text]) => `<button type="button" class="meet-tab${on ? " on" : ""}" data-meet-limit="${n}" aria-pressed="${on}">${text}</button>`).join("")}</div>
+        <select id="meetLimit" class="sr-only" tabindex="-1" aria-hidden="true">${limits.map(([n, on, text]) => `<option value="${n}"${on ? " selected" : ""}>${text}</option>`).join("")}</select></div>`;
+  }
+  function bindMeetingForm() {
+    $("#meetPreset").onchange = e => setSecond(state.presets.find(p => p.id === e.target.value) || null);
+    // The pills drive the hidden select, so code and tests that change #meetLimit keep working.
+    $("#meetLimit").onchange = e => {
+      meetLimit = +e.target.value;
+      $("#meetingFields").querySelectorAll("[data-meet-limit]").forEach(b => {
+        const on = +b.dataset.meetLimit === meetLimit; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on));
+      });
+      open(null);
+    };
+    $("#meetingFields").querySelectorAll("[data-meet-limit]").forEach(b => b.onclick = () => {
+      $("#meetLimit").value = b.dataset.meetLimit; $("#meetLimit").dispatchEvent(new Event("change"));
+    });
+    $("#meetPick").onclick = () => {
+      if (picking) { picking = false; syncPicking(); return; }
+      picking = true; syncPicking(); $("#map").scrollIntoView({block:"nearest",behavior:"smooth"});
+    };
+    $("#meetCancel").onclick = () => { picking = false; syncPicking(); };
+    $("#meetInfo").onclick = () => togglePrivacy();
+  }
+  function syncPicking() {
+    const x = X(), on = picking && mode === "meet" && has("meet_halfway");
+    if ($("#meetPick")) { $("#meetPick").classList.toggle("on", on); $("#meetPick").setAttribute("aria-pressed", String(on)); }
+    if ($(".meet-picking")) $(".meet-picking").hidden = !on;
+    if ($("#meetPoint")) $("#meetPoint").textContent = on ? x.picking : "";
+    if ($("#meetCancel")) $("#meetCancel").hidden = !on;
+    $("#map")?.classList.toggle("picking-meet", on);
+    let hint = $("#meetMapHint");
+    if (!hint && on && $(".map-wrap")) {
+      hint = document.createElement("p"); hint.id = "meetMapHint"; hint.className = "map-pick-hint"; hint.setAttribute("aria-hidden", "true");
+      $(".map-wrap").appendChild(hint);
+    }
+    if (hint) { hint.hidden = !on; hint.textContent = on ? x.picking : ""; }
+  }
+  function togglePrivacy(show) {
+    const pop = $("#meetPrivacy"), button = $("#meetInfo");
+    if (!pop || !button) return;
+    show = show ?? pop.hidden;
+    pop.hidden = !show; button.setAttribute("aria-expanded", String(show));
+  }
+  document.addEventListener("click", e => { if (!e.target.closest?.("#meetInfo")) togglePrivacy(false); });  // any other tap closes it
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && $("#meetPrivacy") && !$("#meetPrivacy").hidden) { togglePrivacy(false); $("#meetInfo").focus(); }
+  });
   function mount() {
     const x = X();
     if (!has("meet_halfway")) mode = "walk";
@@ -118,18 +198,9 @@
     $("#searchModeField").querySelectorAll("input").forEach(el => el.onchange = () => {
       A.freezeLocation(); E.cancelMapPick?.(); state.requestVersion++; mode = el.value; meetingResults = null; $("#goBtn").disabled = false; open(null); mount();
     });
-    $("#meetingFields").innerHTML = has("meet_halfway") ? `<p class="meta">${esc(x.first)} <strong>${esc(A.presetName(state.presets.find(p=>p.id===state.preset)) || `${state.loc.lat}, ${state.loc.lon}`)}</strong></p>
-      <label for="meetPreset">${esc(x.second)}</label><div class="row"><select id="meetPreset"><option value="">${esc(x.choose)}</option>${state.presets.map(p => `<option value="${esc(p.id)}"${second?.preset === p.id ? " selected" : ""}>${esc(A.presetName(p))}</option>`).join("")}</select>
-      <button type="button" class="btn small" id="meetPick">${esc(x.pick)}</button><button type="button" class="btn small" id="meetCancel" hidden>${esc(x.cancel)}</button></div>
-      <p class="meta" id="meetPoint">${second ? esc(x.chosen) + ": " + esc(second.label) + ` (${second.lat}, ${second.lon})` : ""}</p>
-      <label>${esc(x.limit)} <select id="meetLimit">${[15,30,45,60].map(n => `<option value="${n}"${n === meetLimit ? " selected" : ""}>${n} ${esc(x.minutes)}</option>`).join("")}</select></label>
-      <details class="meeting-privacy"><summary>${esc(x.privacyTitle)}</summary><p class="meta">${esc(x.privacy)}</p></details>` : "";
-    if (has("meet_halfway")) {
-      $("#meetPreset").onchange = e => { const p = state.presets.find(p => p.id === e.target.value); setSecond(p || null, p ? A.presetName(p) : ""); };
-      $("#meetLimit").onchange = e => { meetLimit = +e.target.value; open(null); };
-      $("#meetPick").onclick = () => { picking = true; $("#meetPoint").textContent = x.picking; $("#meetCancel").hidden = false; $("#map").scrollIntoView({block:"center",behavior:"smooth"}); };
-      $("#meetCancel").onclick = () => { picking = false; $("#meetCancel").hidden = true; $("#meetPoint").textContent = second ? `${x.chosen}: ${second.label}` : ""; };
-    }
+    $("#meetingFields").innerHTML = has("meet_halfway") ? meetingForm(x) : "";
+    if (has("meet_halfway")) bindMeetingForm();
+    syncPicking();
     $("#winterField").hidden = !has("winter_plan");
     $("#winterField").innerHTML = has("winter_plan") ? `<label class="winter-toggle"><span class="winter-title">${esc(x.winterOption)}</span><input id="winterMode" type="checkbox" role="switch"${winterEnabled ? " checked" : ""}></label>
       <p class="winter-short">${esc(x.winterShort)}</p>
@@ -152,7 +223,7 @@
   }
   function open(next, meeting = null) {
     sequence++; picking = false; preview = null; previewMeeting = meeting; overlays.clearLayers(); tab = next;
-    drawParticipants(); A.setWalkActive(!!F.walk);
+    drawParticipants(); syncPicking(); A.setWalkActive(!!F.walk);
     document.body.classList.toggle("route-review-open", tab === "preview");
     $("#goBtn").disabled = false;
     $("#experiences").hidden = !tab;
@@ -185,13 +256,15 @@
       $("#experienceResult").querySelectorAll("[data-landmark]").forEach(b=>b.onclick=()=>{activeStory=storyIndex.find(p=>p.id===b.dataset.landmark);renderTab();});
     } else if (tab === "meet") say(x.fairness);
   }
-  function setSecond(p, label) {
-    A.freezeLocation(); second = p ? {...point(p), label, preset: p.id || null} : null;
+  // B keeps the exact point for its marker and label; point() rounds it (~100 m) only when it is sent.
+  // A map pick leaves the view alone: re-framing right after the click moved B away from the finger.
+  function setSecond(p, fit = true) {
+    A.freezeLocation(); second = p ? {lat: p.lat, lon: p.lon, preset: p.id || null} : null;
     meetingResults = null; open(null); mount();
-    if (second) A.fitTo([[state.loc.lat,state.loc.lon],[second.lat,second.lon]]);
+    if (second && fit) { const a = exactStart(); A.fitTo([[a.lat, a.lon], [second.lat, second.lon]]); }
   }
-  function pin(coords, name, click, target = overlays) {
-    const icon = L.divIcon({className: "", iconSize: [30, 30], iconAnchor: [15, 15], html: `<div class="cpin experience-pin">${esc(click ? "●" : name)}</div>`});
+  function pin(coords, name, click, target = overlays, cls = "") {
+    const icon = L.divIcon({className: "", iconSize: [30, 30], iconAnchor: [15, 15], html: `<div class="cpin experience-pin${cls ? " " + cls : ""}">${esc(click ? "●" : name)}</div>`});
     const marker=L.marker([coords.lat, coords.lon], {icon, title: name, alt: name, zIndexOffset:1200, interactive: !!click, bubblingMouseEvents:false}).addTo(target);
     if(click) marker.on("click", click);
     return marker;
@@ -265,7 +338,7 @@
       $("#experienceResult").querySelectorAll("[data-meet-route]").forEach(b => b.onclick = () => {
         if (!valid()) return;
         A.freezeLocation();
-        const poi = data.items[+b.dataset.meetRoute]; open("preview", {first: req.location, second: meetingSecond});
+        const poi = data.items[+b.dataset.meetRoute]; open("preview", {first: exactStart(), second: meetingSecond});
         buildPreview({poi, source: data.source});
       });
   }
@@ -324,12 +397,10 @@
   const oldClick=E.onMapClick;
   const oldCancelPick=E.cancelMapPick;
   E.cancelMapPick=()=>{
-    oldCancelPick?.(); picking=false;
-    if ($("#meetCancel")) $("#meetCancel").hidden=true;
-    if ($("#meetPoint")) $("#meetPoint").textContent=second ? `${X().chosen}: ${second.label}` : "";
+    oldCancelPick?.(); picking=false; syncPicking();
   };
   E.onMapClick=e=>{
-    if (picking && mode==="meet") { setSecond({lat:e.latlng.lat,lon:e.latlng.lng},X().chosen); return true; }
+    if (picking && mode==="meet") { setSecond({lat:e.latlng.lat,lon:e.latlng.lng}, false); return true; }
     return oldClick?.(e) || false;
   };
   const oldHealth=E.onHealth, oldLang=E.onLang;
@@ -347,7 +418,7 @@
   };
   const oldWalkContext=E.walkContext;
   E.walkContext=()=> (oldWalkContext?.() || "") + (activeMeeting?.walk === F.walk && activeMeeting
-    ? `<p class="meta meeting-walk-context"><strong>${esc(X().second)}:</strong> ${esc(activeMeeting.second.label || X().chosen)} (${activeMeeting.second.lat}, ${activeMeeting.second.lon}). ${esc(X().meetingWalkInfo)}</p>` : "");
+    ? `<p class="meta meeting-walk-context"><strong>${esc(X().startB)}:</strong> ${esc(secondLabel(activeMeeting.second))}. ${esc(X().meetingWalkInfo)}</p>` : "");
   E.onSearch=()=>{
     F.cancelSetup();
     if (mode === "meet" && has("meet_halfway")) { state.requestVersion++; meetingResults=null;open("meet"); void meet(); return true; }
