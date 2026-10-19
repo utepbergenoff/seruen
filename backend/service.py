@@ -8,7 +8,7 @@ from .feature_data import FeatureData, apply_feedback, relaxation_options, feedb
 from .fallback import drafts, explanation
 from .generate import AIError, Gemini, validate_drafts
 from .geo import budget_for, haversine, in_astana, target_time, speed, walk_minutes
-from .intent import merge_intent, rule_intent
+from .intent import rule_intent
 from .loader import Dataset, load_pois
 from .provider_status import log_provider
 from .places import maps_url
@@ -120,28 +120,17 @@ class RecommendationService:
         if ai_enabled and search.hits and not self.refusal(request, intent):
             try:
                 async with asyncio.timeout(self.settings.ai_timeout_s):
-                    # Both AI operations share the same eight-second deadline.
-                    ai_intent = await self.provider.intent(request, rules)
-                    intent = merge_intent(rules, ai_intent, request)
-                    intent, now, search = self.inspect(request, intent, current)
-                    intent_source = "ai"
-                    if search.hits:
-                        generated = await self.provider.generate(request, intent, search.hits)
-                        result_drafts, invented, rejected = validate_drafts(generated, search.hits, intent.lang)
-                        self.metrics["invented_ids_rejected"] += invented
-                        self.metrics["invalid_drafts_rejected"] += rejected
-                        if not result_drafts:
-                            raise AIError("all_drafts_rejected")
-                        error = "invented_id_rejected" if invented else "draft_rejected" if rejected else "none"
-                        mode = "ai"
-                        ai_ids = {d.poi_id for d in result_drafts}
-                        # Gemini often picks a single place. The next best checked candidates fill the cards
-                        # up to three with template texts, so each card says honestly who chose it.
-                        result_drafts = result_drafts + drafts(
-                            [h for h in search.hits if h.poi.poi_id not in ai_ids], intent
-                        )
-                    else:
-                        result_drafts = []
+                    # One bounded Gemini call reviews the deterministic top three.
+                    # Do not spend quota on a second, unused interpretation of explicit settings.
+                    generated = await self.provider.generate(request, intent, search.hits[:3])
+                    result_drafts, invented, rejected = validate_drafts(generated, search.hits, intent.lang)
+                    self.metrics["invented_ids_rejected"] += invented
+                    self.metrics["invalid_drafts_rejected"] += rejected
+                    if not result_drafts:
+                        raise AIError("all_drafts_rejected")
+                    error = "invented_id_rejected" if invented else "draft_rejected" if rejected else "none"
+                    mode = "ai"
+                    ai_ids = {d.poi_id for d in result_drafts}
             except Exception as exc:
                 # Keep the public contract stable; diagnostics contain only bounded codes.
                 safe_codes = {"missing_key", "invalid_model", "provider_http_error", "provider_oversized",
@@ -170,13 +159,10 @@ class RecommendationService:
             notes.append(feedback_note(request.feedback.reason, intent.lang))
         data_kind = data_kind or self.settings.data_kind
         lookup = {h.poi.poi_id: h for h in search.hits}
-        if request.preferences.atmosphere_profile:
-            # AI can phrase/select within valid candidates, but unknown decor must not displace
-            # reviewed matches for an explicitly selected mood. Per-card selection source stays honest.
-            by_id = {d.poi_id: d for d in [*selected, *drafts(search.hits, intent)]}
-            selected = sorted(by_id.values(), key=lambda d: {
-                "confirmed": 0, "partial": 1, "unknown": 2}.get(self.features.match(
-                    d.poi_id, None, now.date(), request.preferences.atmosphere_profile).status, 2))
+        # Gemini reviews only verified candidates; ranking and visit times belong to rules.
+        # Include every checked fallback so an AI omission cannot remove a nearby venue.
+        by_id = {d.poi_id: d for d in [*[d for h in search.hits for d in drafts([h], intent)], *selected]}
+        selected = [by_id[h.poi.poi_id] for h in search.hits]
         for draft in selected:
             if len(cards) == 3:
                 break
@@ -188,7 +174,7 @@ class RecommendationService:
             p, c = hit.poi, hit.candidate
             final_walk = c.walk_min if hit.to_end is None else hit.to_end
             remaining = intent.time_budget_min - search.reserve - c.walk_min - final_walk
-            stay = min(remaining, max(math.ceil(hit.stay * 0.7), min(int(hit.stay * 1.3), draft.time_to_spend_min)))
+            stay = min(remaining, hit.stay)
             if stay <= 0:
                 continue
             budget = budget_for(c.walk_min, stay, search.reserve, hit.to_end)
@@ -212,7 +198,8 @@ class RecommendationService:
                     walk_min=c.walk_min,
                     why=why,
                     why_source="template",
-                    selection_source="ai" if source == "ai" else "rules",
+                    selection_source="rules",
+                    ai_reviewed=source == "ai",
                     time_to_spend_min=stay,
                     what_to_do=todo,
                     what_to_do_source="template",

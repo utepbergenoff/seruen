@@ -53,7 +53,7 @@
       out.preferences = {...out.preferences, indoor_only: true, winter_mode: true,
         max_walk_min: Math.min(out.preferences?.max_walk_min || 120, limit)};
     }
-    if (mode === "meet") delete out.end;
+    if (mode === "meet") { delete out.end; delete out.finish_mode; }
     return out;
   };
   async function loadStories() {
@@ -88,7 +88,7 @@
     $("#results").hidden = mode === "meet";
     if (mode === "meet") map.removeLayer(A.layer); else A.layer.addTo(map);
     $("#scenarioStrip").hidden = mode === "meet" || !state.scenarios.length;
-    if ($("#finishField")) $("#finishField").hidden = mode === "meet";
+    if ($("#finishField")) $("#finishField").hidden = false;
   }
   function mount() {
     const x = X();
@@ -244,8 +244,9 @@
       const ids = selected ? [selected] : winter ? [] : (state.last?.recommendations || []).map(p => p.poi_id);
       const dest=choice.destination;
       if(dest) req.end=dest; else delete req.end;
+      if(has("finish_preferences")) req.finish_mode=choice.finish_mode;
       const payload = {request: req, stop_ids: ids, max_stops: selected ? 1 : winter ? 2 : 3,
-        finish_mode: choice.finish_mode, destination: dest};
+        finish_mode: choice.finish_mode, destination: dest, ...(choice.finish_poi_id ? {finish_poi_id:choice.finish_poi_id} : {})};
       const result = await A.postJSON(winter ? "/plans/winter" : "/plans/build", winter
         ? {plan: payload, max_outdoor_min: winterLimit} : payload, 40000);
       if (!current()) return;
@@ -295,7 +296,7 @@
     if (mode === "meet" && has("meet_halfway")) { state.requestVersion++; open("meet"); void meet(); return true; }
     open(null); return oldSearch?.() || false;
   };
-  E.onScenario=()=>{ oldScenario?.(); mode="walk"; open(null); mount(); };
+  E.onScenario=()=>{ oldScenario?.(); winterEnabled=false; mode="walk"; open(null); mount(); };
   window.addEventListener("seruen:walk-change",()=>{
     if (preview && preview.stamp !== stamp()) { preview=null; overlays.clearLayers(); if ($("#experienceResult")) $("#experienceResult").innerHTML=""; say(X().stale); }
   });

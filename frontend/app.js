@@ -182,16 +182,7 @@
   }
   // the same scenarios used to repeat here as cards; they now live only in the header menu (with photos)
   function renderScenarioStrip() {
-    $("#scenarioStrip").hidden = true; $("#scenarioCards").innerHTML = ""; return;
-    $("#scenarioStrip").hidden = !state.scenarios.length;
-    $("#scenarioCards").innerHTML = state.scenarios.map((s) => {
-      const p = state.presets.find((x) => x.id === s.preset);
-      const title = typeof s.title === "string" ? s.title : (s.title && (s.title[state.lang] || s.title.ru)) || s.id;
-      const place = p ? plabel(p).replace(/^(Я у|Я в|At the|At)\s+/i, "").replace(/\s+жанында$/i, "") : "";
-      return `<button type="button" class="scard" data-id="${esc(s.id)}"><img src="img/${scenarioPhoto(s)}.jpg" alt="" loading="lazy" decoding="async">
-        <span class="scard-text"><b>${esc(title)}</b><small>${esc(place)}</small></span></button>`;
-    }).join("");
-    $$("#scenarioCards .scard").forEach((b) => b.addEventListener("click", () => runScenario(b.dataset.id)));
+    $("#scenarioStrip").hidden = true; $("#scenarioCards").innerHTML = "";
   }
   // the search box shows the whole request: it grows line by line (up to a limit, then scrolls)
   function fitQuery() {
@@ -213,6 +204,7 @@
     else if (s.location) setLoc(s.location.lat, s.location.lon, "preset", null);
     $("#query").value = s.query; fitQuery();
     const ctx = s.context || {};
+    $("#weather").value = "auto"; $("#access").checked = !!ctx.accessibility;
     if (ctx.time_budget_min) { $("#budget").value = ctx.time_budget_min; $("#budgetOut").textContent = ctx.time_budget_min; $("#budgetAuto").checked = false; }
     if (ctx.now) { $("#whenSel").value = "other"; $("#whenAt").hidden = false; $("#whenAt").value = ctx.now.slice(0, 16); }
     else if (!params.get("at")) { $("#whenSel").value = "now"; $("#whenAt").hidden = true; }
@@ -268,7 +260,8 @@
     const ctx = {lang: "auto", mode: "walk", companions: $("#companions").value, accessibility: $("#access").checked};
     if (!$("#budgetAuto").checked) ctx.time_budget_min = +$("#budget").value;
     if ($("#whenSel").value === "other" && $("#whenAt").value) { ctx.now = $("#whenAt").value + ":00+05:00"; ctx.simulate = true; }
-    Object.assign(ctx, state.chipCtx);
+    Object.assign(ctx, state.chipCtx, {companions:$("#companions").value, accessibility:$("#access").checked});
+    if (!$("#budgetAuto").checked) ctx.time_budget_min = +$("#budget").value;
     const w = await weatherForRequest();
     if (w) ctx.weather = {temp_c: w.temp_c, wind_ms: w.wind_ms, precip_mm: w.precip_mm};  // exactly the contract fields
     return ctx;
@@ -574,7 +567,7 @@
     if (!recs.length) html += `<div class="card empty"><div class="big">${icon("nav")}</div><h3>${esc(t.emptyTitle)}</h3><p class="meta">${esc(t.emptyHint)}</p></div>`;
 
     // the AI may pick fewer than three places; the backend then adds the next best checked ones with template texts
-    const mixed = recs.some((r) => (r.selection_source || r.why_source) === "ai");
+    const mixed = recs.some((r) => r.ai_reviewed || (r.selection_source || r.why_source) === "ai");
     recs.forEach((r, i) => {
       const L2 = links(r);
       const b = cardBudget(r, d);
@@ -583,7 +576,7 @@
       // the card face stays short; what the spec also asks for (what to do, time there, sources) sits under "More"
       const realDesc = r.description && !/^generated/.test(r.description_source || "");
       const desc = !realDesc ? "" : `<div class="desc">${esc(r.description)} <span class="src">(${r.description_url && /^https:\/\/(?:[a-z-]+\.)?wikipedia\.org\//i.test(r.description_url) ? `<a href="${esc(r.description_url)}" target="_blank" rel="noopener">${esc(t.descSrc[r.description_source] || r.description_source)}</a>` : esc(t.descSrc[r.description_source] || r.description_source || "")})</span></div>`;
-      const picked = r.selection_source ? (r.selection_source === "ai" ? t.pickAiGrounded : t.pickRulesGrounded)
+      const picked = r.ai_reviewed ? t.reviewAiGrounded : r.selection_source ? (r.selection_source === "ai" ? t.pickAiGrounded : t.pickRulesGrounded)
         : r.why_source === "ai" ? t.pickAi : mixed ? t.pickCode : t.pickTpl;
       const acc = r.accessibility && r.accessibility !== "unknown" ? t.accessL[r.accessibility] : t.accessL.unknown;
       html += `<article class="card rec" data-id="${esc(r.poi_id)}" tabindex="0" aria-label="${esc(r.name)}" style="--i:${i}">

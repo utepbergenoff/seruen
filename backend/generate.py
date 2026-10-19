@@ -109,8 +109,8 @@ class Gemini:
                 "walk_min": h.candidate.walk_min,
                 "walk_to_end_min": h.to_end,
                 "open_status": h.status.model_dump(mode="json"),
-                "min_stay": max(1, int(h.stay * 0.7)),
-                "max_stay": int(h.stay * 1.3),
+                "min_stay": h.stay,
+                "max_stay": h.stay,
             }
             for h in hits
         ]
@@ -119,7 +119,7 @@ class Gemini:
             "context": request.context.model_dump(mode="json"),
             "intent": intent.model_dump(),
             "response_language": LANGUAGE_NAMES[intent.lang],
-            "finish_mode": "destination" if request.end else "return",
+            "finish_mode": request.finish_mode or ("destination" if request.end else "return"),
             "candidates": candidates,
         }
         features = getattr(self, "feature_data", None)
@@ -136,7 +136,7 @@ class Gemini:
 the venue name is in another language. If requested facilities are absent from the supplied facts,
 say that their availability is unknown; still suggest a suitable nearby category using known facts.
 Do not replace unknown facilities with assumptions about this venue."""
-        # The caller's shared deadline still covers both attempts (and intent extraction).
+        # The caller's shared deadline covers both formatting attempts.
         # Repair formatting/language failures once; never retry exhausted provider quotas here.
         for attempt in range(2):
             try:

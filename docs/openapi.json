@@ -2172,6 +2172,19 @@
               }
             ]
           },
+          "finish_poi_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finish Poi Id"
+          },
           "warning_codes": {
             "items": {
               "type": "string"
@@ -2909,6 +2922,19 @@
               }
             ]
           },
+          "finish_poi_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finish Poi Id"
+          },
           "origin": {
             "anyOf": [
               {
@@ -3165,6 +3191,19 @@
           },
           "finish": {
             "$ref": "#/components/schemas/Location"
+          },
+          "finish_poi_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finish Poi Id"
           },
           "remaining_ids": {
             "items": {
@@ -3484,6 +3523,22 @@
               }
             ]
           },
+          "finish_mode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "return",
+                  "place",
+                  "destination"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finish Mode"
+          },
           "query": {
             "type": "string",
             "maxLength": 1000,
@@ -3795,6 +3850,11 @@
               "template"
             ],
             "title": "Why Source"
+          },
+          "ai_reviewed": {
+            "type": "boolean",
+            "title": "Ai Reviewed",
+            "default": false
           },
           "selection_source": {
             "type": "string",

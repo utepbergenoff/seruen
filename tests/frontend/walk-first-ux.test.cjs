@@ -9,34 +9,33 @@ const change=(b,s,value)=>{const e=b.w.document.querySelector(s);e.value=value;e
 async function search(b){b.click('#goBtn');await settle();b.requests.at(-1).resolve(json(clone(FX.recommend_normal)));await settle();}
 function active(b){b.w.SeruenFeatures.startWalk(b.w.SeruenFeatures.planView(clone(FX.build_ok),{location:{lat:51.128,lon:71.43},query:'coffee',context:{lang:'ru',time_budget_min:90}}),null);}
 
-for(const mode of ['place','return','custom']) test(`explicit finish choice: ${mode}`,async t=>{
- const b=await boot(t,opts);await search(b);b.click('#startWalkBtn');
- assert.equal(b.builds.length,0);assert.ok(b.w.document.body.classList.contains('route-setup-open'));
- b.click(`[name="routeFinish"][value="${mode}"]`);
- if(mode==='custom'){
-  assert.equal(b.w.document.querySelector('#routeFinishConfirm').disabled,true);
-  b.click('#routeFinishMap');const loc=clone(b.w.SeruenApp.state.loc);
+for(const mode of ['place','return','destination']) test(`context is the only finish choice: ${mode}`,async t=>{
+ const b=await boot(t,opts);await search(b);change(b,'#finishMode',mode);
+ if(mode==='destination'){
+  b.click('#pickFinish');const loc=clone(b.w.SeruenApp.state.loc);
   assert.equal(b.w.SeruenExt.onMapClick({latlng:{lat:51.1401234,lng:71.4401234}}),true);
   assert.deepEqual(clone(b.w.SeruenApp.state.loc),loc);
+  const pin=b.pins.find(p=>p.options.title==='Финиш');assert.ok(pin&&b.layers.has(pin));
  }
- b.click('#routeFinishConfirm');await settle();
+ b.click('#startWalkBtn');await settle();
  assert.equal(b.builds.length,1);const body=b.builds[0];
  assert.equal(body.finish_mode,mode==='return'?'return':'destination');
- assert.equal(body.destination?.lat,mode==='return'?undefined:mode==='custom'?51.14:FX.recommend_normal.recommendations.at(-1).coords.lat);
- assert.equal(b.w.document.body.classList.contains('route-setup-open'),false);
+ assert.equal(body.destination?.lat,mode==='return'?undefined:mode==='destination'?51.14:FX.recommend_normal.recommendations[0].coords.lat);
+ assert.deepEqual(body.stop_ids,[FX.recommend_normal.recommendations[0].poi_id]);
+ assert.equal(b.w.document.querySelector('#routeSetup'),null);
 });
 
-test('cancel finish choice keeps existing route and makes no build request',async t=>{
+test('missing custom finish keeps existing route and asks to choose a visible map point',async t=>{
  const b=await boot(t,opts);await search(b);active(b);const before=JSON.stringify(b.w.SeruenFeatures.walk.plan);
- b.click('#walkClose');b.click('#startWalkBtn');b.click('#routeFinishCancel');await settle();
+ b.click('#walkClose');change(b,'#finishMode','destination');b.click('#startWalkBtn');await settle();
  assert.equal(b.builds.length,0);assert.equal(JSON.stringify(b.w.SeruenFeatures.walk.plan),before);
- assert.equal(b.w.document.body.classList.contains('route-setup-open'),false);
+ assert.equal(b.w.document.querySelector('#finishMapHint').hidden,false);
 });
 
 test('a response silently omitting requested places cannot replace the current walk',async t=>{
  const b=await boot(t,opts);await search(b);active(b);
  const before=JSON.stringify(b.w.SeruenFeatures.walk.plan);
- b.click('#walkClose');b.click('#startWalkBtn');b.click('#routeFinishConfirm');await settle();
+ b.click('#walkClose');b.click('#startWalkBtn');await settle();
  assert.equal(JSON.stringify(b.w.SeruenFeatures.walk.plan),before);
  assert.match(b.w.document.querySelector('#saveWalkMsg').textContent,/не проходит проверку/);
 });
@@ -69,7 +68,7 @@ test('provider hours are visible with date, provenance and caution; HTML cannot 
 
 test('winter search preferences survive finish confirmation without duplicate preview controls',async t=>{
  const b=await boot(t,opts);b.click('#winterMode');change(b,'#winterLimit','5');await search(b);
- assert.equal(b.w.document.querySelector('[data-plan-preview]'),null);b.click('#startWalkBtn');b.click('#routeFinishConfirm');await settle();
+ assert.equal(b.w.document.querySelector('[data-plan-preview]'),null);b.click('#startWalkBtn');await settle();
  assert.equal(b.builds[0].request.preferences.winter_mode,true);assert.equal(b.builds[0].request.preferences.max_walk_min,5);
 });
 
@@ -88,7 +87,7 @@ test('meeting labels identify B; cards and pins select a place and back restores
 test('meeting route overview uses selected venue and never has a meaningless step slider',async t=>{
  const items=meetingPlaces(),p=clone(FX.build_ok);p.stops=[{...p.stops[0],poi_id:items[1].poi_id,name:items[1].name,coords:items[1].coords}];p.state.remaining_ids=[items[1].poi_id];
  const b=await boot(t,{...opts,build:p,experiences:()=>json({items,source:'local'})});await meeting(b);
- b.click('[data-meet-route="1"]');assert.equal(b.builds.length,0);b.click('#routeFinishConfirm');await settle();
+ b.click('[data-meet-route="1"]');await settle();
  assert.deepEqual(b.builds[0].stop_ids,[items[1].poi_id]);assert.equal(b.builds[0].finish_mode,'destination');assert.equal(b.w.document.querySelector('#previewStep'),null);
  assert.ok(b.w.document.body.classList.contains('route-review-open'));
  assert.ok(b.w.document.querySelector('#previewStart'));b.click('#previewStart');assert.equal(b.w.SeruenFeatures.walk.plan.stops[0].poi_id,items[1].poi_id);
@@ -97,6 +96,6 @@ test('meeting route overview uses selected venue and never has a meaningless ste
 
 test('stale meeting route overview refuses start after a minute',async t=>{
  const items=meetingPlaces(),p=clone(FX.build_ok);p.stops=[{...p.stops[0],poi_id:items[0].poi_id,coords:items[0].coords}];
- const b=await boot(t,{...opts,build:p,experiences:()=>json({items,source:'local'})});await meeting(b);b.click('[data-meet-route="0"]');b.click('#routeFinishConfirm');await settle();
+ const b=await boot(t,{...opts,build:p,experiences:()=>json({items,source:'local'})});await meeting(b);b.click('[data-meet-route="0"]');await settle();
  const now=b.w.Date.now();b.w.Date.now=()=>now+61000;b.click('#previewStart');assert.equal(b.w.SeruenFeatures.walk,null);assert.match(b.w.document.querySelector('#experienceMessage').textContent,/заново/);
 });

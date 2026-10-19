@@ -481,3 +481,24 @@ Object.assign(window.I18N.kk, {"hoursDate": "{d} күні", "hoursCaution": "Ө�
 Object.assign(window.I18N.ru.x, {"endEstimate": "План закончится около {t}", "atStop": "на месте", "routeApprox": "Линия на карте приблизительная: проходы и переходы нужно проверить."});
 Object.assign(window.I18N.en.x, {"endEstimate": "Plan ends around {t}", "atStop": "at the stop", "routeApprox": "The map line is approximate: check paths and crossings."});
 Object.assign(window.I18N.kk.x, {"endEstimate": "Жоспар шамамен {t} аяқталады", "atStop": "орында", "routeApprox": "Картадағы сызық шамамен берілген: жолдар мен өткелдерді тексеріңіз."});
+
+Object.assign(window.I18N.ru,{"settings": "Параметры прогулки", "quickIdeas": "Идеи для поиска", "contextChanged": "Параметры изменены. Нажмите «Подобрать», чтобы обновить места.", "mapFull": "На весь экран", "mapExit": "Вернуться к панели", "panelRight": "Панель справа", "panelLeft": "Панель слева", "panelResize": "Размер панели — перетащите или используйте стрелки"});
+window.I18N.ru.x.finishAtPlace="Остаться в выбранном месте";
+
+Object.assign(window.I18N.en,{"settings": "Your walk", "quickIdeas": "Search ideas", "contextChanged": "Settings changed. Search again to update the places.", "mapFull": "Full screen", "mapExit": "Back to panel", "panelRight": "Panel on right", "panelLeft": "Panel on left", "panelResize": "Panel width — drag or use arrow keys"});
+window.I18N.en.x.finishAtPlace="Stay at the selected place";
+
+Object.assign(window.I18N.kk,{"settings": "Серуен параметрлері", "quickIdeas": "Іздеу идеялары", "contextChanged": "Параметрлер өзгерді. Орындарды жаңарту үшін қайта іздеңіз.", "mapFull": "Толық экран", "mapExit": "Панельге қайту", "panelRight": "Панель оң жақта", "panelLeft": "Панель сол жақта", "panelResize": "Панель ені — жылжытыңыз немесе бағыттау пернелерін басыңыз"});
+window.I18N.kk.x.finishAtPlace="Таңдалған орында қалу";
+
+window.I18N.ru.reviewAiGrounded="Проверено ИИ · порядок и время по правилам";
+window.I18N.en.reviewAiGrounded="AI reviewed · rule-based order and time";
+window.I18N.kk.reviewAiGrounded="ЖИ тексерді · реті мен уақыты ереже бойынша";
+
+Object.assign(window.I18N.ru,{extraSettings:"Время старта, расходы и доступность",atmosOptions:"Подобрать по атмосфере"});
+Object.assign(window.I18N.en,{extraSettings:"Start time, cost and accessibility",atmosOptions:"Choose an atmosphere"});
+Object.assign(window.I18N.kk,{extraSettings:"Басталу уақыты, шығын және қолжетімділік",atmosOptions:"Атмосфераны таңдау"});
+
+window.I18N.ru.x.startBest="Идти к: {name}";
+window.I18N.en.x.startBest="Walk to: {name}";
+window.I18N.kk.x.startBest="Бару: {name}";
