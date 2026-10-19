@@ -38,3 +38,12 @@
 4. Сверить `/health`: `features.on_route_breaks=1`. До обновления сервера новый интерфейс не включает пересчёт с обещанием остановки по пути.
 
 Ерлану: для расширения покрытия нужны подтверждённые лавочки и тёплые входы вдоль пеших маршрутов. Координаты, условия доступа, источник и дата проверки обязательны; не выводить наличие лавочки из самого факта существования парка.
+# Accepted stops use pedestrian routes — 2026-10-19
+
+Reproduced on the deployed backend: build a walk from the public EXPO point (51.088, 71.416) to `team_cafe_coffeeboom_expo`, then immediately add `team_comfort_expo_bench_1`. The first response was `osrm_foot`; the accepted break was `distance_estimate` with `routing_local_limit`.
+
+The router now waits within the current request for its one-second slot (bounded to 2.5 seconds), without storing coordinates or retrying the provider. When street routing is enabled, an additive break requires a successful pedestrian baseline and full route through the new stop and all remaining goals. A routing failure returns `409 break_routing_unavailable`; the current walk remains intact. Added distance/time is compared against the pedestrian baseline, not a straight-line estimate. No new provider or paid service.
+
+The frontend guards against replacing a street route with an estimated break from an older backend, offers retry, keeps accepted stop markers clickable, fits the new path on screen, and checks that the user's point has not moved since the proposal. Undo restores the earlier route. The dark theme has a brighter active path. Alikhan's layout is retained. Publish the full `frontend/` directory, cache `seruen-v29-street-stops`.
+
+Validation: 452 backend tests and 122 frontend tests pass. A local run using real POIs and the live walking provider returns `osrm_foot` for the same EXPO → bench → Coffee BOOM case. Browser confirmation shows the continuous path, both stop markers and the unchanged goal. Provider outages and moved-point cases are tested separately; on-site passage/access is not guaranteed.
