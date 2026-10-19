@@ -10,6 +10,8 @@ Nothing is stored: answers live in memory for a few hours, images are never save
 
 import asyncio
 import base64
+import hashlib
+import json
 import re
 import time
 from collections import OrderedDict, deque
@@ -134,6 +136,16 @@ class Photos:
         self.lock, self.slots = asyncio.Lock(), asyncio.Semaphore(2)
         self.calls, self.day, self.day_calls = deque(), None, 0
         self.last_status = "not_checked"
+        self.approved = None
+        if settings.photo_review_path is not None:
+            # A model's visual guess and proximity are not proof of a venue's identity.
+            # Bundled reviews take effect even before an older frontend index is republished.
+            self.approved = {}
+            try:
+                review = json.loads(settings.photo_review_path.read_text(encoding="utf-8"))
+                self.approved = review["places"]
+            except (OSError, ValueError, KeyError):
+                log_provider("photo_review", "unavailable")
 
     def allowed(self, url):
         parts, own = urlparse(url), urlparse(self.settings.photo_index_url)
@@ -165,6 +177,8 @@ class Photos:
             if not isinstance(raw, dict) or not isinstance(raw.get("url"), str):
                 continue
             url = urljoin(self.settings.photo_index_url, raw["url"])
+            if self.approved is not None and url not in self.approved.get(poi_id, {}):
+                continue
             page = raw.get("page_url") if isinstance(raw.get("page_url"), str) else None
             try:
                 photo = PlacePhoto(url=url, page_url=page if page and page.startswith("https://") else None,
@@ -184,6 +198,10 @@ class Photos:
             kind = response.headers.get("content-type", "").split(";")[0].strip()
             if response.status_code != 200 or kind not in IMAGE_TYPES or len(response.content) > MAX_IMAGE_BYTES:
                 return None
+            if self.approved is not None:
+                expected = {rows[photo.url]["sha256"] for rows in self.approved.values() if photo.url in rows}
+                if hashlib.sha256(response.content).hexdigest() not in expected:
+                    return None
             return kind, base64.b64encode(response.content).decode()
         except httpx.HTTPError:
             return None
@@ -294,7 +312,6 @@ class Photos:
         pairs = [(p, img) for p, img in zip(photos, loaded) if img]
         # Same URL can serve a changed photograph. Cache only after hashing actual image bytes
         # and the analysis schema/prompt; unchanged materials consume no new Gemini request.
-        import hashlib
         materials = hashlib.sha256(repr((SYSTEM, PhotoAnswer.model_json_schema(),
                                         [(p.model_dump(), img) for p, img in pairs])).encode()).hexdigest()
         query_hash = hashlib.sha256(" ".join(ask.query.casefold().split()).encode()).hexdigest()

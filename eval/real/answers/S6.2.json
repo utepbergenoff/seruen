@@ -1,25 +1,13 @@
 {
+  "request_id": null,
   "candidates": [
-    {
-      "poi_id": "osm_node_10798946230",
-      "name": "Selfie",
-      "category": "food",
-      "distance_m": 366,
-      "walk_min": 7,
-      "score": 0.535804,
-      "reasons": [
-        "within_radius",
-        "within_budget"
-      ],
-      "excluded_because": null
-    },
     {
       "poi_id": "osm_node_2826184438",
       "name": "Лигалайф",
       "category": "night",
       "distance_m": 333,
       "walk_min": 6,
-      "score": 0.52239,
+      "score": 0.540932,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -32,7 +20,7 @@
       "category": "food",
       "distance_m": 590,
       "walk_min": 11,
-      "score": 0.521756,
+      "score": 0.532546,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -45,7 +33,20 @@
       "category": "coffee",
       "distance_m": 183,
       "walk_min": 4,
-      "score": 0.51444,
+      "score": 0.529214,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_node_10798946230",
+      "name": "Selfie",
+      "category": "food",
+      "distance_m": 366,
+      "walk_min": 7,
+      "score": 0.527832,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -58,7 +59,7 @@
       "category": "night",
       "distance_m": 490,
       "walk_min": 9,
-      "score": 0.47658,
+      "score": 0.504304,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -71,7 +72,7 @@
       "category": "coffee",
       "distance_m": 241,
       "walk_min": 5,
-      "score": 0.469089,
+      "score": 0.485766,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -86,7 +87,7 @@
       "category": "park",
       "distance_m": 30,
       "walk_min": 1,
-      "score": 0.377318,
+      "score": 0.414111,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -96,7 +97,7 @@
       "category": "viewpoint",
       "distance_m": 46,
       "walk_min": 1,
-      "score": 0.43012,
+      "score": 0.432676,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -106,7 +107,7 @@
       "category": "park",
       "distance_m": 46,
       "walk_min": 1,
-      "score": 0.373318,
+      "score": 0.410111,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -116,7 +117,7 @@
       "category": "park",
       "distance_m": 70,
       "walk_min": 2,
-      "score": 0.367318,
+      "score": 0.404111,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -126,7 +127,7 @@
       "category": "park",
       "distance_m": 80,
       "walk_min": 2,
-      "score": 0.364818,
+      "score": 0.401611,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -136,7 +137,7 @@
       "category": "park",
       "distance_m": 82,
       "walk_min": 2,
-      "score": 0.364318,
+      "score": 0.401111,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -146,7 +147,7 @@
       "category": "park",
       "distance_m": 92,
       "walk_min": 2,
-      "score": 0.361818,
+      "score": 0.398611,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -156,7 +157,7 @@
       "category": "park",
       "distance_m": 105,
       "walk_min": 2,
-      "score": 0.358568,
+      "score": 0.395361,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -166,7 +167,7 @@
       "category": "park",
       "distance_m": 113,
       "walk_min": 2,
-      "score": 0.356568,
+      "score": 0.393361,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -176,7 +177,7 @@
       "category": "park",
       "distance_m": 122,
       "walk_min": 3,
-      "score": 0.354318,
+      "score": 0.391111,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -186,7 +187,7 @@
       "category": "park",
       "distance_m": 123,
       "walk_min": 3,
-      "score": 0.354068,
+      "score": 0.390861,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -196,7 +197,7 @@
       "category": "park",
       "distance_m": 145,
       "walk_min": 3,
-      "score": 0.348568,
+      "score": 0.385361,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -206,7 +207,7 @@
       "category": "park",
       "distance_m": 157,
       "walk_min": 3,
-      "score": 0.345568,
+      "score": 0.382361,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -216,7 +217,7 @@
       "category": "park",
       "distance_m": 164,
       "walk_min": 3,
-      "score": 0.343818,
+      "score": 0.380611,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -226,7 +227,7 @@
       "category": "park",
       "distance_m": 178,
       "walk_min": 4,
-      "score": 0.340318,
+      "score": 0.377111,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -236,7 +237,7 @@
       "category": "park",
       "distance_m": 190,
       "walk_min": 4,
-      "score": 0.337318,
+      "score": 0.374111,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -246,7 +247,7 @@
       "category": "park",
       "distance_m": 194,
       "walk_min": 4,
-      "score": 0.336318,
+      "score": 0.373111,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -256,7 +257,7 @@
       "category": "library",
       "distance_m": 218,
       "walk_min": 4,
-      "score": 0.2625,
+      "score": 0.263931,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -266,7 +267,7 @@
       "category": "park",
       "distance_m": 222,
       "walk_min": 4,
-      "score": 0.329318,
+      "score": 0.366111,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     },
@@ -276,62 +277,17 @@
       "category": "park",
       "distance_m": 226,
       "walk_min": 4,
-      "score": 0.328318,
+      "score": 0.365111,
       "reasons": [],
       "excluded_because": "night_safety_unconfirmed"
     }
   ],
-  "excluded_count": 1205,
+  "excluded_count": 1206,
   "mode": "no_ai",
   "recommendations": [
     {
-      "poi_id": "osm_node_10798946230",
-      "name": "Selfie",
-      "category": "food",
-      "coords": {
-        "lat": 51.1250293,
-        "lon": 71.4322305
-      },
-      "distance_m": 366,
-      "walk_min": 7,
-      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
-      "why_source": "template",
-      "time_to_spend_min": 60,
-      "what_to_do": "Сделайте перерыв на еду; меню уточните на месте.",
-      "what_to_do_source": "template",
-      "open_status": {
-        "state": "open",
-        "confidence": "high",
-        "hours": "Mo-Su 12:00-00:00",
-        "source": "osm",
-        "checked_at": "2026-10-17"
-      },
-      "facts_source": "poi_db",
-      "description_source": "generated",
-      "description": "Кафе или ресторан \"Selfie\" работает допоздна.",
-      "description_url": null,
-      "sources": [
-        "osm",
-        "gemini"
-      ],
-      "last_checked": "2026-10-17",
-      "accessibility": "unknown",
-      "links": {
-        "2gis": "https://2gis.kz/astana/geo/71.4322305,51.1250293",
-        "google": "https://www.google.com/maps/search/?api=1&query=51.1250293%2C71.4322305"
-      },
-      "rating": null,
-      "rating_count": null,
-      "budget_breakdown": {
-        "walk_there_min": 7,
-        "stay_min": 60,
-        "walk_back_min": 7,
-        "reserve_min": 0,
-        "total_min": 74
-      }
-    },
-    {
       "poi_id": "osm_node_2826184438",
+      "canonical_id": "osm_node_2826184438",
       "name": "Лигалайф",
       "category": "night",
       "coords": {
@@ -340,12 +296,20 @@
       },
       "distance_m": 333,
       "walk_min": 6,
-      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why": "Вечернее заведение. ≈6 мин пешком; всего 47/120 мин с возвращением.",
       "why_source": "template",
-      "time_to_spend_min": 60,
-      "what_to_do": "Осмотрите место с общедоступной территории; детали посещения уточните заранее.",
+      "ai_reviewed": false,
+      "explanation_evidence": [],
+      "selection_source": "rules",
+      "time_to_spend_min": 30,
+      "what_to_do": "Загляните на вечерний перекус или напиток; меню и формат заведения уточните перед заказом.",
       "what_to_do_source": "template",
       "open_status": {
+        "today_hours": null,
+        "for_date": "2026-10-18",
+        "source_url": null,
+        "schedule_note": null,
+        "schedule_has_exceptions": false,
         "state": "open",
         "confidence": "high",
         "hours": "09:00-06:00",
@@ -353,6 +317,7 @@
         "checked_at": "2026-10-17"
       },
       "facts_source": "poi_db",
+      "address": null,
       "description_source": "generated",
       "description": "Бар \"Лигалайф\" работает допоздна.",
       "description_url": null,
@@ -370,14 +335,36 @@
       "rating_count": null,
       "budget_breakdown": {
         "walk_there_min": 6,
-        "stay_min": 60,
+        "stay_min": 30,
         "walk_back_min": 6,
-        "reserve_min": 0,
-        "total_min": 72
-      }
+        "walk_to_end_min": null,
+        "reserve_min": 5,
+        "total_min": 47
+      },
+      "visit_condition": {
+        "provider_attributes": [],
+        "provider_url": null,
+        "kind": "unknown",
+        "note": "",
+        "source_url": null,
+        "checked_at": null,
+        "verification": "unknown"
+      },
+      "atmosphere_match": {
+        "matched_features": [],
+        "source": "none",
+        "checked_at": null,
+        "photo_ids": [],
+        "requested_features": [],
+        "unconfirmed_features": [],
+        "status": "not_requested"
+      },
+      "arrival_estimate": null,
+      "offline_allowed": false
     },
     {
       "poi_id": "osm_node_13230394599",
+      "canonical_id": "osm_node_13230394599",
       "name": "Leto Cafe",
       "category": "food",
       "coords": {
@@ -386,12 +373,20 @@
       },
       "distance_m": 590,
       "walk_min": 11,
-      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why": "Место для еды. ≈11 мин пешком; всего 57/120 мин с возвращением.",
       "why_source": "template",
-      "time_to_spend_min": 60,
+      "ai_reviewed": false,
+      "explanation_evidence": [],
+      "selection_source": "rules",
+      "time_to_spend_min": 30,
       "what_to_do": "Сделайте перерыв на еду; меню уточните на месте.",
       "what_to_do_source": "template",
       "open_status": {
+        "today_hours": null,
+        "for_date": "2026-10-18",
+        "source_url": null,
+        "schedule_note": null,
+        "schedule_has_exceptions": false,
         "state": "open",
         "confidence": "high",
         "hours": "Mo-Su 12:00-02:00",
@@ -399,6 +394,7 @@
         "checked_at": "2026-10-17"
       },
       "facts_source": "poi_db",
+      "address": null,
       "description_source": "generated",
       "description": "Кафе или ресторан Leto Cafe работает допоздна.",
       "description_url": null,
@@ -417,27 +413,127 @@
       "rating_count": null,
       "budget_breakdown": {
         "walk_there_min": 11,
-        "stay_min": 60,
+        "stay_min": 30,
         "walk_back_min": 11,
-        "reserve_min": 0,
-        "total_min": 82
-      }
+        "walk_to_end_min": null,
+        "reserve_min": 5,
+        "total_min": 57
+      },
+      "visit_condition": {
+        "provider_attributes": [],
+        "provider_url": null,
+        "kind": "unknown",
+        "note": "",
+        "source_url": null,
+        "checked_at": null,
+        "verification": "unknown"
+      },
+      "atmosphere_match": {
+        "matched_features": [],
+        "source": "none",
+        "checked_at": null,
+        "photo_ids": [],
+        "requested_features": [],
+        "unconfirmed_features": [],
+        "status": "not_requested"
+      },
+      "arrival_estimate": null,
+      "offline_allowed": false
+    },
+    {
+      "poi_id": "osm_node_6408271985",
+      "canonical_id": "osm_node_6408271985",
+      "name": "CrepeCafe",
+      "category": "coffee",
+      "coords": {
+        "lat": 51.1293821,
+        "lon": 71.4285934
+      },
+      "distance_m": 183,
+      "walk_min": 4,
+      "why": "Кофейня. ≈4 мин пешком; всего 33/120 мин с возвращением.",
+      "why_source": "template",
+      "ai_reviewed": false,
+      "explanation_evidence": [],
+      "selection_source": "rules",
+      "time_to_spend_min": 20,
+      "what_to_do": "Выпейте кофе; перед заказом уточните наличие свободных мест.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "today_hours": null,
+        "for_date": "2026-10-18",
+        "source_url": null,
+        "schedule_note": null,
+        "schedule_has_exceptions": false,
+        "state": "open",
+        "confidence": "high",
+        "hours": "Mo-Fr 08:00-00:00; Sa-Su 09:00-00:00",
+        "source": "osm",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "address": null,
+      "description_source": "generated",
+      "description": "Кофейня \"CrepeCafe\" работает допоздна.",
+      "description_url": null,
+      "sources": [
+        "osm",
+        "google_places",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4285934,51.1293821",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1293821%2C71.4285934&query_place_id=ChIJu0San6CGRUIRXuWEE4X8Cag"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 4,
+        "stay_min": 20,
+        "walk_back_min": 4,
+        "walk_to_end_min": null,
+        "reserve_min": 5,
+        "total_min": 33
+      },
+      "visit_condition": {
+        "provider_attributes": [],
+        "provider_url": null,
+        "kind": "unknown",
+        "note": "",
+        "source_url": null,
+        "checked_at": null,
+        "verification": "unknown"
+      },
+      "atmosphere_match": {
+        "matched_features": [],
+        "source": "none",
+        "checked_at": null,
+        "photo_ids": [],
+        "requested_features": [],
+        "unconfirmed_features": [],
+        "status": "not_requested"
+      },
+      "arrival_estimate": null,
+      "offline_allowed": false
     }
   ],
   "budget_breakdown": {
-    "walk_there_min": 7,
-    "stay_min": 60,
-    "walk_back_min": 7,
-    "reserve_min": 0,
-    "total_min": 74
+    "walk_there_min": 6,
+    "stay_min": 30,
+    "walk_back_min": 6,
+    "walk_to_end_min": null,
+    "reserve_min": 5,
+    "total_min": 47
   },
   "considered": {
     "location_rounded_to_m": 100,
     "radius_m": 1000,
     "radius_expanded": false,
     "time_budget_min": 120,
-    "effective_budget_min": 120,
-    "reserve_min": 0,
+    "effective_budget_min": 115,
+    "reserve_min": 5,
     "walk_speed_m_per_min": 75,
     "street_factor": 1.3,
     "companions": "alone",
@@ -459,7 +555,7 @@
     "target_time": "2026-10-18T23:00:00+05:00"
   },
   "notes": [
-    "Демо-расчёт на 18.10.2026 23:00 по времени Астаны: часы работы и безопасность рассчитаны для этого времени."
+    "Демо-расчёт на 18.10.2026 23:00 по времени Астаны: расписание и ограничения проверены для этого времени, текущая обстановка неизвестна."
   ],
   "safety": [
     "Ночью выбирайте освещённые людные места; возвращайтесь на такси или транспорте."
@@ -467,5 +563,27 @@
   "route": null,
   "disclaimer": "Данные о местах могут устареть — проверяйте на месте. Время пешком приблизительное.",
   "data_kind": "real",
-  "mock": false
+  "mock": false,
+  "source": "local",
+  "next_cursor": null,
+  "source_error": null,
+  "nearby_places": [],
+  "catalog_total": null,
+  "applied_preferences": {
+    "exclude_poi_ids": [],
+    "visited_poi_ids": [],
+    "exclude_visited": false,
+    "preferred_categories": [],
+    "max_walk_min": null,
+    "max_distance_m": null,
+    "indoor_only": false,
+    "winter_mode": false,
+    "expense_mode": "any",
+    "atmosphere_example_id": null,
+    "atmosphere_profile": null,
+    "atmosphere_verified_only": false
+  },
+  "change_codes": [],
+  "relaxation_options": [],
+  "route_impossible": null
 }

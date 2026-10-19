@@ -1,4 +1,5 @@
 {
+  "request_id": null,
   "candidates": [
     {
       "poi_id": "osm_node_13948916190",
@@ -6,7 +7,7 @@
       "category": "culture",
       "distance_m": 423,
       "walk_min": 8,
-      "score": 0.346227,
+      "score": 0.366493,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -19,7 +20,7 @@
       "category": "viewpoint",
       "distance_m": 509,
       "walk_min": 9,
-      "score": 0.275432,
+      "score": 0.314315,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -44,7 +45,7 @@
       "category": "shopping",
       "distance_m": 429,
       "walk_min": 8,
-      "score": 0.169067,
+      "score": 0.170984,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -74,7 +75,7 @@
       "category": "food",
       "distance_m": 1693,
       "walk_min": 30,
-      "score": 0.088128,
+      "score": 0.043,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -84,7 +85,7 @@
       "category": "park",
       "distance_m": 2065,
       "walk_min": 36,
-      "score": 0.136272,
+      "score": 0.185614,
       "reasons": [],
       "excluded_because": "out_of_radius"
     },
@@ -104,7 +105,7 @@
       "category": "shopping",
       "distance_m": 2414,
       "walk_min": 42,
-      "score": 0.043,
+      "score": 0.045931,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -154,7 +155,7 @@
       "category": "coffee",
       "distance_m": 2964,
       "walk_min": 52,
-      "score": 0.155678,
+      "score": 0.149736,
       "reasons": [],
       "excluded_because": "out_of_radius"
     },
@@ -164,7 +165,7 @@
       "category": "coffee",
       "distance_m": 2982,
       "walk_min": 52,
-      "score": 0.124001,
+      "score": 0.117414,
       "reasons": [],
       "excluded_because": "out_of_radius"
     },
@@ -174,7 +175,7 @@
       "category": "coffee",
       "distance_m": 3121,
       "walk_min": 55,
-      "score": 0.249109,
+      "score": 0.25687,
       "reasons": [],
       "excluded_because": "out_of_radius"
     },
@@ -184,7 +185,7 @@
       "category": "park",
       "distance_m": 3128,
       "walk_min": 55,
-      "score": 0.136272,
+      "score": 0.185614,
       "reasons": [],
       "excluded_because": "out_of_radius"
     },
@@ -194,7 +195,7 @@
       "category": "food",
       "distance_m": 3370,
       "walk_min": 59,
-      "score": 0.120256,
+      "score": 0.073711,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -204,7 +205,7 @@
       "category": "park",
       "distance_m": 3381,
       "walk_min": 59,
-      "score": 0.136272,
+      "score": 0.185614,
       "reasons": [],
       "excluded_because": "out_of_radius"
     },
@@ -214,7 +215,7 @@
       "category": "culture",
       "distance_m": 3384,
       "walk_min": 59,
-      "score": 0.176702,
+      "score": 0.148056,
       "reasons": [],
       "excluded_because": "out_of_radius"
     },
@@ -229,11 +230,12 @@
       "excluded_because": "category_mismatch"
     }
   ],
-  "excluded_count": 1249,
+  "excluded_count": 1250,
   "mode": "no_ai",
   "recommendations": [
     {
       "poi_id": "osm_node_13948916190",
+      "canonical_id": "osm_node_13948916190",
       "name": "Қазақстан Теміржол тарихы Мұражайы",
       "category": "culture",
       "coords": {
@@ -242,12 +244,20 @@
       },
       "distance_m": 423,
       "walk_min": 8,
-      "why": "Matches the requested category and fits your time budget.",
+      "why": "Cultural stop. ≈8 min walking; 106/120 min total including return.",
       "why_source": "template",
+      "ai_reviewed": false,
+      "explanation_evidence": [],
+      "selection_source": "rules",
       "time_to_spend_min": 30,
-      "what_to_do": "Explore the available exhibition; check tickets and the programme on arrival.",
+      "what_to_do": "Explore the available exhibition; check tickets and the programme beforehand.",
       "what_to_do_source": "template",
       "open_status": {
+        "today_hours": null,
+        "for_date": "2026-10-18",
+        "source_url": null,
+        "schedule_note": null,
+        "schedule_has_exceptions": false,
         "state": "unknown",
         "confidence": "low",
         "hours": null,
@@ -255,6 +265,7 @@
         "checked_at": "2026-10-17"
       },
       "facts_source": "poi_db",
+      "address": null,
       "description_source": "generated",
       "description": "Место культуры Қазақстан Теміржол тарихы Мұражайы.",
       "description_url": null,
@@ -274,12 +285,34 @@
         "walk_there_min": 8,
         "stay_min": 30,
         "walk_back_min": 8,
+        "walk_to_end_min": null,
         "reserve_min": 60,
         "total_min": 106
-      }
+      },
+      "visit_condition": {
+        "provider_attributes": [],
+        "provider_url": null,
+        "kind": "unknown",
+        "note": "",
+        "source_url": null,
+        "checked_at": null,
+        "verification": "unknown"
+      },
+      "atmosphere_match": {
+        "matched_features": [],
+        "source": "none",
+        "checked_at": null,
+        "photo_ids": [],
+        "requested_features": [],
+        "unconfirmed_features": [],
+        "status": "not_requested"
+      },
+      "arrival_estimate": null,
+      "offline_allowed": false
     },
     {
       "poi_id": "osm_node_13900933375",
+      "canonical_id": "osm_node_13900933375",
       "name": "Астана Арена",
       "category": "viewpoint",
       "coords": {
@@ -288,12 +321,20 @@
       },
       "distance_m": 509,
       "walk_min": 9,
-      "why": "Matches the requested category and fits your time budget.",
+      "why": "Landmark visit. ≈9 min walking; 93/120 min total including return.",
       "why_source": "template",
-      "time_to_spend_min": 30,
+      "ai_reviewed": false,
+      "explanation_evidence": [],
+      "selection_source": "rules",
+      "time_to_spend_min": 15,
       "what_to_do": "Explore from public areas; check visitor details beforehand.",
       "what_to_do_source": "template",
       "open_status": {
+        "today_hours": null,
+        "for_date": "2026-10-18",
+        "source_url": null,
+        "schedule_note": null,
+        "schedule_has_exceptions": false,
         "state": "unknown",
         "confidence": "low",
         "hours": null,
@@ -301,6 +342,7 @@
         "checked_at": "2026-10-17"
       },
       "facts_source": "poi_db",
+      "address": null,
       "description_source": "generated",
       "description": "Достопримечательность Астана Арена.",
       "description_url": null,
@@ -318,17 +360,39 @@
       "rating_count": null,
       "budget_breakdown": {
         "walk_there_min": 9,
-        "stay_min": 30,
+        "stay_min": 15,
         "walk_back_min": 9,
+        "walk_to_end_min": null,
         "reserve_min": 60,
-        "total_min": 108
-      }
+        "total_min": 93
+      },
+      "visit_condition": {
+        "provider_attributes": [],
+        "provider_url": null,
+        "kind": "unknown",
+        "note": "",
+        "source_url": null,
+        "checked_at": null,
+        "verification": "unknown"
+      },
+      "atmosphere_match": {
+        "matched_features": [],
+        "source": "none",
+        "checked_at": null,
+        "photo_ids": [],
+        "requested_features": [],
+        "unconfirmed_features": [],
+        "status": "not_requested"
+      },
+      "arrival_estimate": null,
+      "offline_allowed": false
     }
   ],
   "budget_breakdown": {
     "walk_there_min": 8,
     "stay_min": 30,
     "walk_back_min": 8,
+    "walk_to_end_min": null,
     "reserve_min": 60,
     "total_min": 106
   },
@@ -361,11 +425,33 @@
   "notes": [
     "Some opening hours are unknown; check before visiting.",
     "Time is reserved for airport travel; this is a fixed estimate, check your route and check-in time.",
-    "Demo for 18.10.2026 16:00 Astana time: opening hours and safety are evaluated for that time."
+    "Demo for 18.10.2026 16:00 Astana time: schedules and constraints are evaluated for that time; current conditions are unknown."
   ],
   "safety": [],
   "route": null,
   "disclaimer": "Place data may be outdated; verify locally. Walking times are estimates.",
   "data_kind": "real",
-  "mock": false
+  "mock": false,
+  "source": "local",
+  "next_cursor": null,
+  "source_error": null,
+  "nearby_places": [],
+  "catalog_total": null,
+  "applied_preferences": {
+    "exclude_poi_ids": [],
+    "visited_poi_ids": [],
+    "exclude_visited": false,
+    "preferred_categories": [],
+    "max_walk_min": null,
+    "max_distance_m": null,
+    "indoor_only": false,
+    "winter_mode": false,
+    "expense_mode": "any",
+    "atmosphere_example_id": null,
+    "atmosphere_profile": null,
+    "atmosphere_verified_only": false
+  },
+  "change_codes": [],
+  "relaxation_options": [],
+  "route_impossible": null
 }

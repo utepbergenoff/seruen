@@ -24,6 +24,7 @@ class Settings:
     twogis_requests_per_day: int = 200
     photos_enabled: bool = True
     photo_index_url: str = "https://seruen-astana.netlify.app/img/places/index.json"
+    photo_review_path: Path | None = ROOT / "data/photo_identity_review.json"
     photo_timeout_s: float = 20.0
     photo_ai_per_minute: int = 8
     photo_ai_per_day: int = 400

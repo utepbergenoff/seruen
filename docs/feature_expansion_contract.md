@@ -227,3 +227,15 @@ SW v26: при начале прогулки пунктирные связи с 
 `PlanRequest.finish_poi_id`, `PlanState.finish_poi_id`, `OfflinePlan.finish_poi_id` are optional. For staying at a selected place, send plan `finish_mode=destination`, `destination` and its verified ID. The server resolves exact public POI coordinates instead of using rounded private coordinates as the venue's finish. Retain the ID in replans/export requests. Only a complete permitted offline route exports it.
 
 Recommendation order/durations now come from deterministic rules; `ai_reviewed` identifies a validated Gemini draft, while `selection_source=rules`. Shared time formula, UI behavior, backward compatibility and limits: [context_map_release.md](context_map_release.md).
+
+
+## Пояснения и фото: grounded-rag, 19.10.2026
+
+Редакция контракта остаётся 2: изменения совместимы. Сортировка и бюджеты — правила; Gemini пишет
+реальные `why`/`what_to_do` с `*_source=ai`. Непринятый текст заменяется шаблоном в конкретной карточке.
+`mode=ai` требует хотя бы одной принятой генерации. `explanation_evidence` добавлен как необязательный
+список ключей использованных фактов. Фронт показывает действие, время на месте и пометку источника
+сразу; полный расчёт и дополнительные сведения остаются в «Подробнее».
+
+Для фотографий мало соседних координат или ответа визуальной модели: необходима проверенная связка
+POI+файл. Публиковать весь frontend v30, включая img/places/index.json, about.html и sw.js.

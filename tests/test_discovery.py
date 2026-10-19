@@ -248,7 +248,7 @@ class CatalogGemini:
         return Generated(recommendations=[
             Draft(poi_id='invented', why='Не показывать.', time_to_spend_min=10, what_to_do='Не показывать.'),
             Draft(poi_id=hits[-1].poi.poi_id, why='Близкое кафе подходит для короткой остановки.',
-                  time_to_spend_min=480, what_to_do='Можно взять кофе и отдохнуть.')])
+                  time_to_spend_min=480, what_to_do='Можно взять кофе и отдохнуть.', evidence_ids=['category','walk'])])
 
 
 def test_gemini_selects_catalog_place_with_grounded_final_explanation(enabled):
@@ -259,6 +259,8 @@ def test_gemini_selects_catalog_place_with_grounded_final_explanation(enabled):
         assert d['mode'] == 'ai' and len(ai.received) == 3
         assert [r['poi_id'] for r in d['recommendations']] == [h.poi.poi_id for h in ai.received]
         assert d['recommendations'][-1]['ai_reviewed']
+        assert d['recommendations'][-1]['why_source'] == 'ai'
+        assert d['recommendations'][-1]['what_to_do'] == 'Можно взять кофе и отдохнуть.'
         assert '120 мин' in d['recommendations'][0]['why']
         assert d['recommendations'][0]['why_source'] == 'template'
         assert all(r['selection_source'] == 'rules' for r in d['recommendations'])

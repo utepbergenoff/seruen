@@ -59,9 +59,9 @@ async def test_valid_ai_selection_cannot_invent_facilities_or_prices(settings, r
     settings.gemini_api_key = 'synthetic-test-key'
     service = RecommendationService(settings, UnsupportedProse())
     response, _ = await service.recommend(req)
-    assert response.mode == 'ai'
+    assert response.mode == 'no_ai'
     chosen = response.recommendations[0]
-    assert chosen.selection_source == 'rules' and chosen.ai_reviewed
+    assert chosen.selection_source == 'rules' and not chosen.ai_reviewed
     assert chosen.why_source == chosen.what_to_do_source == 'template'
     assert 'гарантированы' not in chosen.why and 'бесплатн' not in chosen.what_to_do
     assert chosen.time_to_spend_min < 480
@@ -81,7 +81,8 @@ async def test_gemini_payload_excludes_user_coordinates_and_history(service, set
         if 'candidates' not in payload:
             return intent.model_dump()
         return Generated(recommendations=[Draft(poi_id=search.hits[0].poi.poi_id,
-            why='Место соответствует категории.', what_to_do='Осмотрите место.', time_to_spend_min=20)]).model_dump()
+            why='Место соответствует категории.', what_to_do='Осмотрите место.', time_to_spend_min=20,
+            evidence_ids=['category'])]).model_dump()
 
     provider.structured = capture
     await provider.intent(req, intent)

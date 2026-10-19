@@ -1,0 +1,193 @@
+{
+  "version": 1,
+  "reviewed_at": "2026-10-19",
+  "policy": "Exact venue and image bytes; geography and AI alone are insufficient.",
+  "places": {
+    "osm_way_108096984": {
+      "https://seruen-astana.netlify.app/img/places/c/4cd587a92abece34.jpg": {
+        "sha256": "6a69146ec68aeb82647850abb8e431ac79266ff13ebe615e34c1aa479b78a0d7",
+        "evidence": "team_review: data/atmosphere_catalog.json#atm_keruen_gallery"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/785454d3a27eaa33.jpg": {
+        "sha256": "ccbfd14a9a349f2e639ed5f7cdb5f3743db13c914c5b915069ff6e9404b284f3",
+        "evidence": "team_review: data/atmosphere_catalog.json#atm_keruen_gallery"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/29a752f647d1afc4.jpg": {
+        "sha256": "ede342ae135bc9db4e1b5ed2c57b11d11c1c8eac9dd1bc0b6d57c845f91078c9",
+        "evidence": "team_review: data/atmosphere_catalog.json#atm_keruen_food_court"
+      }
+    },
+    "osm_way_230401645": {
+      "https://seruen-astana.netlify.app/img/places/c/e4c8bd3f43831116.jpg": {
+        "sha256": "8675df16bd5f044cbc7c794650b72a5ab8c05902e97a3deed8e6ef8028d51afe",
+        "evidence": "team_review: data/atmosphere_catalog.json#atm_baiterek_exterior"
+      }
+    },
+    "osm_way_37884583": {
+      "https://seruen-astana.netlify.app/img/places/c/ba2c0bcdd22896f6.jpg": {
+        "sha256": "fdf34010566d79425be2ee62413517ce524b9bc5de11dde46475d08910196a38",
+        "evidence": "team_review: data/atmosphere_catalog.json#atm_gashyktar_park"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/0c703a574567c9d2.jpg": {
+        "sha256": "43b2a91401fdc6ca006e33fca71833c8170b77420abded7273b2e49ddf9b928b",
+        "evidence": "team_review: data/atmosphere_catalog.json#atm_gashyktar_park"
+      }
+    },
+    "osm_way_460703779": {
+      "https://seruen-astana.netlify.app/img/places/c/a67899df8f3f1e17.jpg": {
+        "sha256": "7270835dd8143c85a9a2eccdecbe6b69db3a0bcde63ab53a493ea4208f7f517a",
+        "evidence": "team_review: data/atmosphere_catalog.json#atm_khan_shatyr_boulevard"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/7eb33f64f511c66d.jpg": {
+        "sha256": "7dcc6d793005363dadf8510c7b9921e23d3de4c90efc408ccb5932132363ec8f",
+        "evidence": "visual_review_2026-10-19: shopping gallery; not tenant interior"
+      }
+    },
+    "osm_way_499328514": {
+      "https://seruen-astana.netlify.app/img/places/c/42d26da49ce07504.jpg": {
+        "sha256": "3950c95987d35c6cae352ab6683566451ed245ed4077dab3a8c2ea8af964df78",
+        "evidence": "team_review: data/atmosphere_catalog.json#atm_mega_entrance"
+      }
+    },
+    "osm_way_917478479": {
+      "https://seruen-astana.netlify.app/img/places/c/ad0af1f0ecf3f4b7.jpg": {
+        "sha256": "84ad82b6e5c87f5087751bf53e4ae71d508d995ce8f2990015fe99819df13da2",
+        "evidence": "team_review: data/atmosphere_catalog.json#atm_opera_facade"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/5782a87840c0c2fd.jpg": {
+        "sha256": "5a7e7211e44ce67026129e47430e6d85ed5e6805f8496318fa330484dbfa3eb9",
+        "evidence": "team_review: data/atmosphere_catalog.json#atm_opera_hall"
+      }
+    },
+    "2gis_70000001072135261": {
+      "https://seruen-astana.netlify.app/img/places/c/team-coffeeboom-expo-1.jpg": {
+        "sha256": "8157f53c8b15da4da876255841e553998a8597eec2b86dd839133ebb00811fe2",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-coffeeboom-expo-2.jpg": {
+        "sha256": "b62c965666bd62e40bc75a0f964789f0f740598192b365dc4f6b63a8f1d2b171",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-coffeeboom-expo-3.jpg": {
+        "sha256": "574b61d493e92f812eb5d673c89e6dc5c668b0f8c28b1fc1c1502b9790a20683",
+        "evidence": "team_photo: existing venue-specific attribution"
+      }
+    },
+    "osm_node_6408271985": {
+      "https://seruen-astana.netlify.app/img/places/c/team-crepecafe-nurzhol-1.jpg": {
+        "sha256": "f53cbdfa5d697ca5ffb94ecde71eaff78aed843e117355ac7e41df14ff814a80",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-crepecafe-nurzhol-2.jpg": {
+        "sha256": "eb5b5609c7a29c9e8fa13bbbca34acb8d4373775a31fa231abcb788e49ac6cba",
+        "evidence": "team_photo: existing venue-specific attribution"
+      }
+    },
+    "osm_node_12520559589": {
+      "https://seruen-astana.netlify.app/img/places/c/team-lepim-keruen-1.jpg": {
+        "sha256": "9a6a46edc4d4c573f131badeb75a9ad6ef1061fe4bd2d63c81afc1c1d0035a06",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-lepim-keruen-2.jpg": {
+        "sha256": "990423df3a5f48aeeca07e107ca049352081b62d334e6325d055beb3f24c6ac0",
+        "evidence": "team_photo: existing venue-specific attribution"
+      }
+    },
+    "osm_way_1449317691": {
+      "https://seruen-astana.netlify.app/img/places/c/team-lepim-khan-1.jpg": {
+        "sha256": "03a7a6eb5c4e8897d484f9645895027e5433215badb46c7e98345ddbab0b4230",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-lepim-khan-2.jpg": {
+        "sha256": "675ef41ad190b697497784957f28a7d831c2bdf3f4a371aebdc8b80fa5f3a20a",
+        "evidence": "team_photo: existing venue-specific attribution"
+      }
+    },
+    "2gis_70000001026933143": {
+      "https://seruen-astana.netlify.app/img/places/c/team-kango-expo-1.jpg": {
+        "sha256": "9ffd1936062b7eab174fa1ff3a3a3bb0fec8d18139e02e34891d57f0b6147dac",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-kango-expo-2.jpg": {
+        "sha256": "5a744c69f9852b953ddd11a21585ee48fd10e15a25654f53df0cd71fa67e3688",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-kango-expo-3.jpg": {
+        "sha256": "2992adfbf049a473472545a861b69c9f046258b37544935c5908f4adf7ed434b",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-kango-expo-4.jpg": {
+        "sha256": "92cf1d1634e0fc91ea7ed5ede5b395c10e5592a8f146e5ee6fee058a18d3e14b",
+        "evidence": "team_photo: existing venue-specific attribution"
+      }
+    },
+    "2gis_70000001115035313": {
+      "https://seruen-astana.netlify.app/img/places/c/team-okadzaki-expo-1.jpg": {
+        "sha256": "92633004fbe153b0d711c54e7dea4865c351fccb464f40951a8a081bbc0659e0",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-okadzaki-expo-2.jpg": {
+        "sha256": "9a0d519eca0f4b9e63e7f4436c4382607ae2d46ca24ed1e49a4759e1f178631e",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-okadzaki-expo-3.jpg": {
+        "sha256": "23b393b29c39df647d364a6525a06ee4f14a22f45d6dfbad07530e73802cab23",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-okadzaki-expo-4.jpg": {
+        "sha256": "5de9824a34e6c985e67c074aa5c9f1d73c1da2a55e51ef04f8a4705764bbbe16",
+        "evidence": "team_photo: existing venue-specific attribution"
+      }
+    },
+    "2gis_70000001084319590": {
+      "https://seruen-astana.netlify.app/img/places/c/team-espressoday-expo-1.jpg": {
+        "sha256": "19570add1586640ab1934b1595f6001d362e391d9f6550fa933460ddf23018ba",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-espressoday-expo-2.jpg": {
+        "sha256": "5f43f6fb06ea19e23b4645466a78cb0d2b11928255c8edb83ff7134aeb2fb5cb",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-espressoday-expo-3.jpg": {
+        "sha256": "d8b811469079fb216da650fe0f36eb775948b0a94b51df360f1159bb0aabafdf",
+        "evidence": "team_photo: existing venue-specific attribution"
+      }
+    },
+    "osm_way_1460763574": {
+      "https://seruen-astana.netlify.app/img/places/c/team-independence25-expo-1.jpg": {
+        "sha256": "ecbeed16c00be03f27e1663e063d3a9e3736ebac73dcb3f181e0050531df7c3d",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-independence25-expo-2.jpg": {
+        "sha256": "8a2dd8b605dd143019d4555559bd35b8ba11e0e57bae90afed1ad29c5a98b55a",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-independence25-expo-3.jpg": {
+        "sha256": "cddf141c0b6949ca151f144549071dd2303e67dd7d6cc5f6508d821eae57b313",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-independence25-expo-4.jpg": {
+        "sha256": "591398c2ff4e303cd34b235e286bbf2c0c275f62c5e3481a44746a9d28cd443b",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-independence25-expo-5.jpg": {
+        "sha256": "81ea86b5f1064f922f27de0ce5d67d2c9f7c4565804abfc50d8bd2b05f9fd76b",
+        "evidence": "team_photo: existing venue-specific attribution"
+      }
+    },
+    "team_cafe_coffeeboom_expo": {
+      "https://seruen-astana.netlify.app/img/places/c/team-coffeeboom-expo-1.jpg": {
+        "sha256": "8157f53c8b15da4da876255841e553998a8597eec2b86dd839133ebb00811fe2",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-coffeeboom-expo-2.jpg": {
+        "sha256": "b62c965666bd62e40bc75a0f964789f0f740598192b365dc4f6b63a8f1d2b171",
+        "evidence": "team_photo: existing venue-specific attribution"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-coffeeboom-expo-3.jpg": {
+        "sha256": "574b61d493e92f812eb5d673c89e6dc5c668b0f8c28b1fc1c1502b9790a20683",
+        "evidence": "team_photo: existing venue-specific attribution"
+      }
+    }
+  }
+}

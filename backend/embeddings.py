@@ -30,7 +30,9 @@ def tokenize(text):
 
 
 def poi_text(p):
-    return " ".join([p.name, p.name_en or "", p.name_kk or "", p.category, p.description, *p.tags])
+    description = p.description if p.description_source != "generated" else ""
+    tags = [tag for tag in p.tags if tag not in p.tags_inferred]
+    return " ".join([p.name, p.name_en or "", p.name_kk or "", p.category, description, *tags])
 
 
 def build_index(dataset, path: Path):
@@ -47,7 +49,7 @@ def build_index(dataset, path: Path):
     norms = np.linalg.norm(vectors, axis=1, keepdims=True)
     vectors = vectors / np.maximum(norms, 1e-12)
     payload = dict(
-        version=1,
+        version=2,
         kind="tfidf_lsa",
         fingerprint=dataset.fingerprint,
         ids=[p.poi_id for p in dataset.pois],
@@ -67,7 +69,7 @@ class Embeddings:
         if (
             data["fingerprint"] != dataset.fingerprint
             or data["ids"] != [p.poi_id for p in dataset.pois]
-            or data["version"] != 1
+            or data["version"] != 2
         ):
             raise ValueError("stale_index")
         self.vocabulary = data["vocabulary"]

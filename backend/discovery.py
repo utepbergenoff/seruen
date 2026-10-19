@@ -185,7 +185,12 @@ def to_poi(item, request, radius):
             label = attribute.get("name") if isinstance(attribute, dict) else None
             if isinstance(label, str) and label.strip() and label.strip()[:200] not in attributes:
                 attributes.append(label.strip()[:200])
-    return POI(published_special_hours=special, provider_attributes=attributes[:20], poi_id=f"2gis_{ident}", name=name[:200], lat=lat, lon=lon, category=category,
+    tags = []
+    for tag, pattern in (("wifi", r"wi[ -]?fi|вай[ -]?фай"), ("sockets", r"розетк|sockets?|outlets?")):
+        if any(re.search(pattern, label, re.I) and not re.search(r"нет|без |no ", label, re.I)
+               for label in attributes):
+            tags.append(tag)
+    return POI(tags=tags, published_special_hours=special, provider_attributes=attributes[:20], poi_id=f"2gis_{ident}", name=name[:200], lat=lat, lon=lon, category=category,
                twogis_place_id=ident, sources=["2gis"], description=rubrics[:2000], description_source="source",
                description_url=f"https://2gis.kz/astana/{'firm' if item['type'] == 'branch' else 'geo'}/{ident}",
                opening_hours_raw=hours, published_hours=published, schedule_note=note,
@@ -282,7 +287,8 @@ class Discovery:
                     self.ai_cache[cache_key] = (time.monotonic(), generated)
                     while len(self.ai_cache) > 64:
                         self.ai_cache.popitem(last=False)
-            accepted, invented, rejected = validate_drafts(generated, hits, intent.lang)
+            accepted, invented, rejected = validate_drafts(generated, hits[:3], intent.lang, request, intent,
+                                                          self.service.features)
             self.service.metrics["invented_ids_rejected"] += invented
             self.service.metrics["invalid_drafts_rejected"] += rejected
             if not accepted:

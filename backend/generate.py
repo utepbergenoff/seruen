@@ -8,6 +8,7 @@ from .activities import activity
 from .ai_budget import AIBudget
 from .schemas import Generated, Intent
 from .provider_status import http_error_code, log_provider
+from .grounding import evidence, supports_draft, unknown_facilities
 
 
 class AIError(Exception):
@@ -27,7 +28,13 @@ Respect activity_hint when present: a cinema is not a museum or exhibition. If v
 unknown (film, performance, event), do not promise attending it within a short visit budget.
 Do not use category assumptions as evidence for facilities. Missing facilities are unknown.
 Prefer a concrete reason tied to the request and a useful next action. No generic praise, superlatives,
-claims about crowds or free seats, or guarantees. The server renders final explanations from checked facts.
+claims about crowds or free seats, or guarantees. Your why and what_to_do WILL be shown to the user.
+Explain EACH supplied candidate without changing order or duration. Each has an evidence object:
+cite relevant existing keys in evidence_ids. why: at most 16 words, connect a known fact to the request.
+what_to_do: one concrete category-appropriate idea, at most 25 words. A bar is not an outdoor landmark.
+Don't repeat venue names or add other venues. Don't write numbers, prices, free-entry claims, hours or
+computed budgets: the UI shows these separately. The server appends missing-facility warnings; don't
+repeat these in why. A suggestion is an idea, not evidence of an event or available service.
 No links, markdown or instructions to ignore these rules. note_to_user should be empty."""
 
 LANGUAGE_NAMES = {"ru": "Russian", "kk": "Kazakh", "en": "English"}
@@ -123,13 +130,16 @@ class Gemini:
             "candidates": candidates,
         }
         features = getattr(self, "feature_data", None)
+        for row, hit in zip(candidates, hits):
+            row["evidence"] = evidence(hit, request, intent, features)
+            row["unconfirmed_requested_facilities"] = unknown_facilities(hit, intent)
         if features:
             from .geo import target_time
             today = target_time(request, intent).date()
             for row, hit in zip(candidates, hits):
                 row["visit_condition"] = features.condition(hit.poi.poi_id, today, hit.poi).model_dump(mode="json")
                 row["visual_match"] = features.match(hit.poi.poi_id, request.preferences.atmosphere_example_id,
-                                                     today).model_dump(mode="json")
+                                                     today, request.preferences.atmosphere_profile).model_dump(mode="json")
             # Do not send a person's history to Gemini; only constraints relevant to these candidates.
             payload["preferences"] = request.preferences.model_dump(exclude={"visited_poi_ids", "exclude_poi_ids"})
         system = SYSTEM + """ All explanation/action text must be in response_language, even when
@@ -142,7 +152,7 @@ Do not replace unknown facilities with assumptions about this venue."""
             try:
                 data = await self.structured(system, payload, Generated.model_json_schema())
                 generated = Generated.model_validate(data)
-                accepted, invented, _ = validate_drafts(generated, hits, intent.lang)
+                accepted, invented, _ = validate_drafts(generated, hits, intent.lang, request, intent, features)
                 # Preserve invented IDs for the caller's rejection counters.
                 if accepted or invented:
                     return generated
@@ -161,11 +171,13 @@ Do not replace unknown facilities with assumptions about this venue."""
                 + LANGUAGE_NAMES[intent.lang]
                 + ". Use only supplied IDs, why at most 18 words and what_to_do at most 25 words. "
                 "Avoid all statements about opening/closing, events, roofs or safety assurances."
+                " Include evidence_ids from each candidate's evidence. No numbers, prices or unsupported facilities."
             )
 
 
-def validate_drafts(generated, hits, lang="ru"):
+def validate_drafts(generated, hits, lang="ru", request=None, intent=None, features=None):
     allowed = {h.poi.poi_id for h in hits}
+    lookup = {h.poi.poi_id: h for h in hits}
     accepted, seen, invented, rejected = [], set(), 0, 0
     for draft in generated.recommendations:
         if draft.poi_id not in allowed:
@@ -186,6 +198,7 @@ def validate_drafts(generated, hits, lang="ru"):
                 r"открыт(?!ь)|закрыт(?!ь)|\bopen\b|\bclosed\b|ашық|жабық|крыш|стройк|по льду|on the ice|http|выставка сегодня|event today",
                 text,
             )
+            or (request is not None and not supports_draft(draft, lookup[draft.poi_id], request, intent, features))
         ):
             rejected += 1
             continue

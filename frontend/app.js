@@ -573,10 +573,10 @@
       const b = cardBudget(r, d);
       const kind = r.kind_label || r.category_label || catLabel(r.category);
       const rating = r.rating ? ` · ${icon("star")} ${esc(r.rating)}${r.rating_count ? " (" + esc(r.rating_count) + ")" : ""}` : "";
-      // the card face stays short; what the spec also asks for (what to do, time there, sources) sits under "More"
+      // The four required parts are visible without opening More.
       const realDesc = r.description && !/^generated/.test(r.description_source || "");
       const desc = !realDesc ? "" : `<div class="desc">${esc(r.description)} <span class="src">(${r.description_url && /^https:\/\/(?:[a-z-]+\.)?wikipedia\.org\//i.test(r.description_url) ? `<a href="${esc(r.description_url)}" target="_blank" rel="noopener">${esc(t.descSrc[r.description_source] || r.description_source)}</a>` : esc(t.descSrc[r.description_source] || r.description_source || "")})</span></div>`;
-      const picked = r.ai_reviewed ? t.reviewAiGrounded : r.selection_source ? (r.selection_source === "ai" ? t.pickAiGrounded : t.pickRulesGrounded)
+      const picked = r.why_source === "ai" ? t.pickAi : r.ai_reviewed ? t.reviewAiGrounded : r.selection_source ? (r.selection_source === "ai" ? t.pickAiGrounded : t.pickRulesGrounded)
         : r.why_source === "ai" ? t.pickAi : mixed ? t.pickCode : t.pickTpl;
       const acc = r.accessibility && r.accessibility !== "unknown" ? t.accessL[r.accessibility] : t.accessL.unknown;
       html += `<article class="card rec" data-id="${esc(r.poi_id)}" tabindex="0" aria-label="${esc(r.name)}" style="--i:${i}">
@@ -589,6 +589,8 @@
         ${r.address ? `<div class="meta">${icon("pin")} ${esc(r.address)}</div>` : ""}
         <div class="pills">${r.open_status ? statusPill(r.open_status) : ""}${ext.cardBadges ? ext.cardBadges(r) : ""}</div>
         <div class="field why"><b>${esc(t.why)}:</b> ${esc(r.why)}</div>
+        <div class="field"><b>${esc(t.todo)}:</b> ${esc(r.what_to_do)}</div>
+        <div class="meta">⏱ ${esc(t.stay)}: ~${esc(r.time_to_spend_min)} ${esc(t.minutes)} · ${srcBadge(r.what_to_do_source)}</div>
         ${FEAT.photos ? `<div class="photos" aria-live="polite"></div>` : ""}
         <div class="actions">
           ${FEAT.mapLinks ? `<a class="btn" href="${esc(L2.gis)}" target="_blank" rel="noopener">${icon("map")} ${esc(t.route2gis)}</a>
@@ -599,8 +601,6 @@
         ${FEAT.twogis ? `<div class="gis-box" id="gis-${i}" aria-live="polite" hidden></div>` : ""}
         ${ext.cardExtras ? ext.cardExtras(r, i, d) : ""}
         <details class="more"><summary>${esc(t.more)}</summary>
-          <div class="field"><b>${esc(t.todo)}:</b> ${esc(r.what_to_do)}</div>
-          <div class="field">⏱ <b>${esc(t.stay)}:</b> ~${esc(r.time_to_spend_min)} ${esc(t.minutes)}</div>
           ${budgetBar(b)}
           ${desc}
           <div class="src">${esc(acc)}</div>

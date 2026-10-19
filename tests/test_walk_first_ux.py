@@ -60,7 +60,8 @@ def test_destination_finish_does_not_add_a_return_leg(api):
 def test_advanced_position_is_replan_start_not_initial_origin(api):
     previous = post(api, '/plans/build', plan(stop_ids=['team_second'], finish_mode='destination',
         destination={'lat': 51.130, 'lon': 71.430}))
-    request = deepcopy(ASK); request['location'] = {'lat': 51.1285, 'lon': 71.430}
+    request = deepcopy(ASK)
+    request['location'] = {'lat': 51.1285, 'lon': 71.430}
     result = post(api, '/plans/recalculate', {'request': request, 'previous': previous['state'],
         'reason': 'add_stop', 'poi_id': 'team_bench', 'remaining_time_min': 90, 'keep_stops': True})
     assert result['geometry'][0] == [71.430, 51.129]
