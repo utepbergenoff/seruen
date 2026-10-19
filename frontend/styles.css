@@ -524,6 +524,8 @@ table.cands { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-
 .experiences .row { margin:10px 0; }
 .story-card, .preview-card { border-top:1px solid var(--line); margin-top:16px; padding-top:16px; }
 .story-card h3 { margin:6px 0 12px; }
+.meet-place h3 { margin-bottom:4px; }
+.meet-place .photos { margin:12px 0; }
 .experience-pin { background:var(--surface); color:var(--ink); font-weight:700; }
 .meeting-times { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:12px 0; }
 .meeting-times span { padding:12px; border:1px solid var(--line); border-radius:12px; }

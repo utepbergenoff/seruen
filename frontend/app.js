@@ -754,9 +754,13 @@
       <p class="src">${esc(P.credit)}: ${[...new Set(photos.map(photoCredit))].map(esc).join("; ")}</p>`;
   }
   async function loadPhotos(r, d) {
-    const card = $$(".rec").find((el) => el.dataset.id === r.poi_id), box = card && card.querySelector(".photos");
-    if (!box) return;
-    const ask = {lang: state.lang, query: (state.lastReq && state.lastReq.query) || "", companions: (state.lastReq && state.lastReq.context.companions) || "alone"};
+    const card = $$(".rec").find((el) => el.dataset.id === r.poi_id);
+    return fillPhotos(card && card.querySelector(".photos"), r, () => state.last === d);
+  }
+  // any place box (recommendation cards, meeting places); current() says the box still belongs to the shown answer
+  async function fillPhotos(box, r, current = () => true, query = null) {
+    if (!box || !FEAT.photos || !r?.poi_id || !r.coords) return;
+    const ask = {lang: state.lang, query: query ?? ((state.lastReq && state.lastReq.query) || ""), companions: (state.lastReq && state.lastReq.context.companions) || "alone"};
     // a 2GIS place is matched on the server to the same place in our photo list by name and position
     if (r.poi_id.startsWith("2gis_")) ask.near = {name: r.name, lat: r.coords.lat, lon: r.coords.lon, category: r.category};
     const key = `${r.poi_id}|${ask.lang}|${ask.companions}|${ask.query}`;
@@ -770,7 +774,7 @@
       }
       catch { state.photos[key] = null; }
     }
-    if (state.last === d && card.isConnected) box.innerHTML = photosHtml(state.photos[key]);
+    if (current() && box.isConnected) box.innerHTML = photosHtml(state.photos[key]);
   }
 
   // the signature: every pick on one walking-time scale that starts where the person stands
@@ -910,7 +914,8 @@
   }
   window.SeruenApp = {state, FEAT, API, T, fmt, esc, icon, $, $$, map, layer, markers, L, showAt, fitTo, round3, setWalkActive,
     freezeLocation: () => { if (state.locating) { cancelLocation(); renderLocLine(); } },
-    postJSON, getJSON, context, ask: () => ask(), render: (d) => render(d), rerender: () => { if (state.last) render(state.last); }, catLabel};
+    postJSON, getJSON, context, ask: () => ask(), render: (d) => render(d), rerender: () => { if (state.last) render(state.last); }, catLabel,
+    statusPill, links, fillPhotos};
   init();
   if (ext.onReady) ext.onReady();
 })();

@@ -185,10 +185,19 @@
       if (!current()) return;
       const x = X(); overlays.clearLayers();
       say(data.items.length ? x.estimate + (req.context.simulate ? " " + x.simulated : "") : x.noMeet);
-      $("#experienceResult").innerHTML = data.items.map((p, i) => `<article class="story-card"><h3>${esc(p.name)}</h3><div class="meeting-times"><span>A · ${esc(x.personA)}<strong>≈${p.walk_min[0]} ${esc(x.minutes)}</strong></span><span>B · ${esc(x.personB)}<strong>≈${p.walk_min[1]} ${esc(x.minutes)}</strong></span></div>
+      // Same place facts as a recommendation card: what it is, where, its photos and what Gemini sees on them.
+      $("#experienceResult").innerHTML = data.items.map((p, i) => `<article class="story-card meet-place" data-meet-id="${esc(p.poi_id)}"><h3>${esc(p.name)}</h3>
+        <p class="meta">${esc(A.catLabel(p.category))}${p.rating ? ` · ${A.icon("star")} ${esc(p.rating)}` : ""}</p>
+        ${p.address ? `<p class="meta">${A.icon("pin")} ${esc(p.address)}</p>` : ""}
+        <div class="meeting-times"><span>A · ${esc(x.personA)}<strong>≈${p.walk_min[0]} ${esc(x.minutes)}</strong></span><span>B · ${esc(x.personB)}<strong>≈${p.walk_min[1]} ${esc(x.minutes)}</strong></span></div>
         <p class="meta">${esc(x.difference)}: ${p.difference_min} ${esc(x.minutes)} · ${esc(x.hours[p.open_status.state] || x.hours.unknown)} · ${esc(x.cost[p.visit_condition.kind] || x.cost.unknown)}</p>
         ${p.visit_condition.note ? `<p class="meta">${esc(p.visit_condition.note)}</p>` : ""}
-        <div class="row"><button class="btn small" type="button" data-meet-map="${i}">${esc(x.onMap)}</button><button class="btn small" type="button" data-meet-route="${i}">${esc(x.routeHere)}</button></div></article>`).join("");
+        ${A.FEAT.photos ? `<div class="photos" aria-live="polite"></div>` : ""}
+        ${p.coords ? storyBlock(p) : ""}
+        <div class="row"><button class="btn small" type="button" data-meet-map="${i}">${esc(x.onMap)}</button><button class="btn small" type="button" data-meet-route="${i}">${esc(x.routeHere)}</button>
+        ${p.coords ? `<a class="btn small" href="${esc(A.links(p).gisPlace)}" target="_blank" rel="noopener">${esc(A.T().openIn2gis)}</a>` : ""}</div></article>`).join("");
+      $("#experienceResult").querySelectorAll("[data-meet-id]").forEach((el, i) =>
+        void A.fillPhotos(el.querySelector(".photos"), data.items[i], () => current() && el.isConnected, req.query));
       const draw = p => { overlays.clearLayers(); pin(req.location, "A"); pin(second, "B"); pin(p.coords, "●");
         p.paths.forEach((path, i) => L.polyline(path.map(([lon,lat]) => [lat,lon]), {color: i ? "#BD6C00" : "#00708A", weight: 3, dashArray: "6 6"}).addTo(overlays));
         A.fitTo(L.latLngBounds([...p.paths[0], ...p.paths[1]].map(([lon,lat]) => [lat,lon])));

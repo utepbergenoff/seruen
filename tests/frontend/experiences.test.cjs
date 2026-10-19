@@ -217,3 +217,33 @@ test('choosing your own point cancels the meeting point picker',async t=>{
   assert.equal(b.w.SeruenExt.onMapClick({latlng:{lat:51.13,lng:71.43}}),false);
   assert.equal(b.w.document.querySelector('#meetCancel').hidden,true);
 });
+
+test('meeting places show what the place is, its photos with what Gemini sees, and a 2GIS link',async t=>{
+  const item={poi_id:'2gis_70000001072135261',name:'Coffee BOOM',category:'coffee',rating:4.7,address:'проспект Мангилик Ел, 55/1',
+    coords:{lat:51.0889,lon:71.4156},walk_min:[5,9],difference_min:4,max_walk_min:9,stay_min:30,
+    open_status:{state:'likely_open',confidence:'medium'},visit_condition:{kind:'optional_purchase',note:'можно сидеть без заказа'},
+    paths:[[[71.416,51.089],[71.4156,51.0889]],[[71.404,51.133],[71.4156,51.0889]]],sources:['2gis']};
+  const photo={poi_id:item.poi_id,status:'ok',analysis_source:'gemini',
+    photos:[{url:'https://example.test/img/places/c/team-coffeeboom-expo-1.jpg',source:'team'}],
+    analysis:{summary:'Светлый зал, много мест у окон'}};
+  const b=await boot(t,{...base,experiences:()=>json({status:'ok',items:[item],source:'2gis'}),photos:()=>json(photo)});
+  b.click('[name="searchIntent"][value="meet"]');change(b,'#meetPreset','khan');b.click('#goBtn');await settle();
+  const card=b.w.document.querySelector('.meet-place');
+  assert.ok(card);assert.match(card.textContent,new RegExp(b.w.I18N.ru.cats.coffee||'coffee'));
+  assert.match(card.textContent,/проспект Мангилик Ел, 55\/1/);assert.match(card.textContent,/4\.7/);
+  assert.equal(b.photos.length,1);
+  assert.deepEqual(b.photos[0].body.near,{name:'Coffee BOOM',lat:51.0889,lon:71.4156,category:'coffee'});
+  assert.ok(card.querySelector('.ph-strip img'));
+  assert.match(card.querySelector('.photos').textContent,/Светлый зал, много мест у окон/);
+  assert.match(card.querySelector('a[href*="2gis.kz"]').href,/Coffee%20BOOM/);
+});
+
+test('a meeting photo answer arriving after leaving the meeting view changes nothing',async t=>{
+  let resolve;
+  const item={poi_id:'osm_node_1',name:'Парк',category:'park',coords:{lat:51.13,lon:71.41},walk_min:[5,6],difference_min:1,max_walk_min:6,
+    stay_min:30,open_status:{state:'unknown'},visit_condition:{kind:'free'},paths:[[[71.41,51.13]],[[71.41,51.13]]],sources:['osm']};
+  const b=await boot(t,{...base,experiences:()=>json({status:'ok',items:[item],source:'local'}),photos:()=>new Promise(r=>resolve=r)});
+  b.click('[name="searchIntent"][value="meet"]');change(b,'#meetPreset','khan');b.click('#goBtn');await settle();
+  b.click('#experienceClose');resolve(json({poi_id:'osm_node_1',status:'ok',photos:[{url:'https://example.test/x.jpg',source:'commons'}],analysis:{summary:'LATE'}}));await settle();
+  assert.doesNotMatch(b.w.document.body.innerHTML,/LATE/);
+});
