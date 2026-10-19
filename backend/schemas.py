@@ -236,6 +236,7 @@ class Recommendation(Model):
     why: str = Field(min_length=1)
     why_source: Literal["ai", "template"]
     ai_reviewed: bool = False
+    explanation_evidence: list[str] = Field(default_factory=list)
     selection_source: Literal["ai", "rules"] = "rules"
     time_to_spend_min: int = Field(ge=1)
     what_to_do: str = Field(min_length=1)
@@ -389,6 +390,7 @@ class Draft(Model):
     why: str = Field(min_length=1, max_length=700)
     time_to_spend_min: int = Field(ge=1, le=480)
     what_to_do: str = Field(min_length=1, max_length=1000)
+    evidence_ids: list[str] = Field(default_factory=list, max_length=12)
 
 
 class Generated(Model):

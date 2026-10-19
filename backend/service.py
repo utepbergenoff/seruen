@@ -7,6 +7,7 @@ from .cache import ResponseCache
 from .feature_data import FeatureData, apply_feedback, relaxation_options, feedback_note
 from .fallback import drafts, explanation
 from .generate import AIError, Gemini, validate_drafts
+from .grounding import supports_draft, unknown_note
 from .geo import budget_for, haversine, in_astana, target_time, speed, walk_minutes
 from .intent import rule_intent
 from .loader import Dataset, load_pois
@@ -120,10 +121,11 @@ class RecommendationService:
         if ai_enabled and search.hits and not self.refusal(request, intent):
             try:
                 async with asyncio.timeout(self.settings.ai_timeout_s):
-                    # One bounded Gemini call reviews the deterministic top three.
+                    # One bounded Gemini call explains the deterministic top three.
                     # Do not spend quota on a second, unused interpretation of explicit settings.
                     generated = await self.provider.generate(request, intent, search.hits[:3])
-                    result_drafts, invented, rejected = validate_drafts(generated, search.hits, intent.lang)
+                    result_drafts, invented, rejected = validate_drafts(generated, search.hits[:3], intent.lang,
+                                                                       request, intent, self.features)
                     self.metrics["invented_ids_rejected"] += invented
                     self.metrics["invalid_drafts_rejected"] += rejected
                     if not result_drafts:
@@ -181,6 +183,11 @@ class RecommendationService:
             condition = self.features.condition(p.poi_id, now.date(), p)
             visual = self.features.match(p.poi_id, request.preferences.atmosphere_example_id, now.date(), request.preferences.atmosphere_profile)
             why, todo = explanation(hit, request, intent, budget, condition, visual, search.category_relaxed)
+            if source == "ai" and supports_draft(draft, hit, request, intent, self.features):
+                why = " ".join(filter(None, [draft.why.strip(), unknown_note(hit, intent)]))
+                todo = draft.what_to_do.strip()
+            else:
+                source = "template"
             google = maps_url(p)
             links = (
                 {}
@@ -197,12 +204,13 @@ class RecommendationService:
                     distance_m=c.distance_m,
                     walk_min=c.walk_min,
                     why=why,
-                    why_source="template",
+                    why_source=source,
                     selection_source="rules",
                     ai_reviewed=source == "ai",
+                    explanation_evidence=draft.evidence_ids if source == "ai" else [],
                     time_to_spend_min=stay,
                     what_to_do=todo,
-                    what_to_do_source="template",
+                    what_to_do_source=source,
                     open_status=hit.status,
                     description_source=p.description_source,
                     description=p.description,
@@ -220,6 +228,8 @@ class RecommendationService:
                     offline_allowed=self.features.can_export(p.poi_id, now.date()) and not p.poi_id.startswith("2gis_"),
                 )
             )
+        if mode == "ai" and not any(c.why_source == "ai" for c in cards):
+            mode, error = "no_ai", "ai_unavailable"
         refusal = self.refusal(request, intent)
         if refusal:
             notes.append(message(refusal, intent.lang))

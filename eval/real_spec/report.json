@@ -79,35 +79,35 @@
     },
     {
       "id": "S3.1",
-      "cards": 3,
+      "cards": 2,
       "error": "none",
       "issues": [],
       "category_relaxed": false
     },
     {
       "id": "S3.2",
-      "cards": 3,
+      "cards": 2,
       "error": "none",
       "issues": [],
       "category_relaxed": false
     },
     {
       "id": "S3.3",
-      "cards": 3,
+      "cards": 2,
       "error": "none",
       "issues": [],
       "category_relaxed": false
     },
     {
       "id": "S3.4",
-      "cards": 3,
+      "cards": 2,
       "error": "none",
       "issues": [],
       "category_relaxed": false
     },
     {
       "id": "S3.5",
-      "cards": 3,
+      "cards": 2,
       "error": "none",
       "issues": [],
       "category_relaxed": false
@@ -142,7 +142,7 @@
     },
     {
       "id": "S4.5",
-      "cards": 3,
+      "cards": 1,
       "error": "none",
       "issues": [],
       "category_relaxed": false

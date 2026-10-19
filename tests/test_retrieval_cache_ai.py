@@ -127,6 +127,7 @@ class FakeGemini:
             why="Подходит по категории.",
             time_to_spend_min=480,
             what_to_do="Осмотрите общедоступную территорию.",
+            evidence_ids=["category"],
         )
         if self.behavior == "invent":
             return Generated(recommendations=[d.model_copy(update={"poi_id": "invented_999"}), d])
@@ -169,7 +170,8 @@ async def test_single_ai_pick_is_filled_up_to_three_with_honest_sources(settings
     assert len(recs) == min(3, len(search.hits)) >= 2
     assert recs[0].poi_id == search.hits[0].poi.poi_id
     assert recs[0].ai_reviewed and recs[0].selection_source == "rules"
-    assert recs[0].why_source == recs[0].what_to_do_source == "template"
+    assert recs[0].why_source == recs[0].what_to_do_source == "ai"
+    assert recs[0].why.startswith("Подходит по категории.")
     assert all(r.selection_source == "rules" for r in recs[1:])
     assert all(r.why_source == r.what_to_do_source == "template" for r in recs[1:])
     assert len({r.poi_id for r in recs}) == len(recs)

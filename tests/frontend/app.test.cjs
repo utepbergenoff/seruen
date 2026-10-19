@@ -138,18 +138,20 @@ test('2GIS failures: no match is final, a timeout offers retry, the card stays',
   assert.match(c1.querySelector('h3').textContent,/Coffee BOOM/);
 });
 
-test('card face has no AI or template labels; the More fold keeps what-to-do, time there and sources',async t=>{
+test('card face shows the action, visit duration and truthful AI/template source without expanding More',async t=>{
   const b=await boot(t);b.click('#goBtn');await tick();
   const ai={...rec('p1','Fame City'),why_source:'ai',what_to_do_source:'ai'};
   b.requests[0].resolve(json({...answer('mixed'),mode:'ai',recommendations:[ai,rec('p2','Сквер'),rec('p3','Парк')]}));await tick();
   const cards=[...b.w.document.querySelectorAll('.rec')];
   for(const c of cards){
-    assert.equal(c.querySelectorAll('.badge.ai,.badge.tpl,.badge.db').length,0);
+    assert.equal(c.querySelectorAll('.badge.ai,.badge.tpl').length,1);
     assert.match(c.querySelector('.why').textContent,/Почему: w/);
-    assert.doesNotMatch([...c.children].filter(x=>!x.matches('details')).map(x=>x.textContent).join(' '),/Что делать|На месте/);
-    assert.match(c.querySelector('details.more').textContent,/Что делать: d.*На месте: ~30/s);
+    assert.match([...c.children].filter(x=>!x.matches('details')).map(x=>x.textContent).join(' '),/Что делать: d.*На месте: ~30/s);
+    assert.doesNotMatch(c.querySelector('details.more').textContent,/Что делать: d/);
   }
   assert.match(cards[0].querySelector('.more').textContent,/текст написал ИИ/);
+  assert.equal(cards[0].querySelectorAll('.badge.ai').length,1);
+  assert.equal(cards[1].querySelectorAll('.badge.ai').length,0);
   assert.match(cards[1].querySelector('.more').textContent,/место добавлено кодом/);
 });
 

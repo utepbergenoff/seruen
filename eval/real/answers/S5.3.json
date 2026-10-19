@@ -1,4 +1,5 @@
 {
+  "request_id": null,
   "candidates": [
     {
       "poi_id": "osm_way_230401645",
@@ -6,7 +7,7 @@
       "category": "viewpoint",
       "distance_m": 46,
       "walk_min": 1,
-      "score": 0.525774,
+      "score": 0.505609,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -19,7 +20,7 @@
       "category": "coffee",
       "distance_m": 183,
       "walk_min": 4,
-      "score": 0.445237,
+      "score": 0.453623,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -32,20 +33,7 @@
       "category": "coffee",
       "distance_m": 375,
       "walk_min": 7,
-      "score": 0.420072,
-      "reasons": [
-        "within_radius",
-        "within_budget"
-      ],
-      "excluded_because": null
-    },
-    {
-      "poi_id": "osm_node_4506675474",
-      "name": "IMAX Кинопарк7",
-      "category": "culture",
-      "distance_m": 327,
-      "walk_min": 6,
-      "score": 0.387676,
+      "score": 0.429797,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -58,7 +46,7 @@
       "category": "park",
       "distance_m": 30,
       "walk_min": 1,
-      "score": 0.375321,
+      "score": 0.425283,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -71,7 +59,20 @@
       "category": "park",
       "distance_m": 46,
       "walk_min": 1,
-      "score": 0.370699,
+      "score": 0.420661,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_node_4506675474",
+      "name": "IMAX Кинопарк7",
+      "category": "culture",
+      "distance_m": 327,
+      "walk_min": 6,
+      "score": 0.41532,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -84,7 +85,7 @@
       "category": "culture",
       "distance_m": 676,
       "walk_min": 12,
-      "score": 0.308602,
+      "score": 0.332263,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -99,7 +100,7 @@
       "category": "food",
       "distance_m": 191,
       "walk_min": 4,
-      "score": 0.312973,
+      "score": 0.267938,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -109,7 +110,7 @@
       "category": "library",
       "distance_m": 218,
       "walk_min": 4,
-      "score": 0.281782,
+      "score": 0.27089,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -119,7 +120,7 @@
       "category": "food",
       "distance_m": 229,
       "walk_min": 4,
-      "score": 0.249973,
+      "score": 0.20196,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -159,7 +160,7 @@
       "category": "shopping",
       "distance_m": 329,
       "walk_min": 6,
-      "score": 0.250052,
+      "score": 0.248987,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -189,7 +190,7 @@
       "category": "food",
       "distance_m": 354,
       "walk_min": 7,
-      "score": 0.34806,
+      "score": 0.325733,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -229,7 +230,7 @@
       "category": "food",
       "distance_m": 366,
       "walk_min": 7,
-      "score": 0.347327,
+      "score": 0.311197,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -239,7 +240,7 @@
       "category": "food",
       "distance_m": 381,
       "walk_min": 7,
-      "score": 0.230686,
+      "score": 0.182954,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -259,7 +260,7 @@
       "category": "sport",
       "distance_m": 395,
       "walk_min": 7,
-      "score": 0.177798,
+      "score": 0.183823,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -289,16 +290,17 @@
       "category": "food",
       "distance_m": 438,
       "walk_min": 8,
-      "score": 0.368805,
+      "score": 0.359919,
       "reasons": [],
       "excluded_because": "category_mismatch"
     }
   ],
-  "excluded_count": 1200,
+  "excluded_count": 1201,
   "mode": "no_ai",
   "recommendations": [
     {
       "poi_id": "osm_way_230401645",
+      "canonical_id": "osm_way_230401645",
       "name": "Бәйтерек",
       "category": "viewpoint",
       "coords": {
@@ -307,12 +309,20 @@
       },
       "distance_m": 46,
       "walk_min": 1,
-      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why": "Осмотр достопримечательности. ≈1 мин пешком; всего 77/120 мин с возвращением.",
       "why_source": "template",
-      "time_to_spend_min": 30,
+      "ai_reviewed": false,
+      "explanation_evidence": [],
+      "selection_source": "rules",
+      "time_to_spend_min": 15,
       "what_to_do": "Осмотрите место с общедоступной территории; детали посещения уточните заранее.",
       "what_to_do_source": "template",
       "open_status": {
+        "today_hours": null,
+        "for_date": "2026-10-18",
+        "source_url": null,
+        "schedule_note": null,
+        "schedule_has_exceptions": false,
         "state": "unknown",
         "confidence": "low",
         "hours": null,
@@ -320,6 +330,7 @@
         "checked_at": "2026-10-17"
       },
       "facts_source": "poi_db",
+      "address": null,
       "description_source": "wikipedia",
       "description": "«Байтере́к» — монумент и смотровая башня в столице Казахстана — Астане. Монумент был построен как символ переноса столицы Казахстана в 1997 году.",
       "description_url": "https://ru.wikipedia.org/wiki/%D0%91%D0%B0%D0%B9%D1%82%D0%B5%D1%80%D0%B5%D0%BA_(%D0%BC%D0%BE%D0%BD%D1%83%D0%BC%D0%B5%D0%BD%D1%82)",
@@ -337,14 +348,36 @@
       "rating_count": null,
       "budget_breakdown": {
         "walk_there_min": 1,
-        "stay_min": 30,
+        "stay_min": 15,
         "walk_back_min": 1,
+        "walk_to_end_min": null,
         "reserve_min": 60,
-        "total_min": 92
-      }
+        "total_min": 77
+      },
+      "visit_condition": {
+        "provider_attributes": [],
+        "provider_url": null,
+        "kind": "unknown",
+        "note": "На месте: подъём по билету — взрослый 2500 ₸, льготный (пенсионеры) 2000 ₸, дети 6–15 лет 1250 ₸. Здесь условие — подъём, не площадь вокруг.",
+        "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%82%D1%8B-%D0%BF%D1%80%D0%BE%D0%B3%D1%83%D0%BB%D0%BA%D0%B8-19102026",
+        "checked_at": "2026-10-19",
+        "verification": "stale"
+      },
+      "atmosphere_match": {
+        "matched_features": [],
+        "source": "none",
+        "checked_at": null,
+        "photo_ids": [],
+        "requested_features": [],
+        "unconfirmed_features": [],
+        "status": "not_requested"
+      },
+      "arrival_estimate": null,
+      "offline_allowed": false
     },
     {
       "poi_id": "osm_node_6408271985",
+      "canonical_id": "osm_node_6408271985",
       "name": "CrepeCafe",
       "category": "coffee",
       "coords": {
@@ -353,12 +386,20 @@
       },
       "distance_m": 183,
       "walk_min": 4,
-      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why": "Кофейня. ≈4 мин пешком; всего 88/120 мин с возвращением.",
       "why_source": "template",
-      "time_to_spend_min": 30,
+      "ai_reviewed": false,
+      "explanation_evidence": [],
+      "selection_source": "rules",
+      "time_to_spend_min": 20,
       "what_to_do": "Выпейте кофе; перед заказом уточните наличие свободных мест.",
       "what_to_do_source": "template",
       "open_status": {
+        "today_hours": null,
+        "for_date": "2026-10-18",
+        "source_url": null,
+        "schedule_note": null,
+        "schedule_has_exceptions": false,
         "state": "open",
         "confidence": "high",
         "hours": "Mo-Fr 08:00-00:00; Sa-Su 09:00-00:00",
@@ -366,6 +407,7 @@
         "checked_at": "2026-10-17"
       },
       "facts_source": "poi_db",
+      "address": null,
       "description_source": "generated",
       "description": "Кофейня \"CrepeCafe\" работает допоздна.",
       "description_url": null,
@@ -384,14 +426,36 @@
       "rating_count": null,
       "budget_breakdown": {
         "walk_there_min": 4,
-        "stay_min": 30,
+        "stay_min": 20,
         "walk_back_min": 4,
+        "walk_to_end_min": null,
         "reserve_min": 60,
-        "total_min": 98
-      }
+        "total_min": 88
+      },
+      "visit_condition": {
+        "provider_attributes": [],
+        "provider_url": null,
+        "kind": "unknown",
+        "note": "",
+        "source_url": null,
+        "checked_at": null,
+        "verification": "unknown"
+      },
+      "atmosphere_match": {
+        "matched_features": [],
+        "source": "none",
+        "checked_at": null,
+        "photo_ids": [],
+        "requested_features": [],
+        "unconfirmed_features": [],
+        "status": "not_requested"
+      },
+      "arrival_estimate": null,
+      "offline_allowed": false
     },
     {
       "poi_id": "osm_node_5132817725",
+      "canonical_id": "osm_node_5132817725",
       "name": "Starbucks",
       "category": "coffee",
       "coords": {
@@ -400,12 +464,20 @@
       },
       "distance_m": 375,
       "walk_min": 7,
-      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why": "Кофейня. ≈7 мин пешком; всего 94/120 мин с возвращением.",
       "why_source": "template",
-      "time_to_spend_min": 30,
+      "ai_reviewed": false,
+      "explanation_evidence": [],
+      "selection_source": "rules",
+      "time_to_spend_min": 20,
       "what_to_do": "Выпейте кофе; перед заказом уточните наличие свободных мест.",
       "what_to_do_source": "template",
       "open_status": {
+        "today_hours": null,
+        "for_date": "2026-10-18",
+        "source_url": null,
+        "schedule_note": null,
+        "schedule_has_exceptions": false,
         "state": "open",
         "confidence": "high",
         "hours": "Mo-Fr 07:30-23:00; Sa-Su 08:00-23:00",
@@ -413,6 +485,7 @@
         "checked_at": "2026-10-17"
       },
       "facts_source": "poi_db",
+      "address": null,
       "description_source": "generated",
       "description": "Кофейня Starbucks предлагает кофе. Заведение работает допоздна.",
       "description_url": null,
@@ -431,19 +504,41 @@
       "rating_count": null,
       "budget_breakdown": {
         "walk_there_min": 7,
-        "stay_min": 30,
+        "stay_min": 20,
         "walk_back_min": 7,
+        "walk_to_end_min": null,
         "reserve_min": 60,
-        "total_min": 104
-      }
+        "total_min": 94
+      },
+      "visit_condition": {
+        "provider_attributes": [],
+        "provider_url": null,
+        "kind": "unknown",
+        "note": "",
+        "source_url": null,
+        "checked_at": null,
+        "verification": "unknown"
+      },
+      "atmosphere_match": {
+        "matched_features": [],
+        "source": "none",
+        "checked_at": null,
+        "photo_ids": [],
+        "requested_features": [],
+        "unconfirmed_features": [],
+        "status": "not_requested"
+      },
+      "arrival_estimate": null,
+      "offline_allowed": false
     }
   ],
   "budget_breakdown": {
     "walk_there_min": 1,
-    "stay_min": 30,
+    "stay_min": 15,
     "walk_back_min": 1,
+    "walk_to_end_min": null,
     "reserve_min": 60,
-    "total_min": 92
+    "total_min": 77
   },
   "considered": {
     "location_rounded_to_m": 100,
@@ -474,11 +569,33 @@
   "notes": [
     "Часы работы одного места неизвестны — проверьте перед визитом.",
     "Из бюджета зарезервировано время на дорогу в аэропорт; это условный запас, проверьте маршрут и время регистрации.",
-    "Демо-расчёт на 18.10.2026 14:00 по времени Астаны: часы работы и безопасность рассчитаны для этого времени."
+    "Демо-расчёт на 18.10.2026 14:00 по времени Астаны: расписание и ограничения проверены для этого времени, текущая обстановка неизвестна."
   ],
   "safety": [],
   "route": null,
   "disclaimer": "Данные о местах могут устареть — проверяйте на месте. Время пешком приблизительное.",
   "data_kind": "real",
-  "mock": false
+  "mock": false,
+  "source": "local",
+  "next_cursor": null,
+  "source_error": null,
+  "nearby_places": [],
+  "catalog_total": null,
+  "applied_preferences": {
+    "exclude_poi_ids": [],
+    "visited_poi_ids": [],
+    "exclude_visited": false,
+    "preferred_categories": [],
+    "max_walk_min": null,
+    "max_distance_m": null,
+    "indoor_only": false,
+    "winter_mode": false,
+    "expense_mode": "any",
+    "atmosphere_example_id": null,
+    "atmosphere_profile": null,
+    "atmosphere_verified_only": false
+  },
+  "change_codes": [],
+  "relaxation_options": [],
+  "route_impossible": null
 }

@@ -1,4 +1,5 @@
 {
+  "request_id": null,
   "candidates": [
     {
       "poi_id": "osm_node_14275682079",
@@ -6,9 +7,10 @@
       "category": "coffee",
       "distance_m": 763,
       "walk_min": 14,
-      "score": 0.375916,
+      "score": 0.634156,
       "reasons": [
         "tag:wifi",
+        "confirmed_requested_facility:wifi",
         "within_radius",
         "within_budget"
       ],
@@ -20,7 +22,7 @@
       "category": "coffee",
       "distance_m": 565,
       "walk_min": 10,
-      "score": 0.319873,
+      "score": 0.374562,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -35,9 +37,19 @@
       "category": "food",
       "distance_m": 140,
       "walk_min": 3,
-      "score": 0.391695,
+      "score": 0.378392,
       "reasons": [],
       "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "team_cafe_coffeeboom_expo",
+      "name": "Coffee BOOM (EXPO, Мангилик Ел 55/1)",
+      "category": "coffee",
+      "distance_m": 188,
+      "walk_min": 4,
+      "score": 0.635689,
+      "reasons": [],
+      "excluded_because": "team_place_unverified"
     },
     {
       "poi_id": "osm_way_1452597370",
@@ -45,7 +57,7 @@
       "category": "kids",
       "distance_m": 264,
       "walk_min": 5,
-      "score": 0.213738,
+      "score": 0.213733,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -55,7 +67,7 @@
       "category": "kids",
       "distance_m": 280,
       "walk_min": 5,
-      "score": 0.209116,
+      "score": 0.209111,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -65,7 +77,7 @@
       "category": "kids",
       "distance_m": 295,
       "walk_min": 6,
-      "score": 0.204782,
+      "score": 0.204778,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -75,7 +87,7 @@
       "category": "kids",
       "distance_m": 318,
       "walk_min": 6,
-      "score": 0.198138,
+      "score": 0.198133,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -95,7 +107,7 @@
       "category": "kids",
       "distance_m": 361,
       "walk_min": 7,
-      "score": 0.185716,
+      "score": 0.185711,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -105,7 +117,7 @@
       "category": "kids",
       "distance_m": 376,
       "walk_min": 7,
-      "score": 0.181382,
+      "score": 0.181378,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -115,7 +127,7 @@
       "category": "kids",
       "distance_m": 401,
       "walk_min": 7,
-      "score": 0.17416,
+      "score": 0.174156,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -125,7 +137,7 @@
       "category": "food",
       "distance_m": 481,
       "walk_min": 9,
-      "score": 0.293756,
+      "score": 0.277301,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -135,7 +147,7 @@
       "category": "viewpoint",
       "distance_m": 497,
       "walk_min": 9,
-      "score": 0.173916,
+      "score": 0.183837,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -145,7 +157,7 @@
       "category": "food",
       "distance_m": 501,
       "walk_min": 9,
-      "score": 0.16855,
+      "score": 0.148267,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -155,7 +167,7 @@
       "category": "culture",
       "distance_m": 514,
       "walk_min": 9,
-      "score": 0.350304,
+      "score": 0.267511,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -165,7 +177,7 @@
       "category": "food",
       "distance_m": 532,
       "walk_min": 10,
-      "score": 0.29411,
+      "score": 0.262946,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -175,7 +187,7 @@
       "category": "food",
       "distance_m": 532,
       "walk_min": 10,
-      "score": 0.250306,
+      "score": 0.232311,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -195,7 +207,7 @@
       "category": "kids",
       "distance_m": 540,
       "walk_min": 10,
-      "score": 0.134005,
+      "score": 0.134,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -205,7 +217,7 @@
       "category": "food",
       "distance_m": 568,
       "walk_min": 10,
-      "score": 0.271008,
+      "score": 0.251911,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -215,26 +227,17 @@
       "category": "food",
       "distance_m": 580,
       "walk_min": 11,
-      "score": 0.280259,
-      "reasons": [],
-      "excluded_because": "category_mismatch"
-    },
-    {
-      "poi_id": "osm_node_12293708057",
-      "name": "Paul",
-      "category": "food",
-      "distance_m": 590,
-      "walk_min": 11,
-      "score": 0.278572,
+      "score": 0.249053,
       "reasons": [],
       "excluded_because": "category_mismatch"
     }
   ],
-  "excluded_count": 1245,
+  "excluded_count": 1246,
   "mode": "no_ai",
   "recommendations": [
     {
       "poi_id": "osm_node_14275682079",
+      "canonical_id": "osm_node_14275682079",
       "name": "Drinkit",
       "category": "coffee",
       "coords": {
@@ -243,12 +246,20 @@
       },
       "distance_m": 763,
       "walk_min": 14,
-      "why": "По данным: Wi-Fi.",
+      "why": "Кофейня. ≈14 мин пешком; всего 53/120 мин с возвращением. Не подтверждены: тишина, розетки, Wi-Fi.",
       "why_source": "template",
-      "time_to_spend_min": 60,
-      "what_to_do": "Выпейте кофе; перед заказом уточните наличие свободных мест.",
+      "ai_reviewed": false,
+      "explanation_evidence": [],
+      "selection_source": "rules",
+      "time_to_spend_min": 20,
+      "what_to_do": "Перед работой уточните Wi-Fi, розетки и свободные места; условия посещения — у сотрудников.",
       "what_to_do_source": "template",
       "open_status": {
+        "today_hours": null,
+        "for_date": "2026-10-18",
+        "source_url": null,
+        "schedule_note": null,
+        "schedule_has_exceptions": false,
         "state": "open",
         "confidence": "high",
         "hours": "Mo-Su 08:00-22:00",
@@ -256,6 +267,7 @@
         "checked_at": "2026-10-17"
       },
       "facts_source": "poi_db",
+      "address": null,
       "description_source": "generated",
       "description": "Кофейня Drinkit предлагает Wi-Fi и кофе.",
       "description_url": null,
@@ -273,14 +285,36 @@
       "rating_count": null,
       "budget_breakdown": {
         "walk_there_min": 14,
-        "stay_min": 60,
+        "stay_min": 20,
         "walk_back_min": 14,
-        "reserve_min": 0,
-        "total_min": 88
-      }
+        "walk_to_end_min": null,
+        "reserve_min": 5,
+        "total_min": 53
+      },
+      "visit_condition": {
+        "provider_attributes": [],
+        "provider_url": null,
+        "kind": "unknown",
+        "note": "",
+        "source_url": null,
+        "checked_at": null,
+        "verification": "unknown"
+      },
+      "atmosphere_match": {
+        "matched_features": [],
+        "source": "none",
+        "checked_at": null,
+        "photo_ids": [],
+        "requested_features": [],
+        "unconfirmed_features": [],
+        "status": "not_requested"
+      },
+      "arrival_estimate": null,
+      "offline_allowed": false
     },
     {
       "poi_id": "osm_node_9047331879",
+      "canonical_id": "osm_node_9047331879",
       "name": "Starbucks",
       "category": "coffee",
       "coords": {
@@ -289,12 +323,20 @@
       },
       "distance_m": 565,
       "walk_min": 10,
-      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why": "Кофейня. ≈10 мин пешком; всего 45/120 мин с возвращением. Не подтверждены: тишина, розетки, Wi-Fi.",
       "why_source": "template",
-      "time_to_spend_min": 60,
-      "what_to_do": "Выпейте кофе; перед заказом уточните наличие свободных мест.",
+      "ai_reviewed": false,
+      "explanation_evidence": [],
+      "selection_source": "rules",
+      "time_to_spend_min": 20,
+      "what_to_do": "Перед работой уточните Wi-Fi, розетки и свободные места; условия посещения — у сотрудников.",
       "what_to_do_source": "template",
       "open_status": {
+        "today_hours": null,
+        "for_date": "2026-10-18",
+        "source_url": null,
+        "schedule_note": null,
+        "schedule_has_exceptions": false,
         "state": "open",
         "confidence": "high",
         "hours": "Mo-Su 08:00-22:00",
@@ -302,6 +344,7 @@
         "checked_at": "2026-10-17"
       },
       "facts_source": "poi_db",
+      "address": null,
       "description_source": "generated",
       "description": "Кофейня Starbucks предлагает кофе.",
       "description_url": null,
@@ -319,27 +362,49 @@
       "rating_count": null,
       "budget_breakdown": {
         "walk_there_min": 10,
-        "stay_min": 60,
+        "stay_min": 20,
         "walk_back_min": 10,
-        "reserve_min": 0,
-        "total_min": 80
-      }
+        "walk_to_end_min": null,
+        "reserve_min": 5,
+        "total_min": 45
+      },
+      "visit_condition": {
+        "provider_attributes": [],
+        "provider_url": null,
+        "kind": "unknown",
+        "note": "",
+        "source_url": null,
+        "checked_at": null,
+        "verification": "unknown"
+      },
+      "atmosphere_match": {
+        "matched_features": [],
+        "source": "none",
+        "checked_at": null,
+        "photo_ids": [],
+        "requested_features": [],
+        "unconfirmed_features": [],
+        "status": "not_requested"
+      },
+      "arrival_estimate": null,
+      "offline_allowed": false
     }
   ],
   "budget_breakdown": {
     "walk_there_min": 14,
-    "stay_min": 60,
+    "stay_min": 20,
     "walk_back_min": 14,
-    "reserve_min": 0,
-    "total_min": 88
+    "walk_to_end_min": null,
+    "reserve_min": 5,
+    "total_min": 53
   },
   "considered": {
     "location_rounded_to_m": 100,
     "radius_m": 865,
     "radius_expanded": false,
     "time_budget_min": 120,
-    "effective_budget_min": 120,
-    "reserve_min": 0,
+    "effective_budget_min": 115,
+    "reserve_min": 5,
     "walk_speed_m_per_min": 75,
     "street_factor": 1.3,
     "companions": "alone",
@@ -361,11 +426,33 @@
     "target_time": "2026-10-18T14:00:00+05:00"
   },
   "notes": [
-    "Демо-расчёт на 18.10.2026 14:00 по времени Астаны: часы работы и безопасность рассчитаны для этого времени."
+    "Демо-расчёт на 18.10.2026 14:00 по времени Астаны: расписание и ограничения проверены для этого времени, текущая обстановка неизвестна."
   ],
   "safety": [],
   "route": null,
   "disclaimer": "Данные о местах могут устареть — проверяйте на месте. Время пешком приблизительное.",
   "data_kind": "real",
-  "mock": false
+  "mock": false,
+  "source": "local",
+  "next_cursor": null,
+  "source_error": null,
+  "nearby_places": [],
+  "catalog_total": null,
+  "applied_preferences": {
+    "exclude_poi_ids": [],
+    "visited_poi_ids": [],
+    "exclude_visited": false,
+    "preferred_categories": [],
+    "max_walk_min": null,
+    "max_distance_m": null,
+    "indoor_only": false,
+    "winter_mode": false,
+    "expense_mode": "any",
+    "atmosphere_example_id": null,
+    "atmosphere_profile": null,
+    "atmosphere_verified_only": false
+  },
+  "change_codes": [],
+  "relaxation_options": [],
+  "route_impossible": null
 }

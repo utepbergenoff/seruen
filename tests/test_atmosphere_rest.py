@@ -4,8 +4,7 @@ from datetime import timedelta
 
 import pytest
 
-from backend.feature_data import AtmosphereRecord
-from test_feature_expansion import ASK, TODAY, api, expanded, evidence, plan, post
+from test_feature_expansion import ASK, TODAY, api as api, expanded as expanded, plan, post
 
 
 def profile_request(profile='light_cafe', strict=False, query=''):
@@ -52,14 +51,17 @@ def test_mood_overrides_generic_walk_category_but_not_safety_or_exclusions(api):
     assert all(r['category'] in ['coffee', 'food'] for r in result['recommendations'])
     ask = profile_request(query='на крышу стройки')
     assert not post(api, '/recommend', ask)['recommendations']
-    ask = profile_request(); ask['context']['exclude_categories'] = ['coffee', 'food']
+    ask = profile_request()
+    ask['context']['exclude_categories'] = ['coffee', 'food']
     assert not post(api, '/recommend', ask)['recommendations']
 
 
 def test_generic_indoor_overlap_is_not_photo_similarity(api):
     data = api.app.state.service.features
     row = data.atmosphere['bright-reference'].model_copy(deep=True)
-    row.example_id = 'unrelated'; row.poi_id = 'team_second'; row.features = ['indoor', 'traditional']
+    row.example_id = 'unrelated'
+    row.poi_id = 'team_second'
+    row.features = ['indoor', 'traditional']
     data.atmosphere[row.example_id] = row
     assert not data.match('team_second', 'bright-reference', TODAY).matched_features
 
@@ -126,10 +128,14 @@ def test_impossible_extra_stop_does_not_return_a_replacement_route(api, failure)
     original = post(api, '/plans/build', plan(stop_ids=['team_coffee']))
     data = api.app.state.service.features
     target = 'team_bench'
-    if failure == 'closed': data.pois[target].opening_hours_raw = 'Mo-Su off'
-    if failure == 'distant': data.pois[target].lat = 51.190
-    if failure == 'duplicate': target = 'team_coffee'
-    if failure == 'unverified': data.comfort[target].evidence.verification = 'unverified'
+    if failure == 'closed':
+        data.pois[target].opening_hours_raw = 'Mo-Su off'
+    if failure == 'distant':
+        data.pois[target].lat = 51.190
+    if failure == 'duplicate':
+        target = 'team_coffee'
+    if failure == 'unverified':
+        data.comfort[target].evidence.verification = 'unverified'
     response = api.post('/plans/recalculate', json={'request': ASK, 'previous': original['state'],
         'reason': 'add_stop', 'poi_id': target, 'remaining_time_min': 5 if failure == 'budget' else 90, 'keep_stops': True})
     assert response.status_code == 409
@@ -144,7 +150,8 @@ def test_2gis_profile_uses_branch_identity_without_claiming_unknown_photos(expan
     seen = []
     items = [place(1, id='7000001'), place(2), place(3)]
     with TestClient(create_app(expanded, twogis_transport=transport(items, seen=seen))) as c:
-        ask = profile_request(); ask['source'] = '2gis'
+        ask = profile_request()
+        ask['source'] = '2gis'
         result = post(c, '/recommend', ask)
         assert result['source'] == '2gis'
         assert result['recommendations'][0]['poi_id'] == '2gis_7000001'

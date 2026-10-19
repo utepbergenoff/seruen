@@ -1,9 +1,11 @@
 """Collect free (Wikimedia Commons) photos taken next to places from data/poi.json.
 
-Writes frontend/img/places/index.json, the photo list the backend reads for /places/{id}/photos.
+Writes data/photo_candidates.json for identity review. It does NOT publish photographs.
 Only categories that are usually photographed from outside are searched: Commons has street views
 next to cafes, not their interiors, so cafes get photos from the team instead (entries with
-"source": "team" are kept as they are). Gemini later checks that a photo really shows the place.
+"source": "team" are kept as they are). A person must verify the exact venue and record the image
+hash in data/photo_identity_review.json before adding it to frontend/img/places/index.json.
+Gemini describes already approved photographs; its visual guess is not identity evidence.
 
     python scripts/commons_photos.py            # about 30 minutes, polite to the Commons API
     python scripts/commons_photos.py --by-name  # only add photos found by the place's name (named landmarks)
@@ -21,7 +23,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "frontend/img/places/index.json"
+# Search produces candidates for review, never automatically publishes venue identities.
+OUT = ROOT / "data/photo_candidates.json"
 API = "https://commons.wikimedia.org/w/api.php"
 UA = {"User-Agent": "SeruenAstana/1.0 (hackathon walk assistant; https://seruen-astana.netlify.app)"}
 RADIUS = {"park": 120, "viewpoint": 80, "culture": 70, "unusual": 70, "kids": 50, "shopping": 70, "sport": 70}
@@ -88,7 +91,7 @@ def photos_by_name(poi):
 def by_name():
     pois = [p for p in json.loads((ROOT / "data/poi.json").read_text())
             if p["category"] in RADIUS and not p.get("name_generic") and len(p["name"]) > 3]
-    data = json.loads(OUT.read_text())
+    data = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else {"places": {}}
     places, added = data["places"], 0
     for poi in pois:
         try:

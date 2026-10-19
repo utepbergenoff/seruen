@@ -1,4 +1,5 @@
 {
+  "request_id": null,
   "candidates": [
     {
       "poi_id": "osm_way_1449322330",
@@ -6,20 +7,7 @@
       "category": "kids",
       "distance_m": 94,
       "walk_min": 3,
-      "score": 0.428135,
-      "reasons": [
-        "within_radius",
-        "within_budget"
-      ],
-      "excluded_because": null
-    },
-    {
-      "poi_id": "osm_way_37884583",
-      "name": "Ғашықтар саябағы",
-      "category": "park",
-      "distance_m": 401,
-      "walk_min": 9,
-      "score": 0.418271,
+      "score": 0.412029,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -32,7 +20,20 @@
       "category": "kids",
       "distance_m": 53,
       "walk_min": 2,
-      "score": 0.385018,
+      "score": 0.396594,
+      "reasons": [
+        "within_radius",
+        "within_budget"
+      ],
+      "excluded_because": null
+    },
+    {
+      "poi_id": "osm_way_37884583",
+      "name": "Ғашықтар саябағы",
+      "category": "park",
+      "distance_m": 401,
+      "walk_min": 9,
+      "score": 0.292596,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -45,7 +46,7 @@
       "category": "park",
       "distance_m": 444,
       "walk_min": 10,
-      "score": 0.34994,
+      "score": 0.289035,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -60,7 +61,7 @@
       "category": "food",
       "distance_m": 15,
       "walk_min": 1,
-      "score": 0.291226,
+      "score": 0.288201,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -70,7 +71,7 @@
       "category": "viewpoint",
       "distance_m": 22,
       "walk_min": 1,
-      "score": 0.285056,
+      "score": 0.284488,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -80,7 +81,7 @@
       "category": "coffee",
       "distance_m": 35,
       "walk_min": 1,
-      "score": 0.283688,
+      "score": 0.282458,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -90,7 +91,7 @@
       "category": "viewpoint",
       "distance_m": 43,
       "walk_min": 1,
-      "score": 0.277472,
+      "score": 0.276526,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -100,7 +101,7 @@
       "category": "food",
       "distance_m": 53,
       "walk_min": 2,
-      "score": 0.277809,
+      "score": 0.272873,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -110,7 +111,7 @@
       "category": "shopping",
       "distance_m": 56,
       "walk_min": 2,
-      "score": 0.446347,
+      "score": 0.445689,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -120,7 +121,7 @@
       "category": "coffee",
       "distance_m": 64,
       "walk_min": 2,
-      "score": 0.272889,
+      "score": 0.271238,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -130,7 +131,7 @@
       "category": "food",
       "distance_m": 64,
       "walk_min": 2,
-      "score": 0.269889,
+      "score": 0.268238,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -140,7 +141,7 @@
       "category": "viewpoint",
       "distance_m": 72,
       "walk_min": 2,
-      "score": 0.267,
+      "score": 0.265143,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -150,7 +151,7 @@
       "category": "viewpoint",
       "distance_m": 79,
       "walk_min": 2,
-      "score": 0.264472,
+      "score": 0.262682,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -160,7 +161,7 @@
       "category": "coffee",
       "distance_m": 87,
       "walk_min": 2,
-      "score": 0.38548,
+      "score": 0.382339,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -170,7 +171,7 @@
       "category": "viewpoint",
       "distance_m": 87,
       "walk_min": 2,
-      "score": 0.261583,
+      "score": 0.259339,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -180,7 +181,7 @@
       "category": "culture",
       "distance_m": 89,
       "walk_min": 2,
-      "score": 0.59355,
+      "score": 0.615289,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -190,7 +191,7 @@
       "category": "viewpoint",
       "distance_m": 89,
       "walk_min": 2,
-      "score": 0.260861,
+      "score": 0.259426,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -200,7 +201,7 @@
       "category": "viewpoint",
       "distance_m": 96,
       "walk_min": 3,
-      "score": 0.258333,
+      "score": 0.255857,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -210,7 +211,7 @@
       "category": "viewpoint",
       "distance_m": 291,
       "walk_min": 7,
-      "score": 0.202917,
+      "score": 0.195706,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -220,7 +221,7 @@
       "category": "food",
       "distance_m": 334,
       "walk_min": 8,
-      "score": 0.295389,
+      "score": 0.286774,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -230,7 +231,7 @@
       "category": "coffee",
       "distance_m": 339,
       "walk_min": 8,
-      "score": 0.174082,
+      "score": 0.165228,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -240,7 +241,7 @@
       "category": "viewpoint",
       "distance_m": 360,
       "walk_min": 8,
-      "score": 0.163,
+      "score": 0.153714,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     },
@@ -250,16 +251,17 @@
       "category": "viewpoint",
       "distance_m": 452,
       "walk_min": 10,
-      "score": 0.129778,
+      "score": 0.118119,
       "reasons": [],
       "excluded_because": "not_child_friendly"
     }
   ],
-  "excluded_count": 1241,
+  "excluded_count": 1242,
   "mode": "no_ai",
   "recommendations": [
     {
       "poi_id": "osm_way_1449322330",
+      "canonical_id": "osm_way_1449322330",
       "name": "Детская площадка",
       "category": "kids",
       "coords": {
@@ -268,12 +270,20 @@
       },
       "distance_m": 94,
       "walk_min": 3,
-      "why": "В базе отмечено как подходящее для детей; время с дорогой укладывается в бюджет.",
+      "why": "В базе отмечено для детей. ≈3 мин пешком; всего 36/60 мин с возвращением.",
       "why_source": "template",
-      "time_to_spend_min": 30,
-      "what_to_do": "Проведите время с ребёнком; проверьте возрастные ограничения на месте.",
+      "ai_reviewed": false,
+      "explanation_evidence": [],
+      "selection_source": "rules",
+      "time_to_spend_min": 25,
+      "what_to_do": "Осмотрите место с общедоступной территории; детали посещения уточните заранее.",
       "what_to_do_source": "template",
       "open_status": {
+        "today_hours": null,
+        "for_date": "2026-10-18",
+        "source_url": null,
+        "schedule_note": null,
+        "schedule_has_exceptions": false,
         "state": "unknown",
         "confidence": "low",
         "hours": null,
@@ -281,6 +291,7 @@
         "checked_at": "2026-10-17"
       },
       "facts_source": "poi_db",
+      "address": null,
       "description_source": "generated",
       "description": "Детская площадка по данным OpenStreetMap.",
       "description_url": null,
@@ -297,60 +308,36 @@
       "rating_count": null,
       "budget_breakdown": {
         "walk_there_min": 3,
-        "stay_min": 30,
+        "stay_min": 25,
         "walk_back_min": 3,
-        "reserve_min": 0,
+        "walk_to_end_min": null,
+        "reserve_min": 5,
         "total_min": 36
-      }
-    },
-    {
-      "poi_id": "osm_way_37884583",
-      "name": "Ғашықтар саябағы",
-      "category": "park",
-      "coords": {
-        "lat": 51.1314922,
-        "lon": 71.4092097
       },
-      "distance_m": 401,
-      "walk_min": 9,
-      "why": "В базе отмечено как подходящее для детей; время с дорогой укладывается в бюджет.",
-      "why_source": "template",
-      "time_to_spend_min": 30,
-      "what_to_do": "Прогуляйтесь по общедоступным дорожкам и вернитесь тем же путём.",
-      "what_to_do_source": "template",
-      "open_status": {
-        "state": "unknown",
-        "confidence": "low",
-        "hours": null,
+      "visit_condition": {
+        "provider_attributes": [],
+        "provider_url": null,
+        "kind": "unknown",
+        "note": "",
+        "source_url": null,
+        "checked_at": null,
+        "verification": "unknown"
+      },
+      "atmosphere_match": {
+        "matched_features": [],
         "source": "none",
-        "checked_at": "2026-10-17"
+        "checked_at": null,
+        "photo_ids": [],
+        "requested_features": [],
+        "unconfirmed_features": [],
+        "status": "not_requested"
       },
-      "facts_source": "poi_db",
-      "description_source": "generated",
-      "description": "Ғашықтар саябағы — парк или сквер.",
-      "description_url": null,
-      "sources": [
-        "osm",
-        "gemini"
-      ],
-      "last_checked": "2026-10-17",
-      "accessibility": "unknown",
-      "links": {
-        "2gis": "https://2gis.kz/astana/geo/71.4092097,51.1314922",
-        "google": "https://www.google.com/maps/search/?api=1&query=51.1314922%2C71.4092097"
-      },
-      "rating": null,
-      "rating_count": null,
-      "budget_breakdown": {
-        "walk_there_min": 9,
-        "stay_min": 30,
-        "walk_back_min": 9,
-        "reserve_min": 0,
-        "total_min": 48
-      }
+      "arrival_estimate": null,
+      "offline_allowed": false
     },
     {
       "poi_id": "osm_way_1449322354",
+      "canonical_id": "osm_way_1449322354",
       "name": "Fame City",
       "category": "kids",
       "coords": {
@@ -359,12 +346,20 @@
       },
       "distance_m": 53,
       "walk_min": 2,
-      "why": "В базе отмечено как подходящее для детей; время с дорогой укладывается в бюджет.",
+      "why": "В базе отмечено для детей. ≈2 мин пешком; всего 34/60 мин с возвращением.",
       "why_source": "template",
-      "time_to_spend_min": 30,
+      "ai_reviewed": false,
+      "explanation_evidence": [],
+      "selection_source": "rules",
+      "time_to_spend_min": 25,
       "what_to_do": "Проведите время с ребёнком; проверьте возрастные ограничения на месте.",
       "what_to_do_source": "template",
       "open_status": {
+        "today_hours": null,
+        "for_date": "2026-10-18",
+        "source_url": null,
+        "schedule_note": null,
+        "schedule_has_exceptions": false,
         "state": "unknown",
         "confidence": "low",
         "hours": null,
@@ -372,6 +367,7 @@
         "checked_at": "2026-10-17"
       },
       "facts_source": "poi_db",
+      "address": null,
       "description_source": "generated",
       "description": "Fame City — место для детей.",
       "description_url": null,
@@ -389,27 +385,126 @@
       "rating_count": null,
       "budget_breakdown": {
         "walk_there_min": 2,
-        "stay_min": 30,
+        "stay_min": 25,
         "walk_back_min": 2,
-        "reserve_min": 0,
+        "walk_to_end_min": null,
+        "reserve_min": 5,
         "total_min": 34
-      }
+      },
+      "visit_condition": {
+        "provider_attributes": [],
+        "provider_url": null,
+        "kind": "unknown",
+        "note": "Fame City в Хан Шатыре: аттракционы платные; зона без аттракционов не проверена.",
+        "source_url": "https://www.openstreetmap.org/way/1449322354",
+        "checked_at": "2026-10-19",
+        "verification": "unverified"
+      },
+      "atmosphere_match": {
+        "matched_features": [],
+        "source": "none",
+        "checked_at": null,
+        "photo_ids": [],
+        "requested_features": [],
+        "unconfirmed_features": [],
+        "status": "not_requested"
+      },
+      "arrival_estimate": null,
+      "offline_allowed": false
+    },
+    {
+      "poi_id": "osm_way_37884583",
+      "canonical_id": "osm_way_37884583",
+      "name": "Ғашықтар саябағы",
+      "category": "park",
+      "coords": {
+        "lat": 51.1314922,
+        "lon": 71.4092097
+      },
+      "distance_m": 401,
+      "walk_min": 9,
+      "why": "В базе отмечено для детей. ≈9 мин пешком; всего 43/60 мин с возвращением.",
+      "why_source": "template",
+      "ai_reviewed": false,
+      "explanation_evidence": [],
+      "selection_source": "rules",
+      "time_to_spend_min": 20,
+      "what_to_do": "Прогуляйтесь по общедоступным дорожкам и вернитесь тем же путём.",
+      "what_to_do_source": "template",
+      "open_status": {
+        "today_hours": null,
+        "for_date": "2026-10-18",
+        "source_url": null,
+        "schedule_note": null,
+        "schedule_has_exceptions": false,
+        "state": "unknown",
+        "confidence": "low",
+        "hours": null,
+        "source": "none",
+        "checked_at": "2026-10-17"
+      },
+      "facts_source": "poi_db",
+      "address": null,
+      "description_source": "generated",
+      "description": "Ғашықтар саябағы — парк или сквер.",
+      "description_url": null,
+      "sources": [
+        "osm",
+        "gemini"
+      ],
+      "last_checked": "2026-10-17",
+      "accessibility": "unknown",
+      "links": {
+        "2gis": "https://2gis.kz/astana/geo/71.4092097,51.1314922",
+        "google": "https://www.google.com/maps/search/?api=1&query=51.1314922%2C71.4092097"
+      },
+      "rating": null,
+      "rating_count": null,
+      "budget_breakdown": {
+        "walk_there_min": 9,
+        "stay_min": 20,
+        "walk_back_min": 9,
+        "walk_to_end_min": null,
+        "reserve_min": 5,
+        "total_min": 43
+      },
+      "visit_condition": {
+        "provider_attributes": [],
+        "provider_url": null,
+        "kind": "unknown",
+        "note": "Открытый городской парк; ограждений и платы не найдено.",
+        "source_url": "https://www.openstreetmap.org/way/37884583",
+        "checked_at": "2026-10-19",
+        "verification": "unverified"
+      },
+      "atmosphere_match": {
+        "matched_features": [],
+        "source": "none",
+        "checked_at": null,
+        "photo_ids": [],
+        "requested_features": [],
+        "unconfirmed_features": [],
+        "status": "not_requested"
+      },
+      "arrival_estimate": null,
+      "offline_allowed": false
     }
   ],
   "budget_breakdown": {
     "walk_there_min": 3,
-    "stay_min": 30,
+    "stay_min": 25,
     "walk_back_min": 3,
-    "reserve_min": 0,
+    "walk_to_end_min": null,
+    "reserve_min": 5,
     "total_min": 36
   },
   "considered": {
     "location_rounded_to_m": 100,
-    "radius_m": 692,
+    "radius_m": 646,
     "radius_expanded": false,
     "time_budget_min": 60,
-    "effective_budget_min": 60,
-    "reserve_min": 0,
+    "effective_budget_min": 55,
+    "reserve_min": 5,
     "walk_speed_m_per_min": 60,
     "street_factor": 1.3,
     "companions": "child",
@@ -430,11 +525,33 @@
   },
   "notes": [
     "Часы работы одного места неизвестны — проверьте перед визитом.",
-    "Демо-расчёт на 18.10.2026 12:00 по времени Астаны: часы работы и безопасность рассчитаны для этого времени."
+    "Демо-расчёт на 18.10.2026 12:00 по времени Астаны: расписание и ограничения проверены для этого времени, текущая обстановка неизвестна."
   ],
   "safety": [],
   "route": null,
   "disclaimer": "Данные о местах могут устареть — проверяйте на месте. Время пешком приблизительное.",
   "data_kind": "real",
-  "mock": false
+  "mock": false,
+  "source": "local",
+  "next_cursor": null,
+  "source_error": null,
+  "nearby_places": [],
+  "catalog_total": null,
+  "applied_preferences": {
+    "exclude_poi_ids": [],
+    "visited_poi_ids": [],
+    "exclude_visited": false,
+    "preferred_categories": [],
+    "max_walk_min": null,
+    "max_distance_m": null,
+    "indoor_only": false,
+    "winter_mode": false,
+    "expense_mode": "any",
+    "atmosphere_example_id": null,
+    "atmosphere_profile": null,
+    "atmosphere_verified_only": false
+  },
+  "change_codes": [],
+  "relaxation_options": [],
+  "route_impossible": null
 }

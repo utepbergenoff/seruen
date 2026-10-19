@@ -16,7 +16,8 @@ def reply(data):
 
 def generation(hits, **changes):
     draft = {"poi_id": hits[0].poi.poi_id, "why": "Кофейня рядом, дорога занимает немного времени.",
-             "what_to_do": "Выпить кофе и открыть ноутбук.", "time_to_spend_min": hits[0].stay}
+             "what_to_do": "Выпить кофе и открыть ноутбук.", "time_to_spend_min": hits[0].stay,
+             "evidence_ids": ["category", "walk"]}
     return {"recommendations": [{**draft, **changes}], "note_to_user": ""}
 
 

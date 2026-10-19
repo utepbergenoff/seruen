@@ -76,7 +76,8 @@ def test_ai_cannot_reorder_or_shrink_visits_to_make_places_fit(service):
     result = Retriever(Dataset(mall_pois(), "synthetic", 0, 0), None).search(req, intent, now, diversify=False)
     baseline = service.assemble(req, intent, now, result, [], "no_ai", "rules", "none")
     selected = [
-        Draft(poi_id=h.poi.poi_id, why="Тест", what_to_do="Тест", time_to_spend_min=1) for h in reversed(result.hits)
+        Draft(poi_id=h.poi.poi_id, why="Детское место рядом", what_to_do="Поиграйте с ребёнком.",
+              time_to_spend_min=1, evidence_ids=["category"]) for h in reversed(result.hits)
     ]
     ai = service.assemble(req, intent, now, result, selected, "ai", "rules", "none", set(d.poi_id for d in selected))
     assert [(r.poi_id, r.budget_breakdown) for r in ai.recommendations] == [

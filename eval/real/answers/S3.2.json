@@ -1,25 +1,13 @@
 {
+  "request_id": null,
   "candidates": [
-    {
-      "poi_id": "osm_node_5880883097",
-      "name": "Chaplin Cinema",
-      "category": "culture",
-      "distance_m": 477,
-      "walk_min": 9,
-      "score": 0.451921,
-      "reasons": [
-        "within_radius",
-        "within_budget"
-      ],
-      "excluded_because": null
-    },
     {
       "poi_id": "osm_way_1467797207",
       "name": "NU Park",
       "category": "park",
       "distance_m": 315,
       "walk_min": 6,
-      "score": 0.353343,
+      "score": 0.376913,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -32,7 +20,7 @@
       "category": "park",
       "distance_m": 426,
       "walk_min": 8,
-      "score": 0.278656,
+      "score": 0.305044,
       "reasons": [
         "within_radius",
         "within_budget"
@@ -47,7 +35,7 @@
       "category": "coffee",
       "distance_m": 216,
       "walk_min": 4,
-      "score": 0.345121,
+      "score": 0.338357,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -57,7 +45,7 @@
       "category": "kids",
       "distance_m": 272,
       "walk_min": 5,
-      "score": 0.211422,
+      "score": 0.20581,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -67,7 +55,7 @@
       "category": "shopping",
       "distance_m": 303,
       "walk_min": 6,
-      "score": 0.329095,
+      "score": 0.319214,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -77,7 +65,7 @@
       "category": "shopping",
       "distance_m": 318,
       "walk_min": 6,
-      "score": 0.216133,
+      "score": 0.209571,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -87,7 +75,7 @@
       "category": "night",
       "distance_m": 318,
       "walk_min": 6,
-      "score": 0.324502,
+      "score": 0.317664,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -97,7 +85,7 @@
       "category": "coffee",
       "distance_m": 339,
       "walk_min": 6,
-      "score": 0.31862,
+      "score": 0.311071,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -107,7 +95,7 @@
       "category": "food",
       "distance_m": 343,
       "walk_min": 6,
-      "score": 0.316911,
+      "score": 0.310952,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -117,7 +105,7 @@
       "category": "kids",
       "distance_m": 372,
       "walk_min": 7,
-      "score": 0.182533,
+      "score": 0.174857,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -127,7 +115,7 @@
       "category": "food",
       "distance_m": 392,
       "walk_min": 7,
-      "score": 0.314756,
+      "score": 0.306667,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -137,7 +125,7 @@
       "category": "food",
       "distance_m": 399,
       "walk_min": 7,
-      "score": 0.300733,
+      "score": 0.293697,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -147,7 +135,7 @@
       "category": "kids",
       "distance_m": 407,
       "walk_min": 8,
-      "score": 0.172422,
+      "score": 0.164024,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -157,7 +145,7 @@
       "category": "food",
       "distance_m": 412,
       "walk_min": 8,
-      "score": 0.300299,
+      "score": 0.291913,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -167,7 +155,7 @@
       "category": "coffee",
       "distance_m": 414,
       "walk_min": 8,
-      "score": 0.31197,
+      "score": 0.302857,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -177,7 +165,7 @@
       "category": "coffee",
       "distance_m": 444,
       "walk_min": 8,
-      "score": 0.24574,
+      "score": 0.236642,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -187,7 +175,17 @@
       "category": "food",
       "distance_m": 457,
       "walk_min": 8,
-      "score": 0.253978,
+      "score": 0.244548,
+      "reasons": [],
+      "excluded_because": "category_mismatch"
+    },
+    {
+      "poi_id": "osm_node_5880883097",
+      "name": "Chaplin Cinema",
+      "category": "culture",
+      "distance_m": 477,
+      "walk_min": 9,
+      "score": 0.469549,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -197,7 +195,7 @@
       "category": "kids",
       "distance_m": 480,
       "walk_min": 9,
-      "score": 0.151333,
+      "score": 0.141429,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -207,7 +205,7 @@
       "category": "food",
       "distance_m": 483,
       "walk_min": 9,
-      "score": 0.153467,
+      "score": 0.1435,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -217,7 +215,7 @@
       "category": "food",
       "distance_m": 503,
       "walk_min": 9,
-      "score": 0.27121,
+      "score": 0.260427,
       "reasons": [],
       "excluded_because": "category_mismatch"
     },
@@ -227,72 +225,17 @@
       "category": "kids",
       "distance_m": 547,
       "walk_min": 10,
-      "score": 0.131978,
-      "reasons": [],
-      "excluded_because": "category_mismatch"
-    },
-    {
-      "poi_id": "osm_node_13462282540",
-      "name": "Kunde Cafe",
-      "category": "coffee",
-      "distance_m": 559,
-      "walk_min": 10,
-      "score": 0.131511,
+      "score": 0.12069,
       "reasons": [],
       "excluded_because": "category_mismatch"
     }
   ],
-  "excluded_count": 1247,
+  "excluded_count": 1250,
   "mode": "no_ai",
   "recommendations": [
     {
-      "poi_id": "osm_node_5880883097",
-      "name": "Chaplin Cinema",
-      "category": "culture",
-      "coords": {
-        "lat": 51.0883192,
-        "lon": 71.40973
-      },
-      "distance_m": 477,
-      "walk_min": 9,
-      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
-      "why_source": "template",
-      "time_to_spend_min": 30,
-      "what_to_do": "Осмотрите доступную экспозицию; билеты и программу уточните на месте.",
-      "what_to_do_source": "template",
-      "open_status": {
-        "state": "open",
-        "confidence": "high",
-        "hours": "Mo-Su 10:00-02:00",
-        "source": "osm",
-        "checked_at": "2026-10-17"
-      },
-      "facts_source": "poi_db",
-      "description_source": "generated",
-      "description": "Место культуры \"Chaplin Cinema\" работает допоздна.",
-      "description_url": null,
-      "sources": [
-        "osm",
-        "gemini"
-      ],
-      "last_checked": "2026-10-17",
-      "accessibility": "unknown",
-      "links": {
-        "2gis": "https://2gis.kz/astana/geo/71.40973,51.0883192",
-        "google": "https://www.google.com/maps/search/?api=1&query=51.0883192%2C71.40973"
-      },
-      "rating": null,
-      "rating_count": null,
-      "budget_breakdown": {
-        "walk_there_min": 9,
-        "stay_min": 30,
-        "walk_back_min": 9,
-        "reserve_min": 0,
-        "total_min": 48
-      }
-    },
-    {
       "poi_id": "osm_way_1467797207",
+      "canonical_id": "osm_way_1467797207",
       "name": "NU Park",
       "category": "park",
       "coords": {
@@ -301,12 +244,20 @@
       },
       "distance_m": 315,
       "walk_min": 6,
-      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why": "Прогулка в парке. ≈6 мин пешком; всего 37/60 мин с возвращением.",
       "why_source": "template",
-      "time_to_spend_min": 30,
+      "ai_reviewed": false,
+      "explanation_evidence": [],
+      "selection_source": "rules",
+      "time_to_spend_min": 20,
       "what_to_do": "Прогуляйтесь по общедоступным дорожкам и вернитесь тем же путём.",
       "what_to_do_source": "template",
       "open_status": {
+        "today_hours": null,
+        "for_date": "2026-10-18",
+        "source_url": null,
+        "schedule_note": null,
+        "schedule_has_exceptions": false,
         "state": "unknown",
         "confidence": "low",
         "hours": null,
@@ -314,6 +265,7 @@
         "checked_at": "2026-10-17"
       },
       "facts_source": "poi_db",
+      "address": null,
       "description_source": "generated",
       "description": "NU Park является парком или сквером.",
       "description_url": null,
@@ -331,14 +283,36 @@
       "rating_count": null,
       "budget_breakdown": {
         "walk_there_min": 6,
-        "stay_min": 30,
+        "stay_min": 20,
         "walk_back_min": 6,
-        "reserve_min": 0,
-        "total_min": 42
-      }
+        "walk_to_end_min": null,
+        "reserve_min": 5,
+        "total_min": 37
+      },
+      "visit_condition": {
+        "provider_attributes": [],
+        "provider_url": null,
+        "kind": "unknown",
+        "note": "",
+        "source_url": null,
+        "checked_at": null,
+        "verification": "unknown"
+      },
+      "atmosphere_match": {
+        "matched_features": [],
+        "source": "none",
+        "checked_at": null,
+        "photo_ids": [],
+        "requested_features": [],
+        "unconfirmed_features": [],
+        "status": "not_requested"
+      },
+      "arrival_estimate": null,
+      "offline_allowed": false
     },
     {
       "poi_id": "osm_way_1470723968",
+      "canonical_id": "osm_way_1470723968",
       "name": "Сквер",
       "category": "park",
       "coords": {
@@ -347,12 +321,20 @@
       },
       "distance_m": 426,
       "walk_min": 8,
-      "why": "Подходит по категории и укладывается в ваш бюджет времени.",
+      "why": "Прогулка в парке. ≈8 мин пешком; всего 41/60 мин с возвращением.",
       "why_source": "template",
-      "time_to_spend_min": 30,
-      "what_to_do": "Прогуляйтесь по общедоступным дорожкам и вернитесь тем же путём.",
+      "ai_reviewed": false,
+      "explanation_evidence": [],
+      "selection_source": "rules",
+      "time_to_spend_min": 20,
+      "what_to_do": "Осмотрите место с общедоступной территории; детали посещения уточните заранее.",
       "what_to_do_source": "template",
       "open_status": {
+        "today_hours": null,
+        "for_date": "2026-10-18",
+        "source_url": null,
+        "schedule_note": null,
+        "schedule_has_exceptions": false,
         "state": "unknown",
         "confidence": "low",
         "hours": null,
@@ -360,6 +342,7 @@
         "checked_at": "2026-10-17"
       },
       "facts_source": "poi_db",
+      "address": null,
       "description_source": "generated",
       "description": "Сквер по данным OpenStreetMap.",
       "description_url": null,
@@ -376,27 +359,49 @@
       "rating_count": null,
       "budget_breakdown": {
         "walk_there_min": 8,
-        "stay_min": 30,
+        "stay_min": 20,
         "walk_back_min": 8,
-        "reserve_min": 0,
-        "total_min": 46
-      }
+        "walk_to_end_min": null,
+        "reserve_min": 5,
+        "total_min": 41
+      },
+      "visit_condition": {
+        "provider_attributes": [],
+        "provider_url": null,
+        "kind": "unknown",
+        "note": "",
+        "source_url": null,
+        "checked_at": null,
+        "verification": "unknown"
+      },
+      "atmosphere_match": {
+        "matched_features": [],
+        "source": "none",
+        "checked_at": null,
+        "photo_ids": [],
+        "requested_features": [],
+        "unconfirmed_features": [],
+        "status": "not_requested"
+      },
+      "arrival_estimate": null,
+      "offline_allowed": false
     }
   ],
   "budget_breakdown": {
-    "walk_there_min": 9,
-    "stay_min": 30,
-    "walk_back_min": 9,
-    "reserve_min": 0,
-    "total_min": 48
+    "walk_there_min": 6,
+    "stay_min": 20,
+    "walk_back_min": 6,
+    "walk_to_end_min": null,
+    "reserve_min": 5,
+    "total_min": 37
   },
   "considered": {
     "location_rounded_to_m": 100,
-    "radius_m": 865,
+    "radius_m": 807,
     "radius_expanded": false,
     "time_budget_min": 60,
-    "effective_budget_min": 60,
-    "reserve_min": 0,
+    "effective_budget_min": 55,
+    "reserve_min": 5,
     "walk_speed_m_per_min": 75,
     "street_factor": 1.3,
     "companions": "alone",
@@ -409,7 +414,7 @@
       "category:unusual"
     ],
     "time": "вс 14:00",
-    "candidates_found": 4,
+    "candidates_found": 2,
     "weather": null,
     "retrieval_mode": "bm25+lsa",
     "intent_source": "rules",
@@ -417,11 +422,33 @@
   },
   "notes": [
     "Часы работы одного места неизвестны — проверьте перед визитом.",
-    "Демо-расчёт на 18.10.2026 14:00 по времени Астаны: часы работы и безопасность рассчитаны для этого времени."
+    "Демо-расчёт на 18.10.2026 14:00 по времени Астаны: расписание и ограничения проверены для этого времени, текущая обстановка неизвестна."
   ],
   "safety": [],
   "route": null,
   "disclaimer": "Данные о местах могут устареть — проверяйте на месте. Время пешком приблизительное.",
   "data_kind": "real",
-  "mock": false
+  "mock": false,
+  "source": "local",
+  "next_cursor": null,
+  "source_error": null,
+  "nearby_places": [],
+  "catalog_total": null,
+  "applied_preferences": {
+    "exclude_poi_ids": [],
+    "visited_poi_ids": [],
+    "exclude_visited": false,
+    "preferred_categories": [],
+    "max_walk_min": null,
+    "max_distance_m": null,
+    "indoor_only": false,
+    "winter_mode": false,
+    "expense_mode": "any",
+    "atmosphere_example_id": null,
+    "atmosphere_profile": null,
+    "atmosphere_verified_only": false
+  },
+  "change_codes": [],
+  "relaxation_options": [],
+  "route_impossible": null
 }

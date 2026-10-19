@@ -92,7 +92,7 @@ class Retriever:
                 status = open_status(p, now)
                 tags = set(tokenize(" ".join(p.tags)))
                 inferred = set(tokenize(" ".join(p.tags_inferred)))
-                matched = sorted(set(intent.tags) & tags)
+                matched = sorted(set(intent.tags) & (tags - inferred))
                 reason = None
                 to_end = walk_minutes(haversine(p.lat, p.lon, request.end.lat, request.end.lon), walking_speed) if request.end else (0 if finish_preference(request) == "place" else None)
                 stay = visit_minutes(p.category, intent.time_budget_min)
@@ -133,11 +133,17 @@ class Retriever:
                     reason = "night_safety_unconfirmed"
                 tag_match = len(matched) / max(len(intent.tags), 1)
                 rank = score(semantic, distance, current_radius, p.popularity, status.state, tag_match)
+                requested_facilities = set(intent.tags) & {"wifi", "sockets", "quiet"}
+                proven = requested_facilities & set(matched)
+                # Direct evidence of requested amenities outranks generic descriptive similarity.
+                if requested_facilities:
+                    rank += 0.4 * len(proven) / len(requested_facilities)
                 if self.features and (request.preferences.atmosphere_example_id or request.preferences.atmosphere_profile):
                     match = self.features.match(p.poi_id, request.preferences.atmosphere_example_id, now.date(), request.preferences.atmosphere_profile)
                     rank += ({"confirmed": .6, "partial": .3}.get(match.status, 0)
                              if request.preferences.atmosphere_profile else min(.3, len(match.matched_features) * .05))
                 reasons = [f"inferred_tag:{t}" if t in inferred else f"tag:{t}" for t in matched]
+                reasons += ["confirmed_requested_facility:" + t for t in sorted(proven)]
                 if severe and p.indoor:
                     rank += 0.15
                     reasons.append("indoor_weather_priority")

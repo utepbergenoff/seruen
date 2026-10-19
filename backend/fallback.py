@@ -2,6 +2,16 @@ from .activities import activity
 from .schemas import Draft
 
 ACTIONS = {
+    "night": (
+        "Загляните на вечерний перекус или напиток; меню и формат заведения уточните перед заказом.",
+        "Stop for an evening snack or drink; check the menu and venue format before ordering.",
+        "Кешкі асқа не сусынға кіріңіз; тапсырыс алдында мәзір мен орын форматын нақтылаңыз.",
+    ),
+    "shopping": (
+        "Пройдитесь по торговой галерее; для перерыва найдите зону отдыха и проверьте условия на месте.",
+        "Explore the shopping gallery; look for a rest area and check visitor conditions on arrival.",
+        "Сауда галереясын аралаңыз; демалыс аймағын тауып, келу шарттарын сол жерде нақтылаңыз.",
+    ),
     "coffee": (
         "Выпейте кофе; перед заказом уточните наличие свободных мест.",
         "Have a coffee; check seating before ordering.",
