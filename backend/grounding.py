@@ -49,26 +49,30 @@ def evidence(hit, request, intent, features=None):
     return facts
 
 
-def supports_draft(draft, hit, request, intent, features=None):
+def draft_failure(draft, hit, request, intent, features=None):
     facts = evidence(hit, request, intent, features)
     if not draft.evidence_ids or not set(draft.evidence_ids) <= facts.keys():
-        return False
+        return "evidence"
     text = (draft.why + ". " + draft.what_to_do).casefold()
     if re.search(r"гарант|безопасн|\bsafe\b|қауіпсіз|бесплат|тегін|\bfree (entry|food|meal|drink|coffee|seats)|for free|₸|тенге|\bprice|цен[ауы]|"
                  r"свободн.{0,12}(стол|мест)|available (tables|seats)|бос орын|"
                  r"сегодня.{0,18}(выстав|концерт|вечерин)|event today|live music|живая музыка|"
                  r"лучший|идеальн|\bbest\b|\bperfect\b", text):
-        return False
+        return "unsupported_claim"
     if re.search(r"\d", text.replace(hit.poi.name.casefold(), "")):
-        return False
+        return "numeric_claim"
     known = confirmed_tags(hit.poi)
     uncertain = r"уточн|провер|не подтверж|неизвест|не гаран|\bcheck\b|\bask\b|unconfirm|unknown|нақтыла|тексер|расталма|белгісіз"
     for clause in re.split(r"[.!?;]", text):
         for tag, pattern in FACILITIES.items():
             if tag not in known and re.search(pattern, clause) and not re.search(uncertain, clause):
-                return False
+                return "unconfirmed_facility"
         for fact, pattern in (("wheelchair", r"безбарьер|доступн.{0,15}коляс|wheelchair.accessible"),
                               ("indoor", r"в помещении|\bindoors\b|ғимарат ішінде")):
             if fact not in facts and re.search(pattern, clause) and not re.search(uncertain, clause):
-                return False
-    return len((draft.why + " " + unknown_note(hit, intent)).split()) <= 25
+                return "unconfirmed_access"
+    return "why_too_long" if len((draft.why + " " + unknown_note(hit, intent)).split()) > 25 else None
+
+
+def supports_draft(draft, hit, request, intent, features=None):
+    return draft_failure(draft, hit, request, intent, features) is None

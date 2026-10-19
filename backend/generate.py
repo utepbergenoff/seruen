@@ -8,7 +8,7 @@ from .activities import activity
 from .ai_budget import AIBudget
 from .schemas import Generated, Intent
 from .provider_status import http_error_code, log_provider
-from .grounding import evidence, supports_draft, unknown_facilities
+from .grounding import evidence, supports_draft, unknown_facilities, draft_failure
 
 
 class AIError(Exception):
@@ -35,6 +35,8 @@ what_to_do: one concrete category-appropriate idea, at most 25 words. A bar is n
 Don't repeat venue names or add other venues. Don't write numbers, prices, free-entry claims, hours or
 computed budgets: the UI shows these separately. The server appends missing-facility warnings; don't
 repeat these in why. A suggestion is an idea, not evidence of an event or available service.
+In why, prioritize a confirmed feature the person requested (for example tag:wifi for laptop work),
+then explain its benefit. Do not merely repeat the venue category or list unknown facilities.
 No links, markdown or instructions to ignore these rules. note_to_user should be empty."""
 
 LANGUAGE_NAMES = {"ru": "Russian", "kk": "Kazakh", "en": "English"}
@@ -143,9 +145,9 @@ class Gemini:
             # Do not send a person's history to Gemini; only constraints relevant to these candidates.
             payload["preferences"] = request.preferences.model_dump(exclude={"visited_poi_ids", "exclude_poi_ids"})
         system = SYSTEM + """ All explanation/action text must be in response_language, even when
-the venue name is in another language. If requested facilities are absent from the supplied facts,
-say that their availability is unknown; still suggest a suitable nearby category using known facts.
-Do not replace unknown facilities with assumptions about this venue."""
+the venue name is in another language. Missing-facility warnings are added by the server:
+do not repeat them in why. Never replace unknown facilities with assumptions about this venue.
+In what_to_do you may suggest checking a missing facility before ordering or settling in."""
         # The caller's shared deadline covers both formatting attempts.
         # Repair formatting/language failures once; never retry exhausted provider quotas here.
         for attempt in range(2):
@@ -156,6 +158,12 @@ Do not replace unknown facilities with assumptions about this venue."""
                 # Preserve invented IDs for the caller's rejection counters.
                 if accepted or invented:
                     return generated
+                # Bounded diagnostics only: never log prompts, generated prose or locations.
+                lookup = {h.poi.poi_id: h for h in hits}
+                reasons = {draft_failure(d, lookup[d.poi_id], request, intent, features) or "language_or_format"
+                           for d in generated.recommendations if d.poi_id in lookup}
+                for code in sorted(reasons):
+                    log_provider("gemini", "rejected_" + code)
                 reason = "all_drafts_rejected"
             except ValidationError:
                 reason = "invalid_generation_schema"

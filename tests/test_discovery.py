@@ -11,7 +11,7 @@ from backend.schemas import Draft, Generated, RecommendRequest
 from backend.service import RecommendationService
 from backend.twogis import TwoGis
 
-ASK = {"location": {"lat": 51.128, "lon": 71.43}, "query": "Хочу кофе",
+ASK = {"location": {"lat": 51.128, "lon": 71.43}, "query": "Хочу кофе", "source": "2gis",
        "context": {"now": "2026-10-18T14:00:00+05:00", "simulate": True, "time_budget_min": 120, "lang": "ru"}}
 
 
@@ -110,6 +110,28 @@ def test_not_found_is_empty_result_and_does_not_fallback(enabled):
     with TestClient(create_app(enabled, twogis_transport=transport(code=404))) as c:
         data = c.post("/recommend", json=ASK).json()
         assert data["recommendations"] == [] and data["source_error"] is None
+
+
+@pytest.mark.parametrize("code", [200, 429])
+def test_auto_source_uses_labelled_local_results_without_relaxing_constraints(enabled, request_data, code):
+    ask = {**request_data, "source": "auto", "finish_mode": "place"}
+    with TestClient(create_app(enabled, twogis_transport=transport(items=[], code=code))) as c:
+        expected = c.post("/recommend", json={**ask, "source": "local"}).json()
+        data = c.post("/recommend", json=ask).json()
+        assert data["source"] == "local" and data["recommendations"]
+        assert data["recommendations"] == expected["recommendations"]
+        assert "локальной базы" in data["notes"][0]
+        assert all(r["budget_breakdown"]["total_min"] <= data["considered"]["time_budget_min"]
+                   for r in data["recommendations"])
+        strict = {**ask, "preferences": {"max_distance_m": 50}}
+        assert not c.post("/recommend", json=strict).json()["recommendations"]
+
+
+def test_auto_cursor_never_switches_to_local_source(enabled, request_data):
+    with TestClient(create_app(enabled, twogis_transport=transport(items=[]))) as c:
+        data = c.post("/recommend", json={**request_data, "source": "auto", "cursor": "expired"}).json()
+        assert data["source"] == "2gis" and not data["recommendations"]
+        assert data["source_error"] == "twogis_search_expired"
 
 
 def test_disabled_explicit_source_and_missing_key(settings, enabled):
