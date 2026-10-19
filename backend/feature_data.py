@@ -172,7 +172,14 @@ class FeatureData:
     def verified(evidence, today, max_age=90):
         return evidence.verification == "verified" and 0 <= (today - evidence.checked_at).days <= max_age
 
-    def condition(self, poi_id, today):
+    def condition(self, poi_id, today, poi=None):
+        result = self._condition(poi_id, today)
+        if poi and poi.twogis_place_id and "2gis" in poi.sources:
+            result.provider_attributes = poi.provider_attributes
+            result.provider_url = poi.description_url or f"https://2gis.kz/astana/firm/{poi.twogis_place_id}"
+        return result
+
+    def _condition(self, poi_id, today):
         record = self.conditions.get(self.canonical(poi_id))
         if not record:
             comfort = self.comfort.get(self.canonical(poi_id))

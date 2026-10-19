@@ -100,6 +100,8 @@
   const markers = {};
   function setWalkActive(active) {
     state.walkActive = !!active;
+    document.body.classList.toggle("walk-active", !!active);
+    if (active) $("#scenariosMenu").hidden = true;
     if (active) {
       map.removeLayer(suggestionRoutes);
       if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
@@ -464,15 +466,22 @@
     };
   }
   function statusPill(st) {
-    const t = T();
-    let txt = t.status[st.state] || st.label || st.state;
-    if (st.state === "open" || st.state === "likely_open") {
-      if (st.closes_at) txt += ` ${t.closes} ${st.closes_at}`;
-      if (st.source && st.source !== "none") txt += ` · ${srcName(st.source)}`;
-      if (st.checked_at) txt += `, ${t.checked} ${st.checked_at}`;
-    } else if (st.state === "unknown") txt += ` — ${t.hoursUnknownHint}`;
-    return `<span class="status-pill st-${esc(st.state)}" title="${esc(st.hours || "")}${st.confidence ? " · " + esc(t.confidence) + ": " + esc(t.conf[st.confidence] || st.confidence) : ""}">${esc(txt)}</span>`;
+    if (!st) return "";
+    const t = T(), days = state.lang === "en" ? ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+      : state.lang === "kk" ? ["Дс","Сс","Ср","Бс","Жм","Сб","Жс"] : ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
+    const readable = raw => String(raw || "").replace(/\b(Mo|Tu|We|Th|Fr|Sa|Su)\b/g, d => days[["Mo","Tu","We","Th","Fr","Sa","Su"].indexOf(d)])
+      .replace(/\boff\b/g,t.hoursOff).replace(/(\d)-(\d)/g,"$1–$2");
+    const date = st.for_date ? fmt(t.hoursDate, {d: st.for_date}) + ": " : "";
+    const hours = st.today_hours != null ? readable(st.today_hours) : readable(st.hours);
+    const source = st.source === "2gis" ? (state.lang==="en"?"2GIS":"2ГИС") : st.source && st.source !== "none" ? srcName(st.source) : "";
+    const url = /^https:\/\/2gis\.kz\/astana\/(firm|geo)\/\d+$/.test(st.source_url || "") ? st.source_url : null;
+    const provenance = source ? `${t.hoursSource}: ${url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(source)}</a>` : esc(source)}` : "";
+    return `<div class="hours-fact"><span class="status-pill st-${esc(st.state)}">${esc(t.status[st.state] || st.state)}</span>
+      <span class="hours-value">${esc(hours ? date + hours : t.hoursMissing)}</span>
+      ${st.today_hours && st.hours && st.hours !== "24/7" ? `<details><summary>${esc(t.weekSchedule)}</summary>${esc(readable(st.hours))}</details>` : ""}
+      <small>${provenance}${source ? " · " : ""}${esc(st.schedule_has_exceptions ? t.hoursExceptions : t.hoursCaution)}${st.schedule_note ? " " + esc(st.schedule_note) : ""}</small></div>`;
   }
+
   const srcBadge = (src) => src === "ai" ? `<span class="badge ai">${esc(T().aiIdea)}</span>` : `<span class="badge tpl">${esc(T().template)}</span>`;
   function budgetBar(b) {
     const t = T(), tot = Math.max(b.budget_min || b.total_min, b.total_min);
@@ -492,6 +501,7 @@
   // ---------- rendering ----------
   let selectedCardHome = null;
   function selectPlace(id, focus = true) {
+    if (focus && id) ext.focusPlace?.();
     const overview = $("#resultsOverview"), selection = $("#placeSelection"), detail = $("#selectedPlaceCard");
     if (!overview || !selection) return;
     // Move the actual recommendation, preserving photos, notes and event handlers.
@@ -915,7 +925,7 @@
   window.SeruenApp = {state, FEAT, API, T, fmt, esc, icon, $, $$, map, layer, markers, L, showAt, fitTo, round3, setWalkActive,
     freezeLocation: () => { if (state.locating) { cancelLocation(); renderLocLine(); } },
     postJSON, getJSON, context, ask: () => ask(), render: (d) => render(d), rerender: () => { if (state.last) render(state.last); }, catLabel,
-    statusPill, links, fillPhotos};
+    statusPill, links, fillPhotos, presetName: p => p?.name?.[state.lang] || p?.name?.ru || p?.label?.[state.lang] || p?.id || ""};
   init();
   if (ext.onReady) ext.onReady();
 })();

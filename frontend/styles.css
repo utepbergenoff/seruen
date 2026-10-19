@@ -580,3 +580,42 @@ table.cands { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-
   /* the folds are tapped with a thumb: give the summary line a 44px band */
   .more > summary, .nope > summary, .ctx summary { padding: 12px 0; }
 }
+
+/* One task at a time: planning, walking, or explicitly browsing during a walk. */
+body.walk-active #welcome, body.walk-active #scenarioStrip, body.walk-active .scenario-menu,
+body.walk-active #scenariosBtn, body.walk-active #scenariosMenu { display:none !important; }
+body.walk-active:not(.walk-search) #askForm,
+body.walk-active:not(.walk-browse) #results,
+body.walk-active:not(.walk-browse) #experiences,
+body.walk-active:not(.walk-browse) #status { display:none !important; }
+body.route-setup-open #welcome, body.route-setup-open #askForm, body.route-setup-open #walk,
+body.route-setup-open #scenarioStrip, body.route-setup-open #results,
+body.route-setup-open #experiences, body.route-setup-open #status { display:none !important; }
+.route-setup { border-top:4px solid var(--blue,#00708A); }
+.finish-choices { border:0;padding:0;margin:20px 0;display:grid;gap:10px; }
+.finish-choices label { display:flex;gap:12px;padding:14px;border:1px solid var(--line,#ccd9df);border-radius:12px;align-items:center;cursor:pointer; }
+.finish-choices label:has(input:checked) { border-color:var(--blue,#00708A);background:color-mix(in srgb, var(--blue,#00708A) 8%, transparent); }
+.finish-choices input { accent-color:var(--blue,#00708A);width:20px;height:20px; }
+.finish-choices small { display:block;margin-top:4px;opacity:.75; }
+.route-setup select { max-width:100%;margin:8px 0; }
+.hours-fact { display:grid;gap:4px;font-size:13px;line-height:1.5;flex-basis:100%;margin:8px 0; }
+.hours-value { font-weight:650; }
+.hours-fact small, .provider-conditions { font-size:12px;opacity:.85; }
+.hours-fact .status-pill { justify-self:start; }
+.hours-fact a, .provider-conditions a { color:inherit;text-decoration:underline; }
+.provider-conditions { display:block;margin:6px 0; }
+.route-finish { font-size:16px;line-height:1.5;border-left:3px solid var(--gold,#B87900);padding-left:12px; }
+.route-notes { margin:12px 0; }
+.landmark-list { display:grid;gap:8px; }
+.landmark-option { text-align:left;display:grid;gap:5px;background:transparent;color:inherit;border:1px solid var(--line,#ccd9df);border-radius:12px;padding:14px;cursor:pointer; }
+.landmark-option:hover { border-color:var(--blue,#00708A); }
+.landmark-option span { font-size:12px;opacity:.75; }
+.meet-place[hidden] { display:none !important; }
+.route-review ol { padding-left:24px; }
+.route-review li { margin-bottom:16px; }
+
+.sr-only {position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+body.route-setup-open #scenariosBtn, body.route-setup-open #scenariosMenu {display:none !important;}
+body.route-review-open #welcome, body.route-review-open #askForm,
+body.route-review-open #scenarioStrip, body.route-review-open #scenariosBtn,
+body.route-review-open #scenariosMenu, body.route-review-open #results {display:none !important;}

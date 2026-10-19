@@ -60,7 +60,7 @@ for(const selected of ['recommendation','catalog']) {
     // Card selection and marker selection follow the same contract.
     if(selected==='catalog')b.w.SeruenApp.markers[p.poi_id].fire('click');
     else b.w.document.querySelectorAll('.rec')[1].click();
-    b.click('#startSelectedWalk');await tick();
+    b.click('#startSelectedWalk');b.click('#routeFinishConfirm');await tick();
     assert.deepEqual(b.builds[0].stop_ids,[p.poi_id]);assert.equal(b.builds[0].max_stops,1);
     const response=clone(FX.build_ok);response.stops=[{...response.stops[0],poi_id:p.poi_id,name:p.name}];
     response.state.remaining_ids=[p.poi_id];
@@ -72,7 +72,7 @@ for(const selected of ['recommendation','catalog']) {
 test('late plan for a different selection cannot start a walk',async t=>{
   const wait={};wait.promise=new Promise(r=>wait.resolve=r);
   const b=await boot(t,{...opts,buildResponse:wait});const d=await search(b);
-  b.w.SeruenApp.markers[d.recommendations[0].poi_id].fire('click');b.click('#startSelectedWalk');await tick();
+  b.w.SeruenApp.markers[d.recommendations[0].poi_id].fire('click');b.click('#startSelectedWalk');b.click('#routeFinishConfirm');await tick();
   b.w.SeruenApp.markers['2gis_extra'].fire('click');wait.resolve(json(FX.build_ok));await settle();
   assert.equal(b.w.SeruenFeatures.walk,null);
   assert.equal(b.w.SeruenApp.state.selectedPlaceId,'2gis_extra');
@@ -80,7 +80,7 @@ test('late plan for a different selection cannot start a walk',async t=>{
 
 test('a wrong or unavailable selected destination never silently becomes top 1',async t=>{
   const b=await boot(t,opts);await search(b);start(b);const before=JSON.stringify(b.w.SeruenFeatures.walk.plan);
-  b.w.SeruenApp.markers['2gis_extra'].fire('click');b.click('#startSelectedWalk');await settle();
+  b.w.SeruenApp.markers['2gis_extra'].fire('click');b.click('#startSelectedWalk');b.click('#routeFinishConfirm');await settle();
   assert.equal(JSON.stringify(b.w.SeruenFeatures.walk.plan),before);
   assert.ok(b.w.document.querySelector('#selectedWalkMsg').textContent);
 });

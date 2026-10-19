@@ -97,7 +97,12 @@
     if (!cost) return "";
     const st = COST[cost.kind] ? cost.kind : "unknown", x = X();
     const title = [cost.note, cost.source_url && `${T().sources}: ${cost.source_url}`, cost.checked_at].filter(Boolean).join(" · ");
-    return `<span class="cost cost-${esc(st)}" title="${esc(title)}">${icon("wallet")} ${esc(x[COST[st]])}${cost.note ? ` · ${esc(cost.note)}` : ""}</span>`;
+    const provider = cost.provider_url && /^https:\/\/2gis\.kz\/astana\/(firm|geo)\/\d+$/.test(cost.provider_url);
+    const attrs=(cost.provider_attributes||[]).map(a=>`<span>${esc(a)}</span>`).join(" · ");
+    const unknown = st === "unknown" && provider ? x.providerCostUnknown : x[COST[st]];
+    return `<span class="cost cost-${esc(st)}" title="${esc(title)}">${icon("wallet")} ${esc(unknown)}${cost.note ? ` · ${esc(cost.note)}` : ""}</span>
+      ${provider && attrs ? `<span class="provider-conditions">${attrs} · <a href="${esc(cost.provider_url)}" target="_blank" rel="noopener noreferrer">${esc(x.providerConditions)}</a></span>` : ""}
+      ${cost.source_url && /^https:\/\//.test(cost.source_url) && cost.note ? `<small><a href="${esc(cost.source_url)}" target="_blank" rel="noopener noreferrer">${esc(T().sources)}</a>${cost.checked_at ? " · "+esc(cost.checked_at) : ""}</small>` : ""}`;
   };
   ext.cardExtras = (r) => {
     const x = X(), p = mine.places.get(r.poi_id) || {}, b = r.budget_breakdown || {};
@@ -422,29 +427,89 @@
       deadline_ms: deadline ?? Date.now() + result.budget.available_min * 60000,
       stops: [...done, ...result.stops.filter(s => !done.some(d => d.poi_id === s.poi_id)).map((s, i) => ({
         poi_id: s.poi_id, name: s.name, coords: s.coords, stay_min: s.stay_min,
-        walk_min: result.legs[i]?.walk_min || 0, hours_text: s.open_status.hours || "", status: "next"}))]};
+        walk_min: result.legs[i]?.walk_min || 0, open_status: s.open_status, visit_condition: s.visit_condition, hours_text: s.open_status.hours || "", status: "next"}))]};
   }
   function usablePlan(result) {
     return result.fits && ["ok", "partial"].includes(result.status) && result.stops.length;
   }
+  // A visible, explicit finish choice shared by solo, meeting and landmark routes.
+  let setup = null;
+  function cancelSetup() {
+    if (!setup) return;
+    const old = setup; setup = null;
+    $("#routeSetup").hidden = true; $("#routeSetup").innerHTML = "";
+    document.body.classList.remove("route-setup-open");
+    old.resolve(null); old.focus?.focus();
+  }
+  function chooseFinish(lastPlace) {
+    cancelSetup(); A.freezeLocation();
+    return new Promise(resolve => {
+      setup = {resolve, lastPlace, mode: finish ? "custom" : "place", destination: finish, picking: false,
+        focus: document.activeElement};
+      document.body.classList.add("route-setup-open");
+      renderSetup(); $("#routeSetup").scrollIntoView({block:"start",behavior:"smooth"}); $("#routeSetupTitle").focus();
+    });
+  }
+  function renderSetup() {
+    if (!setup) return;
+    const x = X(), box = $("#routeSetup"), q = setup;
+    box.hidden = false;
+    box.innerHTML = `<h2 id="routeSetupTitle" tabindex="-1">${esc(x.finishQuestion)}</h2><p class="meta">${esc(x.finishExplain)}</p>
+      <fieldset class="finish-choices"><legend class="sr-only">${esc(x.finishQuestion)}</legend>
+        ${[["place",x.finishAtPlace,q.lastPlace?.name],["return",x.finishReturn,""],["custom",x.finishCustom,""]].map(([v,label,n]) =>
+          `<label><input type="radio" name="routeFinish" value="${v}"${q.mode===v?" checked":""}><span>${esc(label)}${n?`<small>${esc(n)}</small>`:""}</span></label>`).join("")}</fieldset>
+      <div${q.mode==="custom"?"":" hidden"}><select id="routeFinishPreset" aria-label="${esc(x.finishLandmark)}"><option value="">${esc(x.finishLandmark)}</option>
+        ${state.presets.map(p=>`<option value="${esc(p.id)}">${esc(A.presetName(p))}</option>`).join("")}</select>
+        <button type="button" class="btn" id="routeFinishMap">${esc(x.pickOnMap)}</button>
+        <p class="meta" role="status">${esc(q.picking?x.finishPickHint:q.destination?(q.destination.presetLabel||`${r3(q.destination.lat)}, ${r3(q.destination.lon)}`):x.finishPickMissing)}</p></div>
+      <div class="row"><button type="button" class="btn primary" id="routeFinishConfirm"${q.mode==="custom"&&!q.destination?" disabled":""}>${esc(x.finishBuild)}</button>
+        <button type="button" class="btn" id="routeFinishCancel">${esc(x.no)}</button></div>`;
+    box.querySelectorAll('[name="routeFinish"]').forEach(el=>el.onchange=()=>{q.mode=el.value;q.picking=false;renderSetup();});
+    $("#routeFinishMap").onclick=()=>{q.picking=true;renderSetup();$("#map").scrollIntoView({block:"center",behavior:"smooth"});};
+    $("#routeFinishPreset").onchange=e=>{const p=state.presets.find(p=>p.id===e.target.value);if(p){q.destination={lat:p.lat,lon:p.lon,source:"preset",presetLabel:A.presetName(p)};q.picking=false;renderSetup();}};
+    $("#routeFinishCancel").onclick=cancelSetup;
+    $("#routeFinishConfirm").onclick=()=>{
+      const dest=q.mode==="place"?q.lastPlace?.coords:q.mode==="custom"?q.destination:null;
+      if(q.mode!=="return"&&!dest) return;
+      const answer={finish_mode:q.mode==="return"?"return":"destination",destination:dest?{lat:r3(dest.lat),lon:r3(dest.lon),source:dest.source==="gps"?"gps":dest.source==="map"?"map":"preset"}:null,
+        label:q.mode==="return"?x.finishReturn:q.mode==="place"?q.lastPlace.name:(dest.presetLabel||`${r3(dest.lat)}, ${r3(dest.lon)}`)};
+      setup=null;box.hidden=true;box.innerHTML="";document.body.classList.remove("route-setup-open");q.resolve(answer);
+    };
+  }
+  const finishMapClick = ext.onMapClick;
+  ext.onMapClick = e => {
+    if(setup?.picking){setup.destination={lat:e.latlng.lat,lon:e.latlng.lng,source:"map"};setup.picking=false;renderSetup();$("#routeSetup").scrollIntoView({block:"start",behavior:"smooth"});return true;}
+    return finishMapClick?.(e)||false;
+  };
+  function focusWalk(browse=false, search=false) {
+    document.body.classList.toggle("walk-browse", !!walk && browse);
+    document.body.classList.toggle("walk-search", !!walk && search);
+  }
+  ext.focusPlace = () => { if(walk){walk.collapsed=true;focusWalk(true);renderWalk();} };
   let buildVersion = 0;
   async function buildAnswer(d, saving, selectedId = state.selectedPlaceId) {
     const msg = selectedId ? $("#selectedWalkMsg") : $("#saveWalkMsg"), version = state.requestVersion;
     const build = ++buildVersion;
+    const place = selectedId ? [...(d.recommendations||[]), ...(d.nearby_places||[]), ...(state.extraCands?.items||[])].find(p=>p.poi_id===selectedId) : d.recommendations.at(-1);
+    if (!place) return;
+    const pendingChoice = chooseFinish(place), locationVersion = state.locVersion;
+    const choice = await pendingChoice;
+    if (!choice || version !== state.requestVersion || locationVersion !== state.locVersion || build !== buildVersion || selectedId !== state.selectedPlaceId) return;
     const buttons = [$("#saveWalkBtn"), $("#startWalkBtn"), $("#startSelectedWalk")].filter(Boolean);
     buttons.forEach(b => b.disabled = true);
     if (msg) msg.textContent = X().replanning;
     try {
       const request = JSON.parse(JSON.stringify(state.lastReq));
       delete request.cursor; delete request.request_id;
+      if (choice.destination) request.end = choice.destination; else delete request.end;
       const payload = {request, stop_ids: selectedId ? [selectedId] : d.recommendations.map(r => r.poi_id), max_stops: selectedId ? 1 : 3,
-        finish_mode: request.end ? "destination" : "return", destination: request.end || null};
+        finish_mode: choice.finish_mode, destination: choice.destination};
       const result = await A.postJSON("/plans/build", payload, 40000);
       if (version !== state.requestVersion || build !== buildVersion || selectedId !== state.selectedPlaceId) return;
-      if (!usablePlan(result) || (selectedId && (result.stops.length !== 1 || result.stops[0].poi_id !== selectedId))) {
+      if (!usablePlan(result) || payload.stop_ids.some(id=>!result.stops.some(s=>s.poi_id===id)) || (selectedId && (result.stops.length !== 1 || result.stops[0].poi_id !== selectedId))) {
         if (msg) msg.textContent = X().planUnavailable; return;
       }
-      const plan = planView(result, request);
+      const plan = planView(result, request); plan.finish_label = choice.label;
       if (saving) await saveWalk(plan); else startWalk(plan, null);
       if (!saving && msg) msg.textContent = result.notes.join(" ");
     } catch { if (msg && version === state.requestVersion) msg.textContent = X().replanFail; }
@@ -481,17 +546,21 @@
     if (!plan.server && !plan.offline) return;
     walk = {plan: JSON.parse(JSON.stringify(plan)), savedId, history: [], collapsed: false, proposal: null};
     walkMsg = ""; walkBusy = false; walkVersion++;
+    cancelSetup(); comfortLayer.clearLayers(); focusWalk();
     ext.onWalkStart?.();
     renderWalk();
     $("#walk").scrollIntoView({behavior: "smooth", block: "start"});
   }
   async function loadRestOptions(reason) {
     if (!walk || !has("comfort_breaks")) return;
+    const target = walk.plan.stops.find(s=>s.status === "next");
+    if (!target || !has("on_route_breaks")) { walkMsg=X().breakNeedsUpdate; return; }
     const rest = {reason, location: currentLocation(), points: [], loading: true, error: false};
     walk.rest = rest;
     try {
       const points = await A.postJSON("/comfort/search", {location: rest.location,
-        kinds: ["warming", "bench", "toilet", "water", "entrance"], radius_m: 500, verified_only: true});
+        route_points: [rest.location, {...target.coords, source:"map"}], on_route_only: true,
+        kinds: ["warming", "bench", "toilet", "water", "entrance"], radius_m: 100, verified_only: true});
       if (!walk || walk.rest !== rest) return;
       rest.points = points.filter(p => !walk.plan.stops.some(s => s.poi_id === p.poi_id));
       const priority = p => p.open_status?.state === "closed" ? 9 : reason === "cold"
@@ -503,16 +572,19 @@
   }
   function restHTML() {
     const rest = walk?.rest; if (!rest) return "";
+    const proposedIds=new Set((walk.proposal?.plan.stops||[]).filter(p=>!walk.plan.stops.some(s=>s.poi_id===p.poi_id)).map(p=>p.poi_id));
+    const points=rest.points.filter(p=>!proposedIds.has(p.poi_id));
+    if(walk.proposal && !rest.loading && !rest.error && !points.length) return "";
     const x = X();
     return `<section class="rest-options" id="restOptions"><h3>${esc(x.restTitle)}</h3>
       <p class="meta">${esc(x.restHint)}</p>${rest.loading ? `<p role="status">${esc(x.restLoading)}</p>` : ""}
       ${rest.error ? `<p>${esc(x.restError)}</p><button type="button" class="btn small" id="retryRest">${esc(T().retry)}</button>` : ""}
       ${!rest.loading && !rest.error && !rest.points.length ? `<p class="meta">${esc(x.restNone)}</p>` : ""}
-      <div class="rest-list">${rest.points.map(p => {
+      <div class="rest-list">${points.map(p => {
         const kind = {warming: "kWarm", bench: "kSit", toilet: "kToilet", water: "kWater", entrance: "kEntrance"}[p.kind];
         const acc = {public:"accFree",customers_only:"accCustomers",paid:"costPaid",unknown:"accUnknown"}[p.access];
         const closed = p.open_status?.state === "closed";
-        return `<article class="rest-card"><b>${esc(p.name)}</b><p class="meta">${esc(x[kind])} · ≈${esc(p.walk_min)} ${esc(T().minutes)} · ${esc(p.distance_m)} м</p>
+        return `<article class="rest-card"><b>${esc(p.name)}</b><p class="meta">${esc(x[kind])} · ≈${esc(p.walk_min)} ${esc(T().minutes)} · ${esc(p.distance_m)} м${p.extra_walk_min != null ? ` · ${esc(fmt(x.restExtra,{m:p.extra_walk_min}))}` : ""}</p>
           <p class="meta">${esc(x[acc])}${p.floor ? ` · ${esc(x.restFloor)} ${esc(p.floor)}` : ""} · ${esc(closed ? x.restClosed : p.open_status?.state === "open" ? x.restOpen : x.restHoursUnknown)}</p>
           ${rest.reason === "cold" && !p.indoor && p.kind === "bench" ? `<p class="msg warn">${esc(x.restColdBench)}</p>` : ""}
           ${p.note ? `<p class="meta">${esc(p.note.replace(/Координаты и вид —.*$/u, "").trim())}</p>` : ""}
@@ -522,6 +594,8 @@
   }
   function renderWalk() {
     A.setWalkActive(!!walk);
+    if (!walk) focusWalk();
+    else focusWalk(!!walk.collapsed, !!walk.searching);
     const box = $("#walk"); if (!box) return;
     window.dispatchEvent(new CustomEvent("seruen:walk-change"));
     pauseLayer.clearLayers();
@@ -539,9 +613,9 @@
       const pin = L.divIcon({className: "", iconSize: [30,30], iconAnchor: [15,15], html: `<div class="cpin">${icon("coffee")}</div>`});
       L.marker([s.coords.lat, s.coords.lon], {icon: pin, title: s.name}).addTo(pauseLayer)
         .bindPopup(`<b>${esc(s.name)}</b><br>${esc(x.breakPreview)}`)
-        .on("click", () => { walk.collapsed = false; renderWalk(); $("#walkProposal")?.scrollIntoView({block: "start", behavior: "smooth"}); });
+        .on("click", () => { walk.collapsed = false; walk.searching = false; renderWalk(); $("#walkProposal")?.scrollIntoView({block: "start", behavior: "smooth"}); });
     });
-    (walk.rest?.points || []).forEach(p => {
+    (walk.rest?.points || []).filter(p=>!proposed.some(s=>s.poi_id===p.poi_id)).forEach(p => {
       const ic = {warming:"fire", bench:"bench", toilet:"toilet", water:"water", entrance:"door"}[p.kind] || "info";
       const pin = L.divIcon({className:"",iconSize:[26,26],iconAnchor:[13,13],html:`<div class="cpin">${icon(ic)}</div>`});
       L.marker([p.coords.lat,p.coords.lon], {icon:pin,title:p.name,bubblingMouseEvents:false}).addTo(pauseLayer)
@@ -550,28 +624,34 @@
     if (walk.collapsed) {
       box.innerHTML = `<div class="walk-head"><h2>${icon("walk")} ${esc(x.activeWalk)}</h2>
         <button type="button" class="btn" id="walkResume">${esc(x.resumeWalk)}</button></div>`;
-      $("#walkResume").addEventListener("click", () => { walk.collapsed = false; renderWalk(); });
+      $("#walkResume").addEventListener("click", () => { walk.collapsed = false; walk.searching = false; renderWalk(); });
+      const edit = document.createElement("button"); edit.type="button";edit.className="btn small";edit.id="walkSearch";edit.textContent=x.newSearch;box.appendChild(edit);
+      edit.onclick=()=>{walk.searching=true;renderWalk();$("#askForm").scrollIntoView({block:"start",behavior:"smooth"});$("#query").focus();};
       return;
     }
     const next = p.stops.filter((s) => s.status === "next");
     const statusL = {done: x.statusDone, skipped: x.statusSkipped, next: x.statusNext};
     const can = has("replan") && navigator.onLine !== false && !!p.server;
     box.innerHTML = `<div class="walk-head"><h2>${icon("walk")} ${esc(x.activeWalk)}</h2>
-        <button type="button" class="btn small" id="walkClose">${icon("x")} ${esc(x.close)}</button></div>
+        <button type="button" class="btn small" id="walkClose">${icon("back")} ${esc(x.backToPlaces)}</button></div>
+      <p class="route-finish"><strong>${esc(x.finishSummary)}:</strong> ${esc(p.finish_label || (p.server?.state?.finish_mode === "return" ? x.finishReturn : p.stops.at(-1)?.name || x.finishOther))}</p>
+      <p class="meta">${esc(x.locationForRest)}</p>
       ${p.query ? `<p class="meta">«${esc(p.query)}»</p>` : ""}
       ${saved ? `<p class="src">${esc(fmt(x.savedAt, {d: new Date(p.saved_at).toLocaleString(state.lang === "en" ? "en-GB" : "ru-RU")}))}</p><p class="msg warn">${esc(x.stale)}</p>` : ""}
       ${navigator.onLine === false ? `<p class="msg info">${esc(x.offline)}</p>` : saved ? `<div class="row"><span class="meta">${esc(x.backOnline)}</span><button type="button" class="btn small" id="walkRefresh">${icon("refresh")} ${esc(x.refresh)}</button></div>` : ""}
       ${p.offline && !p.offline.contains_full_route ? `<p class="msg warn">${esc(x.partialExport)}</p>` : ""}
       ${p.total_min ? `<p class="walk-left">${esc(fmt(x.remaining, {m: p.total_min}))}</p>` : ""}
       ${p.server ? ext.previewAction?.("active") || "" : ""}
-      ${p.server ? `<p class="src">${esc(p.server.notes.join(" "))}</p>` : ""}
-      ${p.server?.legs?.length ? `<p class="meta">${esc(fmt(x.toEnd, {m: p.server.legs[p.server.legs.length-1].walk_min}))} · ${esc(fmt(x.arrival, {
-        t: new Intl.DateTimeFormat(state.lang === "en" ? "en-GB" : "ru-RU", {hour:"2-digit",minute:"2-digit",timeZone:"Asia/Almaty"}).format(new Date(p.server.estimated_arrival_at)),
+      ${p.server ? `<details class="route-notes"><summary>${esc(T().sources)}</summary><p class="src">${esc(p.server.notes.join(" "))}</p></details>` : ""}
+      ${p.server?.routing_source === "distance_estimate" ? `<p class="meta">${esc(x.routeApprox)}</p>` : ""}
+      ${p.server?.legs?.length ? `<p class="meta">${p.server.legs.at(-1).walk_min > 0 ? esc(fmt(x.toEnd, {m:p.server.legs.at(-1).walk_min}))+" · " : ""}${esc(fmt(x.endEstimate, {
+        t:new Intl.DateTimeFormat(state.lang === "en" ? "en-GB" : "ru-RU", {hour:"2-digit",minute:"2-digit",timeZone:"Asia/Almaty"}).format(new Date(p.server.estimated_arrival_at)),
       }))}</p>` : ""}
       <ol class="walk-stops">${p.stops.map((s, i) => `<li class="ws ws-${esc(s.status)}"><div><b>${esc(s.name)}</b> <span class="meta">· ${esc(statusL[s.status] || s.status)}</span></div>
-        <div class="meta">${s.address ? esc(s.address) + " · " : ""}${s.walk_min != null ? `${icon("walk")} ${esc(s.walk_min)} ${esc(T().minutes)} · ` : ""}${s.stay_min ? `${esc(s.stay_min)} ${esc(T().minutes)}` : ""}${s.hours_text ? ` · ${esc(s.hours_text)}` : ""}</div>
+        <div class="meta">${s.address ? esc(s.address) + " · " : ""}${s.walk_min != null ? `${icon("walk")} ${esc(s.walk_min)} ${esc(T().minutes)} · ` : ""}${s.stay_min ? `${esc(s.stay_min)} ${esc(T().minutes)} ${esc(x.atStop)}` : ""}${!s.open_status && s.hours_text ? ` · ${esc(s.hours_text)}` : ""}</div>
         ${(mine.places.get(s.poi_id) || {}).note ? `<div class="meta">${icon("note")} ${esc(mine.places.get(s.poi_id).note)}</div>` : ""}
-        ${ext.walkStopExtras?.(s) || ""}
+        ${s.open_status ? A.statusPill(s.open_status) : ""}
+        ${ext.cardBadges(s)}${ext.walkStopExtras?.(s) || ""}
         ${s.status === "next" ? `<div class="row"><button type="button" class="btn small" data-ws="done" data-i="${i}">${icon("check")} ${esc(x.done)}</button>
           <button type="button" class="btn small" data-ws="skip" data-i="${i}">${esc(x.skip)}</button></div>` : ""}</li>`).join("")}</ol>
       ${can && next.length ? `<div class="row changes"><button type="button" class="btn small" data-ch="less_time">${esc(x.chLess)}</button>
@@ -579,13 +659,13 @@
         <button type="button" class="btn small" data-ch="closed">${esc(x.chClosed)}</button></div>` : ""}
       ${walkBusy ? `<div class="loading"><div class="spinner"></div>${esc(x.replanning)}</div>
         <button type="button" class="btn small" id="walkCancel">${esc(x.cancelReplan)}</button>` : ""}
-      <p class="src" id="walkMsg" aria-live="polite">${esc(walkMsg)}</p>
+      <p class="src" id="walkMsg" aria-live="polite">${esc(walk.proposal && walkMsg===x.breakKeepsRoute ? "" : walkMsg)}</p>
       ${walk.proposal ? `<section class="card block break-preview" id="walkProposal"><h3>${esc(x.breakPreview)}</h3>
         <p>${esc(x.breakKeepsRoute)}</p>
         ${proposed.map(s => `<p><b>${esc(s.name)}</b> · ${esc(s.walk_min)} ${esc(T().walk)}</p>
           ${ext.cardBadges(walk.proposal.plan.server.stops.find(p => p.poi_id === s.poi_id) || {})}`).join("")}
         <p>${esc(fmt(x.remaining, {m: walk.proposal.plan.total_min}))}</p>
-        <p class="meta">${esc(walk.proposal.plan.server.notes.join(" "))}</p>
+        <details><summary>${esc(T().sources)}</summary><p class="meta">${esc(walk.proposal.plan.server.notes.join(" "))}</p></details>
         <div class="row"><button type="button" class="btn primary" id="applyWalkProposal">${esc(x.applyBreak)}</button>
         <button type="button" class="btn" id="discardWalkProposal">${esc(x.keepCurrentRoute)}</button></div></section>` : ""}
       ${restHTML()}
@@ -593,7 +673,7 @@
       <div class="row">${p.build_request ? `<button type="button" class="btn" id="walkSave">${icon("save")} ${esc(x.saveWalk)}</button>` : ""}
         <button type="button" class="btn" id="walkEnd">${esc(x.endWalk)}</button></div>`;
     $("#walkClose").addEventListener("click", () => {
-      walkVersion++; walkBusy = false; walk.collapsed = true; renderWalk();
+      walkVersion++; walkBusy = false; walk.collapsed = true; walk.searching=false; renderWalk();
     });
     $("#walkEnd").addEventListener("click", () => { walkVersion++; walkBusy = false; walk = null; renderWalk(); });
     const ws = $("#walkSave"); if (ws) ws.addEventListener("click", () => saveWalk(walk.plan));
@@ -659,10 +739,10 @@
   // the newest change wins: a late answer to an older change never replaces the plan
   async function replan(change, target, remaining) {
     if (!walk?.plan?.server || !has("replan")) return;
-    if (["cold", "tired"].includes(change) && !has("nearby_break")) {
+    if (["cold", "tired"].includes(change) && (!has("nearby_break") || !has("on_route_breaks"))) {
       walkMsg = X().breakNeedsUpdate; renderWalk(); return;
     }
-    const version = ++walkVersion, before = JSON.parse(JSON.stringify(walk.plan));
+    const version = ++walkVersion, before = JSON.parse(JSON.stringify(walk.plan)), locationStamp=JSON.stringify(currentLocation());
     walkBusy = true; walkMsg = ""; walk.proposal = null;
     if (["cold", "tired"].includes(change)) loadRestOptions(change);
     renderWalk();
@@ -680,6 +760,7 @@
     try {
       const res = await A.postJSON("/plans/recalculate", body, 40000);
       if (version !== walkVersion || !walk) return;
+      if (locationStamp !== JSON.stringify(currentLocation())) { walkMsg=X().restMoved; return; }
       if (!usablePlan(res)) {
         const error = new Error("plan_unavailable");
         if (res.status === "no_matches" || !res.stops?.length) error.code = "no_replacement_found";
@@ -693,6 +774,7 @@
       request.context.time_budget_min = left;
       const replacement = planView(res, request, before.stops.filter(s => s.status === "done"),
         remaining != null ? Date.now() + remaining * 60000 : before.deadline_ms);
+      replacement.finish_label = before.finish_label;
       if (nearbyBreak) {
         if (!replacement.stops.some(s => !before.stops.some(p => p.poi_id === s.poi_id))) throw new Error("no_new_stop");
         walk.proposal = {plan: replacement, created: Date.now()}; walkMsg = X().breakKeepsRoute; return;
@@ -703,7 +785,7 @@
     } catch (error) {
       if (version !== walkVersion || !walk) return;
       walk.plan = before;
-      walkMsg = error.code === "no_replacement_found" ? (nearbyBreak && has("comfort_breaks") ? X().restNoFit : X().replanEmpty) : X().replanFail;
+      walkMsg = ["no_on_route_break","break_not_on_route","break_detour_too_long"].includes(error.code) ? X().routeNoBreak : error.code === "no_replacement_found" ? (nearbyBreak && has("comfort_breaks") ? X().restNoFit : X().replanEmpty) : X().replanFail;
     } finally { if (version === walkVersion) { walkBusy = false; renderWalk(); } }
   }
 
@@ -733,7 +815,7 @@
     const tab = (k, l, n) => `<button type="button" role="tab" class="tab${mine.tab === k ? " on" : ""}" data-tab="${k}" aria-selected="${mine.tab === k}">${esc(l)} (${n})</button>`;
     const fchip = (k, l) => `<button type="button" class="chip-btn${mine.filter === k ? " on" : ""}" data-filter="${k}" aria-pressed="${mine.filter === k}">${esc(l)}</button>`;
     box.innerHTML = `<div class="walk-head"><h2 id="mineTitle">${icon("heart")} ${esc(x.keepTitle)}</h2>
-        <button type="button" class="btn small" id="mineClose">${icon("x")} ${esc(x.close)}</button></div>
+        <button type="button" class="btn small" id="mineClose">${icon("back")} ${esc(x.backToPlaces)}</button></div>
       <p class="src">${esc(x.deviceOnly)}</p>${mine.error ? `<p class="msg warn">${esc(mine.error)}</p>` : ""}
       <div class="tabs" role="tablist">${tab("places", x.tabPlaces, all.length)}${tab("walks", x.tabWalks, mine.walks.length)}</div>
       ${mine.tab === "places" ? `<div class="row">${fchip("all", x.fAll)}${fchip("want", x.fWant)}${fchip("visited", x.fVisited)}${fchip("favorite", x.fFav)}</div>
@@ -804,7 +886,7 @@
 
   // ---------- wiring ----------
   ext.onHealth = () => { mountSpend(); mountFinish(); mountAtmosphere(); A.rerender(); if (walk) renderWalk(); };
-  ext.onLang = () => { renderFinish(); renderAtmosphere(); renderMine(); renderWalk(); };
+  ext.onLang = () => { cancelSetup(); renderFinish(); renderAtmosphere(); renderMine(); renderWalk(); };
   // app.js has already started when this file runs, so wire up now
   function ready() {
     $("#mineBtn").addEventListener("click", toggleMine);
@@ -812,7 +894,7 @@
     window.addEventListener("offline", () => renderWalk());
     S.init().then(loadMine).then(() => { renderMine(); A.rerender(); }).catch(() => { mine.error = X().storeBlocked; });
   }
-  window.SeruenFeatures = {mine, startWalk, saveWalk, planView, renderWalk, get walk() { return walk; }, get cons() { return cons; },
+  window.SeruenFeatures = {mine, chooseFinish, cancelSetup, startWalk, saveWalk, planView, renderWalk, get walk() { return walk; }, get cons() { return cons; },
     setFinish: (f) => { finish = f; drawFinish(); renderFinish(); }, setAtmosphere: (a) => { atmosphere = a; }};
   ready();
   if (Object.keys(state.features || {}).length) ext.onHealth();

@@ -104,6 +104,8 @@ class Feedback(Model):
 
 
 class VisitConditionView(Model):
+    provider_attributes: list[str] = Field(default_factory=list, max_length=20)
+    provider_url: str | None = None
     kind: Literal["free", "optional_purchase", "paid", "unknown"] = "unknown"
     note: str = ""
     source_url: str | None = None
@@ -157,6 +159,11 @@ class POI(Model):
     description_url: str | None = None
     description: str = Field(default="", max_length=2000)
     description_source: Literal["wikipedia", "source", "generated"] = "source"
+    provider_attributes: list[str] = Field(default_factory=list, max_length=20)
+    published_special_hours: dict[str, str] = Field(default_factory=dict, max_length=100)
+    published_hours: str | None = Field(default=None, max_length=2000)
+    schedule_note: str | None = Field(default=None, max_length=2000)
+    schedule_has_exceptions: bool = False
     opening_hours_raw: str | None = None
     hours_source: Literal["2gis", "osm", "none"] = "none"
     hours_conflict: bool = False
@@ -192,6 +199,11 @@ class Intent(Model):
 
 
 class OpenStatus(Model):
+    today_hours: str | None = None
+    for_date: date | None = None
+    source_url: str | None = None
+    schedule_note: str | None = None
+    schedule_has_exceptions: bool = False
     state: Literal["open", "likely_open", "unknown", "closed"]
     confidence: Literal["high", "medium", "low"]
     hours: str | None
@@ -352,7 +364,7 @@ class Health(Model):
     feature_contract_version: int = 2
     features: dict[str, int] = Field(default_factory=lambda: {
         "replan": 1, "end_point": 1, "constraints": 1, "comfort": 1,
-        "cost": 1, "atmosphere": 1, "atmosphere_profiles": 1, "comfort_breaks": 1, "plan_export": 1, "nearby_break": 1,
+        "cost": 1, "atmosphere": 1, "atmosphere_profiles": 1, "comfort_breaks": 1, "on_route_breaks": 1, "plan_export": 1, "nearby_break": 1,
         "city_history": 1, "meet_halfway": 1, "winter_plan": 1,
     })
 

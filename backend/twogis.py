@@ -17,7 +17,7 @@ from .places import PlacesError
 from .provider_status import log_provider
 from .schemas import Model
 
-FIELDS = "items.point,items.name_ex,items.schedule,items.schedule_special,items.reviews"
+FIELDS = "items.point,items.name_ex,items.schedule,items.schedule_special,items.reviews,items.attribute_groups"
 DAYS = ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
 IDENTIFIER = re.compile(r"[0-9]{1,32}")
 CLOCK = r"^(?:[01][0-9]|2[0-3]):[0-5][0-9]$|^24:00$"

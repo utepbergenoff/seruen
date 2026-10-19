@@ -374,8 +374,9 @@ test('impossible route shows the reason and "allow more time" re-asks with that 
 
 test('save a walk, reopen it from my places with its date and the stale warning', async t => {
   const b = await boot(t, withFeatures); await settle(); b.click('#goBtn'); await tick();
-  b.requests[0].resolve(json(FX.recommend_normal)); await settle();
-  b.click('#saveWalkBtn'); await settle();
+  const recommendations = FX.build_ok.stops.map((s,i) => ({...FX.recommend_normal.recommendations[i], ...s}));
+  b.requests[0].resolve(json({...FX.recommend_normal, recommendations})); await settle();
+  b.click('#saveWalkBtn');b.click('#routeFinishConfirm'); await settle();
   assert.match(b.w.document.querySelector('#saveWalkMsg').textContent, /сохранена|не даёт сохранять/);  // jsdom has no IndexedDB
   const walks = await b.w.SeruenStore.allWalks();
   assert.equal(walks.length, 1); assert.equal(walks[0].version, 2); assert.equal(walks[0].stops.length, 2);

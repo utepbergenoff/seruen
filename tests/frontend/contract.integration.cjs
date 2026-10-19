@@ -27,7 +27,7 @@ test('all eight features use real server shapes and preserve offline/privacy bou
   assert.match($('.rec').textContent,/Бесплатно/);
   assert.ok(w.SeruenApp.state.last.recommendations[0].atmosphere_match.matched_features.length);
 
-  b.click('#startWalkBtn'); await until(()=>w.SeruenFeatures.walk?.plan?.server);
+  b.click('#startWalkBtn');b.click('#routeFinishConfirm'); await until(()=>w.SeruenFeatures.walk?.plan?.server);
   assert.ok(w.SeruenFeatures.walk.plan.server.fits);
   b.click('#walk [data-ch="tired"]'); await until(()=>calls.some(c=>c.path==='/plans/recalculate'));
   await until(()=>!$('#walk .loading'));
@@ -35,8 +35,9 @@ test('all eight features use real server shapes and preserve offline/privacy bou
   assert.ok(replan.body.remaining_time_min>0 && replan.body.previous.schema_version===1);
   assert.equal(replan.body.previous.finish_mode,'destination');
   assert.equal(replan.body.keep_stops,true);
-  // Strict cost/atmosphere filters leave no extra break: the server refuses safely.
-  assert.equal(replan.status,409);
+  // A free verified bench can be suggested without changing the goal or its atmosphere preference.
+  assert.equal(replan.status,200);assert.ok(w.SeruenFeatures.walk.proposal);
+  assert.equal(w.SeruenFeatures.walk.plan.stops.length,1);
   assert.ok(w.SeruenFeatures.walk.plan.server.stops.some(s=>s.poi_id==='team_coffee'));
   assert.ok($('#walk [data-ch="cold"]'));
 

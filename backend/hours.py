@@ -74,11 +74,28 @@ def schedule_open(raw, now):
 
 def open_status(poi, now):
     now = now.astimezone(ALMATY)
-    base = dict(hours=poi.opening_hours_raw, source=poi.hours_source, checked_at=poi.last_checked)
-    if not poi.opening_hours_raw or poi.hours_source == "none":
+    display = poi.published_hours or poi.opening_hours_raw
+    today = None
+    if display == "24/7":
+        today = "00:00–24:00"
+    elif display:
+        # Display only an unambiguous daily clause. Complex OSM expressions remain visible as a weekly string.
+        for clause in display.split(";"):
+            match = re.fullmatch(r"\s*(Mo|Tu|We|Th|Fr|Sa|Su)\s+(.+?)\s*", clause)
+            if match and match[1] == DAYS[now.weekday()]:
+                today = match[2].replace("-", "–")
+    if str(now.date()) in poi.published_special_hours:
+        today = poi.published_special_hours[str(now.date())].replace("-", "–")
+    source_url = (poi.description_url or f"https://2gis.kz/astana/firm/{poi.twogis_place_id}"
+                  if poi.hours_source == "2gis" and poi.twogis_place_id else None)
+    base = dict(hours=display, source=poi.hours_source, checked_at=poi.last_checked,
+                today_hours=today, for_date=now.date(), source_url=source_url,
+                schedule_note=poi.schedule_note, schedule_has_exceptions=poi.schedule_has_exceptions)
+    effective = poi.published_special_hours.get(str(now.date()), poi.opening_hours_raw)
+    if not effective or poi.hours_source == "none":
         return OpenStatus(state="unknown", confidence="low", **base)
     try:
-        opened = schedule_open(poi.opening_hours_raw, now)
+        opened = schedule_open(effective, now)
     except ValueError:
         return OpenStatus(state="unknown", confidence="low", **base)
     fresh = poi.last_checked is not None and 0 <= (now.date() - poi.last_checked).days <= 30 and not poi.hours_conflict

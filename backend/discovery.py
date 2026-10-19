@@ -110,6 +110,25 @@ def schedule_text(item):
                      for day in DAYS)
 
 
+def published_schedule(item):
+    """Keep provider hours visible even when exceptions prevent a reliable open/closed claim."""
+    schedule = item.get("schedule") or {}
+    if not isinstance(schedule, dict):
+        return None
+    if schedule.get("is_24x7") is True:
+        return "24/7"
+    rows = []
+    for day in DAYS:
+        if day not in schedule:
+            continue  # A missing day is unknown, not a day off.
+        try:
+            spans = intervals(schedule[day])
+            rows.append(day[:2] + " " + (", ".join(f"{i.start}-{i.end}" for i in spans) or "off"))
+        except (ValueError, TypeError, KeyError):
+            continue
+    return "; ".join(rows) or None
+
+
 def to_poi(item, request, radius):
     if not isinstance(item, dict) or item.get("type") not in ("branch", "attraction"):
         return None
@@ -141,10 +160,37 @@ def to_poi(item, request, radius):
         hours = schedule_text(item)
     except (ValueError, TypeError, KeyError):
         hours = None
-    return POI(poi_id=f"2gis_{ident}", name=name[:200], lat=lat, lon=lon, category=category,
+    published = published_schedule(item)
+    schedule = item.get("schedule") or {}
+    note = "; ".join(str(schedule[k]) for k in ("comment", "description", "date_from", "date_to")
+                     if isinstance(schedule, dict) and schedule.get(k))[:2000] or None
+    special = {}
+    special_rows = item.get("schedule_special")
+    for row in (special_rows if isinstance(special_rows, list) else [])[:100]:
+        try:
+            day = str(row["date"])
+            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", day):
+                continue
+            spans = intervals(row)
+            special[day] = ", ".join(f"{i.start}-{i.end}" for i in spans) or "off"
+        except (ValueError, KeyError, TypeError):
+            continue
+    attributes = []
+    groups = item.get("attribute_groups")
+    for group in (groups if isinstance(groups, list) else [])[:30]:
+        if not isinstance(group, dict):
+            continue
+        values = group.get("attributes")
+        for attribute in (values if isinstance(values, list) else [])[:30]:
+            label = attribute.get("name") if isinstance(attribute, dict) else None
+            if isinstance(label, str) and label.strip() and label.strip()[:200] not in attributes:
+                attributes.append(label.strip()[:200])
+    return POI(published_special_hours=special, provider_attributes=attributes[:20], poi_id=f"2gis_{ident}", name=name[:200], lat=lat, lon=lon, category=category,
                twogis_place_id=ident, sources=["2gis"], description=rubrics[:2000], description_source="source",
                description_url=f"https://2gis.kz/astana/{'firm' if item['type'] == 'branch' else 'geo'}/{ident}",
-               opening_hours_raw=hours, hours_source="2gis" if hours else "none", hours_conflict=True,
+               opening_hours_raw=hours, published_hours=published, schedule_note=note,
+               schedule_has_exceptions=bool(item.get("schedule_special") or note),
+               hours_source="2gis" if hours or published else "none", hours_conflict=True,
                rating=rating, rating_count=count, popularity=(rating or 0)/5,
                last_checked=datetime.now(timezone.utc).date(),
                kid_friendly=bool({"kids", "park"} & set(categories)), adult_only="night" in categories,

@@ -49,7 +49,7 @@ test('unknown atmosphere badges never claim a photo match',async t=>{
 test('cold loads benches and facilities independently even when venue suggestion fails',async t=>{
  const b=await boot(t,opts);start(b);const before=JSON.stringify(b.w.SeruenFeatures.walk.plan);
  b.click('[data-ch="cold"]');await settle();
- assert.equal(b.comforts[0].radius_m,500);assert.equal(b.comforts[0].route_points,undefined);
+ assert.equal(b.comforts[0].radius_m,100);assert.equal(b.comforts[0].on_route_only,true);assert.equal(b.comforts[0].route_points.length,2);
  assert.ok(b.comforts[0].kinds.includes('bench'));assert.ok(b.comforts[0].kinds.includes('toilet'));
  b.replans[0].resolve({ok:false,status:409,json:async()=>({error:{code:'no_replacement_found'}})});await settle();
  assert.equal(JSON.stringify(b.w.SeruenFeatures.walk.plan),before);

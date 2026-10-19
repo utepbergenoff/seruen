@@ -192,7 +192,7 @@ class RecommendationService:
             if stay <= 0:
                 continue
             budget = budget_for(c.walk_min, stay, search.reserve, hit.to_end)
-            condition = self.features.condition(p.poi_id, now.date())
+            condition = self.features.condition(p.poi_id, now.date(), p)
             visual = self.features.match(p.poi_id, request.preferences.atmosphere_example_id, now.date(), request.preferences.atmosphere_profile)
             why, todo = explanation(hit, request, intent, budget, condition, visual, search.category_relaxed)
             google = maps_url(p)

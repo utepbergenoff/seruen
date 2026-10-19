@@ -336,3 +336,18 @@ def test_partial_provider_failure_keeps_first_page_and_retry_cursor(enabled):
         d=c.post('/recommend',json=ASK).json()
         assert d['recommendations'] and d['nearby_places'] and d['next_cursor']
         assert d['source_error']=='twogis_quota_exceeded'
+
+
+def test_team_place_with_verified_2gis_identity_asks_2gis_by_that_id(enabled):
+    seen = []
+    with TestClient(create_app(enabled, twogis_transport=transport([place()], seen=seen))) as c:
+        features = c.app.state.service.features
+        team = next(iter(c.app.state.service.dataset.pois)).poi_id
+        features.identities["2gis_70000000000001"] = team   # a verified link, as poi_identity_links gives
+        data = c.get(f"/places/{team}/2gis").json()
+        assert data["match_method"] == "catalog_id" and data["rating"] == 4.5
+        assert seen[0].url.path == "/3.0/items/byid" and "70000000000001" in str(seen[0].url)
+        other = list(c.app.state.service.dataset.pois)[1].poi_id
+        assert other not in features.identities.values()
+        c.get(f"/places/{other}/2gis")   # no link: the old name match path, never the linked id
+        assert all("70000000000001" not in str(r.url) for r in seen[1:])

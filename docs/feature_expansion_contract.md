@@ -1,5 +1,7 @@
 # Серуен: общий контракт восьми функций, редакция 2
 
+Дополнение 19 октября: `/health.features.on_route_breaks=1` включает остановки по направлению к следующей цели с сохранением оставшихся точек и финиша. `/comfort/search` принимает `on_route_only=true` с минимум двумя `route_points`, возвращает `extra_walk_min`. Неподходящая остановка даёт 409 `no_on_route_break`, `break_not_on_route` или `break_detour_too_long`; клиент оставляет действующий план. `OpenStatus` дополнен `today_hours`, `for_date`, `source_url`, `schedule_note`, `schedule_has_exceptions`; `VisitConditionView` — `provider_attributes`, `provider_url`. Все поля совместимы со старым клиентом. Поведение и публикация: [walk_first_ux.md](walk_first_ux.md).
+
 Совместимое расширение API. База: `https://seruen-backend-f36d.onrender.com`.
 Точные типы и ограничения: `/openapi.json`, интерактивная проверка: `/docs`.
 Рабочие примеры на **синтетических данных**, включая обычный, пустой и ошибочный ответ: [examples/features](examples/features/).
