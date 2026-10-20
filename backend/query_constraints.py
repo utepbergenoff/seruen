@@ -19,6 +19,10 @@ def time_limit(query):
     q = normalized(query)
     q = re.sub(r"\d+\s*(?:минут\w*|minutes?|min)\s+(?:пешком|ходьбы|walk\w*)", "", q)
     q = re.sub(r"(?:идти|дойти|дорога|walk takes)\s+(?:до\s+|около\s+)?\d+\s*(?:минут\w*|minutes?|min)", "", q)
+    # A remaining-time update overrides the original idea ("a couple of hours ... 20 minutes left").
+    remaining = re.search(r"(?:осталось|есть(?: только)?|only have|i have)\s+(.+)", q)
+    if remaining:
+        q = remaining[1]
     if re.search(r"полчаса\s*[-–—]\s*час", q):
         return 60
     if re.search(r"пар[ауеы]\s+час|час[-–—]два|couple of hours|two hours|екі сағат", q):
@@ -31,9 +35,6 @@ def time_limit(query):
     span = re.search(rf"(\d+)\s*[-–—]\s*(\d+)\s*{unit}", q)
     if span:
         return min(480, max(5, int(span[2]) * (1 if re.match(r"мин|min", span[3]) else 60)))
-    remaining = re.search(r"(?:осталось|есть только|only have)\s+(.+)", q)
-    if remaining:
-        q = remaining[1]
     combined = re.search(r"(\d+)\s*(?:час\w*|hours?|hrs?|сағат)\s*(?:и|and)?\s*(\d+)\s*(?:минут\w*|minutes?|mins?)", q)
     if combined:
         return min(480, max(5, int(combined[1]) * 60 + int(combined[2])))
