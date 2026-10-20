@@ -59,6 +59,9 @@
     sel.after(box); draw();
   }
 
+  // a colour token from the current theme, for map lines drawn by Leaflet
+  const cssColor = (name, fallback) => (getComputedStyle(document.documentElement).getPropertyValue(name) || "").trim() || fallback;
+
   // ---------- map ----------
   const map = L.map("map", {zoomControl: true}).setView([state.loc.lat, state.loc.lon], 15);
   const fitTo = (bounds, opts = {}) => map.fitBounds(bounds, {padding: [48, 48], ...opts, maxZoom: state.mapMode === "streets" ? 19 : 14});
@@ -172,13 +175,11 @@
 
   // ---------- presets, chips, scenarios ----------
   const plabel = (p) => (p.label && (p.label[state.lang] || p.label.ru)) || p.id;
-  // quick requests as photo tiles (photos: Wikimedia Commons / CC0, credits on the About page)
-  const CHIP_PHOTOS = ["coffee", "walk", "kids", "unusual", "flight", "night"];
+  // quick requests: small text chips under the search field
   function renderChips() {
     $("#chips").innerHTML = T().chips.map((c, i) => {
       const label = c[0].replace(/^[^\p{L}\p{N}]+/u, "");
-      const ph = CHIP_PHOTOS[i];
-      return `<button type="button" class="tile" data-i="${i}">${ph ? `<img src="img/cat-${ph}.jpg" alt="" decoding="async">` : ""}<span>${esc(label)}</span></button>`;
+      return `<button type="button" class="tile" data-i="${i}"><span>${esc(label)}</span></button>`;
     }).join("");
     $$("#chips button").forEach((b) => b.addEventListener("click", () => {
       const c = T().chips[+b.dataset.i];
@@ -209,9 +210,16 @@
     if (s.preset === "expo" && /необыч|unusual|ерекше/i.test(`${s.query} ${typeof s.title === "string" ? s.title : ""}`)) return "cat-unusual";
     return LOC_PHOTO[s.preset] || "hero-baiterek-night";
   }
-  // the same scenarios used to repeat here as cards; they now live only in the header menu (with photos)
+  // the six scenarios as photo tiles in the planner: the same preset place and request as the header menu
   function renderScenarioStrip() {
-    $("#scenarioStrip").hidden = true; $("#scenarioCards").innerHTML = "";
+    $("#scenarioCards").innerHTML = state.scenarios.map((s) => {
+      const p = state.presets.find((x) => x.id === s.preset);
+      const title = typeof s.title === "string" ? s.title : (s.title && (s.title[state.lang] || s.title.ru)) || s.id;
+      return `<button type="button" class="scard" data-id="${esc(s.id)}" aria-label="${esc(`${title} — ${p ? plabel(p) : ""}`)}"><img src="img/${scenarioPhoto(s)}.jpg" alt="" loading="lazy" decoding="async">
+        <span>${esc(title)}<small>${esc(p ? plabel(p) : "")}</small></span></button>`;
+    }).join("");
+    $$("#scenarioCards .scard").forEach((b) => b.addEventListener("click", () => runScenario(b.dataset.id)));
+    $("#scenarioStrip").hidden = !state.scenarios.length || !!ext.hideScenarioTiles?.();
   }
   // the search box shows the whole request: it grows line by line (up to a limit, then scrolls)
   function fitQuery() {
@@ -355,6 +363,8 @@
     } catch { fail("geoUnavailable"); }
   }
   $("#geoRetry").addEventListener("click", locate);
+  $("#locRetry").addEventListener("click", () => $("#geoRetry").click());
+  $("#locPick").addEventListener("click", () => $("#geoMap").click());
   $("#geoMap").addEventListener("click", () => {
     ext.cancelMapPick?.();
     cancelLocation(); state.geoMessage = "geoChooseMap"; renderLocLine();
@@ -533,6 +543,24 @@
     return `<div class="bar" aria-hidden="true"><span class="w" style="width:${pc(b.walk_there_min)}"></span><span class="s" style="width:${pc(b.stay_min)}"></span><span class="w" style="width:${pc(finalWalk)}"></span></div>
       <div class="bar-cap">${esc(line)} ${icon(b.total_min <= b.budget_min ? "check" : "info")}${b.spare_min > 0 ? ` · ${esc(t.spare)} ${b.spare_min} ${esc(t.minutes)}` : ""}</div>`;
   }
+  // the plain-words version of the time budget (no formula), accessibility, sources and who wrote the text
+  function moreDetails(r, d, origin) {
+    const t = T(), b = cardBudget(r, d), end = b.walk_to_end_min ?? b.walk_back_min;
+    const time = fmt(t.budgetHuman, {a: b.walk_there_min ?? r.walk_min, b: b.stay_min ?? r.time_to_spend_min, c: end ?? 0, r: b.reserve_min || 0, t: b.total_min, B: b.budget_min});
+    const acc = r.accessibility && r.accessibility !== "unknown" ? t.accessL[r.accessibility] : t.accessL.unknown;
+    const realDesc = r.description && !/^generated/.test(r.description_source || "");
+    return `<details class="more-details"><summary>${esc(t.more)}</summary>
+      <p>${icon("clock")} ${esc(time)}</p><p>${esc(acc)}</p>
+      ${realDesc ? `<p>${esc(r.description)}</p>` : ""}<p>${esc(origin)}</p></details>`;
+  }
+  // what the answer has in common, in one sentence: how many places, how far at most, which kinds
+  function answerSummary(recs) {
+    const t = T(), n = recs.length, far = Math.max(...recs.map((r) => r.walk_min || 0));
+    const kinds = [...new Set(recs.map((r) => r.kind_label || r.category_label || catLabel(r.category)).filter(Boolean))];
+    const forms = t.summaryN || {};
+    const head = fmt(forms[new Intl.PluralRules({en: "en", kk: "kk"}[state.lang] || "ru").select(n)] || forms.other || "{n}", {n, m: far});
+    return `<section class="answer-summary" aria-live="polite"><b>${esc(head)}</b><span>${esc(kinds.join(" · "))}</span></section>`;
+  }
   function renderModeBadge(mode) {
     const m = mode || state.apiMode;
     $("#modeBadge").hidden = !m;
@@ -591,8 +619,9 @@
     const nearby = d.nearby_places || [];
     document.body.classList.add("has-results");
     renderModeBadge(d.mode);
-    let html = `<div class="result-head"><span class="badge mode-${esc(d.mode)}">${esc(t.mode)}: ${esc(t.modes[d.mode] || d.mode)}${d.cached_from ? " (" + esc(t.modes[d.cached_from] || d.cached_from) + ")" : ""}</span>
-      <span class="meta">${d.timing_ms != null ? esc(Math.round(d.timing_ms)) + " ms" : ""}</span></div>`;
+    let html = recs.length ? answerSummary(recs) : "";
+    html += `<details class="answer-meta"><summary>${esc(t.answerDetails)}</summary><div class="result-head-inner"><span class="badge mode-${esc(d.mode)}">${esc(t.mode)}: ${esc(t.modes[d.mode] || d.mode)}${d.cached_from ? " (" + esc(t.modes[d.cached_from] || d.cached_from) + ")" : ""}</span>
+      <span class="meta">${d.timing_ms != null ? esc(Math.round(d.timing_ms)) + " ms" : ""}</span></div></details>`;
     if (d.source === "2gis") html += `<p class="badge gis">${esc(t.catalog.source)}</p>`;
     const notes = (recs.length ? [] : d.notes || []).map((n) => `<div class="note info">${esc(n)}</div>`).join("") +
       (d.safety || []).map((n) => `<div class="note safety">${esc(n)}</div>`).join("");
@@ -622,8 +651,8 @@
           ${r.open_status ? statusPill(r.open_status) : ""}</div>
         ${r.address ? `<div class="meta">${icon("pin")} ${esc(r.address)}</div>` : ""}
         ${ext.cardBadges ? `<div class="pills">${ext.cardBadges(r)}</div>` : ""}
-        <p class="field why rec-desc">${esc(sentences(r.why, r.what_to_do))}</p>
-        <div class="meta rec-stay" title="${esc(origin)}">⏱ ${esc(t.stay)}: ~${esc(r.time_to_spend_min)} ${esc(t.minutes)} · ${srcBadge(r.what_to_do_source)}</div>
+        <div class="field why rec-desc fit"><p class="fit-line"><b>${esc(t.fitWhy)}</b>${esc(sentences(r.why))}</p><p class="fit-line"><b>${esc(t.todo)}</b>${esc(sentences(r.what_to_do))}</p></div>
+        <div class="meta rec-stay">⏱ ${esc(t.stay)}: ~${esc(r.time_to_spend_min)} ${esc(t.minutes)} · ${srcBadge(r.what_to_do_source)}</div>
         ${FEAT.photos ? `<div class="photos" aria-live="polite"></div>` : ""}
         ${ext.cardPrimary ? ext.cardPrimary(r, i, d) : ""}
         <div class="actions">
@@ -634,11 +663,12 @@
         </div>
         ${gisOn() ? `<div class="gis-box" id="gis-${i}" aria-live="polite" hidden></div>` : ""}
         ${ext.cardExtras ? ext.cardExtras(r, i, d) : ""}
+        ${moreDetails(r, d, origin)}
       </article>`;
       const pinIcon = L.divIcon({className: "", iconSize: [30, 30], iconAnchor: [15, 15], html: `<div class="pin"><b>${i + 1}</b></div>`});
       // a thin dashed line from the person to each pick: every place is measured from where they stand
       const from = state.lastReq ? state.lastReq.location : state.loc;
-      if (L.polyline) L.polyline([[from.lat, from.lon], [r.coords.lat, r.coords.lon]], {color: "#00AFCA", weight: 3, dashArray: "1 8", lineCap: "round", opacity: .95, interactive: false}).addTo(suggestionRoutes);
+      if (L.polyline) L.polyline([[from.lat, from.lon], [r.coords.lat, r.coords.lon]], {color: cssColor("--route-light", "#3F7B5C"), weight: 3, dashArray: "1 8", lineCap: "round", opacity: .95, interactive: false}).addTo(suggestionRoutes);
       markers[r.poi_id] = L.marker([r.coords.lat, r.coords.lon], {icon: pinIcon, title: r.name}).addTo(layer)
         .bindPopup(`<b>${i + 1}. ${esc(r.name)}</b><br>${esc(r.distance_m)} ${esc(t.distance)} · ${esc(r.walk_min)} ${esc(t.walk)}`)
         .on("click", () => selectPlace(r.poi_id));
@@ -898,7 +928,7 @@
     const geo = await osrmLine([start, ...plan.order, start]);
     if (state.walkActive || state.last !== d || !$("#routeBox")) return;
     if (routeLine) map.removeLayer(routeLine);
-    routeLine = L.polyline(geo.line, {color: "#00708A", weight: 5, dashArray: geo.osrm ? null : "8 8", lineCap: "round", opacity: .9}).addTo(map);
+    routeLine = L.polyline(geo.line, {color: cssColor("--route", "#1E4A37"), weight: 5, dashArray: geo.osrm ? null : "8 8", lineCap: "round", opacity: .9}).addTo(map);
     fitTo(routeLine.getBounds());
     const pts = plan.order.map((p) => `${p.lon}%2C${p.lat}`).join("%7C");
     const gis = `https://2gis.kz/astana/directions/tab/pedestrian/points/%7C${pts}?m=${plan.order[0].lon}%2C${plan.order[0].lat}%2F15`;
@@ -985,7 +1015,7 @@
   window.SeruenApp = {state, FEAT, API, T, fmt, esc, icon, $, $$, map, layer, markers, L, showAt, fitTo, round3, setWalkActive,
     freezeLocation: () => { if (state.locating) { cancelLocation(); renderLocLine(); } },
     postJSON, getJSON, context, ask: () => ask(), render: (d) => render(d), rerender: () => { if (state.last) render(state.last); }, catLabel,
-    statusPill, links, fillPhotos, mirrorSelect, selectPlace: (id, focus) => selectPlace(id, focus), presetName: p => p?.name?.[state.lang] || p?.name?.ru || p?.label?.[state.lang] || p?.id || ""};
+    statusPill, links, fillPhotos, mirrorSelect, cssColor, renderScenarioStrip: () => renderScenarioStrip(), selectPlace: (id, focus) => selectPlace(id, focus), presetName: p => p?.name?.[state.lang] || p?.name?.ru || p?.label?.[state.lang] || p?.id || ""};
   init();
   if (ext.onReady) ext.onReady();
 })();

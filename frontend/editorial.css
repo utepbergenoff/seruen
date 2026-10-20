@@ -183,6 +183,9 @@ input[type="checkbox"][role="switch"]:checked, .winter-toggle input[role="switch
 .lg-rest { background: var(--sky-tint); border: 2px solid var(--sky-deep); }
 .lg-finish { background: var(--ink); border-radius: 2px !important; }
 .lg-mine { background: #B85C49; }
+.lg-ab { background: var(--sky-deep); border: 2px solid var(--sun); }
+.lg-meet { background: var(--surface); border: 2px solid var(--sun-deep); }
+.lg-active { background: var(--sun); }
 .lg-route { height: 3px !important; width: 18px !important; border-radius: 2px !important; background: var(--route); }
 /* the walk route draws itself once */
 .leaflet-overlay-pane path.route-draw { stroke-dasharray: 3000; stroke-dashoffset: 3000; animation: route-draw 1.4s var(--ease, ease) forwards; }
@@ -281,3 +284,23 @@ details.more-details p { margin: 6px 0 0; font-size: 13.5px; color: var(--muted)
 .meeting-ab::before { background: var(--line) !important; }
 .meet-dot.a, .meeting-ab .dot-a { background: var(--sky-deep) !important; }
 #winterField { border-radius: var(--r); }
+
+/* phones: scenario tiles as a compact 3×2 grid (an old rule made them a sideways strip); a header that fits */
+@media (max-width: 860px) {
+  .strip-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-flow: row; grid-auto-columns: auto; overflow: visible; gap: 6px; }
+  .scard { min-height: 88px; border: 0; }
+  .scard span { left: 8px; right: 6px; bottom: 6px; font-size: 12.5px; }
+  .scard small { font-size: 10.5px; }
+  .top { padding: 6px 12px; gap: 6px; }
+  .brand h1 { font-size: 20px; }
+  .top .btn, .top .btn.ghost { padding: 6px 8px; font-size: 14px; }
+  #themeBtn { font-size: 0; min-width: 40px; }
+  #themeBtn::before { content: "◐"; font-size: 18px; }
+  .lang button { padding: 5px 8px; }
+}
+.pin b, .pin { color: #FFFCF6 !important; }
+.pin.dot b { color: var(--sky-deep) !important; }
+.rec > .finish-line { margin: 12px 20px 0; }
+/* a hidden element is positioned inside its own field, never against the page (it made the laptop page scroll) */
+:is(label, .finish-field, .time-field, #winterSettings, #meetingFields, #noSpendField, fieldset):has(> .sr-only) { position: relative; }
+.chip-toggle { position: relative; }

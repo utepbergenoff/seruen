@@ -15,7 +15,21 @@
     if(persist) save('seruen_panel_width',width);
     map.invalidateSize();
   }
+  // The legend names only the kinds of marks that are on the map right now (two kinds or more).
+  const LEGEND=[['me','.me','lgMe'],['rec','.pin:not(.dot):not(.finish-pin)','lgRec'],['other','.pin.dot','lgOther'],['ab','.participant-pin','lgAB'],['meet','.experience-pin:not(.participant-pin)','lgMeet'],
+    ['story','.story-pin','lgStory'],['rest','.cpin:not(.story-pin):not(.experience-pin)','lgRest'],['active','.active-stop-pin','lgActive'],['mine','.ppin','lgMine'],
+    ['finish','.finish-pin','lgFinish'],['route','path.active-walk-path','lgRoute']];
+  let legendTimer=null;
+  function drawLegend(){
+    const box=$('#mapLegend'),root=$('#map');if(!box||!root)return;
+    const on=LEGEND.filter(([,sel])=>root.querySelector(sel));
+    box.hidden=on.length<2;
+    box.innerHTML=on.map(([k,,key])=>`<span><i class="lg-${k}" aria-hidden="true"></i>${A.esc(T()[key]||k)}</span>`).join('');
+  }
+  const watchMarks=()=>{clearTimeout(legendTimer);legendTimer=setTimeout(drawLegend,150);};
+  for(const pane of ['.leaflet-marker-pane','.leaflet-overlay-pane']){const el=$('#map '+pane);if(el&&window.MutationObserver)new MutationObserver(watchMarks).observe(el,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});}
   function labels(){
+    drawLegend();
     $('#mapFullscreen').textContent=full?T().mapExit:T().mapFull;
     $('#mapFullscreen').setAttribute('aria-pressed',String(full));
     $('#panelSide').textContent=right?T().panelLeft:T().panelRight;
@@ -38,6 +52,27 @@
     if(full)$('#mapFullscreen').focus();else (priorFocus?.isConnected?priorFocus:$('#mapFullscreen')).focus();
   }
   $('#mapFullscreen').onclick=()=>fullscreen(!full);
+  // Phones lead with the planner; the map opens full screen when a task needs it and closes after a pick.
+  const phone=()=>window.matchMedia?.('(max-width: 860px)').matches;
+  let pickOpen=false;
+  // The map was laid out while hidden: keep the place it was asked to show, or frame you and the answer.
+  const openMap=(pick=false,frame=false)=>{
+    if(!phone())return;
+    const c=map.getCenter(),z=map.getZoom();pickOpen=pick;fullscreen(true);
+    const recs=state.last?.recommendations||[];
+    if(frame&&recs.length&&window.L)A.fitTo(L.latLngBounds([[state.loc.lat,state.loc.lon],...recs.map(r=>[r.coords.lat,r.coords.lon])]),{maxZoom:16});
+    else if(frame)map.setView([state.loc.lat,state.loc.lon],Math.max(z,15),{animate:false});
+    else map.setView(c,z,{animate:false});
+  };
+  $('#mapOpenBtn')?.addEventListener('click',()=>openMap(false,true));
+  document.addEventListener('click',e=>{
+    const t=e.target.closest?.('#geoMap,#locPick,#meetPick,#pickFinish,[data-act="map"],[data-nearby],[data-mine-map],[data-meet-map],.it-row');
+    if(!t||!phone())return;
+    const pick=t.matches('#geoMap,#locPick,#meetPick,#pickFinish');
+    setTimeout(()=>openMap(pick,pick),0);
+  });
+  map.on('click',()=>{if(phone()&&full&&pickOpen){pickOpen=false;setTimeout(()=>fullscreen(false),700);}});
+  window.SeruenLayout={openMap,closeMap:()=>fullscreen(false)};
   document.addEventListener('keydown',e=>{
     if(full&&e.key==='Escape'){e.preventDefault();fullscreen(false);}
     if(full&&e.key==='Tab'){

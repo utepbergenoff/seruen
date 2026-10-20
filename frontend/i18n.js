@@ -537,3 +537,26 @@ Object.assign(window.I18N.kk.x, {lessCancel: "Болдырмау"});
 Object.assign(window.I18N.ru.gis.err, {twogis_access_denied: "Рейтинг и часы из 2ГИС сейчас недоступны. Откройте место в 2ГИС по ссылке «2GIS».", twogis_quota_exceeded: "Рейтинг и часы из 2ГИС сейчас недоступны. Откройте место в 2ГИС по ссылке «2GIS»."});
 Object.assign(window.I18N.en.gis.err, {twogis_access_denied: "2GIS rating and hours are unavailable right now. Open the place in 2GIS with the «2GIS» link.", twogis_quota_exceeded: "2GIS rating and hours are unavailable right now. Open the place in 2GIS with the «2GIS» link."});
 Object.assign(window.I18N.kk.gis.err, {twogis_access_denied: "2ГИС рейтингі мен жұмыс уақыты қазір қолжетімсіз. Орынды «2GIS» сілтемесі арқылы ашыңыз.", twogis_quota_exceeded: "2ГИС рейтингі мен жұмыс уақыты қазір қолжетімсіз. Орынды «2GIS» сілтемесі арқылы ашыңыз."});
+
+// editorial redesign (20.10): planner, results summary, card details, map legend, phone map, undo
+Object.assign(window.I18N.ru, {ideasLabel: "Например:", locRetry: "Определить снова", mapOpen: "Карта", answerDetails: "Как получен ответ",
+  fitWhy: "Почему подходит", summaryN: {one: "{n} место рядом, до {m} мин пешком", few: "{n} места рядом, до {m} мин пешком", many: "{n} мест рядом, до {m} мин пешком", other: "{n} места рядом, до {m} мин пешком"},
+  budgetHuman: "Дорога ≈{a} мин, на месте ≈{b} мин, до финиша ≈{c} мин, запас {r} мин — всего ≈{t} мин из {B}.",
+  lgMe: "Вы здесь", lgRec: "Рекомендации", lgOther: "Другие места", lgMeet: "Места встречи", lgStory: "Истории города", lgRest: "Удобства и паузы",
+  lgMine: "Мои места", lgFinish: "Финиш", lgRoute: "Маршрут", lgActive: "Следующая остановка"});
+Object.assign(window.I18N.en, {ideasLabel: "For example:", locRetry: "Detect again", mapOpen: "Map", answerDetails: "How this answer was made",
+  fitWhy: "Why it fits", summaryN: {one: "{n} place nearby, up to {m} min on foot", other: "{n} places nearby, up to {m} min on foot"},
+  budgetHuman: "Getting there ≈{a} min, at the place ≈{b} min, to the finish ≈{c} min, spare {r} min — about {t} min of {B} in total.",
+  lgMe: "You are here", lgRec: "Recommendations", lgOther: "Other places", lgMeet: "Meeting places", lgStory: "City stories", lgRest: "Comfort and breaks",
+  lgMine: "My places", lgFinish: "Finish", lgRoute: "Route", lgActive: "Next stop"});
+Object.assign(window.I18N.kk, {ideasLabel: "Мысалы:", locRetry: "Қайта анықтау", mapOpen: "Карта", answerDetails: "Жауап қалай алынды",
+  fitWhy: "Неге сәйкес", summaryN: {other: "Жақын жерде {n} орын, жаяу {m} минутқа дейін"},
+  budgetHuman: "Жол ≈{a} мин, орында ≈{b} мин, мәреге дейін ≈{c} мин, қор {r} мин — барлығы ≈{t} мин, {B} мин ішінде.",
+  lgMe: "Сіз осындасыз", lgRec: "Ұсыныстар", lgOther: "Басқа орындар", lgMeet: "Кездесу орындары", lgStory: "Қала тарихы", lgRest: "Ыңғайлылық пен үзіліс",
+  lgMine: "Менің орындарым", lgFinish: "Мәре", lgRoute: "Бағыт", lgActive: "Келесі аялдама"});
+Object.assign(window.I18N.ru.x, {placeRemoved: "Место удалено из «Моих мест»."});
+Object.assign(window.I18N.en.x, {placeRemoved: "Place removed from My places."});
+Object.assign(window.I18N.kk.x, {placeRemoved: "Орын «Менің орындарымнан» жойылды."});
+Object.assign(window.I18N.ru, {lgAB: "Старт A и B"});
+Object.assign(window.I18N.en, {lgAB: "Starts A and B"});
+Object.assign(window.I18N.kk, {lgAB: "A және B бастауы"});

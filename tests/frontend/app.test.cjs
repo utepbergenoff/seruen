@@ -152,15 +152,16 @@ test('card face shows the action, visit duration and truthful AI/template source
   const cards=[...b.w.document.querySelectorAll('.rec')];
   for(const c of cards){
     assert.equal(c.querySelectorAll('.badge.ai,.badge.tpl').length,1);
-    // why and what to do are one paragraph; no debug «More» block
-    assert.equal(c.querySelector('.why').textContent.trim(),'w. d.');
+    // why it fits and what to do are two labelled lines on the face; the time budget is in plain words under «Подробнее»
+    assert.match(c.querySelector('.why').textContent.replace(/\s+/g,' '),/Почему подходит ?w\. ?Что делать ?d\./);
     assert.match(c.querySelector('.rec-stay').textContent,/На месте: ~30/);
-    assert.equal(c.querySelector('details.more'),null);
+    const more=c.querySelector('details.more-details');
+    assert.ok(more&&!more.open);assert.doesNotMatch(more.textContent,/≤|\+ \d+ на месте/);
   }
-  assert.match(cards[0].querySelector('.rec-stay').title,/текст написал ИИ/);
+  assert.match(cards[0].querySelector('details.more-details').textContent,/текст написал ИИ/);
   assert.equal(cards[0].querySelectorAll('.badge.ai').length,1);
   assert.equal(cards[1].querySelectorAll('.badge.ai').length,0);
-  assert.match(cards[1].querySelector('.rec-stay').title,/место добавлено кодом/);
+  assert.match(cards[1].querySelector('details.more-details').textContent,/место добавлено кодом/);
 });
 
 test('photos: strip, photo reason and facts per card; no photos says so; text stays out of URLs',async t=>{
@@ -445,7 +446,7 @@ test('AI selection and factual explanation have separate labels, with a privacy 
   const chosen={...rec('p1','Coffee BOOM'),selection_source:'ai'};
   b.requests[0].resolve(json({...answer('grounded'),mode:'ai',recommendations:[chosen]}));await tick();
   const card=b.w.document.querySelector('.rec').textContent;
-  const origin=b.w.document.querySelector('.rec .rec-stay').title;
+  const origin=b.w.document.querySelector('.rec details.more-details').textContent;
   assert.match(origin,/место выбрал ИИ/);
   assert.match(origin,/объяснение составлено из данных и расчёта/);
   assert.match(b.w.document.querySelector('#privacyHint').textContent,/Gemini/);
