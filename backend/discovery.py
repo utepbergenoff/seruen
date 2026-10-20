@@ -90,10 +90,24 @@ def search_intent(request):
                 intent.categories = [category]
                 break
     query = QUERIES.get(intent.categories[0], "") if intent.categories else text[:100]
+    if indoor_required(request) and intent.categories and intent.categories[0] == "culture":
+        # Generic landmark pages near Expo are dominated by outdoor installations.
+        # Ask for an indoor category before filtering, rather than returning an empty page of them.
+        query = "Музеи"
+    if intent.categories and intent.categories[0] == "culture":
+        for pattern, category_query in (
+            (r"музей|музеи|museum|мұражай", "Музеи"),
+            (r"кино|cinema", "Кинотеатры"),
+            (r"театр|theat", "Театры"),
+            (r"галере|gallery", "Художественные галереи"),
+        ):
+            if re.search(pattern, text, re.I):
+                query = category_query
+                break
     # Preserve short business names containing a category word (e.g. Coffee Boom).
-    if (not shelter_requested(text) and 1 < len(text.split()) <= 5 and len(text) <= 80 and not re.search(
-            r"хочу|нуж|найд|ищу|рядом|поблиз|погуля|прогуля|кофе и|тих|спокой|работ|ноут|розет|минут|час|ребен|дет|"
-            r"want|need|near|quiet|work|laptop|minute|hour|with|coffee and|қайда|жақын|тыныш|серуен", text, re.I)):
+    if (not shelter_requested(text) and 1 <= len(text.split()) <= 5 and len(text) <= 80 and not re.search(
+            r"хочу|нуж|найд|ищу|рядом|поблиз|погуля|прогуля|кофе и|тих|спокой|работ|ноут|розет|минут|час|ребен|дет|необыч|бесплат|расход|бюджет|"
+            r"want|need|near|quiet|work|laptop|minute|hour|with|coffee and|unusual|free|budget|қайда|жақын|тыныш|серуен|ерекше|тегін", text, re.I)):
         query = text
     return intent, query or "Достопримечательности"
 

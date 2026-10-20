@@ -7,7 +7,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from backend.app import create_app
-from backend.discovery import to_poi
+from backend.discovery import to_poi, search_intent
 from backend.feature_data import apply_feedback
 from backend.hours import closed_during_visit
 from backend.indoor import indoor_required
@@ -108,6 +108,44 @@ def test_text_rain_is_a_shelter_request_even_when_forecast_is_missing(query):
     req = RecommendRequest.model_validate({**ASK, "query": query})
     assert indoor_required(req)
     assert req.context.weather is None
+
+
+@pytest.mark.parametrize("query", [
+    "Я у здания Экспо 2017, хочу что-то необычное на 1–2 часа, пешком",
+    "Что-то необычное", "Something unusual", "Ерекше орын",
+])
+def test_adverse_weather_searches_indoor_culture_instead_of_outdoor_landmarks(query):
+    req = RecommendRequest.model_validate({**ASK, "query": query,
+        "context": {**ASK["context"], "weather": {"temp_c": 10, "wind_ms": 12}}})
+    intent, catalog_query = search_intent(req)
+    assert intent.categories[0] == "culture" and catalog_query == "Музеи"
+
+
+def test_2gis_indoor_culture_query_reaches_provider_and_returns_a_museum(settings):
+    settings.twogis_enabled, settings.twogis_api_key = True, "synthetic"
+    seen = []
+    items = [place(1, name="SYNTHETIC Museum", rubrics=[{"name": "Музеи"}])]
+    with TestClient(create_app(settings, twogis_transport=transport(items, seen=seen))) as c:
+        result = post(c, "/recommend", {**ASK, "source": "2gis", "query": "Хочу что-то необычное",
+            "context": {**ASK["context"], "weather": {"temp_c": 10, "wind_ms": 12}}})
+        assert seen[0].url.params["q"] == "Музеи"
+        assert [p["name"] for p in result["recommendations"]] == ["SYNTHETIC Museum"]
+        assert result["applied_preferences"]["indoor_only"]
+
+
+@pytest.mark.parametrize("query,expected", [
+    ("Хочу в музей", "Музеи"), ("Хочу сходить в кино", "Кинотеатры"),
+    ("Хочу сходить в театр", "Театры"), ("Хочу в галерею", "Художественные галереи"),
+])
+def test_explicit_cultural_activity_does_not_search_generic_landmarks(query, expected):
+    assert search_intent(RecommendRequest.model_validate({**ASK, "query": query}))[1] == expected
+
+
+@pytest.mark.parametrize("query", ["Starbucks", "Нуралем"])
+def test_weather_does_not_replace_a_single_word_business_name(query):
+    req = RecommendRequest.model_validate({**ASK, "query": query,
+        "context": {**ASK["context"], "weather": {"temp_c": -20, "wind_ms": 4}}})
+    assert search_intent(req)[1] == query
 
 
 def synthetic(**changes):
