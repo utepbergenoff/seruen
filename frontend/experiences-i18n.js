@@ -269,3 +269,11 @@ window.SeruenExperienceText = {
 Object.assign(window.SeruenExperienceText.ru, {winterShort: "Маршрут через тёплые места с короткими перебежками по улице", outdoors: "Максимум на улице за раз"});
 Object.assign(window.SeruenExperienceText.en, {winterShort: "A route through warm places with short dashes outside", outdoors: "Longest time outside at once"});
 Object.assign(window.SeruenExperienceText.kk, {winterShort: "Жылы орындар арқылы, көшеде қысқа ғана жүретін маршрут", outdoors: "Көшеде бір реттегі ең ұзақ уақыт"});
+
+// round 4: meeting
+Object.assign(window.SeruenExperienceText.ru, {startA: "Ваш старт", startB: "Старт друга", pointOnMap: "Точка на карте", myLocation: "Моё местоположение",
+  walkMax: "Идти пешком максимум:", choose: "Выберите место", picking: "Нажмите на карте, откуда пойдёт друг", personB: "Друг"});
+Object.assign(window.SeruenExperienceText.en, {startA: "Your start", startB: "Friend's start", pointOnMap: "Point on the map", myLocation: "My location",
+  walkMax: "Walk at most:", choose: "Choose a place", picking: "Tap the map where your friend starts", personB: "Friend"});
+Object.assign(window.SeruenExperienceText.kk, {startA: "Сіздің бастауыңыз", startB: "Досыңыздың бастауы", pointOnMap: "Картадағы нүкте", myLocation: "Менің орным",
+  walkMax: "Жаяу ең көбі:", choose: "Орынды таңдаңыз", picking: "Досыңыз шығатын жерді картадан басыңыз", personB: "Досыңыз"});

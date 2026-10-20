@@ -22,7 +22,7 @@ function start(b) {b.w.SeruenFeatures.startWalk(b.w.SeruenFeatures.planView(clon
 test('markers open their own panel; Back restores top 3, catalog and pagination without another search',async t=>{
   const b=await boot(t,opts);const d=await search(b);const a=b.w.SeruenApp;
   const before=JSON.stringify(a.state.last), card=b.w.document.querySelectorAll('.rec')[1];
-  card.querySelector('.more').open=true;
+  card.dataset.kept='yes';
   a.markers[d.recommendations[1].poi_id].fire('click');
   assert.equal(b.w.document.querySelector('#selectedPlaceCard .rec'),card);
   assert.equal(b.w.document.querySelector('#resultsOverview').hidden,true);
@@ -37,7 +37,7 @@ test('markers open their own panel; Back restores top 3, catalog and pagination 
   assert.equal(a.state.selectedPlaceId,null);
   assert.equal(b.w.document.querySelector('#resultsOverview').hidden,false);
   assert.deepEqual([...b.w.document.querySelectorAll('#resultsOverview .rec')].map(e=>e.dataset.id),d.recommendations.map(r=>r.poi_id));
-  assert.equal(b.w.document.querySelectorAll('.rec')[1],card);assert.equal(card.querySelector('.more').open,true);
+  assert.equal(b.w.document.querySelectorAll('.rec')[1],card);assert.equal(card.dataset.kept,'yes');
   assert.ok(b.w.document.querySelector('#nextPlacesBtn'));assert.ok(b.w.document.querySelector('.nearby-place'));
   assert.equal(JSON.stringify(a.state.last),before);assert.equal(b.requests.length,1);
 });
@@ -72,6 +72,21 @@ for(const selected of ['recommendation','catalog']) {
     assert.deepEqual([...b.w.SeruenFeatures.walk.plan.stops].map(s=>s.poi_id),[p.poi_id]);
   });
 }
+
+test('every found place has its own «Начать прогулку» that starts a walk to exactly that place',async t=>{
+  const wait={};wait.promise=new Promise(r=>wait.resolve=r);
+  const b=await boot(t,{...opts,buildResponse:wait});const d=await search(b);
+  const cards=[...b.w.document.querySelectorAll('#resultsOverview .rec')];
+  assert.equal(cards.filter(c=>c.querySelector('[data-start-walk]')).length,cards.length);
+  const p=d.recommendations[2];
+  cards[2].querySelector('[data-start-walk]').click();await tick();
+  assert.equal(b.w.SeruenApp.state.selectedPlaceId,p.poi_id);
+  assert.deepEqual(b.builds[0].stop_ids,[p.poi_id]);
+  const response=clone(FX.build_ok);response.stops=[{...response.stops[0],poi_id:p.poi_id,name:p.name}];
+  response.state.remaining_ids=[p.poi_id];
+  wait.resolve(json(response));await settle();
+  assert.deepEqual([...b.w.SeruenFeatures.walk.plan.stops].map(s=>s.poi_id),[p.poi_id]);
+});
 
 test('late plan for a different selection cannot start a walk',async t=>{
   const wait={};wait.promise=new Promise(r=>wait.resolve=r);

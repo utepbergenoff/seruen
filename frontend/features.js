@@ -15,8 +15,21 @@
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode */ } },
   };
   const r3 = (x) => Math.round(x * 1000) / 1000;
-  const sessionPlaces = new Map();  // Provider labels live only in this tab's memory.
-  const placeView = p => ({...sessionPlaces.get(p.poi_id), ...p});
+  const sessionPlaces = new Map();  // Places seen in this tab: coordinates of 2GIS places live only here.
+  // A saved place plus what the app still knows about it: the stored label first, then this tab's answers,
+  // the current walk, saved walks and the 2GIS details already fetched.
+  const knownPlace = (id) => {
+    const g = state.gis?.[`${id}|ru`] || state.gis?.[`${id}|kk`];
+    return sessionPlaces.get(id) || [...(state.last?.recommendations || []), ...(state.last?.nearby_places || []),
+      ...(walk?.plan?.stops || []), ...mine.walks.flatMap((w) => w.stops || [])].find((q) => q && q.poi_id === id && q.name)
+      || (g?.provider_name ? {name: g.provider_name, address: g.address || ""} : {});
+  };
+  const placeView = (p) => {
+    if (!p) return p;
+    const k = knownPlace(p.poi_id), out = {...k, ...p};
+    for (const f of ["name", "category", "address", "coords"]) if (!p[f] && k[f]) out[f] = k[f];
+    return out;
+  };
 
   const mine = {places: new Map(), walks: [], tab: "places", filter: "all", onlyNew: pref.get("seruen_only_new", false),
     onMap: false, confirmClear: false, error: null};
@@ -39,8 +52,9 @@
   async function keep(r, patch) {
     sessionPlaces.set(r.poi_id, r);
     const cur = mine.places.get(r.poi_id) || {};
-    const row = {poi_id: r.poi_id, name: r.name || cur.name || "", category: r.category || cur.category || "",
-      address: r.address || cur.address || "", coords: r.coords || cur.coords || null, ...cur, ...patch,
+    // the label comes after the stored row: an old row saved without a name gets one now
+    const row = {...cur, ...patch, poi_id: r.poi_id, name: r.name || cur.name || "", category: r.category || cur.category || "",
+      address: r.address || cur.address || "", coords: r.coords || cur.coords || null,
       offline_allowed: r.offline_allowed === true && !r.poi_id.startsWith("2gis_")};
     try {
       const saved = await S.putPlace(row);
@@ -104,8 +118,10 @@
     const unknown = st === "unknown" && provider ? x.providerCostUnknown : x[COST[st]];
     return `<span class="cost cost-${esc(st)}" title="${esc(title)}">${icon("wallet")} ${esc(unknown)}${cost.note ? ` · ${esc(cost.note)}` : ""}</span>
       ${provider && attrs ? `<div class="provider-conditions">${attrs} · <a href="${esc(cost.provider_url)}" target="_blank" rel="noopener noreferrer">${esc(x.providerConditions)}</a>${more}</div>` : ""}
-      ${cost.source_url && /^https:\/\//.test(cost.source_url) && cost.note ? `<small><a href="${esc(cost.source_url)}" target="_blank" rel="noopener noreferrer">${esc(T().sources)}</a>${cost.checked_at ? " · "+esc(cost.checked_at) : ""}</small>` : ""}`;
+`;
   };
+  ext.cardPrimary = (r) => has("plan_export")
+    ? `<div class="card-start"><button type="button" class="btn primary" data-start-walk="${esc(r.poi_id)}">${icon("play")} ${esc(X().startWalk)}</button></div>` : "";
   ext.cardExtras = (r) => {
     const x = X(), p = mine.places.get(r.poi_id) || {}, b = r.budget_breakdown || {};
     const chip = (k, ic, on, label) => `<button type="button" class="chip-btn${on ? " on" : ""}" data-keep="${k}" aria-pressed="${on}">${icon(ic)} ${esc(label)}</button>`;
@@ -121,7 +137,7 @@
       <div class="row"><button type="button" class="btn small" data-note="save">${esc(x.noteSave)}</button>${p.note ? `<button type="button" class="btn small" data-note="del">${esc(x.noteDelete)}</button>` : ""}</div>
       <p class="src">${esc(x.deviceOnly)}</p></div>`;
     if (has("constraints")) {
-      html += `<details class="nope"><summary>${esc(x.nope)}</summary><div class="row">
+      html += `<details class="nope"><summary>${esc(x.nope)}</summary><div class="row chip-scroll">
         <button type="button" class="btn small" data-nope="far">${esc(x.nFar)}</button>
         <button type="button" class="btn small" data-nope="been">${esc(x.nBeen)}</button>
         <button type="button" class="btn small" data-nope="format">${esc(x.nFormat)}</button>
@@ -204,6 +220,8 @@
         keep(r, {note}).then(() => A.rerender());
       }));
       el.querySelectorAll("[data-nope]").forEach((b) => b.addEventListener("click", () => nope(b.dataset.nope, r, el, d)));
+      // open this place, then the usual «where to finish» question and the walk
+      el.querySelector("[data-start-walk]")?.addEventListener("click", () => { A.selectPlace(r.poi_id, false); buildAnswer(d, false, r.poi_id); });
     });
     $$("[data-undo]").forEach((b) => b.addEventListener("click", () => {
       const k = b.dataset.undo;
@@ -580,28 +598,26 @@
         <button type="button" class="btn small" id="walkClose">${icon("back")} ${esc(x.backToPlaces)}</button></div>
       <p class="route-finish"><strong>${esc(x.finishSummary)}:</strong> ${esc(p.finish_label || (p.server?.state?.finish_mode === "return" ? x.finishReturn : p.stops.at(-1)?.name || x.finishOther))}</p>
       ${ext.walkContext?.() || ""}
-      <p class="meta">${esc(x.locationForRest)}</p>
       ${p.query ? `<p class="meta">«${esc(p.query)}»</p>` : ""}
       ${saved ? `<p class="src">${esc(fmt(x.savedAt, {d: new Date(p.saved_at).toLocaleString(state.lang === "en" ? "en-GB" : "ru-RU")}))}</p><p class="msg warn">${esc(x.stale)}</p>` : ""}
       ${navigator.onLine === false ? `<p class="msg info">${esc(x.offline)}</p>` : saved ? `<div class="row"><span class="meta">${esc(x.backOnline)}</span><button type="button" class="btn small" id="walkRefresh">${icon("refresh")} ${esc(x.refresh)}</button></div>` : ""}
       ${p.offline && !p.offline.contains_full_route ? `<p class="msg warn">${esc(x.partialExport)}</p>` : ""}
-      ${p.total_min ? `<p class="walk-left">${esc(fmt(x.remaining, {m: p.total_min}))}</p>` : ""}
+      ${p.total_min || p.server?.legs?.length ? `<div class="walk-summary">${p.total_min ? `<p class="walk-left">${esc(fmt(x.remaining, {m: p.total_min}))}</p>` : ""}
+        ${p.server?.legs?.length ? `<p class="walk-end">${icon("clock")} ${esc(fmt(x.endEstimate, {
+          t:new Intl.DateTimeFormat(state.lang === "en" ? "en-GB" : "ru-RU", {hour:"2-digit",minute:"2-digit",timeZone:"Asia/Almaty"}).format(new Date(p.server.estimated_arrival_at)),
+        }))}${p.server.legs.at(-1).walk_min > 0 ? " · " + esc(fmt(x.toEnd, {m:p.server.legs.at(-1).walk_min})) : ""}</p>` : ""}
+        ${p.server?.routing_source === "distance_estimate" ? `<p class="meta">${esc(x.routeApprox)}</p>` : ""}</div>` : ""}
       ${p.server ? ext.previewAction?.("active") || "" : ""}
-      ${p.server ? `<details class="route-notes"><summary>${esc(T().sources)}</summary><p class="src">${esc(p.server.notes.join(" "))}</p></details>` : ""}
-      ${p.server?.routing_source === "distance_estimate" ? `<p class="meta">${esc(x.routeApprox)}</p>` : ""}
-      ${p.server?.legs?.length ? `<p class="meta">${p.server.legs.at(-1).walk_min > 0 ? esc(fmt(x.toEnd, {m:p.server.legs.at(-1).walk_min}))+" · " : ""}${esc(fmt(x.endEstimate, {
-        t:new Intl.DateTimeFormat(state.lang === "en" ? "en-GB" : "ru-RU", {hour:"2-digit",minute:"2-digit",timeZone:"Asia/Almaty"}).format(new Date(p.server.estimated_arrival_at)),
-      }))}</p>` : ""}
       <ol class="walk-stops">${p.stops.map((s, i) => `<li class="ws ws-${esc(s.status)}" id="walkStop${i}"><div><b>${esc(s.name)}</b> <span class="meta">· ${esc(statusL[s.status] || s.status)}</span></div>
         <div class="meta">${s.address ? esc(s.address) + " · " : ""}${s.walk_min != null ? `${icon("walk")} ${esc(s.walk_min)} ${esc(T().minutes)} · ` : ""}${s.stay_min ? `${esc(s.stay_min)} ${esc(T().minutes)} ${esc(x.atStop)}` : ""}${!s.open_status && s.hours_text ? ` · ${esc(s.hours_text)}` : ""}</div>
         ${(mine.places.get(s.poi_id) || {}).note ? `<div class="meta">${icon("note")} ${esc(mine.places.get(s.poi_id).note)}</div>` : ""}
         ${s.open_status ? A.statusPill(s.open_status) : ""}
         ${ext.cardBadges(s)}${ext.walkStopExtras?.(s) || ""}
-        ${s.status === "next" ? `<div class="row"><button type="button" class="btn small" data-ws="done" data-i="${i}">${icon("check")} ${esc(x.done)}</button>
-          <button type="button" class="btn small" data-ws="skip" data-i="${i}">${esc(x.skip)}</button></div>` : ""}</li>`).join("")}</ol>
-      ${can && next.length ? `<div class="row changes"><button type="button" class="btn small" data-ch="less_time">${esc(x.chLess)}</button>
+        ${s.status === "next" ? `<div class="ws-actions"><button type="button" class="btn primary" data-ws="done" data-i="${i}">${icon("check")} ${esc(x.done)}</button>
+          <button type="button" class="btn" data-ws="skip" data-i="${i}">${esc(x.skip)}</button></div>` : ""}</li>`).join("")}</ol>
+      ${can && next.length ? `<div class="walk-problems"><p class="walk-problems-title">${esc(x.somethingWrong)}</p><div class="row changes chip-scroll"><button type="button" class="btn small" data-ch="less_time">${esc(x.chLess)}</button>
         <button type="button" class="btn small" data-ch="cold">${esc(x.chCold)}</button><button type="button" class="btn small" data-ch="tired">${esc(x.chTired)}</button>
-        <button type="button" class="btn small" data-ch="closed">${esc(x.chClosed)}</button></div>` : ""}
+        <button type="button" class="btn small" data-ch="closed">${esc(x.chClosed)}</button></div></div>` : ""}
       ${walkBusy ? `<div class="loading"><div class="spinner"></div>${esc(x.replanning)}</div>
         <button type="button" class="btn small" id="walkCancel">${esc(x.cancelReplan)}</button>` : ""}
       <p class="src" id="walkMsg" aria-live="polite">${esc(walk.proposal && walkMsg===x.breakKeepsRoute ? "" : walkMsg)}</p>
@@ -611,13 +627,12 @@
         ${proposed.map(s => `<p><b>${esc(s.name)}</b> · ${esc(s.walk_min)} ${esc(T().walk)}</p>
           ${ext.cardBadges(walk.proposal.plan.server.stops.find(p => p.poi_id === s.poi_id) || {})}`).join("")}
         <p>${esc(fmt(x.remaining, {m: walk.proposal.plan.total_min}))}</p>
-        <details><summary>${esc(T().sources)}</summary><p class="meta">${esc(walk.proposal.plan.server.notes.join(" "))}</p></details>
         <div class="row"><button type="button" class="btn primary" id="applyWalkProposal">${esc(x.applyBreak)}</button>
         <button type="button" class="btn" id="discardWalkProposal">${esc(x.keepCurrentRoute)}</button></div></section>` : ""}
       ${restHTML()}
       ${walk.history.length ? `<button type="button" class="btn small" id="walkUndo">${esc(x.undoReplan)}</button>` : ""}
-      <div class="row">${p.build_request ? `<button type="button" class="btn" id="walkSave">${icon("save")} ${esc(x.saveWalk)}</button>` : ""}
-        <button type="button" class="btn" id="walkEnd">${esc(x.endWalk)}</button></div>`;
+      <div class="walk-footer">${p.build_request ? `<button type="button" class="btn" id="walkSave">${icon("save")} ${esc(x.saveWalk)}</button>` : ""}
+        <button type="button" class="btn walk-end-btn" id="walkEnd">${esc(x.endWalk)}</button></div>`;
     $("#walkClose").addEventListener("click", () => {
       walkVersion++; walkBusy = false; walk.collapsed = true; walk.searching=false; renderWalk();
     });
@@ -765,42 +780,66 @@
   }
 
   // ---------- F8: my places ----------
+  const CAT_ICONS = ["coffee", "food", "park", "kids", "culture", "sight", "viewpoint", "shopping", "sport", "night", "library", "work", "cowork", "unusual"];
+  // a 2GIS name carries its kind after a comma ("Coffee BOOM, сеть кофеен"): the name is the title, the kind goes below
+  // (in Russian only: other languages get the translated category, as 2GIS answers in Russian)
+  function placeLabel(p) {
+    const n = p.name || "", i = n.indexOf(", "), split = /^2gis_/.test(p.poi_id) && i > 0, cat = (T().cats || {})[p.category];
+    const kind = ((split && (state.lang === "ru" || !cat) ? n.slice(i + 2) : cat) || "").replace(/^./, (c) => c.toUpperCase());
+    return {title: split ? n.slice(0, i) : n || X().unknownPlace, known: !!n, sub: [kind, p.address].filter(Boolean).join(" · ")};
+  }
   function renderMine() {
     const box = $("#mine"); if (!box || box.hidden) return;
     const x = X(), all = [...mine.places.values()].map(placeView).sort((a, b) => (b.updated_at || 0) - (a.updated_at || 0));
     const pick = {all: () => true, want: (p) => p.want, visited: (p) => p.visited_at, favorite: (p) => p.favorite}[mine.filter] || (() => true);
     const list = all.filter(pick);
-    const tab = (k, l, n) => `<button type="button" role="tab" class="tab${mine.tab === k ? " on" : ""}" data-tab="${k}" aria-selected="${mine.tab === k}">${esc(l)} (${n})</button>`;
+    const locale = {en: "en-GB", kk: "kk-KZ"}[state.lang] || "ru-RU";
+    const tab = (k, l, n) => `<button type="button" role="tab" class="tab${mine.tab === k ? " on" : ""}" data-tab="${k}" aria-selected="${mine.tab === k}">${esc(l)} <span class="mine-count">${n}</span></button>`;
     const fchip = (k, l) => `<button type="button" class="chip-btn${mine.filter === k ? " on" : ""}" data-filter="${k}" aria-pressed="${mine.filter === k}">${esc(l)}</button>`;
+    const sw = (id, on, ic, l) => `<label class="mine-switch">${icon(ic)}<span>${esc(l)}</span><input type="checkbox" role="switch" id="${id}"${on ? " checked" : ""}></label>`;
+    const act = (cls, attr, label, of, ic) => `<button type="button" class="mine-act${cls}" ${attr} aria-label="${esc(label)}" aria-describedby="${of}" title="${esc(label)}">${icon(ic)}</button>`;
+    const empty = (ic, text) => `<div class="mine-empty"><span>${icon(ic)}</span><p>${esc(text)}</p></div>`;
+    const place = (p, i) => {
+      const l = placeLabel(p), id = esc(p.poi_id), of = `mineName${i}`, gis = /^2gis_\d+$/.test(p.poi_id);
+      const marks = [p.want && ["flag", x.want, "want"], p.visited_at && ["check", x.visited, "visited"], p.favorite && ["heart", x.favorite, "fav"]].filter(Boolean);
+      const inner = `<span class="mine-ico" data-cat="${CAT_ICONS.includes(p.category) ? esc(p.category) : "pin"}" aria-hidden="true"></span>
+        <span class="mine-body"><span class="mine-name"><b id="${of}"${l.known ? "" : ' class="unknown"'}>${esc(l.title)}</b>${marks.length ? `<span class="mine-marks" role="img" aria-label="${esc(marks.map((m) => m[1]).join(", "))}">${marks.map(([ic, t, k]) => `<span class="mk mk-${k}" title="${esc(t)}">${icon(ic)}</span>`).join("")}</span>` : ""}</span>
+        ${l.sub ? `<span class="mine-sub">${esc(l.sub)}</span>` : !l.known && gis ? `<span class="mine-sub hint">${esc(x.unknownHint)}</span>` : ""}
+        ${p.note ? `<span class="mine-note">${icon("note")}<span>${esc(p.note)}</span></span>` : ""}</span>`;
+      // with coordinates the whole row shows the place on the map, as in any map app's saved list
+      return `<li class="mine-item">${p.coords ? `<button type="button" class="mine-main" data-mine-map="${id}" title="${esc(T().onMap)}">${inner}<span class="sr-only">, ${esc(T().onMap)}</span></button>` : `<div class="mine-main">${inner}</div>`}
+        <div class="mine-acts">${gis ? `<a class="mine-act" href="https://2gis.kz/astana/firm/${esc(p.poi_id.slice(5))}" target="_blank" rel="noopener noreferrer" aria-label="${esc((T().gis || {}).open || "2GIS")}" aria-describedby="${of}" title="${esc((T().gis || {}).open || "2GIS")}">${icon("ext")}</a>` : ""}
+        ${act(" del", `data-mine-del="${id}"`, x.remove, of, "trash")}</div></li>`;
+    };
+    const walkItem = (w, i) => {
+      const names = (w.stops || []).map((s) => s.name).filter(Boolean), n = (w.stops || []).length, of = `mineWalk${i}`;
+      const when = w.saved_at ? new Intl.DateTimeFormat(locale, {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).format(new Date(w.saved_at)) : "";
+      const stops = fmt((x.stopsN || {})[new Intl.PluralRules(locale).select(n)] || (x.stopsN || {}).other || `{n} ${x.stops.toLowerCase()}`, {n});
+      return `<li class="mine-item"><div class="mine-main"><span class="mine-ico" data-cat="route" aria-hidden="true"></span>
+        <span class="mine-body"><span class="mine-name"><b id="${of}">${esc(w.query || x.activeWalk)}</b></span>
+        ${names.length ? `<span class="mine-sub">${esc(names.join(" → "))}</span>` : ""}
+        <span class="mine-sub">${esc([when && fmt(x.savedAt, {d: when}), stops].filter(Boolean).join(" · "))}</span></span></div>
+        <div class="mine-acts">${act(" go", `data-walk-open="${esc(w.id)}"`, x.open, of, "play")}${act(" del", `data-walk-del="${esc(w.id)}"`, x.remove, of, "trash")}</div></li>`;
+    };
     box.innerHTML = `<div class="walk-head"><h2 id="mineTitle">${icon("heart")} ${esc(x.keepTitle)}</h2>
         <button type="button" class="btn small" id="mineClose">${icon("back")} ${esc(x.backToPlaces)}</button></div>
-      <p class="src">${esc(x.deviceOnly)}</p>${mine.error ? `<p class="msg warn">${esc(mine.error)}</p>` : ""}
+      ${mine.error ? `<p class="msg warn">${esc(mine.error)}</p>` : ""}
       <div class="tabs" role="tablist">${tab("places", x.tabPlaces, all.length)}${tab("walks", x.tabWalks, mine.walks.length)}</div>
-      ${mine.tab === "places" ? `<div class="row">${fchip("all", x.fAll)}${fchip("want", x.fWant)}${fchip("visited", x.fVisited)}${fchip("favorite", x.fFav)}</div>
-        <label class="check"><input type="checkbox" id="onlyNew" ${mine.onlyNew ? "checked" : ""}> ${esc(x.onlyNew)}</label>
-        <label class="check"><input type="checkbox" id="mineOnMap" ${mine.onMap ? "checked" : ""}> ${esc(x.showOnMap)}</label>
-        ${list.length ? `<ul class="mine-list">${list.map((p) => `<li><div><b>${esc(p.name || `${x.providerBookmark} (${p.poi_id})`)}</b>
-            <span class="marks">${p.want ? icon("flag") : ""}${p.visited_at ? icon("visit") : ""}${p.favorite ? icon("heart") : ""}</span></div>
-            ${p.note ? `<div class="meta">${icon("note")} ${esc(p.note)}</div>` : ""}
-            ${/^2gis_\d+$/.test(p.poi_id) ? `<a class="btn small" target="_blank" rel="noopener" href="https://2gis.kz/astana/firm/${esc(p.poi_id.slice(5))}">2ГИС</a>` : ""}
-            <div class="row">${p.coords ? `<button type="button" class="btn small" data-mine-map="${esc(p.poi_id)}">${icon("pin")} ${esc(T().onMap)}</button>` : ""}
-            <button type="button" class="btn small" data-mine-del="${esc(p.poi_id)}">${icon("trash")} ${esc(x.remove)}</button></div></li>`).join("")}</ul>`
-          : `<p class="meta">${esc(x.emptyPlaces)}</p>`}`
-      : mine.walks.length ? `<ul class="mine-list">${mine.walks.map((w) => `<li><div><b>${esc(w.query || x.activeWalk)}</b></div>
-            <div class="meta">${esc(fmt(x.savedAt, {d: new Date(w.saved_at).toLocaleString(state.lang === "en" ? "en-GB" : "ru-RU")}))} · ${esc(w.stops.length)} ${esc(x.stops.toLowerCase())}</div>
-            <div class="row"><button type="button" class="btn small" data-walk-open="${esc(w.id)}">${esc(x.open)}</button>
-            <button type="button" class="btn small" data-walk-del="${esc(w.id)}">${icon("trash")} ${esc(x.remove)}</button></div></li>`).join("")}</ul>`
-        : `<p class="meta">${esc(x.emptyWalks)}</p>`}
-      <div class="row clear-row">${mine.confirmClear ? `<span class="meta">${esc(x.clearConfirm)}</span>
+      ${mine.tab === "places" ? `<div class="row mine-filters">${fchip("all", x.fAll)}${fchip("want", x.fWant)}${fchip("visited", x.fVisited)}${fchip("favorite", x.fFav)}</div>
+        <div class="mine-switches">${sw("mineOnMap", mine.onMap, "map", x.showOnMap)}${sw("onlyNew", mine.onlyNew, "search", x.onlyNew)}</div>
+        ${list.length ? `<ul class="mine-list">${list.map(place).join("")}</ul>` : empty("heart", x.emptyPlaces)}`
+      : mine.walks.length ? `<ul class="mine-list">${mine.walks.map(walkItem).join("")}</ul>` : empty("route", x.emptyWalks)}
+      <div class="mine-foot">${!all.length && !mine.walks.length ? "" : `<div class="row clear-row">${mine.confirmClear ? `<span class="meta">${esc(x.clearConfirm)}</span>
           <button type="button" class="btn small danger" id="clearYes">${esc(x.yes)}</button><button type="button" class="btn small" id="clearNo">${esc(x.no)}</button>`
-        : `<button type="button" class="btn small" id="clearAll">${icon("trash")} ${esc(x.clearAll)}</button>`}</div>`;
+        : `<button type="button" class="mine-clear" id="clearAll">${icon("trash")} ${esc(x.clearAll)}</button>`}</div>`}
+        <p class="src mine-device">${esc(x.deviceOnly)}</p></div>`;
     $("#mineClose").addEventListener("click", toggleMine);
     box.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => { mine.tab = b.dataset.tab; renderMine(); }));
     box.querySelectorAll("[data-filter]").forEach((b) => b.addEventListener("click", () => { mine.filter = b.dataset.filter; renderMine(); }));
     const on = $("#onlyNew"); if (on) on.addEventListener("change", () => { mine.onlyNew = on.checked; pref.set("seruen_only_new", mine.onlyNew); if (state.last) A.ask(); });
     const om = $("#mineOnMap"); if (om) om.addEventListener("change", () => { mine.onMap = om.checked; drawPersonal(); });
     box.querySelectorAll("[data-mine-map]").forEach((b) => b.addEventListener("click", () => {
-      const p = placeView(mine.places.get(b.dataset.mineMap)); if (p && p.coords) { mine.onMap = true; drawPersonal(); A.showAt([p.coords.lat, p.coords.lon], 16); }
+      const p = placeView(mine.places.get(b.dataset.mineMap)); if (p && p.coords) { mine.onMap = true; if (om) om.checked = true; drawPersonal(); A.showAt([p.coords.lat, p.coords.lon], 16); }
     }));
     box.querySelectorAll("[data-mine-del]").forEach((b) => b.addEventListener("click", async () => {
       try { await S.deletePlace(b.dataset.mineDel); } catch { /* memory copy below */ }
@@ -838,7 +877,8 @@
       if (!p.coords) return;
       const ic = p.favorite ? "heart" : p.want ? "flag" : "visit";
       const di = L.divIcon({className: "", iconSize: [24, 24], iconAnchor: [12, 12], html: `<div class="ppin">${icon(ic)}</div>`});
-      L.marker([p.coords.lat, p.coords.lon], {icon: di, title: p.name}).addTo(personal).bindPopup(`<b>${esc(p.name)}</b>${p.note ? `<br>${esc(p.note)}` : ""}`);
+      const name = placeLabel(p).title;
+      L.marker([p.coords.lat, p.coords.lon], {icon: di, title: name}).addTo(personal).bindPopup(`<b>${esc(name)}</b>${p.note ? `<br>${esc(p.note)}` : ""}`);
     });
   }
 

@@ -145,14 +145,15 @@ test('card face shows the action, visit duration and truthful AI/template source
   const cards=[...b.w.document.querySelectorAll('.rec')];
   for(const c of cards){
     assert.equal(c.querySelectorAll('.badge.ai,.badge.tpl').length,1);
-    assert.match(c.querySelector('.why').textContent,/Почему: w/);
-    assert.match([...c.children].filter(x=>!x.matches('details')).map(x=>x.textContent).join(' '),/Что делать: d.*На месте: ~30/s);
-    assert.doesNotMatch(c.querySelector('details.more').textContent,/Что делать: d/);
+    // why and what to do are one paragraph; no debug «More» block
+    assert.equal(c.querySelector('.why').textContent.trim(),'w. d.');
+    assert.match(c.querySelector('.rec-stay').textContent,/На месте: ~30/);
+    assert.equal(c.querySelector('details.more'),null);
   }
-  assert.match(cards[0].querySelector('.more').textContent,/текст написал ИИ/);
+  assert.match(cards[0].querySelector('.rec-stay').title,/текст написал ИИ/);
   assert.equal(cards[0].querySelectorAll('.badge.ai').length,1);
   assert.equal(cards[1].querySelectorAll('.badge.ai').length,0);
-  assert.match(cards[1].querySelector('.more').textContent,/место добавлено кодом/);
+  assert.match(cards[1].querySelector('.rec-stay').title,/место добавлено кодом/);
 });
 
 test('photos: strip, photo reason and facts per card; no photos says so; text stays out of URLs',async t=>{
@@ -178,7 +179,9 @@ test('answers search 2GIS first and fall back to the checked database when 2GIS 
   b.requests[0].resolve(json({...answer('quota'),source:'2gis',source_error:'twogis_quota_exceeded',recommendations:[]}));await tick();
   assert.equal(b.requests[1].body.source,'local');
   b.requests[1].resolve(json({...answer('local'),recommendations:[rec('p1','Drinkit')]}));await tick();
-  assert.match(b.w.document.querySelector('#results').textContent,/2ГИС сейчас не ответил.*Drinkit/s);
+  // the place is shown; the fallback explanation is not repeated above found places
+  assert.match(b.w.document.querySelector('#results').textContent,/Drinkit/);
+  assert.doesNotMatch(b.w.document.querySelector('#results').textContent,/2ГИС сейчас не ответил/);
   b.click('#goBtn');await tick();
   assert.equal(b.requests[2].body.source,undefined);
 });
@@ -187,7 +190,8 @@ test('when 2GIS has nothing that fits, the checked database answers instead',asy
   b.requests[0].resolve(json({...answer('empty 2gis'),source:'2gis',recommendations:[]}));await tick();
   assert.equal(b.requests[1].body.source,'local');
   b.requests[1].resolve(json({...answer('local'),recommendations:[rec('p1','NU Park')]}));await tick();
-  assert.match(b.w.document.querySelector('#results').textContent,/В 2ГИС подходящих мест рядом не нашлось.*NU Park/s);
+  assert.match(b.w.document.querySelector('#results').textContent,/NU Park/);
+  assert.doesNotMatch(b.w.document.querySelector('#results').textContent,/В 2ГИС подходящих мест рядом не нашлось/);
 });
 test('a 2GIS place asks photos with its own name and position, never the person\'s',async t=>{
   const b=await boot(t);b.click('#goBtn');await tick();
@@ -219,14 +223,13 @@ test('provider quota error preserves the accumulated catalog for retry',async t=
   assert.equal(b.w.document.querySelector('#nextPlacesBtn').disabled,false);
 });
 
-test('the time ruler puts every pick at its walking minutes and opens its card',async t=>{
+test('the walking list starts at «Я здесь», keeps card order and opens its card',async t=>{
   const b=await boot(t);b.click('#goBtn');await tick();
   b.requests[0].resolve(json({...answer('ruler'),recommendations:[{...rec('p1','Near'),walk_min:5},{...rec('p2','Far'),walk_min:21}]}));await tick();
-  const stops=[...b.w.document.querySelectorAll('.ruler-stop')];
+  const stops=[...b.w.document.querySelectorAll('.it-row')];
   assert.equal(stops.length,2);
-  assert.deepEqual(stops.map(s=>s.textContent.trim()),['15 мин','221 мин']);
-  assert.ok(parseFloat(stops[0].style.getPropertyValue('--x'))<parseFloat(stops[1].style.getPropertyValue('--x')));
-  assert.match(b.w.document.querySelector('.ruler-scale').textContent,/Я здесь.*25 мин/s);
+  assert.deepEqual(stops.map(s=>s.querySelector('.it-node').textContent+' '+s.querySelector('.it-name b').textContent+' '+s.querySelector('.it-time').textContent.trim()),['1 Near 5 мин','2 Far 21 мин']);
+  assert.match(b.w.document.querySelector('.it-start').textContent,/Я здесь/);
   stops[1].click();
   assert.ok(b.w.document.querySelectorAll('.rec')[1].classList.contains('active'));
   assert.equal(b.w.document.querySelectorAll('.rec .ic').length>0,true);
@@ -392,7 +395,7 @@ test('plans changed: the newest change wins, a failure keeps the plan, done stop
   b.replans[1].resolve(json(FX.replan_ok)); await settle();
   b.replans[0].resolve(json({...FX.replan_ok, notes: ['OLD']})); await settle();
   const panel = b.w.document.querySelector('#walk').textContent;
-  assert.match(panel, /Стало холоднее/); assert.doesNotMatch(panel, /OLD/);
+  assert.match(panel, /Можно остановиться по пути/); assert.doesNotMatch(panel, /OLD/);
   assert.equal(b.w.SeruenFeatures.walk.plan.stops.find(s => s.poi_id === 'team_coffee').status, 'done');
   b.click('#walk [data-ch="cold"]'); await tick();
   b.replans[2].resolve({ok: false, status: 503, json: async () => FX.provider_failure.body}); await settle();
@@ -422,8 +425,9 @@ test('AI selection and factual explanation have separate labels, with a privacy 
   const chosen={...rec('p1','Coffee BOOM'),selection_source:'ai'};
   b.requests[0].resolve(json({...answer('grounded'),mode:'ai',recommendations:[chosen]}));await tick();
   const card=b.w.document.querySelector('.rec').textContent;
-  assert.match(card,/место выбрал ИИ/);
-  assert.match(card,/объяснение составлено из данных и расчёта/);
+  const origin=b.w.document.querySelector('.rec .rec-stay').title;
+  assert.match(origin,/место выбрал ИИ/);
+  assert.match(origin,/объяснение составлено из данных и расчёта/);
   assert.match(b.w.document.querySelector('#privacyHint').textContent,/Gemini/);
 });
 

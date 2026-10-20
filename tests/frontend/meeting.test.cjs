@@ -56,12 +56,31 @@ test('clearing B does not submit the previous participant; changing language pre
   assert.match(b.w.document.querySelector('#experienceMessage').textContent,/second point/);
 });
 
-test('manual B replaces the preset label and retains the actual rounded point',async t=>{
-  const b=await boot(t,base);chooseSecond(b);b.click('#meetPick');
+test('manual B replaces the preset label, sits exactly on the click, shows no coordinates and is sent rounded',async t=>{
+  let body;
+  const b=await boot(t,{...base,experiences:(url,p)=>{body=p;return json({items:[]});}});chooseSecond(b);b.click('#meetPick');
   b.w.SeruenExt.onMapClick({latlng:{lat:51.140123, lng:71.424456}});
-  assert.equal(b.w.document.querySelector('#meetPreset').value,'');
-  assert.deepEqual(clone(participant(b,'B').coords),[51.140,71.424]);
-  assert.match(b.w.document.querySelector('#meetPoint').textContent,/51.14.*71.424/);
+  const select=b.w.document.querySelector('#meetPreset');
+  assert.equal(select.value,'');
+  assert.equal(select.selectedOptions[0].textContent,'Точка на карте');
+  assert.deepEqual(clone(participant(b,'B').coords),[51.140123,71.424456]);
+  assert.doesNotMatch(b.w.document.querySelector('#meetingFields').textContent,/\d+\.\d{2,}/);
+  b.click('[data-lang="kk"]');assert.equal(b.w.document.querySelector('#meetPreset').selectedOptions[0].textContent,'Картадағы нүкте');
+  b.click('#goBtn');await settle();
+  assert.deepEqual(body.second_location,{lat:51.14,lon:71.424,precision_m:100,source:'map'});
+});
+
+test('walk limit pills drive the hidden select and the request',async t=>{
+  let body;
+  const b=await boot(t,{...base,experiences:(url,p)=>{body=p;return json({items:[]});}});chooseSecond(b);
+  b.click('[data-meet-limit="45"]');
+  assert.equal(b.w.document.querySelector('#meetLimit').value,'45');
+  assert.deepEqual([...b.w.document.querySelectorAll('[data-meet-limit]')].map(x=>x.getAttribute('aria-pressed')),['false','false','true','false']);
+  b.click('#goBtn');await settle();assert.equal(body.max_walk_min,45);
+  change(b,'#meetLimit','15');assert.equal(b.w.document.querySelector('[data-meet-limit="15"]').classList.contains('on'),true);
+  b.click('#meetInfo');assert.equal(b.w.document.querySelector('#meetPrivacy').hidden,false);
+  assert.equal(b.w.document.querySelector('#meetPrivacy').textContent,b.w.SeruenExperienceText.ru.privacy);
+  b.click('#meetStart');assert.equal(b.w.document.querySelector('#meetPrivacy').hidden,true);
 });
 
 test('meeting ends at the venue without overwriting a saved finish for ordinary walks',async t=>{
@@ -76,6 +95,8 @@ test('meeting ends at the venue without overwriting a saved finish for ordinary 
   b.click('#previewStart');
   assert.equal(b.w.SeruenFeatures.walk.plan.server.state.finish_poi_id,item.poi_id);
   assert.match(b.w.document.querySelector('.meeting-walk-context').textContent,/не его текущее положение/);
+  assert.match(b.w.document.querySelector('.meeting-walk-context').textContent,/Старт друга: Хан Шатыр/);
+  assert.doesNotMatch(b.w.document.querySelector('.meeting-walk-context').textContent,/\d+\.\d{2,}/);
   assert.equal(b.w.SeruenExt.requestExtras().end.lat,51.15);
   assert.ok(!visible(b).some(p=>p.options?.icon?.html.includes('finish-pin')));
   b.click('#walkEnd');
