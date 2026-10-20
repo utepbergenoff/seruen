@@ -59,6 +59,17 @@
         "evidence": {
           "$ref": "#/$defs/Evidence"
         },
+        "coordinate_evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Evidence"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "offline_allowed": {
           "default": false,
           "title": "Offline Allowed",

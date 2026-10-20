@@ -149,6 +149,7 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
                         "en": "No suitable options were obtained from 2GIS. Showing local database places with the same constraints.",
                     }[local.considered.lang]
                     local.notes.insert(0, note)
+                    local.source_error = response.source_error
                     response, error = local, local_error
         else:
             response, error = await request.app.state.service.recommend(payload)
@@ -177,11 +178,10 @@ def create_app(settings=None, provider=None, places_transport=None, twogis_trans
             # A team place with a verified 2GIS identity (poi_identity_links) is asked by that 2GIS id,
             # not matched by name: its own name ("Coffee BOOM (EXPO, ...)") rarely equals the 2GIS name.
             features = request.app.state.service.features
-            canonical = features.canonical(poi_id)
-            alias = next((a for a, c in features.identities.items()
-                          if c == canonical and a != poi_id and a.startswith("2gis_")), None)
-            if alias:
-                return await request.app.state.discovery.details(alias, lang)
+            ident = features.twogis_id(poi_id)
+            if ident:
+                details = await request.app.state.discovery.details("2gis_" + ident, lang)
+                return details.model_copy(update={"poi_id": poi_id})
             return await request.app.state.twogis.details(poi_id, lang)
         except PlacesError as exc:
             request.state.error = exc.code

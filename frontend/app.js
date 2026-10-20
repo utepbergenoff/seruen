@@ -568,7 +568,7 @@
         ${p.eligible === false ? `<p class="msg warn">${esc(t.catalog.filtered)} ${esc(codeLabel(p.excluded_because))}</p>` : ""}
         <div class="actions"><a class="btn" href="${esc(nav.gisPlace)}" target="_blank" rel="noopener">${esc(t.openIn2gis)}</a>
         ${FEAT.mapLinks ? `<a class="btn" href="${esc(nav.gis)}" target="_blank" rel="noopener">${esc(t.route2gis)}</a>` : ""}
-        ${gisOn() ? `<button type="button" class="btn" id="selectedGis" aria-expanded="false" aria-controls="selectedGisBox">${esc(t.gisBtn)}</button>` : ""}</div>
+        ${gisOn() ? `<button type="button" class="btn" id="selectedGis" data-gis-url="${esc(nav.gisPlace)}" aria-expanded="false" aria-controls="selectedGisBox">${esc(t.gisBtn)}</button>` : gisReviewLink(nav.gisPlace)}</div>
         <div class="gis-box" id="selectedGisBox" hidden></div></article>`;
       $("#selectedGis")?.addEventListener("click", e => toggleGis(detail.firstElementChild, id, e.currentTarget));
     }
@@ -578,6 +578,7 @@
   }
   function render(d) {
     if (ext.filterAnswer) d = ext.filterAnswer(d);
+    if (GIS_REFUSED.test(d.source_error || "")) state.gisRefused = true;
     const t = T();
     layer.clearLayers(); suggestionRoutes.clearLayers();
     if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
@@ -625,7 +626,7 @@
           ${FEAT.mapLinks ? `<a class="btn" href="${esc(L2.gis)}" target="_blank" rel="noopener">${icon("map")} ${esc(t.route2gis)}</a>
           <a class="btn" href="${esc(L2.google)}" target="_blank" rel="noopener">${icon("nav")} ${esc(t.routeGoogle)}</a>` : ""}
           <button type="button" class="btn" data-act="map">${icon("pin")} ${esc(t.onMap)}</button>
-          ${gisOn() ? `<button type="button" class="btn" data-act="gis" aria-expanded="false" aria-controls="gis-${i}">${icon("star")} ${esc(t.gisBtn)}</button>` : ""}
+          ${gisOn() ? `<button type="button" class="btn" data-act="gis" data-gis-url="${esc(L2.gisPlace)}" aria-expanded="false" aria-controls="gis-${i}">${icon("star")} ${esc(t.gisBtn)}</button>` : gisReviewLink(L2.gisPlace)}
         </div>
         ${gisOn() ? `<div class="gis-box" id="gis-${i}" aria-live="polite" hidden></div>` : ""}
         ${ext.cardExtras ? ext.cardExtras(r, i, d) : ""}
@@ -704,14 +705,22 @@
   }
 
   // ---------- 2GIS rating and hours (extra): asked only when the button is pressed, never for every card ----------
-  // The server's status forgets a refusal when it restarts, so the first refused answer also counts, for 6 hours on this device.
+  // Refusal belongs to this session. A restored server must not be hidden by a six-hour device flag.
   const GIS_REFUSED = /access_denied|forbidden|invalid_key|quota/i;
-  try { state.gisRefused = Date.now() - (+localStorage.getItem("seruen_gis_refused") || 0) < 6 * 3600e3; } catch { state.gisRefused = false; }
+  state.gisRefused = false;
+  try { localStorage.removeItem("seruen_gis_refused"); } catch { /* optional migration */ }
   const gisOn = () => FEAT.twogis && !state.gisRefused;
+  function gisReviewLink(url) {
+    if (!FEAT.twogis || !/^https:\/\/2gis\.kz\/astana\//.test(url || "")) return "";
+    const exact = /^https:\/\/2gis\.kz\/astana\/(firm|geo)\/\d+$/.test(url);
+    return `<a class="btn" data-gis-reviews href="${esc(url + (exact ? "/tab/reviews" : ""))}" target="_blank" rel="noopener noreferrer" title="${esc(T().gisExternalHint)}">${icon("star")} ${esc(exact ? T().gisReviews : T().gisFindReviews)} ${icon("ext")}</a>`;
+  }
   function gisRefusedNow(keep = null) {
     state.gisRefused = true;
-    try { localStorage.setItem("seruen_gis_refused", String(Date.now())); } catch { /* private mode: this page only */ }
-    $$('[data-act="gis"], #selectedGis').forEach((b) => { if (b !== keep) { b.closest(".rec, article")?.querySelector(".gis-box")?.setAttribute("hidden", ""); b.remove(); } });
+    $$('[data-act="gis"], #selectedGis').forEach((b) => { if (b !== keep) {
+      b.closest(".rec, article")?.querySelector(".gis-box")?.setAttribute("hidden", "");
+      b.insertAdjacentHTML("afterend", gisReviewLink(b.dataset.gisUrl)); b.remove();
+    } });
   }
   const GIS_RETRY = ["twogis_timeout", "twogis_unavailable", "twogis_local_limit", "network"];
   const gisKey = (id) => `${id}|${state.lang === "kk" ? "kk" : "ru"}`;  // English gets the Russian 2GIS answer anyway
@@ -739,10 +748,10 @@
     });
     return groups.map((x) => `${t.weekday[x.from]}${x.to > x.from ? "–" + t.weekday[x.to] : ""} ${x.v}`).join("; ");
   }
-  function gisHtml(g) {
+  function gisHtml(g, url) {
     const t = T(), G = t.gis;
     if (g.error) {
-      return `<p class="msg warn">${esc(G.err[g.error] || G.err.twogis_unavailable)}${GIS_RETRY.includes(g.error) ? ` <button type="button" class="btn small" data-act="gis-retry">${esc(t.retry)}</button>` : ""}</p>`;
+      return `<p class="msg warn">${esc(G.err[g.error] || G.err.twogis_unavailable)}${GIS_RETRY.includes(g.error) ? ` <button type="button" class="btn small" data-act="gis-retry">${esc(t.retry)}</button>` : ""}</p>${gisReviewLink(url)}`;
     }
     const today = new Intl.DateTimeFormat("en-CA", {timeZone: "Asia/Almaty"}).format(new Date());
     const special = (g.special_hours || []).filter((x) => x.date >= today).slice(0, 3)
@@ -753,7 +762,7 @@
     const when = new Intl.DateTimeFormat({ru: "ru-RU", kk: "kk-KZ", en: "en-GB"}[state.lang] || "ru-RU",
       {day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Almaty"}).format(new Date(g.checked_at));
     const match = g.match_method === "catalog_id" ? t.catalog.match : g.match_method === "stored_id" ? G.matchManual : fmt(G.matchAuto, {m: g.match_distance_m});
-    const url = /^https:\/\/2gis\.(kz|ru)\//.test(g.provider_url || "") ? g.provider_url : "";
+    url = /^https:\/\/2gis\.(kz|ru)\//.test(g.provider_url || "") ? g.provider_url : "";
     return `<div class="gis-head"><span class="badge gis">${esc(G.data)}</span> <b>${esc(g.provider_name)}</b></div>
       ${g.address ? `<div class="meta">${icon("pin")} ${esc(g.address)}</div>` : ""}
       <div>${rating}</div>
@@ -775,11 +784,11 @@
       box.innerHTML = `<div class="loading" role="status"><div class="spinner"></div>${esc(T().gis.loading)}</div>`;
       const g = await getTwoGis(id);
       btn.disabled = false;
-      if (!GIS_RETRY.includes(g.error)) state.gis[key] = g;  // final answers are kept, so 2GIS is asked once per place
-      if (GIS_REFUSED.test(g.error || "")) gisRefusedNow(btn);  // this box explains it once; the other buttons go away
+      if (!g.error) state.gis[key] = g;  // failures are never kept as venue facts
+      if (GIS_REFUSED.test(g.error || "")) gisRefusedNow(btn);
       if (!card.isConnected) return;
-      box.innerHTML = gisHtml(g);
-    } else box.innerHTML = gisHtml(state.gis[key]);
+      box.innerHTML = gisHtml(g, btn.dataset.gisUrl);
+    } else box.innerHTML = gisHtml(state.gis[key], btn.dataset.gisUrl);
     const rb = box.querySelector('[data-act="gis-retry"]');
     if (rb) rb.addEventListener("click", () => loadGis(card, id, btn));
   }
@@ -913,8 +922,9 @@
       try {
         const h = await getJSON(API + "/health");
         state.features = h.feature_contract_version === 2 && h.features && typeof h.features === "object" ? h.features : {};
-        // 2GIS switched off or refusing the team key: its rating/hours button could only show an error, so it is hidden
-        if (h.twogis && (h.twogis.enabled === false || GIS_REFUSED.test(h.twogis.last_status || "")) && !state.gisRefused) gisRefusedNow();
+        // Keep a way to read reviews externally when API access is unavailable.
+        if (h.twogis && (h.twogis.enabled === false || GIS_REFUSED.test(h.twogis.last_status || ""))) gisRefusedNow();
+        else if (h.twogis?.last_status === "ok" || h.twogis?.last_status === "not_checked") state.gisRefused = false;
         if (ext.onHealth) ext.onHealth(h);
         const avail = h.mode_available || [];
         state.apiMode = h.ai === "gemini" || avail.includes("ai") ? "ai" : h.ai === "no_ai" || avail.includes("no_ai") ? "no_ai" : (h.mode || null);

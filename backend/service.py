@@ -188,10 +188,12 @@ class RecommendationService:
             else:
                 source = "template"
             google = maps_url(p)
+            twogis_id = self.features.twogis_id(p.poi_id)
             links = (
                 {}
                 if data_kind == "sample"
-                else {"2gis": f"https://2gis.kz/astana/geo/{p.lon},{p.lat}", "google": google}
+                else {"2gis": f"https://2gis.kz/astana/firm/{twogis_id}" if twogis_id else
+                      f"https://2gis.kz/astana/geo/{p.lon},{p.lat}", "google": google}
             )
             cards.append(
                 Recommendation(

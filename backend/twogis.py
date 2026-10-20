@@ -71,6 +71,17 @@ def intervals(value):
     return [HoursInterval(start=x["from"], end=x["to"]) for x in value.get("working_hours", [])]
 
 
+def review_values(reviews):
+    """Keep rating/count from the same scope, including an explicitly null branch rating."""
+    rating, count = reviews.get("rating"), reviews.get("review_count")
+    scope = "organization" if reviews.get("is_org_reviews") is True else "branch"
+    if rating is None or (type(rating) in (int, float) and rating == 0 and reviews.get("general_rating") is not None):
+        rating, count, scope = reviews.get("general_rating"), reviews.get("general_review_count"), "unknown"
+    if type(rating) in (int, float) and rating == 0:
+        rating = None
+    return rating, count, scope
+
+
 class TwoGis:
     def __init__(self, settings, pois, transport=None):
         self.settings, self.transport = settings, transport
@@ -78,6 +89,7 @@ class TwoGis:
         self.last_status = "not_checked" if settings.twogis_api_key else "not_configured"
         self.lock, self.calls = asyncio.Lock(), deque()
         self.day, self.day_calls = None, 0
+        self.blocked_until, self.blocked_code = 0.0, None
 
     async def reserve(self):
         # Secondary process-local guard. The demo key's total quota is enforced by 2GIS.
@@ -107,8 +119,10 @@ class TwoGis:
 
     async def request_items(self, endpoint, params, max_bytes=200_000):
         params = {**params, "key": self.settings.twogis_api_key}
-        await self.reserve()
         try:
+            if self.blocked_code and time.monotonic() < self.blocked_until:
+                raise PlacesError(self.blocked_code, 429 if self.blocked_code == "twogis_quota_exceeded" else 503)
+            await self.reserve()
             async with httpx.AsyncClient(timeout=self.settings.twogis_timeout_s,
                                          transport=self.transport, follow_redirects=False) as client:
                 response = await client.get(endpoint, params=params)
@@ -127,10 +141,19 @@ class TwoGis:
             if not isinstance(result, dict) or not isinstance(result.get("items", []), list):
                 raise ValueError("invalid result")
             self.last_status = "ok"
+            self.blocked_until, self.blocked_code = 0.0, None
             return result
+        except PlacesError as exc:
+            self.last_status = exc.code
+            if exc.code in ("twogis_access_denied", "twogis_quota_exceeded") and time.monotonic() >= self.blocked_until:
+                # Search and details share the guard. Do not hammer a refused demo key.
+                self.blocked_until, self.blocked_code = time.monotonic() + 300, exc.code
+            raise
         except httpx.TimeoutException:
+            self.last_status = "twogis_timeout"
             raise PlacesError("twogis_timeout") from None
         except (httpx.HTTPError, ValueError, TypeError, KeyError):
+            self.last_status = "twogis_invalid_response"
             # Exceptions/URLs can contain the key, required by 2GIS in the query string.
             raise PlacesError("twogis_invalid_response", 502) from None
 
@@ -203,13 +226,7 @@ class TwoGis:
     @staticmethod
     def format_details(item, poi_id, language="ru", distance=0, method="catalog_id"):
         schedule, reviews = item.get("schedule") or {}, item.get("reviews") or {}
-        rating, count = reviews.get("rating"), reviews.get("review_count")
-        scope = "organization" if reviews.get("is_org_reviews") is True else "branch"
-        if rating is None:
-            rating, count, scope = reviews.get("general_rating"), reviews.get("general_review_count"), "unknown"
-        # 2GIS uses zero for an unrated place; do not show it as a zero-star rating.
-        if type(rating) in (float, int) and rating == 0:
-            rating = None
+        rating, count, scope = review_values(reviews)
         notes = [schedule.get(k) for k in ("comment", "description", "date_from", "date_to") if schedule.get(k)]
         return TwoGisDetails(
             poi_id=poi_id, twogis_place_id=item["id"], provider_name=item["name"],

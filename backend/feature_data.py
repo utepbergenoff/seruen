@@ -24,6 +24,7 @@ class Evidence(Model):
 class LicensedPlace(Model):
     poi: POI
     evidence: Evidence
+    coordinate_evidence: Evidence | None = None
     offline_allowed: bool = False
     license: str = Field(min_length=1, max_length=200)
     attribution: str = Field(min_length=1, max_length=500)
@@ -122,6 +123,16 @@ class FeatureData:
 
     def canonical(self, poi_id):
         return self.identities.get(poi_id, poi_id)
+
+    def twogis_id(self, poi_id):
+        """Use only an explicit branch ID or one unambiguous reviewed identity."""
+        canonical = self.canonical(poi_id)
+        poi = self.pois.get(poi_id) or self.pois.get(canonical)
+        ids = {pid.removeprefix("2gis_") for pid, owner in self.identities.items()
+               if owner == canonical and pid.startswith("2gis_") and pid[5:].isdigit()}
+        if poi and poi.twogis_place_id:
+            ids.add(poi.twogis_place_id)
+        return next(iter(ids)) if len(ids) == 1 else None
 
     def can_export(self, poi_id, today):
         record = self.owned.get(self.canonical(poi_id))

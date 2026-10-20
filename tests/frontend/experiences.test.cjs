@@ -16,6 +16,20 @@ async function winterPreview(b) {
 }
 const change=(b,s,value)=>{const e=b.w.document.querySelector(s);e.value=value;e.dispatchEvent(new b.w.Event('change'));};
 
+test('a verified canonical identity keeps the landmark story across provider names',async t=>{
+  const rows=JSON.parse(fs.readFileSync('data/city_stories.json','utf8'));
+  const story=rows.find(p=>p.wikipedia_url);
+  const b=await boot(t,{...base,stories:[story]});
+  const card={...clone(FX.recommend_normal.recommendations[0]),poi_id:'2gis_70000000000001',
+    canonical_id:story.poi_id,name:'Other provider spelling',coords:story.coords};
+  b.click('#goBtn');await settle();
+  b.requests.at(-1).resolve(json({...clone(FX.recommend_normal),recommendations:[card]}));await settle();
+  assert.ok([...b.w.document.querySelectorAll('.place-story a')].some(a=>a.href===new URL(story.wikipedia_url).href));
+  b.w.SeruenApp.state.last.recommendations[0].canonical_id='unrelated';
+  b.w.SeruenApp.rerender();
+  assert.equal(b.w.document.querySelector('.place-story'),null);
+});
+
 test('new sections are gated on health; old servers get no new requests',async t=>{
   const b=await boot(t);
   assert.equal(b.w.document.querySelector('#experiences').hidden,true);
