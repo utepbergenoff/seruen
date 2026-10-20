@@ -7,7 +7,8 @@ from .activities import outdoor_walk_place
 from .discovery import ENDPOINT, QUERIES, search_intent, to_poi
 from .feature_data import apply_feedback, relaxation_options
 from .geo import ALMATY, haversine, in_astana, speed, target_time, visit_minutes
-from .hours import open_status, schedule_open
+from .hours import open_status, closed_during_visit
+from .indoor import severe_weather
 from .intent import rule_intent
 from .places import PlacesError
 from .plan_models import (ComfortView, OfflinePlan, OfflineStop, PlanBudget, PlanExclusion, PlanLeg,
@@ -143,24 +144,15 @@ class Planner:
         if poi.temporary and not (poi.event_start and poi.event_end and poi.event_source
                                   and poi.event_start <= arrival and departure <= poi.event_end):
             return "event_unverified"
-        # Check each minute, including split-day/overnight schedules and closing during the visit.
-        if (poi.opening_hours_raw or poi.published_special_hours) and poi.hours_source != "none":
-            try:
-                minute = arrival
-                while minute < departure:
-                    raw = poi.published_special_hours.get(str(minute.date()), poi.opening_hours_raw)
-                    if raw and not schedule_open(raw, minute):
-                        return "closed_at_visit"
-                    minute += timedelta(minutes=1)
-            except ValueError:
-                pass  # unknown schedule stays explicitly unknown in the output
+        if closed_during_visit(poi, arrival, departure):
+            return "closed_at_visit"
         night = any(x.hour >= 22 or x.hour < 6 for x in (arrival, departure))
         if night and not (poi.indoor or {"lit", "busy", "освещено", "людно"} & set(poi.tags)):
             return "night_safety_unconfirmed"
         if night and walking > math.ceil(1000 * 1.3 / speed(req, intent, arrival)):
             return "night_walk_limit"
         weather = req.context.weather
-        if weather and (weather.temp_c <= -15 or weather.wind_ms >= 10) and walking > math.ceil(
+        if severe_weather(weather) and walking > math.ceil(
             500 * 1.3 / speed(req, intent, arrival)
         ):
             return "weather_walk_limit"
@@ -307,7 +299,7 @@ class Planner:
         if any(t.hour >= 22 or t.hour < 6 for t in (cursor, finish_at)):
             finish_limit = min(finish_limit or 480, math.ceil(1000 * 1.3 / walking_speed))
         weather = req.context.weather
-        if weather and (weather.temp_c <= -15 or weather.wind_ms >= 10):
+        if severe_weather(weather):
             finish_limit = min(finish_limit or 480, math.ceil(500 * 1.3 / walking_speed))
         if finish_limit is not None and routed.minutes[-1] > finish_limit:
             invalid_final = True

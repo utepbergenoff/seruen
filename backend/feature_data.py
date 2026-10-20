@@ -8,6 +8,8 @@ from typing import Literal
 
 from pydantic import Field, HttpUrl, model_validator
 
+from .indoor import indoor_required
+from .query_constraints import expense_mode
 from .schemas import Model, POI, VisitConditionView
 
 ComfortKind = Literal["warming", "toilet", "bench", "water", "entrance"]
@@ -189,9 +191,12 @@ class FeatureData:
 
 
 def apply_feedback(request):
-    """Stateless: undo means resend the previous preferences without feedback."""
+    """Apply text constraints and feedback to a copy, shared by discovery, recommendations and plans."""
     request = request.model_copy(deep=True)
     feedback, prefs = request.feedback, request.preferences
+    prefs.indoor_only = indoor_required(request)
+    order = {"any": 0, "no_required_purchase": 1, "free_only": 2}
+    prefs.expense_mode = max((prefs.expense_mode, expense_mode(request.query)), key=order.get)
     if not feedback:
         return request
     if feedback.reason == "too_far":
@@ -204,7 +209,7 @@ def apply_feedback(request):
     elif feedback.reason == "wrong_type":
         request.context.exclude_categories = list(dict.fromkeys([*request.context.exclude_categories, feedback.category]))
     elif feedback.reason == "no_expense":
-        prefs.expense_mode = "no_required_purchase"
+        prefs.expense_mode = max((prefs.expense_mode, "no_required_purchase"), key=order.get)
     return request
 
 

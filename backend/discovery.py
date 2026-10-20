@@ -15,6 +15,7 @@ from .feature_data import apply_feedback
 from .generate import AIError, validate_drafts
 from .geo import haversine, in_astana, search_radius, target_time
 from .hours import open_status
+from .indoor import catalog_indoor, indoor_required, shelter_requested
 from .intent import rule_intent
 from .loader import Dataset
 from .places import PlacesError
@@ -83,14 +84,30 @@ def search_intent(request):
                 ("culture", r"музей|museum|мұражай"), ("shopping", r"трц|shopping|торгов")]
     if intent.companions != "child":
         for category, pattern in explicit:
+            if indoor_required(request) and category == "park":
+                continue
             if re.search(pattern, text, re.I):
                 intent.categories = [category]
                 break
     query = QUERIES.get(intent.categories[0], "") if intent.categories else text[:100]
+    if indoor_required(request) and intent.categories and intent.categories[0] == "culture":
+        # Generic landmark pages near Expo are dominated by outdoor installations.
+        # Ask for an indoor category before filtering, rather than returning an empty page of them.
+        query = "Музеи"
+    if intent.categories and intent.categories[0] == "culture":
+        for pattern, category_query in (
+            (r"музей|музеи|museum|мұражай", "Музеи"),
+            (r"кино|cinema", "Кинотеатры"),
+            (r"театр|theat", "Театры"),
+            (r"галере|gallery", "Художественные галереи"),
+        ):
+            if re.search(pattern, text, re.I):
+                query = category_query
+                break
     # Preserve short business names containing a category word (e.g. Coffee Boom).
-    if (1 < len(text.split()) <= 5 and len(text) <= 80 and not re.search(
-            r"хочу|нуж|найд|ищу|рядом|поблиз|погуля|прогуля|кофе и|тих|спокой|работ|ноут|розет|минут|час|ребен|дет|"
-            r"want|need|near|quiet|work|laptop|minute|hour|with|coffee and|қайда|жақын|тыныш|серуен", text, re.I)):
+    if (not shelter_requested(text) and 1 <= len(text.split()) <= 5 and len(text) <= 80 and not re.search(
+            r"хочу|нуж|найд|ищу|рядом|поблиз|погуля|прогуля|кофе и|тих|спокой|работ|ноут|розет|минут|час|ребен|дет|необыч|бесплат|расход|бюджет|"
+            r"want|need|near|quiet|work|laptop|minute|hour|with|coffee and|unusual|free|budget|қайда|жақын|тыныш|серуен|ерекше|тегін", text, re.I)):
         query = text
     return intent, query or "Достопримечательности"
 
@@ -197,9 +214,11 @@ def to_poi(item, request, radius):
                hours_source="2gis" if hours or published else "none", hours_conflict=True,
                rating=rating, rating_count=count, popularity=(rating or 0)/5,
                last_checked=datetime.now(timezone.utc).date(),
-               kid_friendly=bool({"kids", "park"} & set(categories)), adult_only="night" in categories,
-               indoor=category in ("coffee", "food", "library", "cowork", "shopping", "night") or bool(
-                   category == "kids" and re.search(r"игров\w*\s+(?:зал|комнат)|indoor\s+play", rubrics, re.I)))
+               kid_friendly=bool({"kids", "park"} & set(categories)) or any(
+                   re.search(r"детск\w*\s+(?:комнат|меню|зон|стуль)|kids.? menu|children.?s menu", a, re.I)
+                   and not re.search(r"нет|без |no ", a, re.I) for a in attributes),
+               adult_only="night" in categories,
+               indoor=catalog_indoor(category, rubrics, attributes))
 
 
 class Discovery:
@@ -384,7 +403,8 @@ class Discovery:
             all_candidates = [h.candidate for h in search.hits] + search.excluded
             for candidate in sorted(all_candidates, key=lambda c: (c.distance_m, c.poi_id)):
                 if candidate.excluded_because in ("category_mismatch", "excluded_category", "excluded_place",
-                                                   "already_visited", "preferred_category_mismatch"):
+                                                   "already_visited", "preferred_category_mismatch", "indoor_required",
+                                                   "not_child_friendly", "free_access_unconfirmed", "no_purchase_unconfirmed"):
                     continue
                 poi, item = pois[candidate.poi_id], items[candidate.poi_id]
                 address = item.get("address_name")
