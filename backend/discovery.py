@@ -200,7 +200,10 @@ def to_poi(item, request, radius):
                hours_source="2gis" if hours or published else "none", hours_conflict=True,
                rating=rating, rating_count=count, popularity=(rating or 0)/5,
                last_checked=datetime.now(timezone.utc).date(),
-               kid_friendly=bool({"kids", "park"} & set(categories)), adult_only="night" in categories,
+               kid_friendly=bool({"kids", "park"} & set(categories)) or any(
+                   re.search(r"детск\w*\s+(?:комнат|меню|зон|стуль)|kids.? menu|children.?s menu", a, re.I)
+                   and not re.search(r"нет|без |no ", a, re.I) for a in attributes),
+               adult_only="night" in categories,
                indoor=catalog_indoor(category, rubrics, attributes))
 
 
@@ -386,7 +389,8 @@ class Discovery:
             all_candidates = [h.candidate for h in search.hits] + search.excluded
             for candidate in sorted(all_candidates, key=lambda c: (c.distance_m, c.poi_id)):
                 if candidate.excluded_because in ("category_mismatch", "excluded_category", "excluded_place",
-                                                   "already_visited", "preferred_category_mismatch", "indoor_required"):
+                                                   "already_visited", "preferred_category_mismatch", "indoor_required",
+                                                   "not_child_friendly", "free_access_unconfirmed", "no_purchase_unconfirmed"):
                     continue
                 poi, item = pois[candidate.poi_id], items[candidate.poi_id]
                 address = item.get("address_name")

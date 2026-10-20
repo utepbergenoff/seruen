@@ -1,3 +1,5 @@
+from .indoor import severe_weather
+
 MESSAGES = {
     "simulation": (
         "Демо-расчёт на {time} по времени Астаны: расписание и ограничения проверены для этого времени, текущая обстановка неизвестна.",
@@ -50,9 +52,9 @@ MESSAGES = {
         "Түнде жарық, адам көп жерлерді таңдаңыз; таксимен не қоғамдық көлікпен қайтыңыз.",
     ),
     "weather": (
-        "Сильный холод или ветер: предпочтительны помещения и короткие переходы.",
-        "Severe cold or wind: prefer indoor places and short walks.",
-        "Қатты суық немесе жел: жабық орындар мен қысқа жолдарды таңдаңыз.",
+        "Неблагоприятная погода: предпочтительны помещения и короткие переходы.",
+        "Adverse weather: prefer indoor places and short walks.",
+        "Қолайсыз ауа райы: жабық орындар мен қысқа жолдарды таңдаңыз.",
     ),
     "flight": (
         "Из бюджета зарезервировано время на дорогу в аэропорт; это условный запас, проверьте маршрут и время регистрации.",
@@ -91,6 +93,6 @@ def safety_notes(request, now, lang):
     if now.hour >= 22 or now.hour < 6:
         notes.append(message("night", lang))
     w = request.context.weather
-    if w and (w.temp_c <= -15 or w.wind_ms >= 10):
+    if severe_weather(w):
         notes.append(message("weather", lang))
     return notes
