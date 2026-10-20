@@ -226,15 +226,14 @@ input[type="checkbox"][role="switch"]:checked, .winter-toggle input[role="switch
 .it-time, .ws-leg { background: var(--sun-tint); color: var(--ink); }
 .rec { padding: 0; gap: 0; overflow: hidden; border-radius: var(--r-l); }
 .rec > * { margin-left: 20px; margin-right: 20px; }
-.rec > .photos { order: -1; margin: 0 0 4px; }
+/* photos come after the name and the description, with Gemini's labels right under them (Alikhan, 20.10) */
+.rec > .photos { margin-top: 14px; }
+.rec > .photos .ph-strip { border-radius: var(--r); overflow: hidden; }
 .rec > .rec-title { margin-top: 16px; }
 .rec > :last-child { margin-bottom: 18px; }
 .rec > * + * { margin-top: 12px; }
-.rec > .photos + * { margin-top: 16px; }
-.rec .photos:empty, .rec .photos .loading, .rec .photos .ph-none { display: none; }
-.rec .photos .ph-strip { border-radius: 0; gap: 2px; }
-.rec .photos .ph-strip img { border-radius: 0; }
-.rec .photos > :not(.ph-strip) { margin-left: 20px; margin-right: 20px; }
+.rec .photos:empty { display: none; }
+.rec .photos .ph-strip { gap: 4px; }
 .rec .photos > .ph-strip + * { margin-top: 10px; }
 .rec h3 { font: 600 21px/1.25 var(--display); }
 .num { background: var(--surface); border-color: var(--sky-deep); color: var(--sky-deep); }
@@ -413,3 +412,10 @@ details.more-details p { margin: 6px 0 0; font-size: 13.5px; color: var(--muted)
   .map-top-btn { min-width: 44px; justify-content: center; }
   .top .brand h1 { font-size: 18px; }
 }
+
+/* Gemini's photo labels under the photos: clearly visible chips */
+.rec .photos .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.rec .photos .tag { font-size: 13px; padding: 5px 11px; background: var(--sun-tint); color: var(--ink); border: 1px solid #E9D9AE; }
+.rec .photos .tag .ic { color: var(--sun-deep); }
+.rec .photos .ph-why { margin-top: 10px; font-size: 14px; }
+[data-theme="dark"] .rec .photos .tag { border-color: #5A4A24; }

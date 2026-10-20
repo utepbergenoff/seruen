@@ -818,10 +818,15 @@
   // ---------- photos of the place and what Gemini sees on them (asked for every card after the answer) ----------
   const photoCredit = (x) => x.source === "team" ? T().ph.team : `${x.author || "Wikimedia Commons"}${x.license ? ", " + x.license : ""}`;
   const https = (u) => /^https:\/\//.test(u || "") ? u : "";
+  // the team's photos keep their Gemini labels even when Gemini is out of quota (photo-labels.json, matched by photo file)
+  const photoPath = (u) => String(u || "").replace(/^https?:\/\/[^/]+\//, "").replace(/^\.?\//, "");
+  const savedLabels = (photos) => (state.photoLabels || []).find((x) => photos.some((ph) => (x.photos || []).includes(photoPath(ph.url))));
   function photosHtml(p) {
     const P = T().ph, photos = ((p && p.photos) || []).filter((x) => https(x.url));
     if (!photos.length) return `<p class="ph-none">${icon("camera")} ${esc(!p || p.status === "ai_unavailable" ? P.noAnalysis : P.none)}</p>`;
-    const a = p.analysis;
+    // Gemini cannot read these photos right now: use its earlier analysis of the very same photos, with the date
+    const saved = !p.analysis && savedLabels(photos);
+    const a = p.analysis || (saved && saved.analysis);
     const chips = a ? [
       P.light[a.lighting] && ["sun", P.light[a.lighting]],
       P.kids[a.kids_area] && ["kids", P.kids[a.kids_area]],
@@ -832,6 +837,7 @@
     return `<div class="ph-strip">${photos.map((x) => `<a class="ph" href="${esc(https(x.page_url) || x.url)}" target="_blank" rel="noopener" title="${esc(photoCredit(x))}"><img src="${esc(x.url)}" alt="${esc(P.alt)}" loading="lazy" referrerpolicy="no-referrer"></a>`).join("")}</div>
       ${a && a.summary ? `<div class="field ph-why">${icon("camera")} <b>${esc(P.title)}:</b> ${esc(a.summary)}</div>` : a ? "" : `<p class="src">${esc(P.noAnalysis)}</p>`}
       ${chips ? `<div class="tags">${chips}</div>` : ""}
+      ${saved ? `<p class="src">${esc(fmt(P.savedAnalysis, {d: new Intl.DateTimeFormat({en: "en-GB", kk: "kk-KZ"}[state.lang] || "ru-RU", {day: "numeric", month: "short", timeZone: "UTC"}).format(new Date(saved.analyzed_at + "T00:00:00Z"))}))}</p>` : ""}
       <p class="src">${esc(P.credit)}: ${[...new Set(photos.map(photoCredit))].map(esc).join("; ")}</p>`;
   }
   async function loadPhotos(r, d) {
@@ -967,6 +973,7 @@
     const initialLocVersion = state.locVersion;
     [state.presets, state.scenarios] = await Promise.all([
       getJSON("presets.json").catch(() => []), getJSON("scenarios.json").catch(() => []),
+      getJSON("photo-labels.json").then((x) => { state.photoLabels = x.items || []; }).catch(() => { state.photoLabels = []; }),
     ]);
     // accept both {"query": "text"} and {"query": {"q": "text"}} from the backend
     state.scenarios = state.scenarios.map((x) => {
