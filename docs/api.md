@@ -34,7 +34,7 @@
 | precision_m / source | По умолчанию 100 / preset; source = gps, map, preset. precision_m 100…10000 — заявленная точность входа. |
 | query | 0…1000 символов. Пустая строка даёт общую прогулку по контексту. |
 | context | Необязательно; отсутствующие параметры получают значения по умолчанию. |
-| time_budget_min | 5…480; явное значение важнее текста. Если нет — правила извлекают из текста, иначе 60. |
+| time_budget_min | 5…480; при конфликте текста и контекста применяется меньший лимит. «Осталось N минут» обновляет прежний запрос. Без явного лимита используется 60. |
 | companions / mode | alone, child, group / только walk. Упоминание ребёнка в тексте усиливает защиту. |
 | now / simulate | Время применяется только при simulate=true; иначе используются серверные часы. Наивное время без пояса отклоняется. |
 | lang | ru, kk, en, auto. В auto определяется по письменности запроса. |
@@ -49,25 +49,25 @@
 | Поле | Содержимое |
 |---|---|
 | mode | ai / no_ai / cached. В кеше сохраняются selection_source и why_source исходного ответа. |
-| recommendations | 1–3 **альтернативных** места; 0 при отказе, нехватке бюджета или пустом поиске. Это не последовательный маршрут. Если ИИ выбрал меньше трёх, код добавляет следующих по баллу кандидатов с `selection_source=rules`. Для всех карточек `why_source`/`what_to_do_source` = `template`: текст формируется из фактов и окончательного бюджета. `selection_source=ai` означает выбор места Gemini, `rules` — выбор правилами. |
+| recommendations | До 3 **альтернативных** мест; 0 при отказе, нехватке бюджета или пустом поиске. Это не последовательный маршрут. Порядок и состав определяет код, `selection_source=rules`. Принятый текст Gemini имеет `why_source=ai` / `what_to_do_source=ai`; отклонённый или недоступный заменяется `template` отдельно для каждой карточки. |
 | recommendations[].poi_id/name/category/coords | Только из локальной базы или проверенного ответа 2ГИС; координаты места, не пользователя. Для каталога ID имеет вид `2gis_<id>`. |
 | distance_m / walk_min | Расстояние по haversine, оценка пешком с коэффициентом улиц 1,3; минуты округляются вверх. |
 | why / what_to_do | ≤25 / ≤35 слов. Источник: ai или template. |
-| time_to_spend_min | Вычисляется кодом; предложение ИИ ограничивается ±30% и оставшимся бюджетом. |
+| time_to_spend_min | Вычисляется кодом по категории и бюджету. Gemini не меняет длительность и не укорачивает визит ради включения далёкого места. |
 | open_status | state: open / likely_open / unknown / closed; confidence: high / medium / low; hours, source, checked_at допускают null там, где данных нет. |
 | facts_source / description_source | poi_db / wikipedia, source или generated. Вычисляемые расстояния получены из координат базы; provenance описан ниже. |
 | accessibility | yes / limited / no / unknown. |
 | description / sources / last_checked | Описание с явным description_source; источники записи и дата снимка. generated не является подтверждённым фактом. |
 | links | 2gis и google для настоящих данных. В сэмпле `{}`, чтобы не вести к выдуманным местам. |
 | rating / rating_count | Число либо null; отсутствие рейтинга не превращается в ноль. |
-| recommendations[].budget_breakdown | walk_there_min + stay_min + walk_back_min + reserve_min = total_min. |
+| recommendations[].budget_breakdown | Путь туда + посещение + путь к выбранному финишу + резерв = total_min. Для возврата используется walk_back_min, для другого финиша walk_to_end_min, для finish_mode=place после посещения путь равен нулю. |
 | budget_breakdown | Повторяет бюджет **первой альтернативы**; null, если карточек нет. |
 | considered | Точность входа, радиус, факт расширения, бюджет, фильтры, время, число допустимых кандидатов до ограничения разнообразия, погода, retrieval_mode, intent_source, target_time. |
 | considered.effective_budget_min / reserve_min | Бюджет прогулки без аэропортового резерва / сам резерв. Мини-маршрут использует effective_budget_min; карточка альтернативы — полный time_budget_min. |
 | considered.walk_speed_m_per_min / street_factor | Фактическая скорость с учётом ребёнка/зимы и коэффициент 1,3. |
 | considered.lang / companions / time_simulated | Язык ответа, состав группы, признак симуляции. time локализован, target_time — ISO. |
 | notes / safety | Массивы сообщений на выбранном языке; показывать пользователю. |
-| route | null; построение составного маршрута вне B1–B12. |
+| route | В /recommend остаётся null; составной маршрут строится через /plans/build. См. контракт расширений. |
 | disclaimer | Показывать всегда. |
 | data_kind / mock | sample или real / явный признак режима интеграционного мока. |
 
@@ -81,7 +81,7 @@
 
 - `GET /health` → status, mode_available, data_snapshot_date, poi_count, data_kind, retrieval_mode, mock. Наличие ai означает настроенный ключ, а не выполненный контрольный вызов модели.
 - `GET /scenarios` → массив из 6 объектов `{id, title, request, data_kind}`. Кнопка отправляет `request` в `/recommend`.
-- `POST /candidates` → тот же JSON, что `/recommend`; возвращает candidates, excluded, radius_m, radius_expanded, time_budget_min, target_time, retrieval_mode, data_kind. Без вызова ИИ.
+- `POST /candidates` → тот же JSON, что `/recommend`; возвращает candidates, excluded, radius_m, radius_expanded, time_budget_min, target_time, retrieval_mode, data_kind. Для гарантированной диагностики без генерации задавать `source=local`: каталожный вариант использует обработчик рекомендаций.
 - `GET /candidates` → lat, lon обязательны; остальные параметры плоские: query, time_budget_min, companions, now, lang, accessibility, simulate, precision_m, source, mode; exclude_categories повторяется. Погода: temp_c + wind_ms + precip_mm. Для приватности предпочитать POST: внешние прокси могут журналировать URL GET.
 
 Кандидат: `{poi_id, name, category, distance_m, walk_min, score, reasons[], excluded_because}`. В candidates только допущенные записи (до 10), в excluded — отфильтрованные; причины: closed, out_of_radius, over_budget, excluded_category, category_mismatch, not_child_friendly, accessibility_unconfirmed, event_unverified, night_safety_unconfirmed.
@@ -92,7 +92,7 @@
 
 Фронт отправляет Content-Type: application/json. CORS по явному CORS_ORIGINS, локально разрешены порты 5173 и 3000. Cookies не нужны. Не включать wildcard для рабочего фронта без необходимости.
 
-Бэкенд не пишет запросы и координаты в логи и на диск; ключ кеша — SHA-256 от округлённой локации, запроса, контекста, окна 30 минут, версии данных и режима. В значениях кеша только карточки мест. Ответы имеют Cache-Control: no-store. В Gemini при наличии ключа уходят текст, контекст, округлённая локация и кандидаты, без идентификаторов пользователей. Политику хранения у хостинга и Google нужно рассматривать отдельно от логов приложения.
+Бэкенд не пишет запросы и координаты в прикладные логи и на диск; ключ кеша — SHA-256 от округлённой локации, запроса, контекста, окна 30 минут, версии данных и режима. Ограниченный кеш ответов хранится в памяти. Ответы имеют Cache-Control: no-store. В Gemini уходят текст, контекст и факты кандидатов, без отдельных координат пользователя/финиша и истории ID. Личные сведения внутри текста автоматически не удаляются. Правила хранения у хостинга и провайдеров рассматриваются отдельно от логов приложения.
 
 ### Диагностика исходного ответа
 
