@@ -1086,3 +1086,6 @@ input[type="checkbox"][role="switch"]:focus-visible { outline: 3px solid var(--s
   .chip-scroll .btn, .less-ask .btn { min-height: 40px; }
 }
 .seg.seg-map button { flex: 1 1 auto; padding: 4px 6px; text-overflow: clip; }
+/* a select hidden behind its pills must stay 1 px even where older rules give selects width:100% (it made the page scroll sideways) */
+select.sr-only, input.sr-only { position: absolute !important; width: 1px !important; height: 1px !important; min-height: 0 !important; margin: -1px !important;
+  padding: 0 !important; border: 0 !important; overflow: hidden !important; clip: rect(0 0 0 0) !important; white-space: nowrap !important; }
