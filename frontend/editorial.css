@@ -304,3 +304,7 @@ details.more-details p { margin: 6px 0 0; font-size: 13.5px; color: var(--muted)
 /* a hidden element is positioned inside its own field, never against the page (it made the laptop page scroll) */
 :is(label, .finish-field, .time-field, #winterSettings, #meetingFields, #noSpendField, fieldset):has(> .sr-only) { position: relative; }
 .chip-toggle { position: relative; }
+@media (max-width: 480px) { .scard small { display: none; } .scard span { font-size: 12.5px; line-height: 1.2; } }
+/* scenario tile titles wrap inside the tile instead of running past it */
+.scard { min-height: 104px; }
+.scard span { overflow-wrap: anywhere; hyphens: auto; }
