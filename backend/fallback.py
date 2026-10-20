@@ -132,6 +132,13 @@ def explanation(hit, request, intent, budget, condition, category_relaxed=False)
                 ('По проверенным данным покупка необязательна.', 'Verified: purchase is optional.', 'Расталған дерек: сатып алу міндетті емес.'))[index]
     elif known:
         head = ('По данным места: ', 'Venue data: ', 'Орын дерегі: ')[index] + ', '.join(known) + '.'
+    elif request.preferences.indoor_only and hit.poi.indoor:
+        head = (
+            ('В помещении; в базе отмечено для детей.', 'Indoors; listed as child-friendly.',
+             'Ғимарат ішінде; деректе балаларға қолайлы деп белгіленген.')
+            if intent.companions == 'child' else
+            ('В помещении по данным места.', 'Listed as indoors.', 'Дерек бойынша ғимарат ішінде.')
+        )[index]
     elif intent.companions == 'child' and hit.poi.kid_friendly:
         head = ('В базе отмечено для детей.', 'Listed as child-friendly.', 'Деректе балаларға қолайлы деп белгіленген.')[index]
     elif hit.poi.indoor and (request.preferences.indoor_only or request.context.weather and

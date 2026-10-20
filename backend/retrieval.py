@@ -6,6 +6,7 @@ from .activities import outdoor_walk_place
 from .embeddings import Embeddings, poi_text, tokenize
 from .geo import finish_preference, haversine, search_radius, speed, visit_minutes, walk_minutes
 from .hours import open_status
+from .indoor import indoor_required
 from .loader import canonical_name
 from .schemas import Candidate, OpenStatus, POI
 from .scoring import score
@@ -70,6 +71,7 @@ class Retriever:
         night = now.hour >= 22 or now.hour < 6
         radius = search_radius(request, intent, now, reserve)
         weather = request.context.weather
+        inside = indoor_required(request)
         severe = weather is not None and (weather.temp_c <= -15 or weather.wind_ms >= 10)
         if severe:
             radius = min(radius, 500)
@@ -100,7 +102,9 @@ class Retriever:
                 chosen_stay = min(stay, available - walk - final_walk)
                 min_stay = stay  # Widen discovery, never silently shorten the visit to make it fit.
                 feature_reason = self.features.constraint(p, request.preferences, walk, now.date()) if self.features else None
-                if feature_reason:
+                if inside and not p.indoor:
+                    reason = "indoor_required"
+                elif feature_reason:
                     reason = feature_reason
                 elif p.category in intent.exclude_categories:
                     reason = "excluded_category"
@@ -145,6 +149,8 @@ class Retriever:
                     reasons.append("indoor_weather_priority")
                 if not reason:
                     reasons += ["within_radius", "within_budget"]
+                    if inside:
+                        reasons.append("indoor_required")
                 candidate = Candidate(
                     poi_id=p.poi_id,
                     name=p.name,
