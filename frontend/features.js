@@ -36,7 +36,7 @@
   // F3/F5: what the person asked to avoid, shown above the answer with "Undo"
   let cons = {exclude_ids: [], max_distance_m: null, exclude_categories: [], no_spend: null};
   let finishMode = "place", finish = null, picking = false, comfortKinds = new Set(), comfortMsg = "";
-  let walk = null, walkVersion = 0, walkMsg = "", walkBusy = false, reqSeq = 0;
+  let walk = null, walkVersion = 0, walkMsg = "", walkBusy = false, reqSeq = 0, lastDrawnRoute = "";
   const personal = L.layerGroup().addTo(map), comfortLayer = L.layerGroup().addTo(map), pauseLayer = L.layerGroup().addTo(map);
   let finishMarker = null, walkLine = null, comfortVersion = 0;
 
@@ -126,9 +126,9 @@
     const x = X(), p = mine.places.get(r.poi_id) || {}, b = r.budget_breakdown || {};
     const chip = (k, ic, on, label) => `<button type="button" class="chip-btn${on ? " on" : ""}" data-keep="${k}" aria-pressed="${on}">${icon(ic)} ${esc(label)}</button>`;
     let html = "";
-    if (b.walk_to_end_min != null || r.arrival_estimate) {
+    if (b.walk_to_end_min > 0 || r.arrival_estimate) {  // «до финиша 0 мин» says nothing: the finish is this place
       const at = r.arrival_estimate ? new Intl.DateTimeFormat("ru-RU", {hour: "2-digit", minute: "2-digit", timeZone: "Asia/Almaty"}).format(new Date(r.arrival_estimate)) : "";
-      html += `<div class="meta finish-line">${icon("finish")} ${b.walk_to_end_min != null ? esc(fmt(x.toEnd, {m: b.walk_to_end_min})) : ""}${at ? ` · ${esc(fmt(x.arrival, {t: at}))}` : ""}</div>`;
+      html += `<div class="meta finish-line">${icon("finish")} ${[b.walk_to_end_min > 0 && esc(fmt(x.toEnd, {m: b.walk_to_end_min})), at && esc(fmt(x.arrival, {t: at}))].filter(Boolean).join(" · ")}</div>`;
     }
     html += `<div class="keep" role="group" aria-label="${esc(x.keepTitle)}">
       ${chip("want", "flag", !!p.want, x.want)}${chip("visited", "visit", !!p.visited_at, x.visited)}
@@ -224,7 +224,7 @@
       }));
       el.querySelectorAll("[data-nope]").forEach((b) => b.addEventListener("click", () => nope(b.dataset.nope, r, el, d)));
       // open this place, then the usual «where to finish» question and the walk
-      el.querySelector("[data-start-walk]")?.addEventListener("click", () => { A.selectPlace(r.poi_id, false); buildAnswer(d, false, r.poi_id); });
+      el.querySelector("[data-start-walk]")?.addEventListener("click", () => finishStep(el, r, d));
     });
     $$("[data-undo]").forEach((b) => b.addEventListener("click", () => {
       const k = b.dataset.undo;
@@ -250,6 +250,34 @@
     }));
     drawFinish(); drawPersonal();
   };
+
+  // A focused step before the route: where to finish, with the walk's rough total for that choice, then build.
+  function finishStep(el, r, d) {
+    const x = X(), box = el.querySelector(".card-start"); if (!box) return;
+    const before = box.innerHTML;
+    const total = (mode) => mode === "return" ? 2 * (r.walk_min || 0) + (r.time_to_spend_min || 0) + 5
+      : mode === "place" ? (r.walk_min || 0) + (r.time_to_spend_min || 0) + 5 : null;
+    const draw = () => {
+      const m = total(finishMode);
+      box.innerHTML = `<div class="finish-step" role="group" aria-label="${esc(x.finishQuestion)}"><b>${esc(x.finishQuestion)}</b>
+        <div class="seg seg-wrap">${[["place", x.finishAtPlace], ["return", x.finishReturn], ["destination", x.finishCustom]].map(([v, l]) =>
+          `<button type="button" data-finish-mode="${v}"${v === finishMode ? ' class="on"' : ""} aria-pressed="${v === finishMode}">${esc(l)}</button>`).join("")}</div>
+        <p class="est">${icon("clock")} ${esc(m != null ? fmt(x.finishEstimate, {m}) : x.finishEstimateLater)}</p>
+        <div class="row"><button type="button" class="btn primary" data-finish-go>${icon("route")} ${esc(T().buildRoute)}</button>
+          <button type="button" class="btn" data-finish-cancel>${esc(x.lessCancel)}</button></div></div>`;
+      box.querySelectorAll("[data-finish-mode]").forEach((b) => b.addEventListener("click", () => {
+        const s = $("#finishMode");  // the planner's own finish choice changes with it
+        if (s) { s.value = b.dataset.finishMode; s.dispatchEvent(new Event("change", {bubbles: true})); } else finishMode = b.dataset.finishMode;
+        draw(); box.querySelector(`[data-finish-mode="${finishMode}"]`)?.focus();
+      }));
+      box.querySelector("[data-finish-go]").addEventListener("click", () => { A.selectPlace(r.poi_id, false); buildAnswer(d, false, r.poi_id); });
+      box.querySelector("[data-finish-cancel]").addEventListener("click", () => {
+        box.innerHTML = before; box.querySelector("[data-start-walk]")?.addEventListener("click", () => finishStep(el, r, d));
+        box.querySelector("[data-start-walk]")?.focus();
+      });
+    };
+    draw(); box.querySelector("[data-finish-go]").focus();
+  }
 
   // ---------- F3: why it does not fit ----------
   async function nope(kind, r, el, d) {
@@ -563,8 +591,11 @@
     if (!walk) { box.innerHTML = ""; return; }
     const x = X(), p = walk.plan, saved = walk.savedId && p.saved_at;
     if (p.server?.geometry?.length && L.polyline) {
+      const solid = p.server.routing_source === "osrm_foot", shape = JSON.stringify([p.server.geometry.length, p.server.geometry[0], p.server.geometry.at(-1)]);
+      // a new street-following route draws itself once; re-renders and estimated (dashed) lines appear as they are
+      const draw = solid && shape !== lastDrawnRoute; lastDrawnRoute = shape;
       walkLine = L.polyline(p.server.geometry.map(([lon, lat]) => [lat, lon]), {
-        color: "#00708A", weight: 5, className:"active-walk-path", dashArray: p.server.routing_source === "osrm_foot" ? null : "8 8",
+        color: A.cssColor("--route", "#1E4A37"), weight: 5, className: "active-walk-path" + (draw ? " route-draw" : ""), dashArray: solid ? null : "8 8",
       }).addTo(map);
     }
     // Accepted stops stay visible on the active route, including a newly added break.
@@ -843,6 +874,7 @@
     box.innerHTML = `<div class="walk-head"><h2 id="mineTitle">${icon("heart")} ${esc(x.keepTitle)}</h2>
         <button type="button" class="btn small" id="mineClose">${icon("back")} ${esc(x.backToPlaces)}</button></div>
       ${mine.error ? `<p class="msg warn">${esc(mine.error)}</p>` : ""}
+      ${mine.undo ? `<div class="mine-undo" role="status"><span>${esc(x.placeRemoved)}</span><button type="button" id="mineUndo">${esc(x.undo)}</button></div>` : ""}
       <div class="tabs" role="tablist">${tab("places", x.tabPlaces, all.length)}${tab("walks", x.tabWalks, mine.walks.length)}</div>
       ${mine.tab === "places" ? `<div class="row mine-filters">${fchip("all", x.fAll)}${fchip("want", x.fWant)}${fchip("visited", x.fVisited)}${fchip("favorite", x.fFav)}</div>
         <div class="mine-switches">${sw("mineOnMap", mine.onMap, "map", x.showOnMap)}${sw("onlyNew", mine.onlyNew, "search", x.onlyNew)}</div>
@@ -861,9 +893,17 @@
       const p = placeView(mine.places.get(b.dataset.mineMap)); if (p && p.coords) { mine.onMap = true; if (om) om.checked = true; drawPersonal(); A.showAt([p.coords.lat, p.coords.lon], 16); }
     }));
     box.querySelectorAll("[data-mine-del]").forEach((b) => b.addEventListener("click", async () => {
-      try { await S.deletePlace(b.dataset.mineDel); } catch { /* memory copy below */ }
-      mine.places.delete(b.dataset.mineDel); renderMine(); drawPersonal(); A.rerender();
+      const id = b.dataset.mineDel, old = mine.places.get(id);
+      try { await S.deletePlace(id); } catch { /* memory copy below */ }
+      mine.places.delete(id); mine.undo = old ? {row: old} : null;
+      clearTimeout(mine.undoTimer); mine.undoTimer = setTimeout(() => { mine.undo = null; renderMine(); }, 8000);
+      renderMine(); drawPersonal(); A.rerender();
     }));
+    $("#mineUndo")?.addEventListener("click", async () => {
+      const row = mine.undo && mine.undo.row; mine.undo = null; clearTimeout(mine.undoTimer);
+      if (row) { try { await S.putPlace(row, true); } catch { /* kept in memory below */ } mine.places.set(row.poi_id, row); }
+      renderMine(); drawPersonal(); A.rerender();
+    });
     box.querySelectorAll("[data-walk-open]").forEach((b) => b.addEventListener("click", async () => {
       const w = mine.walks.find((q) => q.id === b.dataset.walkOpen) || await S.getWalk(b.dataset.walkOpen);
       if (w) startWalk(w, w.id);

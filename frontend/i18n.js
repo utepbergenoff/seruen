@@ -51,7 +51,7 @@ window.I18N = {
     geoUnavailable: "Браузер не смог определить место. Проверьте геолокацию в настройках устройства и браузера или выберите точку на карте.",
     heroTitle: "Астана — город, который хочется исследовать",
     heroText: "Скажите, чего хотите, — подберу 1–3 места рядом: с дорогой, временем и честным «почему».",
-    scenariosTitle: "Готовые сценарии",
+    scenariosTitle: "Идеи для прогулки",
     photoCredit: "Фото: Wikimedia Commons",
     locCenter: "Точка в центре Астаны — перетащите её на карте",
     locMap: "Ищу рядом с точкой на карте",
@@ -59,7 +59,7 @@ window.I18N = {
     locFound: "Ищу рядом с вами · точность около {accuracy} м · координаты округлены",
     locLocating: "Определяю местоположение… Можно сразу выбрать точку на карте.",
     codeL: {walking_limit: "дольше выбранного лимита пешком", quiet: "тихо", sockets: "розетки", wifi: "Wi‑Fi", child_friendly: "для детей", within_radius: "в радиусе", within_budget: "укладывается во время",
-      over_budget: "не укладывается во время", accessibility_unconfirmed: "доступность не подтверждена", night_safety_unconfirmed: "нет данных для ночной прогулки", closed: "закрыто в это время", out_of_radius: "вне радиуса", category_mismatch: "не та категория", event_unverified: "событие не подтверждено",
+      over_budget: "не укладывается во время", accessibility_unconfirmed: "доступность не подтверждена", night_safety_unconfirmed: "нет данных для ночной прогулки", closed: "закрыто в это время", closed_at_visit: "закроется до прихода или во время посещения", out_of_radius: "вне радиуса", category_mismatch: "не та категория", event_unverified: "событие не подтверждено",
       not_child_friendly: "не для детей", adult_only: "18+", no_accessibility: "нет данных о доступности", does_not_fit_budget: "не укладывается во время"},
     budgetL: "Бюджет времени",
     youAreHere: "Я здесь", rulerLabel: "Время пешком от вас: {list}", wind: "ветер", ms: "м/с", indoorFirst: "крытые места в приоритете", retry: "Повторить",
@@ -71,7 +71,7 @@ window.I18N = {
     routeOsrm: "Линия — по улицам (OSRM), минуты — по формуле расстояние × 1,3 / скорость.",
     routeStraight: "Сервис маршрутов недоступен: линия по прямой, минуты — по формуле × 1,3.",
     tagline: "ИИ-помощник по прогулкам в Астане",
-    scenarios: "Сценарии",
+    scenarios: "Идеи для прогулки",
     about: "О данных и приватности",
     where: "Где вы?",
     myLocation: "Определить моё местоположение",
@@ -191,7 +191,7 @@ window.I18N = {
     geoUnavailable: "The browser could not find your location. Check device and browser location settings, or choose a point on the map.",
     heroTitle: "Astana — a city worth exploring",
     heroText: "Tell me what you'd like — I'll pick 1–3 places nearby, with the walk, the time and an honest “why”.",
-    scenariosTitle: "Ready-made scenarios",
+    scenariosTitle: "Walk ideas",
     photoCredit: "Photos: Wikimedia Commons",
     locCenter: "Point in the centre of Astana — drag it on the map",
     locMap: "Searching near the point on the map",
@@ -199,7 +199,7 @@ window.I18N = {
     locFound: "Searching near you · accuracy about {accuracy} m · coordinates rounded",
     locLocating: "Finding your location… You can choose a map point now.",
     codeL: {walking_limit: "exceeds your walking limit", quiet: "quiet", sockets: "sockets", wifi: "Wi‑Fi", child_friendly: "child-friendly", within_radius: "within radius", within_budget: "fits the time",
-      over_budget: "does not fit the time budget", accessibility_unconfirmed: "accessibility unconfirmed", night_safety_unconfirmed: "night conditions unconfirmed", closed: "closed at that time", out_of_radius: "outside radius", category_mismatch: "other category", event_unverified: "event not verified",
+      over_budget: "does not fit the time budget", accessibility_unconfirmed: "accessibility unconfirmed", night_safety_unconfirmed: "night conditions unconfirmed", closed: "closed at that time", closed_at_visit: "closed during the visit", out_of_radius: "outside radius", category_mismatch: "other category", event_unverified: "event not verified",
       not_child_friendly: "not for kids", adult_only: "18+", no_accessibility: "no accessibility data", does_not_fit_budget: "doesn't fit the time"},
     budgetL: "Time budget",
     youAreHere: "I'm here", rulerLabel: "Walking time from you: {list}", wind: "wind", ms: "m/s", indoorFirst: "indoor places first", retry: "Retry",
@@ -211,7 +211,7 @@ window.I18N = {
     routeOsrm: "Line follows streets (OSRM); minutes use the formula distance × 1.3 / speed.",
     routeStraight: "Routing service unavailable: straight line; minutes use the formula × 1.3.",
     tagline: "AI walking assistant for Astana",
-    scenarios: "Scenarios",
+    scenarios: "Walk ideas",
     about: "About data & privacy",
     where: "Where are you?",
     myLocation: "Detect my location",
@@ -330,7 +330,7 @@ window.I18N = {
     geoUnavailable: "Браузер орныңызды анықтай алмады. Құрылғы мен браузердің геолокация баптауларын тексеріңіз немесе картадан нүкте таңдаңыз.",
     heroTitle: "Астана — зерттегің келетін қала",
     heroText: "Не қалайтыныңызды айтыңыз — жақын жерден 1–3 орынды жолымен, уақытымен және адал «неге» түсіндірмесімен ұсынамын.",
-    scenariosTitle: "Дайын сценарийлер",
+    scenariosTitle: "Серуенге идеялар",
     photoCredit: "Фото: Wikimedia Commons",
     locCenter: "Нүкте Астана орталығында — оны картада жылжытыңыз",
     locMap: "Картадағы нүктенің жанынан іздеймін",
@@ -338,7 +338,7 @@ window.I18N = {
     locFound: "Жаныңыздан іздеймін · дәлдігі шамамен {accuracy} м · координаттар дөңгелектелген",
     locLocating: "Орныңыз анықталуда… Картадан нүктені қазір таңдауға болады.",
     codeL: {walking_limit: "жаяу жүру шегінен асады", quiet: "тыныш", sockets: "розетка", wifi: "Wi‑Fi", child_friendly: "балаларға", within_radius: "радиус ішінде", within_budget: "уақытқа сыяды",
-      over_budget: "уақытқа сыймайды", accessibility_unconfirmed: "қолжетімділік расталмаған", night_safety_unconfirmed: "түнгі жағдай расталмаған", closed: "бұл уақытта жабық", out_of_radius: "радиустан тыс", category_mismatch: "басқа санат", event_unverified: "оқиға расталмаған",
+      over_budget: "уақытқа сыймайды", accessibility_unconfirmed: "қолжетімділік расталмаған", night_safety_unconfirmed: "түнгі жағдай расталмаған", closed: "бұл уақытта жабық", closed_at_visit: "бару кезінде жабық болады", out_of_radius: "радиустан тыс", category_mismatch: "басқа санат", event_unverified: "оқиға расталмаған",
       not_child_friendly: "балаларға емес", adult_only: "18+", no_accessibility: "қолжетімділік дерегі жоқ", does_not_fit_budget: "уақытқа сыймайды"},
     budgetL: "Уақыт бюджеті",
     youAreHere: "Мен осындамын", rulerLabel: "Сізден жаяу уақыт: {list}", wind: "жел", ms: "м/с", indoorFirst: "жабық орындар бірінші", retry: "Қайталау",
@@ -350,7 +350,7 @@ window.I18N = {
     routeOsrm: "Сызық көшелермен (OSRM), минуттар формуламен: қашықтық × 1,3 / жылдамдық.",
     routeStraight: "Маршрут сервисі қолжетімсіз: түзу сызық, минуттар формуламен × 1,3.",
     tagline: "Астанадағы серуенге арналған ЖИ-көмекші",
-    scenarios: "Сценарийлер",
+    scenarios: "Серуенге идеялар",
     about: "Деректер және құпиялылық",
     where: "Қай жердесіз?",
     myLocation: "Менің орнымды анықтау",
@@ -537,3 +537,37 @@ Object.assign(window.I18N.kk.x, {lessCancel: "Болдырмау"});
 Object.assign(window.I18N.ru.gis.err, {twogis_access_denied: "Рейтинг и часы из 2ГИС сейчас недоступны. Откройте место в 2ГИС по ссылке «2GIS».", twogis_quota_exceeded: "Рейтинг и часы из 2ГИС сейчас недоступны. Откройте место в 2ГИС по ссылке «2GIS»."});
 Object.assign(window.I18N.en.gis.err, {twogis_access_denied: "2GIS rating and hours are unavailable right now. Open the place in 2GIS with the «2GIS» link.", twogis_quota_exceeded: "2GIS rating and hours are unavailable right now. Open the place in 2GIS with the «2GIS» link."});
 Object.assign(window.I18N.kk.gis.err, {twogis_access_denied: "2ГИС рейтингі мен жұмыс уақыты қазір қолжетімсіз. Орынды «2GIS» сілтемесі арқылы ашыңыз.", twogis_quota_exceeded: "2ГИС рейтингі мен жұмыс уақыты қазір қолжетімсіз. Орынды «2GIS» сілтемесі арқылы ашыңыз."});
+
+// editorial redesign (20.10): planner, results summary, card details, map legend, phone map, undo
+Object.assign(window.I18N.ru, {ideasLabel: "Например:", locRetry: "Определить снова", mapOpen: "Карта", answerDetails: "Как получен ответ",
+  fitWhy: "Почему подходит", summaryN: {one: "{n} место рядом, до {m} мин пешком", few: "{n} места рядом, до {m} мин пешком", many: "{n} мест рядом, до {m} мин пешком", other: "{n} места рядом, до {m} мин пешком"},
+  budgetHuman: "Дорога ≈{a} мин, на месте ≈{b} мин, до финиша ≈{c} мин, запас {r} мин — всего ≈{t} мин из {B}.",
+  lgMe: "Вы здесь", lgRec: "Рекомендации", lgOther: "Другие места", lgMeet: "Места встречи", lgStory: "Истории города", lgRest: "Удобства и паузы",
+  lgMine: "Мои места", lgFinish: "Финиш", lgRoute: "Маршрут", lgActive: "Следующая остановка"});
+Object.assign(window.I18N.en, {ideasLabel: "For example:", locRetry: "Detect again", mapOpen: "Map", answerDetails: "How this answer was made",
+  fitWhy: "Why it fits", summaryN: {one: "{n} place nearby, up to {m} min on foot", other: "{n} places nearby, up to {m} min on foot"},
+  budgetHuman: "Getting there ≈{a} min, at the place ≈{b} min, to the finish ≈{c} min, spare {r} min — about {t} min of {B} in total.",
+  lgMe: "You are here", lgRec: "Recommendations", lgOther: "Other places", lgMeet: "Meeting places", lgStory: "City stories", lgRest: "Comfort and breaks",
+  lgMine: "My places", lgFinish: "Finish", lgRoute: "Route", lgActive: "Next stop"});
+Object.assign(window.I18N.kk, {ideasLabel: "Мысалы:", locRetry: "Қайта анықтау", mapOpen: "Карта", answerDetails: "Жауап қалай алынды",
+  fitWhy: "Неге сәйкес", summaryN: {other: "Жақын жерде {n} орын, жаяу {m} минутқа дейін"},
+  budgetHuman: "Жол ≈{a} мин, орында ≈{b} мин, мәреге дейін ≈{c} мин, қор {r} мин — барлығы ≈{t} мин, {B} мин ішінде.",
+  lgMe: "Сіз осындасыз", lgRec: "Ұсыныстар", lgOther: "Басқа орындар", lgMeet: "Кездесу орындары", lgStory: "Қала тарихы", lgRest: "Ыңғайлылық пен үзіліс",
+  lgMine: "Менің орындарым", lgFinish: "Мәре", lgRoute: "Бағыт", lgActive: "Келесі аялдама"});
+Object.assign(window.I18N.ru.x, {placeRemoved: "Место удалено из «Моих мест»."});
+Object.assign(window.I18N.en.x, {placeRemoved: "Place removed from My places."});
+Object.assign(window.I18N.kk.x, {placeRemoved: "Орын «Менің орындарымнан» жойылды."});
+Object.assign(window.I18N.ru, {lgAB: "Старт A и B"});
+Object.assign(window.I18N.en, {lgAB: "Starts A and B"});
+Object.assign(window.I18N.kk, {lgAB: "A және B бастауы"});
+Object.assign(window.I18N.ru.x, {finishEstimate: "≈{m} мин на всю прогулку с таким финишем", finishEstimateLater: "Время посчитаем, когда выберете точку финиша."});
+Object.assign(window.I18N.en.x, {finishEstimate: "≈{m} min for the whole walk with this finish", finishEstimateLater: "The time is counted once you pick the finish point."});
+Object.assign(window.I18N.kk.x, {finishEstimate: "Осындай мәремен бүкіл серуен ≈{m} мин", finishEstimateLater: "Мәре нүктесін таңдағанда уақытты есептейміз."});
+
+// layout fixes 20.10: «Сегодня» for today's hours, a shorter 2GIS price note
+Object.assign(window.I18N.ru, {hoursToday: "Сегодня"});
+Object.assign(window.I18N.en, {hoursToday: "Today"});
+Object.assign(window.I18N.kk, {hoursToday: "Бүгін"});
+Object.assign(window.I18N.ru.x, {providerCostUnknown: "Цена входа и обязательный заказ в 2ГИС не указаны."});
+Object.assign(window.I18N.en.x, {providerCostUnknown: "2GIS lists no entry fee or minimum order."});
+Object.assign(window.I18N.kk.x, {providerCostUnknown: "2ГИС-те кіру ақысы мен міндетті тапсырыс көрсетілмеген."});

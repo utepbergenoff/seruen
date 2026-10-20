@@ -59,6 +59,9 @@
     sel.after(box); draw();
   }
 
+  // a colour token from the current theme, for map lines drawn by Leaflet
+  const cssColor = (name, fallback) => (getComputedStyle(document.documentElement).getPropertyValue(name) || "").trim() || fallback;
+
   // ---------- map ----------
   const map = L.map("map", {zoomControl: true}).setView([state.loc.lat, state.loc.lon], 15);
   const fitTo = (bounds, opts = {}) => map.fitBounds(bounds, {padding: [48, 48], ...opts, maxZoom: state.mapMode === "streets" ? 19 : 14});
@@ -172,13 +175,11 @@
 
   // ---------- presets, chips, scenarios ----------
   const plabel = (p) => (p.label && (p.label[state.lang] || p.label.ru)) || p.id;
-  // quick requests as photo tiles (photos: Wikimedia Commons / CC0, credits on the About page)
-  const CHIP_PHOTOS = ["coffee", "walk", "kids", "unusual", "flight", "night"];
+  // quick requests: small text chips under the search field
   function renderChips() {
     $("#chips").innerHTML = T().chips.map((c, i) => {
       const label = c[0].replace(/^[^\p{L}\p{N}]+/u, "");
-      const ph = CHIP_PHOTOS[i];
-      return `<button type="button" class="tile" data-i="${i}">${ph ? `<img src="img/cat-${ph}.jpg" alt="" decoding="async">` : ""}<span>${esc(label)}</span></button>`;
+      return `<button type="button" class="tile" data-i="${i}"><span>${esc(label)}</span></button>`;
     }).join("");
     $$("#chips button").forEach((b) => b.addEventListener("click", () => {
       const c = T().chips[+b.dataset.i];
@@ -209,9 +210,16 @@
     if (s.preset === "expo" && /необыч|unusual|ерекше/i.test(`${s.query} ${typeof s.title === "string" ? s.title : ""}`)) return "cat-unusual";
     return LOC_PHOTO[s.preset] || "hero-baiterek-night";
   }
-  // the same scenarios used to repeat here as cards; they now live only in the header menu (with photos)
+  // the six scenarios as photo tiles in the planner: the same preset place and request as the header menu
   function renderScenarioStrip() {
-    $("#scenarioStrip").hidden = true; $("#scenarioCards").innerHTML = "";
+    $("#scenarioCards").innerHTML = state.scenarios.map((s) => {
+      const p = state.presets.find((x) => x.id === s.preset);
+      const title = typeof s.title === "string" ? s.title : (s.title && (s.title[state.lang] || s.title.ru)) || s.id;
+      return `<button type="button" class="scard" data-id="${esc(s.id)}" aria-label="${esc(`${title} — ${p ? plabel(p) : ""}`)}"><img src="img/${scenarioPhoto(s)}.jpg" alt="" loading="lazy" decoding="async">
+        <span>${esc(title)}<small>${esc(p ? plabel(p) : "")}</small></span></button>`;
+    }).join("");
+    $$("#scenarioCards .scard").forEach((b) => b.addEventListener("click", () => runScenario(b.dataset.id)));
+    $("#scenarioStrip").hidden = !state.scenarios.length || !!ext.hideScenarioTiles?.();
   }
   // the search box shows the whole request: it grows line by line (up to a limit, then scrolls)
   function fitQuery() {
@@ -355,6 +363,8 @@
     } catch { fail("geoUnavailable"); }
   }
   $("#geoRetry").addEventListener("click", locate);
+  $("#locRetry").addEventListener("click", () => $("#geoRetry").click());
+  $("#locPick").addEventListener("click", () => $("#geoMap").click());
   $("#geoMap").addEventListener("click", () => {
     ext.cancelMapPick?.();
     cancelLocation(); state.geoMessage = "geoChooseMap"; renderLocLine();
@@ -513,7 +523,9 @@
       : state.lang === "kk" ? ["Дс","Сс","Ср","Бс","Жм","Сб","Жс"] : ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
     const readable = raw => String(raw || "").replace(/\b(Mo|Tu|We|Th|Fr|Sa|Su)\b/g, d => days[["Mo","Tu","We","Th","Fr","Sa","Su"].indexOf(d)])
       .replace(/\boff\b/g,t.hoursOff).replace(/(\d)-(\d)/g,"$1–$2");
-    const date = st.for_date ? fmt(t.hoursDate, {d: st.for_date}) + ": " : "";
+    const today = new Intl.DateTimeFormat("en-CA", {timeZone: "Asia/Almaty"}).format(new Date());
+    const day = st.for_date && st.for_date !== today ? new Intl.DateTimeFormat({en: "en-GB", kk: "kk-KZ"}[state.lang] || "ru-RU", {day: "numeric", month: "short", timeZone: "UTC"}).format(new Date(st.for_date + "T00:00:00Z")) : "";
+    const date = st.for_date ? (day ? fmt(t.hoursDate, {d: day}) : t.hoursToday) + ": " : "";
     // the pill shows today's hours only; a whole week is too long for it and goes to the tooltip
     const hours = st.today_hours != null ? readable(st.today_hours) : st.hours === "24/7" ? "24/7" : "";
     const source = st.source === "2gis" ? (state.lang==="en"?"2GIS":"2ГИС") : st.source && st.source !== "none" ? srcName(st.source) : "";
@@ -532,6 +544,24 @@
     const line = fmt(template, {a: b.walk_there_min, b: b.stay_min, c: finalWalk, r: b.reserve_min || 0, t: b.total_min, B: b.budget_min});
     return `<div class="bar" aria-hidden="true"><span class="w" style="width:${pc(b.walk_there_min)}"></span><span class="s" style="width:${pc(b.stay_min)}"></span><span class="w" style="width:${pc(finalWalk)}"></span></div>
       <div class="bar-cap">${esc(line)} ${icon(b.total_min <= b.budget_min ? "check" : "info")}${b.spare_min > 0 ? ` · ${esc(t.spare)} ${b.spare_min} ${esc(t.minutes)}` : ""}</div>`;
+  }
+  // the plain-words version of the time budget (no formula), accessibility, sources and who wrote the text
+  function moreDetails(r, d, origin) {
+    const t = T(), b = cardBudget(r, d), end = b.walk_to_end_min ?? b.walk_back_min;
+    const time = fmt(t.budgetHuman, {a: b.walk_there_min ?? r.walk_min, b: b.stay_min ?? r.time_to_spend_min, c: end ?? 0, r: b.reserve_min || 0, t: b.total_min, B: b.budget_min});
+    const acc = r.accessibility && r.accessibility !== "unknown" ? t.accessL[r.accessibility] : t.accessL.unknown;
+    const realDesc = r.description && !/^generated/.test(r.description_source || "");
+    return `<details class="more-details"><summary>${esc(t.more)}</summary>
+      <p>${icon("clock")} ${esc(time)}</p><p>${esc(acc)}</p>
+      ${realDesc ? `<p>${esc(r.description)}</p>` : ""}<p>${esc(origin)}</p></details>`;
+  }
+  // what the answer has in common, in one sentence: how many places, how far at most, which kinds
+  function answerSummary(recs) {
+    const t = T(), n = recs.length, far = Math.max(...recs.map((r) => r.walk_min || 0));
+    const kinds = [...new Set(recs.map((r) => r.kind_label || r.category_label || catLabel(r.category)).filter(Boolean))];
+    const forms = t.summaryN || {};
+    const head = fmt(forms[new Intl.PluralRules({en: "en", kk: "kk"}[state.lang] || "ru").select(n)] || forms.other || "{n}", {n, m: far});
+    return `<section class="answer-summary" aria-live="polite"><b>${esc(head)}</b><span>${esc(kinds.join(" · "))}</span></section>`;
   }
   function renderModeBadge(mode) {
     const m = mode || state.apiMode;
@@ -572,7 +602,7 @@
         ${p.eligible === false ? `<p class="msg warn">${esc(t.catalog.filtered)} ${esc(codeLabel(p.excluded_because))}</p>` : ""}
         <div class="actions"><a class="btn" href="${esc(nav.gisPlace)}" target="_blank" rel="noopener">${esc(t.openIn2gis)}</a>
         ${FEAT.mapLinks ? `<a class="btn" href="${esc(nav.gis)}" target="_blank" rel="noopener">${esc(t.route2gis)}</a>` : ""}
-        ${gisOn() ? `<button type="button" class="btn" id="selectedGis" data-gis-url="${esc(nav.gisPlace)}" aria-expanded="false" aria-controls="selectedGisBox">${esc(t.gisBtn)}</button>` : gisReviewLink(nav.gisPlace)}</div>
+        ${gisOn() ? `<button type="button" class="btn" id="selectedGis" data-gis-url="${esc(nav.gisPlace)}" aria-expanded="false" aria-controls="selectedGisBox">${esc(t.gisBtn)}</button>` : ""}</div>
         <div class="gis-box" id="selectedGisBox" hidden></div></article>`;
       $("#selectedGis")?.addEventListener("click", e => toggleGis(detail.firstElementChild, id, e.currentTarget));
     }
@@ -582,7 +612,6 @@
   }
   function render(d) {
     if (ext.filterAnswer) d = ext.filterAnswer(d);
-    if (GIS_REFUSED.test(d.source_error || "")) state.gisRefused = true;
     const t = T();
     layer.clearLayers(); suggestionRoutes.clearLayers();
     if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
@@ -591,8 +620,9 @@
     const nearby = d.nearby_places || [];
     document.body.classList.add("has-results");
     renderModeBadge(d.mode);
-    let html = `<div class="result-head"><span class="badge mode-${esc(d.mode)}">${esc(t.mode)}: ${esc(t.modes[d.mode] || d.mode)}${d.cached_from ? " (" + esc(t.modes[d.cached_from] || d.cached_from) + ")" : ""}</span>
-      <span class="meta">${d.timing_ms != null ? esc(Math.round(d.timing_ms)) + " ms" : ""}</span></div>`;
+    let html = recs.length ? answerSummary(recs) : "";
+    const meta = `<details class="answer-meta"><summary>${icon("info")} ${esc(t.answerDetails)}</summary><div class="result-head-inner"><span class="badge mode-${esc(d.mode)}">${esc(t.mode)}: ${esc(t.modes[d.mode] || d.mode)}${d.cached_from ? " (" + esc(t.modes[d.cached_from] || d.cached_from) + ")" : ""}</span>
+      <span class="meta">${d.timing_ms != null ? esc(Math.round(d.timing_ms)) + " ms" : ""}</span></div></details>`;  // shown at the end
     if (d.source === "2gis") html += `<p class="badge gis">${esc(t.catalog.source)}</p>`;
     const notes = (recs.length ? [] : d.notes || []).map((n) => `<div class="note info">${esc(n)}</div>`).join("") +
       (d.safety || []).map((n) => `<div class="note safety">${esc(n)}</div>`).join("");
@@ -622,23 +652,24 @@
           ${r.open_status ? statusPill(r.open_status) : ""}</div>
         ${r.address ? `<div class="meta">${icon("pin")} ${esc(r.address)}</div>` : ""}
         ${ext.cardBadges ? `<div class="pills">${ext.cardBadges(r)}</div>` : ""}
-        <p class="field why rec-desc">${esc(sentences(r.why, r.what_to_do))}</p>
-        <div class="meta rec-stay" title="${esc(origin)}">⏱ ${esc(t.stay)}: ~${esc(r.time_to_spend_min)} ${esc(t.minutes)} · ${srcBadge(r.what_to_do_source)}</div>
+        <div class="field why rec-desc fit"><p class="fit-line"><b>${esc(t.fitWhy)}</b>${esc(sentences(r.why))}</p><p class="fit-line"><b>${esc(t.todo)}</b>${esc(sentences(r.what_to_do))}</p></div>
+        <div class="meta rec-stay">⏱ ${esc(t.stay)}: ~${esc(r.time_to_spend_min)} ${esc(t.minutes)} · ${srcBadge(r.what_to_do_source)}</div>
         ${FEAT.photos ? `<div class="photos" aria-live="polite"></div>` : ""}
         ${ext.cardPrimary ? ext.cardPrimary(r, i, d) : ""}
         <div class="actions">
           ${FEAT.mapLinks ? `<a class="btn" href="${esc(L2.gis)}" target="_blank" rel="noopener">${icon("map")} ${esc(t.route2gis)}</a>
           <a class="btn" href="${esc(L2.google)}" target="_blank" rel="noopener">${icon("nav")} ${esc(t.routeGoogle)}</a>` : ""}
           <button type="button" class="btn" data-act="map">${icon("pin")} ${esc(t.onMap)}</button>
-          ${gisOn() ? `<button type="button" class="btn" data-act="gis" data-gis-url="${esc(L2.gisPlace)}" aria-expanded="false" aria-controls="gis-${i}">${icon("star")} ${esc(t.gisBtn)}</button>` : gisReviewLink(L2.gisPlace)}
+          ${gisOn() ? `<button type="button" class="btn" data-act="gis" data-gis-url="${esc(L2.gisPlace)}" aria-expanded="false" aria-controls="gis-${i}">${icon("star")} ${esc(t.gisBtn)}</button>` : ""}
         </div>
         ${gisOn() ? `<div class="gis-box" id="gis-${i}" aria-live="polite" hidden></div>` : ""}
         ${ext.cardExtras ? ext.cardExtras(r, i, d) : ""}
+        ${moreDetails(r, d, origin)}
       </article>`;
       const pinIcon = L.divIcon({className: "", iconSize: [30, 30], iconAnchor: [15, 15], html: `<div class="pin"><b>${i + 1}</b></div>`});
       // a thin dashed line from the person to each pick: every place is measured from where they stand
       const from = state.lastReq ? state.lastReq.location : state.loc;
-      if (L.polyline) L.polyline([[from.lat, from.lon], [r.coords.lat, r.coords.lon]], {color: "#00AFCA", weight: 3, dashArray: "1 8", lineCap: "round", opacity: .95, interactive: false}).addTo(suggestionRoutes);
+      if (L.polyline) L.polyline([[from.lat, from.lon], [r.coords.lat, r.coords.lon]], {color: cssColor("--route-light", "#3F7B5C"), weight: 3, dashArray: "1 8", lineCap: "round", opacity: .95, interactive: false}).addTo(suggestionRoutes);
       markers[r.poi_id] = L.marker([r.coords.lat, r.coords.lon], {icon: pinIcon, title: r.name}).addTo(layer)
         .bindPopup(`<b>${i + 1}. ${esc(r.name)}</b><br>${esc(r.distance_m)} ${esc(t.distance)} · ${esc(r.walk_min)} ${esc(t.walk)}`)
         .on("click", () => selectPlace(r.poi_id));
@@ -663,7 +694,7 @@
     }
     if (d.next_cursor) html += `<button type="button" id="nextPlacesBtn" class="btn">${esc(t.catalog.next)}</button>`;
     if (ext.resultsBottom) html += ext.resultsBottom(d);
-    html += considered(d);
+    html += considered(d) + meta;
     html += `<p class="foot">${icon("info")} ${esc(d.disclaimer || t.disclaimerShort)}</p>`;
     selectedCardHome = null;
     $("#results").innerHTML = `<div id="resultsOverview" tabindex="-1">${html}</div>
@@ -709,23 +740,11 @@
   }
 
   // ---------- 2GIS rating and hours (extra): asked only when the button is pressed, never for every card ----------
-  // Refusal belongs to this session. A restored server must not be hidden by a six-hour device flag.
-  const GIS_REFUSED = /access_denied|forbidden|invalid_key|quota/i;
-  state.gisRefused = false;
+  // «Рейтинг и часы 2ГИС» always opens the 2GIS details inside the app; a refusal is explained in its box.
+  // Only a 2GIS switched off on the server (/health enabled:false) hides the button.
+  state.gisOff = false;
   try { localStorage.removeItem("seruen_gis_refused"); } catch { /* optional migration */ }
-  const gisOn = () => FEAT.twogis && !state.gisRefused;
-  function gisReviewLink(url) {
-    if (!FEAT.twogis || !/^https:\/\/2gis\.kz\/astana\//.test(url || "")) return "";
-    const exact = /^https:\/\/2gis\.kz\/astana\/(firm|geo)\/\d+$/.test(url);
-    return `<a class="btn" data-gis-reviews href="${esc(url + (exact ? "/tab/reviews" : ""))}" target="_blank" rel="noopener noreferrer" title="${esc(T().gisExternalHint)}">${icon("star")} ${esc(exact ? T().gisReviews : T().gisFindReviews)} ${icon("ext")}</a>`;
-  }
-  function gisRefusedNow(keep = null) {
-    state.gisRefused = true;
-    $$('[data-act="gis"], #selectedGis').forEach((b) => { if (b !== keep) {
-      b.closest(".rec, article")?.querySelector(".gis-box")?.setAttribute("hidden", "");
-      b.insertAdjacentHTML("afterend", gisReviewLink(b.dataset.gisUrl)); b.remove();
-    } });
-  }
+  const gisOn = () => FEAT.twogis && !state.gisOff;
   const GIS_RETRY = ["twogis_timeout", "twogis_unavailable", "twogis_local_limit", "network"];
   const gisKey = (id) => `${id}|${state.lang === "kk" ? "kk" : "ru"}`;  // English gets the Russian 2GIS answer anyway
   async function getTwoGis(id) {
@@ -755,7 +774,7 @@
   function gisHtml(g, url) {
     const t = T(), G = t.gis;
     if (g.error) {
-      return `<p class="msg warn">${esc(G.err[g.error] || G.err.twogis_unavailable)}${GIS_RETRY.includes(g.error) ? ` <button type="button" class="btn small" data-act="gis-retry">${esc(t.retry)}</button>` : ""}</p>${gisReviewLink(url)}`;
+      return `<p class="msg warn">${esc(G.err[g.error] || G.err.twogis_unavailable)}${GIS_RETRY.includes(g.error) ? ` <button type="button" class="btn small" data-act="gis-retry">${esc(t.retry)}</button>` : ""}</p>`;
     }
     const today = new Intl.DateTimeFormat("en-CA", {timeZone: "Asia/Almaty"}).format(new Date());
     const special = (g.special_hours || []).filter((x) => x.date >= today).slice(0, 3)
@@ -789,7 +808,6 @@
       const g = await getTwoGis(id);
       btn.disabled = false;
       if (!g.error) state.gis[key] = g;  // failures are never kept as venue facts
-      if (GIS_REFUSED.test(g.error || "")) gisRefusedNow(btn);
       if (!card.isConnected) return;
       box.innerHTML = gisHtml(g, btn.dataset.gisUrl);
     } else box.innerHTML = gisHtml(state.gis[key], btn.dataset.gisUrl);
@@ -898,7 +916,7 @@
     const geo = await osrmLine([start, ...plan.order, start]);
     if (state.walkActive || state.last !== d || !$("#routeBox")) return;
     if (routeLine) map.removeLayer(routeLine);
-    routeLine = L.polyline(geo.line, {color: "#00708A", weight: 5, dashArray: geo.osrm ? null : "8 8", lineCap: "round", opacity: .9}).addTo(map);
+    routeLine = L.polyline(geo.line, {color: cssColor("--route", "#1E4A37"), weight: 5, dashArray: geo.osrm ? null : "8 8", lineCap: "round", opacity: .9}).addTo(map);
     fitTo(routeLine.getBounds());
     const pts = plan.order.map((p) => `${p.lon}%2C${p.lat}`).join("%7C");
     const gis = `https://2gis.kz/astana/directions/tab/pedestrian/points/%7C${pts}?m=${plan.order[0].lon}%2C${plan.order[0].lat}%2F15`;
@@ -926,9 +944,8 @@
       try {
         const h = await getJSON(API + "/health");
         state.features = h.feature_contract_version === 2 && h.features && typeof h.features === "object" ? h.features : {};
-        // Keep a way to read reviews externally when API access is unavailable.
-        if (h.twogis && (h.twogis.enabled === false || GIS_REFUSED.test(h.twogis.last_status || ""))) gisRefusedNow();
-        else if (h.twogis?.last_status === "ok" || h.twogis?.last_status === "not_checked") state.gisRefused = false;
+        const off = h.twogis?.enabled === false;
+        if (off !== state.gisOff) { state.gisOff = off; if (state.last) render(state.last); }
         if (ext.onHealth) ext.onHealth(h);
         const avail = h.mode_available || [];
         state.apiMode = h.ai === "gemini" || avail.includes("ai") ? "ai" : h.ai === "no_ai" || avail.includes("no_ai") ? "no_ai" : (h.mode || null);
@@ -985,7 +1002,7 @@
   window.SeruenApp = {state, FEAT, API, T, fmt, esc, icon, $, $$, map, layer, markers, L, showAt, fitTo, round3, setWalkActive,
     freezeLocation: () => { if (state.locating) { cancelLocation(); renderLocLine(); } },
     postJSON, getJSON, context, ask: () => ask(), render: (d) => render(d), rerender: () => { if (state.last) render(state.last); }, catLabel,
-    statusPill, links, fillPhotos, mirrorSelect, selectPlace: (id, focus) => selectPlace(id, focus), presetName: p => p?.name?.[state.lang] || p?.name?.ru || p?.label?.[state.lang] || p?.id || ""};
+    statusPill, links, fillPhotos, mirrorSelect, cssColor, renderScenarioStrip: () => renderScenarioStrip(), selectPlace: (id, focus) => selectPlace(id, focus), presetName: p => p?.name?.[state.lang] || p?.name?.ru || p?.label?.[state.lang] || p?.id || ""};
   init();
   if (ext.onReady) ext.onReady();
 })();

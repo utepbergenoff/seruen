@@ -193,6 +193,8 @@
     if (!has("meet_halfway")) mode = "walk";
     if (!has("winter_plan")) winterEnabled = false;
     $("#searchModeField").hidden = !has("meet_halfway");
+    E.hideScenarioTiles = () => mode === "meet";
+    A.renderScenarioStrip?.();
     // «С кем» is about a walk; a meeting is always two people
     const withWhom = $("#companions")?.closest("label"); if (withWhom) withWhom.hidden = mode === "meet";
     $("#searchModeField").innerHTML = has("meet_halfway") ? `<fieldset class="search-intent"><legend>${esc(x.searchFor)}</legend>
@@ -218,7 +220,7 @@
       });
     }
     $("#storyLayerField").hidden = !has("city_history");
-    $("#storyLayerField").innerHTML = has("city_history") ? `<label class="story-layer-toggle"><input id="showCityStories" type="checkbox" role="switch"${showStories ? " checked" : ""}> ${esc(x.storyLayer)}</label><button type="button" class="btn small" id="browseLandmarks">${esc(x.historyGo)}</button><p class="meta" id="storyLayerStatus" role="status"></p>` : "";
+    $("#storyLayerField").innerHTML = has("city_history") ? `<label class="story-layer-toggle"><input id="showCityStories" type="checkbox" role="switch"${showStories ? " checked" : ""}> ${esc(x.storyLayer)}</label><button type="button" class="btn small" id="browseLandmarks" title="${esc(x.historyGo)}">${esc(x.historyGo)}</button><p class="meta" id="storyLayerStatus" role="status"></p>` : "";
     if ($("#browseLandmarks")) $("#browseLandmarks").onclick=()=>{activeStory=null;E.focusPlace?.();open("history");$("#experiences").scrollIntoView({block:"start",behavior:"smooth"});};
     if (has("city_history")) $("#showCityStories").onchange = e => { showStories = e.target.checked; drawStories(); if (showStories) void loadStories(); };
     if (!$("#experienceBody")) $("#experiences").innerHTML = '<div id="experienceBody" hidden></div>';
@@ -334,7 +336,7 @@
       const draw = selected => {
         overlays.clearLayers();drawParticipants();
         data.items.forEach((p,i)=>pin(p.coords,p.name,()=>selectMeeting(i)));
-        if(selected){selected.paths.forEach((path,i)=>L.polyline(path.map(([lon,lat])=>[lat,lon]),{color:i?"#BD6C00":"#00708A",weight:3,dashArray:"6 6"}).addTo(overlays));
+        if(selected){selected.paths.forEach((path,i)=>L.polyline(path.map(([lon,lat])=>[lat,lon]),{color:i?A.cssColor("--route-b","#B07A1A"):A.cssColor("--route","#1E4A37"),weight:3,dashArray:"6 6"}).addTo(overlays));
           A.fitTo(L.latLngBounds([...selected.paths[0],...selected.paths[1]].map(([lon,lat])=>[lat,lon])));}
       };
       const selectMeeting=index=>{
@@ -393,7 +395,7 @@
       <p class="meta">${result.routing_source==="distance_estimate"?esc(x.routeEstimate):""}</p>
       <details><summary>${esc(x.source)}</summary><p class="meta">${esc(result.notes.join(" "))}</p></details>
       ${active?"":`<button id="previewStart" class="btn primary" type="button">${esc(x.start)}</button>`}</section>`;
-    if(result.geometry?.length){L.polyline(result.geometry.map(([lon,lat])=>[lat,lon]),{color:"#00708A",weight:4,dashArray:result.routing_source==="osrm_foot"?null:"5 5"}).addTo(overlays);
+    if(result.geometry?.length){L.polyline(result.geometry.map(([lon,lat])=>[lat,lon]),{color:A.cssColor("--route","#1E4A37"),weight:4,dashArray:result.routing_source==="osrm_foot"?null:"5 5"}).addTo(overlays);
       const bounds=result.geometry.map(([lon,lat])=>[lat,lon]);
       if(meeting) bounds.push([meeting.second.lat,meeting.second.lon]);
       A.fitTo(L.latLngBounds(bounds));}
