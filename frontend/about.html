@@ -2,108 +2,221 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title data-i18n="title">Серуен — о данных и приватности</title>
   <script src="theme.js"></script>
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500;7..72,600;7..72,700&family=Unbounded:wght@500;700&display=swap">
   <link rel="stylesheet" href="styles.css">
-  <style>
-    .page { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
-    .page section { margin-bottom: 14px; }
-    .page h2 { margin-top: 4px; }
-    .page li { margin: 4px 0; }
-    .lead { font-size: 17px; }
-  </style>
+  <link rel="stylesheet" href="editorial.css">
+  <link rel="stylesheet" href="about.css">
 </head>
-<body>
+<body class="about-page">
+  <a class="skip" href="#main" data-i18n="skip">К основному тексту</a>
   <header class="top">
-    <div class="brand"><svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#00AFCA"/><path d="M8.5 22.5c6 0 5.5-13 15-13" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="8.5" cy="22.5" r="3.4" fill="#FFC20E" stroke="#fff" stroke-width="1.8"/><circle cx="23.5" cy="9.5" r="3" fill="#fff"/></svg><div><h1>Серуен</h1><p class="tagline" data-i18n="tagline">О данных и приватности · Data &amp; privacy</p></div></div>
-    <nav class="top-actions">
-      <div class="lang" role="group" aria-label="Language">
+    <a class="brand" href="./" aria-label="Серуен">
+      <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1E4A37"/><path d="M8.5 22.5c6 0 5.5-13 15-13" fill="none" stroke="#FFFCF6" stroke-width="3" stroke-linecap="round"/><circle cx="8.5" cy="22.5" r="3.4" fill="#C99A2E" stroke="#FFFCF6" stroke-width="1.8"/><circle cx="23.5" cy="9.5" r="3" fill="#FFFCF6"/></svg>
+      <div>
+        <span class="brand-name">Серуен</span>
+        <p class="tagline" data-i18n="tagline">ИИ-помощник по прогулкам в Астане</p>
+      </div>
+    </a>
+    <div class="top-actions">
+      <div class="lang" role="group" aria-label="Язык" data-i18n-label="langLabel">
         <button type="button" data-lang="kk">KZ</button><button type="button" data-lang="ru">RU</button><button type="button" data-lang="en">EN</button>
       </div>
-      <a class="btn" href="./" data-i18n="back">← Назад / Back</a>
-    </nav>
+      <a class="btn back" href="./"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/></svg><span class="back-text" data-i18n="back">Назад</span></a>
+    </div>
   </header>
-  <main class="page">
-    <section class="card block" data-i18n="data">
-      <h2>Ваши данные и управление ими</h2>
-      <p class="lead">Без аккаунта. Личные заметки и сохранённые прогулки остаются в этом браузере.</p>
-      <ul>
-        <li>«Мои места» и заметки хранятся в IndexedDB на устройстве до удаления. Удалить их можно в «Мои места → Очистить всю историю» или настройках браузера. На общем устройстве они доступны другим его пользователям.</li>
-        <li>Текст заметок не отправляется серверу или Gemini. При фильтрации сервер получает выбранные ограничения и ID исключённых или посещённых мест. Постоянной серверной истории пользователя нет.</li>
-        <li>Координаты округляются до 3 знаков (около 100 м) на устройстве и сервере. Это снижает точность, но <b>не делает местоположение анонимным</b>. Можно отказаться от геолокации и выбрать общественный ориентир на карте.</li>
-        <li>Запросы к нашему API передают точку в теле запроса. При поиске 2ГИС получает округлённый центр и поисковые слова. При построении, пересчёте, обновлении и экспорте маршрута OSRM может получать округлённые начало и финиш, а также координаты остановок.</li>
-        <li>Погода запрашивается для центра Астаны. Внешнему навигатору кнопка на карточке передаёт координаты места.</li>
-        <li>Кеши сервера ограничены по размеру и хранятся в памяти: повторное использование обычного ответа — до 30 минут, данных поиска 2ГИС — до 5 минут, анализа фото — до 6 часов. Истёкшая запись может оставаться до вытеснения или перезапуска. Ключи запросов хешируются.</li>
-        <li>Журнал приложения не записывает текст запросов и координаты. У хостинга, карт, шрифтов и внешних API есть собственные журналы и правила; они могут получать IP-адрес. Приложение не устанавливает рекламные трекеры.</li>
-      </ul>
-    </section>
-    <section class="card block" data-i18n="gemini">
-      <h2>Что уходит в Gemini</h2>
-      <p>Текст запроса, контекст (язык, время, состав группы, погода), ограничения и сведения о кандидатах. Отдельные поля вашей геопозиции и финиша, история посещений и личные заметки в Gemini не отправляются. Если вы сами напишете адрес или имя в запросе, этот текст может попасть в ИИ: автоматического удаления личных сведений нет.</p>
-      <p>Для анализа фото передаются снимки места, его название, категория, текст запроса и состав группы. Не указывайте личные сведения в поиске. При недоступности Gemini подбор работает по правилам с соответствующей пометкой.</p>
-    </section>
-    <section class="card block" data-i18n="read">
-      <h2>Как читать рекомендации</h2>
-      <ul>
-        <li>Код выбирает и упорядочивает места, проверяет расстояния, расписания, ограничения и бюджет. Gemini пишет короткие объяснения и идеи занятий по переданным фактам. Принятый текст помечен «идея ИИ»; при ошибке показан текст по правилам.</li>
-        <li>Короткое объяснение формируется из данных и окончательного расчёта: что совпало с запросом, сколько идти и сколько займёт посещение с возвращением или финишем. При запросе Wi-Fi, розеток или тишины отсутствие подтверждения указывается прямо.</li>
-        <li>Тип заведения сам по себе не подтверждает удобства. Пометка «место выбрал ИИ» относится к выбору; текст объяснения собирает сервер. Статус ИИ не является оценкой достоверности места.</li>
-        <li>«Открыто сейчас» — соответствие расписанию источника не старше 30 дней, а не проверка двери или свободных столов. «Вероятно открыто» означает более старые часы. Для будущего времени текущая обстановка неизвестна.</li>
-        <li>Время пешком — оценка. Она не гарантирует отсутствие льда, перекрытий, лестниц или доступность пути для коляски.</li>
-      </ul>
-    </section>
-    <section class="card block" data-i18n="sources">
-      <h2>Источники и ограничения</h2>
-      <ul>
-        <li><b>OpenStreetMap</b> (ODbL) — основа локальной базы; <b>Википедия</b> (CC BY-SA) — часть описаний. Тексты, составленные по тегам, помечены как сгенерированные.</li>
-        <li><b>2ГИС</b> — онлайн-поиск, рейтинги и расписания. Данные не импортируются в постоянную базу. Если онлайн-поиск недоступен или не дал подходящих мест, интерфейс использует локальную базу и отмечает источник.</li>
-        <li><b>Фото</b> — Wikimedia Commons и снимки команды. Перед показом проверяется привязка к конкретному объекту и контрольная сумма файла; близость координат и догадка ИИ не доказывают принадлежность фотографии. Непроверенные снимки не показываются. Автор и лицензия указаны у материала.</li>
-        <li>ИИ описывает только видимое: свет, интерьер, сиденья. Фото не доказывает тишину, безопасность, наличие свободных столов сейчас или доступность всего маршрута. Ошибки анализа возможны; отсутствие анализа не означает, что место плохое.</li>
-        <li><b>Удобства и расходы</b> учитываются только при свежей подтверждённой записи. Неизвестная цена не считается нулевой; необязательная покупка не означает бесплатное меню. Сведения о платном подъёме на Байтерек относятся к подъёму, а не к площади вокруг.</li>
-        <li><b>Карта:</b> схема OpenStreetMap; спутник и подписи — <a href="https://maps.eox.at/">EOX::Maps</a>. Снимки Sentinel-2 за 2025 год обзорные: они не показывают состояние места сейчас и не подтверждают входы или проходимость. Спутник используется в некоммерческом учебном проекте по <a href="https://cloudless.eox.at/documentation/license">условиям EOX (CC BY-NC-SA)</a>; коммерческому запуску нужна отдельная лицензия или другой источник. Поставщик карты получает IP-адрес и номера отображаемых тайлов (область карты). Спутниковые тайлы не сохраняются для офлайна.</li>
-        <li>Тема и вид карты сохраняются только на устройстве. Выбор места и история отмены пересчётов — в памяти вкладки; после закрытия вкладки нужно открыть сохранённую прогулку или построить новую.</li>
-        <li><b>Google Places</b>: запросы рейтингов и часов выключены.</li>
-      </ul>
-    </section>
-    <section class="card block" data-i18n="safety">
-      <h2>Безопасность</h2>
-      <ul>
-        <li>Ночью (22:00–06:00) радиус ограничен 1 км; наружные места без отметок об освещении или людности исключаются. Эти отметки тоже могут устареть. Это фильтр данных, а не гарантия безопасности.</li>
-        <li>С ребёнком исключаются бары, кальянные и места 18+. В мороз от −15 °C или ветер от 10 м/с радиус ограничен 500 м с приоритетом помещений.</li>
-        <li>Не рекомендуем выходить на лёд водоёмов или заходить на закрытые территории. Оцените фактическую обстановку и обратный путь перед выходом.</li>
-      </ul>
-    </section>
-    <section class="card block" id="photos">
-      <h2 data-i18n="photosTitle">Фотографии · Photos</h2>
-      <p data-i18n="photosIntro">Фото взяты с Wikimedia Commons под свободными лицензиями (CC0, CC BY, CC BY-SA) и уменьшены для сайта. Авторы:</p>
-      <ul>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Night_at_Esil_District%2C_Astana_%28P1190721%29.jpg" target="_blank" rel="noopener">Night at Esil District, Astana (P1190721)</a> — Matti Blume, CC BY-SA 4.0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Taking_notes_at_a_coffee_table_%28Unsplash%29.jpg" target="_blank" rel="noopener">Taking notes at a coffee table (Unsplash)</a> — Tran Mau Tri Tam tranmautritam, CC0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Astana_Botanical_Garden_20260628_%283%29.jpg" target="_blank" rel="noopener">Astana Botanical Garden 20260628 (3)</a> — Nurken, CC BY-SA 4.0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Khan-Shatyr_shopping_mall.jpg" target="_blank" rel="noopener">Khan-Shatyr shopping mall</a> — Dauren Nabijan, CC0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Expo_2017_%22Nur_Alem%22_Pavilion_Space_Exhibition.jpg" target="_blank" rel="noopener">Expo 2017 &quot;Nur Alem&quot; Pavilion Space Exhibition</a> — 颲風, CC BY-SA 4.0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Astana_Nurly_Jol_2018.jpg" target="_blank" rel="noopener">Astana Nurly Jol 2018</a> — Randwick, CC BY-SA 4.0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Baiterek_monument_at_night.jpg" target="_blank" rel="noopener">Baiterek monument at night</a> — Dauren Nabijan, CC0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Expo_2017_%22Nur_Alem%22_Pavilion_Glass_Pathway_1.jpg" target="_blank" rel="noopener">Expo 2017 &quot;Nur Alem&quot; Pavilion Glass Pathway 1</a> — 颲風, CC BY-SA 4.0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Khan_Shatyr.jpg" target="_blank" rel="noopener">Khan Shatyr</a> — Quarot, CC0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:A%C4%89etcentro_SilkWay_%28Astano%29_01.jpg" target="_blank" rel="noopener">Aĉetcentro SilkWay (Astano) 01</a> — RG72, CC BY-SA 4.0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:View_from_Bayterek_tower.jpg" target="_blank" rel="noopener">View from Bayterek tower</a> — Ken and Nyetta, CC BY 2.0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Nursultan_Nazarbayev_International_Airport%2C_Astana_%28LRM_20240405_115306%29.jpg" target="_blank" rel="noopener">Nursultan Nazarbayev International Airport, Astana (LRM 20240405 115306)</a> — Matti Blume, CC BY-SA 4.0</li>
-      </ul>
-    </section>
-    <section class="card block" id="city-experiences" data-i18n="city">
-      <h2>Истории, встречи и зимние прогулки</h2>
-      <p>Истории относятся к конкретным объектам: у каждой есть источник и кнопка Википедии. Тексты сокращены и переведены; пересказы Википедии доступны на условиях <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>. Авторов и историю правок можно найти в исходной статье. Подборка расширяется после проверки, а не за счёт выдуманных рассказов.</p>
-      <p>Для встречи выбирайте общественные ориентиры с согласия участников. Обе точки округляются и отправляются серверу; 2ГИС может получать центр поиска между ними. Точки встречи не сохраняются в профиле или ссылке. Времена сравниваются по одной оценочной модели, обратный путь не включён. Пунктирные линии не подтверждают наличие переходов или доступность улиц.</p>
-      <p>Зимний режим ограничивает время отдельных переходов и подбирает остановки в помещении. Он не проверяет лёд, ветер между зданиями или возможность войти прямо сейчас. Превью показывает расчётные этапы: это не панорама и не наблюдение за реальной обстановкой.</p>
-    </section>
-    <section class="card block" lang="en" data-ru-only>
-      <h2>In English</h2>
-      <p>No accounts. Personal notes and saved walks remain in this browser until deleted through My places or browser settings. Filtering can send visited/excluded place IDs to the backend, but not note text. Coordinates are rounded to three decimals; this is not anonymisation. Choose a public landmark instead of GPS if preferred. Gemini receives search text, context and candidate facts, without separate user-location, destination or visit-history fields. Personal information typed into search is not automatically redacted. 2GIS receives a rounded search centre; routing requests can send rounded start/end points and stops to OSRM. Bounded in-memory caches reuse results for up to 30 minutes (local recommendations), five minutes (2GIS search) or six hours (photo analysis); expired entries may remain until eviction or restart. Providers have their own logs and policies. Rules select candidates and calculate times; Gemini writes explanations and activity ideas from supplied evidence. AI text is labelled; rejected generations fall back to templates. Photo identity and image hashes are reviewed before display. Photos do not establish quietness, safety or current seating availability. Check conditions before visiting.</p>
-    </section>
+
+  <main id="main" class="about" tabindex="-1">
+    <div class="about-hero">
+      <h1 data-i18n="pageTitle">О данных и приватности</h1>
+      <p class="about-intro" data-i18n="intro">Здесь описано, что Серуен хранит на вашем устройстве, что передаёт серверу, Gemini и другим сервисам и как появляются рекомендации. Ниже — источники и их ограничения, безопасность, авторы фото, а также истории, встречи и зимние прогулки.</p>
+    </div>
+
+    <nav class="toc" id="toc" aria-labelledby="toc-title">
+      <h2 class="toc-title" id="toc-title" data-i18n="tocTitle">Содержание</h2>
+      <ol>
+        <li><a href="#data"><span data-i18n="dataTitle">Ваши данные и управление ими</span></a></li>
+        <li><a href="#gemini"><span data-i18n="geminiTitle">Что уходит в Gemini</span></a></li>
+        <li><a href="#recommendations"><span data-i18n="readTitle">Как работают рекомендации</span></a></li>
+        <li><a href="#sources"><span data-i18n="sourcesTitle">Источники и ограничения</span></a></li>
+        <li><a href="#safety"><span data-i18n="safetyTitle">Безопасность</span></a></li>
+        <li><a href="#photos"><span data-i18n="photosTitle">Авторы фотографий</span></a></li>
+        <li><a href="#city-experiences"><span data-i18n="cityTitle">Истории, встречи и зимние прогулки</span></a></li>
+        <li data-ru-only><a href="#english" lang="en">In English</a></li>
+      </ol>
+    </nav>
+
+    <div class="about-body">
+      <section class="sec" id="data" aria-labelledby="data-h">
+        <p class="sec-num" aria-hidden="true">01</p>
+        <h2 id="data-h" data-i18n="dataTitle">Ваши данные и управление ими</h2>
+        <div class="sec-body" data-i18n="data">
+          <p class="summary">Без аккаунта. Личные заметки и сохранённые прогулки остаются в этом браузере.</p>
+          <ul class="bullets">
+            <li><b>На устройстве.</b> «Мои места» и заметки хранятся в IndexedDB на устройстве до удаления. Удалить их можно в «Мои места → Очистить всю историю» или настройках браузера. На общем устройстве они доступны другим его пользователям.</li>
+            <li><b>На сервере.</b> Текст заметок не отправляется серверу или Gemini. При фильтрации сервер получает выбранные ограничения и ID исключённых или посещённых мест. Постоянной серверной истории пользователя нет.</li>
+            <li><b>Местоположение.</b> Координаты округляются до 3 знаков (около 100 м) на устройстве и сервере. Это снижает точность, но <strong class="flag">не делает местоположение анонимным</strong>. Можно отказаться от геолокации и выбрать общественный ориентир на карте.</li>
+            <li><b>Внешние сервисы.</b> При поиске 2ГИС получает округлённый центр и поисковые слова. При построении, пересчёте, обновлении и экспорте маршрута OSRM может получать округлённые начало и финиш, а также координаты остановок. Погода запрашивается для центра Астаны. Внешнему навигатору кнопка на карточке передаёт координаты места.</li>
+            <li><b>Журналы и трекеры.</b> Журнал приложения не записывает текст запросов и координаты. У хостинга, карт, шрифтов и внешних API есть собственные журналы и правила; они могут получать IP-адрес. Приложение не устанавливает рекламные трекеры.</li>
+            <li><b>Настройки и вкладка.</b> Тема и вид карты сохраняются только на устройстве. Выбор места и история отмены пересчётов — в памяти вкладки; после закрытия вкладки нужно открыть сохранённую прогулку или построить новую.</li>
+          </ul>
+          <details class="tech">
+            <summary>Технические подробности: запросы и кеши</summary>
+            <ul>
+              <li>Запросы к нашему API передают точку в теле запроса.</li>
+              <li>Кеши сервера ограничены по размеру и хранятся в памяти: повторное использование обычного ответа — до 30 минут, данных поиска 2ГИС — до 5 минут, анализа фото — до 6 часов. Истёкшая запись может оставаться до вытеснения или перезапуска. Ключи запросов хешируются.</li>
+            </ul>
+          </details>
+        </div>
+      </section>
+
+      <section class="sec" id="gemini" aria-labelledby="gemini-h">
+        <p class="sec-num" aria-hidden="true">02</p>
+        <h2 id="gemini-h" data-i18n="geminiTitle">Что уходит в Gemini</h2>
+        <div class="sec-body" data-i18n="gemini">
+          <p class="summary">Gemini получает текст запроса и сведения о местах-кандидатах. Личные заметки и история посещений туда не отправляются, но то, что вы сами напишете в запросе, может попасть в ИИ.</p>
+          <div class="split">
+            <div class="box sent">
+              <h3>Передаётся в Gemini</h3>
+              <ul>
+                <li>Текст запроса</li>
+                <li>Контекст: язык, время, состав группы, погода</li>
+                <li>Ограничения</li>
+                <li>Сведения о кандидатах</li>
+              </ul>
+              <p><b>Для анализа фото</b> передаются снимки места, его название, категория, текст запроса и состав группы.</p>
+            </div>
+            <div class="box kept">
+              <h3>Не передаётся в Gemini</h3>
+              <ul>
+                <li>Отдельные поля вашей геопозиции и финиша</li>
+                <li>История посещений</li>
+                <li>Личные заметки</li>
+              </ul>
+            </div>
+          </div>
+          <p class="callout">Если вы сами напишете адрес или имя в запросе, этот текст может попасть в ИИ: автоматического удаления личных сведений нет. Не указывайте личные сведения в поиске.</p>
+          <p>При недоступности Gemini подбор работает по правилам с соответствующей пометкой.</p>
+        </div>
+      </section>
+
+      <section class="sec" id="recommendations" aria-labelledby="read-h">
+        <p class="sec-num" aria-hidden="true">03</p>
+        <h2 id="read-h" data-i18n="readTitle">Как работают рекомендации</h2>
+        <div class="sec-body" data-i18n="read">
+          <p class="summary">Код проверяет расстояния, расписания, ограничения и бюджет, а Gemini пишет короткие пояснения по переданным фактам. Статусы и время пешком рассчитываются по данным и не заменяют проверку на месте.</p>
+          <ul class="bullets">
+            <li><b>Кто что делает.</b> Код выбирает и упорядочивает места, проверяет расстояния, расписания, ограничения и бюджет. Gemini пишет короткие объяснения и идеи занятий по переданным фактам. Принятый текст помечен «идея ИИ»; при ошибке показан текст по правилам.</li>
+            <li><b>Короткое объяснение</b> формируется из данных и окончательного расчёта: что совпало с запросом, сколько идти и сколько займёт посещение с возвращением или финишем. При запросе Wi-Fi, розеток или тишины отсутствие подтверждения указывается прямо. Тип заведения сам по себе не подтверждает удобства.</li>
+            <li><b>Пометки ИИ.</b> Пометка «место выбрал ИИ» относится к выбору; текст объяснения собирает сервер. Статус ИИ не является оценкой достоверности места.</li>
+            <li><b>«Открыто сейчас»</b> — соответствие расписанию источника не старше 30 дней, а не проверка двери или свободных столов. «Вероятно открыто» означает более старые часы. Для будущего времени текущая обстановка неизвестна.</li>
+            <li><b>Время пешком</b> — оценка. Она не гарантирует отсутствие льда, перекрытий, лестниц или доступность пути для коляски.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="sec" id="sources" aria-labelledby="sources-h">
+        <p class="sec-num" aria-hidden="true">04</p>
+        <h2 id="sources-h" data-i18n="sourcesTitle">Источники и ограничения</h2>
+        <div class="sec-body" data-i18n="sources">
+          <p class="summary">Места берутся из OpenStreetMap и 2ГИС, часть описаний — из Википедии, фотографии — из Wikimedia Commons и снимков команды. Ниже — что даёт каждый источник и где его пределы.</p>
+          <ul class="bullets">
+            <li><b>OpenStreetMap</b> (ODbL) — основа локальной базы; <b>Википедия</b> (CC BY-SA) — часть описаний. Тексты, составленные по тегам, помечены как сгенерированные.</li>
+            <li><b>2ГИС</b> — онлайн-поиск, рейтинги и расписания. Данные не импортируются в постоянную базу. Если онлайн-поиск недоступен или не дал подходящих мест, интерфейс использует локальную базу и отмечает источник.</li>
+            <li><b>Google Places</b>: запросы рейтингов и часов выключены.</li>
+            <li><b>Фото</b> — Wikimedia Commons и снимки команды. Перед показом проверяется привязка к конкретному объекту и контрольная сумма файла; близость координат и догадка ИИ не доказывают принадлежность фотографии. Непроверенные снимки не показываются. Автор и лицензия указаны у материала.</li>
+            <li><b>Анализ фото.</b> ИИ описывает только видимое: свет, интерьер, сиденья. Фото не доказывает тишину, безопасность, наличие свободных столов сейчас или доступность всего маршрута. Ошибки анализа возможны; отсутствие анализа не означает, что место плохое.</li>
+            <li><b>Удобства и расходы</b> учитываются только при свежей подтверждённой записи. Неизвестная цена не считается нулевой; необязательная покупка не означает бесплатное меню. Сведения о платном подъёме на Байтерек относятся к подъёму, а не к площади вокруг.</li>
+            <li><b>Карта:</b> схема OpenStreetMap; спутник и подписи — <a href="https://maps.eox.at/">EOX::Maps</a>. Снимки Sentinel-2 за 2025 год обзорные: они не показывают состояние места сейчас и не подтверждают входы или проходимость. Поставщик карты получает IP-адрес и номера отображаемых тайлов (область карты).</li>
+          </ul>
+          <details class="tech">
+            <summary>Лицензия спутникового слоя и офлайн-режим</summary>
+            <p>Спутник используется в некоммерческом учебном проекте по <a href="https://cloudless.eox.at/documentation/license">условиям EOX (CC BY-NC-SA)</a>; коммерческому запуску нужна отдельная лицензия или другой источник. Спутниковые тайлы не сохраняются для офлайна.</p>
+          </details>
+        </div>
+      </section>
+
+      <section class="sec" id="safety" aria-labelledby="safety-h">
+        <p class="sec-num" aria-hidden="true">05</p>
+        <h2 id="safety-h" data-i18n="safetyTitle">Безопасность</h2>
+        <div class="sec-body" data-i18n="safety">
+          <p class="summary">Подбор учитывает время суток, ребёнка в группе и погоду и исключает часть мест. Это фильтры по данным, а не гарантия безопасности: обстановку и обратный путь оцените сами.</p>
+          <ul class="rules">
+            <li><span class="rule-fig" aria-hidden="true">1 км</span><p><b>Ночью (22:00–06:00)</b> радиус ограничен 1 км; наружные места без отметок об освещении или людности исключаются. Эти отметки тоже могут устареть. Это фильтр данных, а не гарантия безопасности.</p></li>
+            <li><span class="rule-fig" aria-hidden="true">18+</span><p><b>С ребёнком</b> исключаются бары, кальянные и места 18+.</p></li>
+            <li><span class="rule-fig" aria-hidden="true">500 м</span><p>В <b>мороз от −15 °C или ветер от 10 м/с</b> радиус ограничен 500 м с приоритетом помещений.</p></li>
+          </ul>
+          <p class="callout"><b>Лёд и закрытые территории.</b> Не рекомендуем выходить на лёд водоёмов или заходить на закрытые территории. Оцените фактическую обстановку и обратный путь перед выходом.</p>
+        </div>
+      </section>
+
+      <section class="sec" id="photos" aria-labelledby="photos-h">
+        <p class="sec-num" aria-hidden="true">06</p>
+        <h2 id="photos-h" data-i18n="photosTitle">Авторы фотографий</h2>
+        <p class="summary" data-i18n="photosIntro">Фото взяты с Wikimedia Commons под свободными лицензиями (CC0, CC BY, CC BY-SA) и уменьшены для сайта. Авторы:</p>
+        <ul class="credits">
+          <li><a href="https://commons.wikimedia.org/wiki/File:Night_at_Esil_District%2C_Astana_%28P1190721%29.jpg" target="_blank" rel="noopener">Night at Esil District, Astana (P1190721)</a> <span class="by">Matti Blume, CC BY-SA 4.0</span></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Taking_notes_at_a_coffee_table_%28Unsplash%29.jpg" target="_blank" rel="noopener">Taking notes at a coffee table (Unsplash)</a> <span class="by">Tran Mau Tri Tam tranmautritam, CC0</span></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Astana_Botanical_Garden_20260628_%283%29.jpg" target="_blank" rel="noopener">Astana Botanical Garden 20260628 (3)</a> <span class="by">Nurken, CC BY-SA 4.0</span></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Khan-Shatyr_shopping_mall.jpg" target="_blank" rel="noopener">Khan-Shatyr shopping mall</a> <span class="by">Dauren Nabijan, CC0</span></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Expo_2017_%22Nur_Alem%22_Pavilion_Space_Exhibition.jpg" target="_blank" rel="noopener">Expo 2017 &quot;Nur Alem&quot; Pavilion Space Exhibition</a> <span class="by">颲風, CC BY-SA 4.0</span></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Astana_Nurly_Jol_2018.jpg" target="_blank" rel="noopener">Astana Nurly Jol 2018</a> <span class="by">Randwick, CC BY-SA 4.0</span></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Baiterek_monument_at_night.jpg" target="_blank" rel="noopener">Baiterek monument at night</a> <span class="by">Dauren Nabijan, CC0</span></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Expo_2017_%22Nur_Alem%22_Pavilion_Glass_Pathway_1.jpg" target="_blank" rel="noopener">Expo 2017 &quot;Nur Alem&quot; Pavilion Glass Pathway 1</a> <span class="by">颲風, CC BY-SA 4.0</span></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Khan_Shatyr.jpg" target="_blank" rel="noopener">Khan Shatyr</a> <span class="by">Quarot, CC0</span></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:A%C4%89etcentro_SilkWay_%28Astano%29_01.jpg" target="_blank" rel="noopener">Aĉetcentro SilkWay (Astano) 01</a> <span class="by">RG72, CC BY-SA 4.0</span></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:View_from_Bayterek_tower.jpg" target="_blank" rel="noopener">View from Bayterek tower</a> <span class="by">Ken and Nyetta, CC BY 2.0</span></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Nursultan_Nazarbayev_International_Airport%2C_Astana_%28LRM_20240405_115306%29.jpg" target="_blank" rel="noopener">Nursultan Nazarbayev International Airport, Astana (LRM 20240405 115306)</a> <span class="by">Matti Blume, CC BY-SA 4.0</span></li>
+        </ul>
+      </section>
+
+      <section class="sec" id="city-experiences" aria-labelledby="city-h">
+        <p class="sec-num" aria-hidden="true">07</p>
+        <h2 id="city-h" data-i18n="cityTitle">Истории, встречи и зимние прогулки</h2>
+        <div class="sec-body" data-i18n="city">
+          <p class="summary">Здесь — как устроены истории о местах, встречи и зимний режим и чего они не проверяют.</p>
+          <h3>Истории</h3>
+          <ul class="bullets">
+            <li>Истории относятся к конкретным объектам: у каждой есть источник и кнопка Википедии.</li>
+            <li>Тексты сокращены и переведены; пересказы Википедии доступны на условиях <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>. Авторов и историю правок можно найти в исходной статье.</li>
+            <li>Подборка расширяется после проверки, а не за счёт выдуманных рассказов.</li>
+          </ul>
+          <h3>Встречи</h3>
+          <ul class="bullets">
+            <li>Для встречи выбирайте общественные ориентиры с согласия участников.</li>
+            <li>Обе точки округляются и отправляются серверу; 2ГИС может получать центр поиска между ними. Точки встречи не сохраняются в профиле или ссылке.</li>
+            <li>Времена сравниваются по одной оценочной модели, обратный путь не включён. Пунктирные линии не подтверждают наличие переходов или доступность улиц.</li>
+          </ul>
+          <h3>Зимний режим</h3>
+          <ul class="bullets">
+            <li>Зимний режим ограничивает время отдельных переходов и подбирает остановки в помещении.</li>
+            <li>Он не проверяет лёд, ветер между зданиями или возможность войти прямо сейчас.</li>
+            <li>Превью показывает расчётные этапы: это не панорама и не наблюдение за реальной обстановкой.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="sec" id="english" lang="en" aria-labelledby="english-h" data-ru-only>
+        <p class="sec-num" aria-hidden="true">08</p>
+        <h2 id="english-h">In English</h2>
+        <p class="summary">A short summary of this page. For the full text in English, choose EN at the top of the page.</p>
+        <ul class="bullets">
+          <li><b>Your data.</b> No accounts. Personal notes and saved walks remain in this browser until deleted through My places or browser settings. Filtering can send visited/excluded place IDs to the backend, but not note text.</li>
+          <li><b>Location.</b> Coordinates are rounded to three decimals; this is not anonymisation. Choose a public landmark instead of GPS if preferred.</li>
+          <li><b>Gemini.</b> Gemini receives search text, context and candidate facts, without separate user-location, destination or visit-history fields. Personal information typed into search is not automatically redacted.</li>
+          <li><b>Other services.</b> 2GIS receives a rounded search centre; routing requests can send rounded start/end points and stops to OSRM. Bounded in-memory caches reuse results for up to 30 minutes (local recommendations), five minutes (2GIS search) or six hours (photo analysis); expired entries may remain until eviction or restart. Providers have their own logs and policies.</li>
+          <li><b>Recommendations.</b> Rules select candidates and calculate times; Gemini writes explanations and activity ideas from supplied evidence. AI text is labelled; rejected generations fall back to templates.</li>
+          <li><b>Photos.</b> Photo identity and image hashes are reviewed before display. Photos do not establish quietness, safety or current seating availability. Check conditions before visiting.</li>
+        </ul>
+      </section>
+
+      <p class="to-toc"><a href="#toc"><span aria-hidden="true">↑</span> <span data-i18n="toToc">К содержанию</span></a></p>
+    </div>
   </main>
   <script src="about-i18n.js"></script>
 </body>
