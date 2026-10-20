@@ -7,10 +7,17 @@ const json = (data) => ({ok: true, json: async () => data});
 const answer = name => ({mode:'no_ai', recommendations:[], notes:[name], safety:[], considered:{time_budget_min:60,candidates_found:0}, disclaimer:'test'});
 const {boot} = require('./helpers.cjs');
 test('shell and six demos stay usable while backend health is pending', async t=>{
-  const b=await boot(t,{health:pending()});
+  const health=pending(), b=await boot(t,{health});
   assert.match(b.w.document.querySelector('#goBtn').textContent,/Подобрать/);
   assert.equal(b.w.document.querySelectorAll('#scenariosMenu button').length,6);
-  b.click('#scenariosMenu button'); await tick(); assert.equal(b.requests.length,1);
+  b.click('#scenariosMenu button'); await tick();
+  assert.equal(b.requests.length,0);
+  assert.match(b.w.document.querySelector('#query').value,/ноутбук/);
+  health.resolve(json({feature_contract_version:2,features:{finish_preferences:true,end_point:true},mode_available:['no_ai']}));
+  await tick();
+  assert.equal(b.requests.length,1);
+  assert.equal(b.requests[0].body.finish_mode,'place');
+  assert.equal(b.w.document.querySelector('#finishMode').value,'place');
 });
 test('late GPS cannot replace a selected demo',async t=>{
   const b=await boot(t); b.click('#scenariosMenu button');await tick();
@@ -241,14 +248,27 @@ const FX = JSON.parse(fs.readFileSync('tests/frontend/fixtures/feature_examples.
 const withFeatures = {healthData: FX.health_with_features, comfort: FX.comfort, build: FX.build_ok, export: FX.export_ok};
 const settle = async () => { for (let i = 0; i < 6; i++) await tick(); };
 
-test('late health enables features on cards already rendered during server wake-up', async t => {
+test('late health applies the selected finish and enables features on the first result together', async t => {
   const health=pending(), b=await boot(t,{...withFeatures,health});
-  b.click('#goBtn'); await tick(); b.requests[0].resolve(json(FX.recommend_normal)); await settle();
+  b.click('#goBtn'); await tick();
+  assert.equal(b.requests.length,0);
   assert.equal(b.w.document.querySelector('#startWalkBtn'),null);
   health.resolve(json(FX.health_with_features)); await settle();
+  assert.equal(b.requests[0].body.finish_mode,'place');
+  b.requests[0].resolve(json(FX.recommend_normal)); await settle();
   assert.ok(b.w.document.querySelector('#startWalkBtn'));
   assert.ok(b.w.document.querySelector('.rec [data-nope="far"]'));
   assert.equal(b.w.document.querySelector('#routeBtn'),null);
+});
+
+test('unavailable health does not prevent the legacy search or send unsupported finish fields', async t => {
+  const b=await boot(t,{health:{promise:Promise.resolve({ok:false,status:503})}});
+  b.click('#goBtn');await settle();
+  assert.equal(b.requests.length,1);
+  assert.equal(b.requests[0].body.finish_mode,undefined);
+  b.requests[0].resolve(json(answer('LEGACY')));await settle();
+  assert.match(b.w.document.querySelector('#results').textContent,/LEGACY/);
+  assert.equal(b.w.document.querySelector('#goBtn').disabled,false);
 });
 
 
