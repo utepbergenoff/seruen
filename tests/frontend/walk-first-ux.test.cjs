@@ -63,7 +63,7 @@ test('provider hours are visible with date, provenance and caution; HTML cannot 
  assert.match(el.textContent,/09:00–18:00/);assert.match(el.firstElementChild.title,/Источник: 2ГИС/);assert.match(el.firstElementChild.title,/Может отличаться/);
  assert.equal(el.querySelector('img'),null);
  el.innerHTML=b.w.SeruenExt.cardBadges({visit_condition:{kind:'unknown',provider_url:'https://2gis.kz/astana/firm/123',provider_attributes:['Wi-Fi','<script>bad</script>']}});
- assert.match(el.textContent,/нет цены входа/);assert.match(el.textContent,/Wi-Fi/);assert.equal(el.querySelector('script'),null);
+ assert.match(el.textContent,/[Цц]ена входа.*не указан|нет цены входа/);assert.match(el.textContent,/Wi-Fi/);assert.equal(el.querySelector('script'),null);
 });
 
 test('winter search preferences survive finish confirmation without duplicate preview controls',async t=>{

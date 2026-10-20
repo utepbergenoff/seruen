@@ -220,7 +220,7 @@
       });
     }
     $("#storyLayerField").hidden = !has("city_history");
-    $("#storyLayerField").innerHTML = has("city_history") ? `<label class="story-layer-toggle"><input id="showCityStories" type="checkbox" role="switch"${showStories ? " checked" : ""}> ${esc(x.storyLayer)}</label><button type="button" class="btn small" id="browseLandmarks">${esc(x.historyGo)}</button><p class="meta" id="storyLayerStatus" role="status"></p>` : "";
+    $("#storyLayerField").innerHTML = has("city_history") ? `<label class="story-layer-toggle"><input id="showCityStories" type="checkbox" role="switch"${showStories ? " checked" : ""}> ${esc(x.storyLayer)}</label><button type="button" class="btn small" id="browseLandmarks" title="${esc(x.historyGo)}">${esc(x.historyGo)}</button><p class="meta" id="storyLayerStatus" role="status"></p>` : "";
     if ($("#browseLandmarks")) $("#browseLandmarks").onclick=()=>{activeStory=null;E.focusPlace?.();open("history");$("#experiences").scrollIntoView({block:"start",behavior:"smooth"});};
     if (has("city_history")) $("#showCityStories").onchange = e => { showStories = e.target.checked; drawStories(); if (showStories) void loadStories(); };
     if (!$("#experienceBody")) $("#experiences").innerHTML = '<div id="experienceBody" hidden></div>';

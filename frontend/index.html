@@ -70,6 +70,7 @@
       </div>
     </a>
     <nav class="top-actions">
+      <button id="mapTopBtn" class="btn ghost map-top-btn" type="button"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg> <span data-i18n="mapOpen"></span></button>
       <button id="themeBtn" class="btn ghost" type="button"></button>
       <div class="dropdown">
         <button id="scenariosBtn" class="btn ghost" aria-haspopup="true" aria-expanded="false"><span data-i18n="scenarios"></span> ▾</button>
@@ -81,6 +82,7 @@
       <span id="modeBadge" class="badge" hidden></span>
       <button id="mineBtn" class="btn ghost" type="button" aria-expanded="false" aria-controls="mine"><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg> <span data-i18n="mine"></span></button>
       <a class="btn ghost" href="about.html" data-i18n="about"></a>
+      <button id="moreBtn" class="btn ghost more-btn" type="button" aria-expanded="false" aria-label="Menu">⋯</button>
     </nav>
   </header>
 
@@ -179,8 +181,6 @@
       <p class="foot"><span data-i18n="disclaimerShort"></span> <span id="snapshot"></span> · <a href="about.html" data-i18n="about"></a> · <a href="about.html#photos" data-i18n="photoCredit"></a></p>
     </section>
   </main>
-
-  <button id="mapOpenBtn" class="map-open-btn" type="button"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg> <span data-i18n="mapOpen"></span></button>
 
   <script src="vendor/leaflet/leaflet.js"></script>
   <script src="storage.js"></script>

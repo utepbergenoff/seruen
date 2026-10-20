@@ -30,6 +30,8 @@
   for(const pane of ['.leaflet-marker-pane','.leaflet-overlay-pane']){const el=$('#map '+pane);if(el&&window.MutationObserver)new MutationObserver(watchMarks).observe(el,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});}
   function labels(){
     drawLegend();
+    // the map buttons are compact icons on wide screens: their names live in the tooltip
+    setTimeout(()=>['#mapFullscreen','#panelSide'].forEach(s=>{const b=$(s);if(b)b.title=b.textContent.trim();}),0);
     $('#mapFullscreen').textContent=full?T().mapExit:T().mapFull;
     $('#mapFullscreen').setAttribute('aria-pressed',String(full));
     $('#panelSide').textContent=right?T().panelLeft:T().panelRight;
@@ -64,10 +66,13 @@
     else if(frame)map.setView([state.loc.lat,state.loc.lon],Math.max(z,15),{animate:false});
     else map.setView(c,z,{animate:false});
   };
-  $('#mapOpenBtn')?.addEventListener('click',()=>openMap(false,true));
-  // The floating «Карта» button slides away while you scroll down (it would cover buttons) and comes back on the way up.
-  let lastY=window.scrollY;
-  window.addEventListener('scroll',()=>{const y=window.scrollY;if(Math.abs(y-lastY)<6)return;document.body.classList.toggle('fab-away',y>lastY&&y>120);lastY=y;},{passive:true});
+  $('#mapTopBtn')?.addEventListener('click',()=>openMap(false,true));
+  // ⋯ on phones: theme, language and «О данных» open as a second header row
+  const more=$('#moreBtn'),top=$('.top');
+  const setMore=(on)=>{top.classList.toggle('more-open',on);more?.setAttribute('aria-expanded',String(on));};
+  more?.addEventListener('click',e=>{e.stopPropagation();setMore(!top.classList.contains('more-open'));});
+  document.addEventListener('click',e=>{if(!e.target.closest('.top'))setMore(false);});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')setMore(false);});
   document.addEventListener('click',e=>{
     const t=e.target.closest?.('#geoMap,#locPick,#meetPick,#pickFinish,[data-act="map"],[data-nearby],[data-mine-map],[data-meet-map],.it-row');
     if(!t||!phone())return;

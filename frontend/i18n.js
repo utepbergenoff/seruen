@@ -563,3 +563,11 @@ Object.assign(window.I18N.kk, {lgAB: "A және B бастауы"});
 Object.assign(window.I18N.ru.x, {finishEstimate: "≈{m} мин на всю прогулку с таким финишем", finishEstimateLater: "Время посчитаем, когда выберете точку финиша."});
 Object.assign(window.I18N.en.x, {finishEstimate: "≈{m} min for the whole walk with this finish", finishEstimateLater: "The time is counted once you pick the finish point."});
 Object.assign(window.I18N.kk.x, {finishEstimate: "Осындай мәремен бүкіл серуен ≈{m} мин", finishEstimateLater: "Мәре нүктесін таңдағанда уақытты есептейміз."});
+
+// layout fixes 20.10: «Сегодня» for today's hours, a shorter 2GIS price note
+Object.assign(window.I18N.ru, {hoursToday: "Сегодня"});
+Object.assign(window.I18N.en, {hoursToday: "Today"});
+Object.assign(window.I18N.kk, {hoursToday: "Бүгін"});
+Object.assign(window.I18N.ru.x, {providerCostUnknown: "Цена входа и обязательный заказ в 2ГИС не указаны."});
+Object.assign(window.I18N.en.x, {providerCostUnknown: "2GIS lists no entry fee or minimum order."});
+Object.assign(window.I18N.kk.x, {providerCostUnknown: "2ГИС-те кіру ақысы мен міндетті тапсырыс көрсетілмеген."});
