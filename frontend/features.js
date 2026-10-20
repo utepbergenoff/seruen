@@ -150,11 +150,14 @@
     return html;
   };
 
+  // the language's plural form for n ({one, few, many, other}); undefined when the text has no forms
+  const plural = (forms, n) => forms && (forms[new Intl.PluralRules({en: "en", kk: "kk"}[state.lang] || "ru").select(n)] || forms.other);
+
   // ---------- above and below the answer ----------
   const consLabel = () => {
     const x = X(), out = [];
     if (cons.max_distance_m) out.push(["max", fmt(x.cMaxDist, {m: cons.max_distance_m})]);
-    if (cons.exclude_ids.length) out.push(["ids", fmt(x.cExclude, {n: cons.exclude_ids.length})]);
+    if (cons.exclude_ids.length) out.push(["ids", fmt(plural(x.cExcludeN, cons.exclude_ids.length) || x.cExclude, {n: cons.exclude_ids.length})]);
     if (cons.exclude_categories.length) out.push(["cats", fmt(x.cCat, {c: cons.exclude_categories.map(A.catLabel).join(", ")})]);
     if (cons.no_spend) out.push(["spend", x.cFree]);
     return out;
@@ -288,6 +291,7 @@
       <option value="lenient">${esc(x.noSpendLenient)}</option><option value="strict">${esc(x.noSpendStrict)}</option></select>`;
     $("#contextMoreGrid").appendChild(lab);
     $("#noSpend").addEventListener("change", (e) => { cons.no_spend = e.target.value || null; });
+    A.mirrorSelect($("#noSpend"), "seg-wrap");
     syncSpend();
   }
 
@@ -310,6 +314,7 @@
           `<option value="${esc(q.id)}">${esc(A.presetName(q))}</option>`).join("")}</select></div>
         <p class="meta" role="status">${esc(finish ? fmt(x.finishSet, {p}) : x.finishPickMissing)}</p></div>`;
     $("#finishMode").value = finishMode;
+    A.mirrorSelect($("#finishMode"), "seg-wrap");
     $("#finishMode").onchange = e => {
       finishMode = e.target.value; picking = false;
       if (finishMode !== "destination") finish = null;
@@ -375,7 +380,6 @@
         const acc = {public: X().accFree, customers_only: X().accCustomers, paid: X().costPaid}[p.access] || X().accUnknown;
         L.marker([p.coords.lat, p.coords.lon], {icon: di, title: p.name}).addTo(comfortLayer).bindPopup(
           `<b>${esc(p.name)}</b><br>${esc(acc)}${p.note ? ` · ${esc(p.note)}` : ""}${p.floor ? `<br>${esc(p.floor)}` : ""}
-           <br><span class="src">${esc(T().sources)}: ${esc(p.source_url || "")}${p.checked_at ? ` · ${esc(p.checked_at)}` : ""}</span>
            ${walk?.plan?.server && has("replan") ? `<br><button type="button" class="btn small" data-addstop="${esc(p.poi_id)}">${esc(X().addStop)}</button>` : ""}`);
       });
     } catch { if (version !== comfortVersion || answerVersion !== state.requestVersion) return; comfortMsg = T().serverDown; }
@@ -469,8 +473,9 @@
     } catch { if (msg && version === state.requestVersion) msg.textContent = X().replanFail; }
     finally { buttons.forEach(b => b.disabled = false); }
   }
-  async function saveWalk(plan) {
-    const msg = $("#saveWalkMsg") || $("#walkMsg");
+  async function saveWalk(plan, inWalk = false) {
+    // from the active walk the answer goes to the walk's own message line (the results' line is hidden then)
+    const msg = inWalk ? {set textContent(t) { walkMsg = t; renderWalk(); }} : $("#saveWalkMsg") || $("#walkMsg");
     try {
       if (!plan.build_request || navigator.onLine === false) {
         if (msg) msg.textContent = X().exportNeedsOnline;
@@ -538,11 +543,10 @@
         const kind = {warming: "kWarm", bench: "kSit", toilet: "kToilet", water: "kWater", entrance: "kEntrance"}[p.kind];
         const acc = {public:"accFree",customers_only:"accCustomers",paid:"costPaid",unknown:"accUnknown"}[p.access];
         const closed = p.open_status?.state === "closed";
-        return `<article class="rest-card"><b>${esc(p.name)}</b><p class="meta">${esc(x[kind])} · ≈${esc(p.walk_min)} ${esc(T().minutes)} · ${esc(p.distance_m)} м${p.extra_walk_min != null ? ` · ${esc(fmt(x.restExtra,{m:p.extra_walk_min}))}` : ""}</p>
+        return `<article class="rest-card"><b>${esc(p.name)}</b><p class="meta">${esc(x[kind])} · ≈${esc(p.walk_min)} ${esc(T().minutes)} · ${esc(p.distance_m)} ${esc(T().distance)}${p.extra_walk_min != null ? ` · ${esc(fmt(x.restExtra,{m:p.extra_walk_min}))}` : ""}</p>
           <p class="meta">${esc(x[acc])}${p.floor ? ` · ${esc(x.restFloor)} ${esc(p.floor)}` : ""} · ${esc(closed ? x.restClosed : p.open_status?.state === "open" ? x.restOpen : x.restHoursUnknown)}</p>
           ${rest.reason === "cold" && !p.indoor && p.kind === "bench" ? `<p class="msg warn">${esc(x.restColdBench)}</p>` : ""}
           ${p.note ? `<p class="meta">${esc(p.note.replace(/Координаты и вид —.*$/u, "").trim())}</p>` : ""}
-          <p class="src">${/^https:\/\//.test(p.source_url || "") ? `<a href="${esc(p.source_url)}" target="_blank" rel="noopener noreferrer">${esc(T().sources)}</a>` : esc(T().sources)} · ${esc(p.checked_at)}</p>
           <button type="button" class="btn small" data-rest-add="${esc(p.poi_id)}" ${closed || walkBusy ? "disabled" : ""}>${esc(x.restCheck)}</button></article>`;
       }).join("")}</div></section>`;
   }
@@ -608,16 +612,23 @@
         }))}${p.server.legs.at(-1).walk_min > 0 ? " · " + esc(fmt(x.toEnd, {m:p.server.legs.at(-1).walk_min})) : ""}</p>` : ""}
         ${p.server?.routing_source === "distance_estimate" ? `<p class="meta">${esc(x.routeApprox)}</p>` : ""}</div>` : ""}
       ${p.server ? ext.previewAction?.("active") || "" : ""}
-      <ol class="walk-stops">${p.stops.map((s, i) => `<li class="ws ws-${esc(s.status)}" id="walkStop${i}"><div><b>${esc(s.name)}</b> <span class="meta">· ${esc(statusL[s.status] || s.status)}</span></div>
-        <div class="meta">${s.address ? esc(s.address) + " · " : ""}${s.walk_min != null ? `${icon("walk")} ${esc(s.walk_min)} ${esc(T().minutes)} · ` : ""}${s.stay_min ? `${esc(s.stay_min)} ${esc(T().minutes)} ${esc(x.atStop)}` : ""}${!s.open_status && s.hours_text ? ` · ${esc(s.hours_text)}` : ""}</div>
+      <ol class="walk-stops"><li class="wi-start"><span class="ws-node wi-me" aria-hidden="true"></span><b>${esc(x.walkStart)}</b></li>${p.stops.map((s, i) => `<li class="ws ws-${esc(s.status)}" id="walkStop${i}">
+        ${s.walk_min != null ? `<div class="ws-leg">${icon("walk")} ${esc(s.walk_min)} ${esc(T().minutes)}</div>` : ""}
+        <div class="ws-head"><span class="ws-node" aria-hidden="true">${s.status === "done" ? icon("check") : i + 1}</span><div><b>${esc(s.name)}</b> <span class="meta">· ${esc(statusL[s.status] || s.status)}</span></div></div>
+        <div class="meta">${s.address ? esc(s.address) + " · " : ""}${s.stay_min ? `${esc(s.stay_min)} ${esc(T().minutes)} ${esc(x.atStop)}` : ""}${!s.open_status && s.hours_text ? ` · ${esc(s.hours_text)}` : ""}</div>
         ${(mine.places.get(s.poi_id) || {}).note ? `<div class="meta">${icon("note")} ${esc(mine.places.get(s.poi_id).note)}</div>` : ""}
         ${s.open_status ? A.statusPill(s.open_status) : ""}
         ${ext.cardBadges(s)}${ext.walkStopExtras?.(s) || ""}
         ${s.status === "next" ? `<div class="ws-actions"><button type="button" class="btn primary" data-ws="done" data-i="${i}">${icon("check")} ${esc(x.done)}</button>
-          <button type="button" class="btn" data-ws="skip" data-i="${i}">${esc(x.skip)}</button></div>` : ""}</li>`).join("")}</ol>
+          <button type="button" class="btn" data-ws="skip" data-i="${i}">${esc(x.skip)}</button></div>` : ""}</li>`).join("")}
+        ${p.server?.legs?.length && p.server.legs.at(-1).walk_min > 0 ? `<li class="wi-finish"><div class="ws-leg">${icon("walk")} ${esc(p.server.legs.at(-1).walk_min)} ${esc(T().minutes)}</div>
+          <div class="ws-head"><span class="ws-node" aria-hidden="true">${icon("finish")}</span><b>${esc(p.finish_label || (p.server?.state?.finish_mode === "return" ? x.finishReturn : x.finishOther))}</b></div></li>` : ""}</ol>
       ${can && next.length ? `<div class="walk-problems"><p class="walk-problems-title">${esc(x.somethingWrong)}</p><div class="row changes chip-scroll"><button type="button" class="btn small" data-ch="less_time">${esc(x.chLess)}</button>
         <button type="button" class="btn small" data-ch="cold">${esc(x.chCold)}</button><button type="button" class="btn small" data-ch="tired">${esc(x.chTired)}</button>
-        <button type="button" class="btn small" data-ch="closed">${esc(x.chClosed)}</button></div></div>` : ""}
+        <button type="button" class="btn small" data-ch="closed">${esc(x.chClosed)}</button></div>
+        ${walk.askLess ? `<div class="less-ask" role="group" aria-label="${esc(x.lessHow)}"><p class="walk-problems-title">${esc(x.lessHow)}</p>
+          <div class="row chip-scroll">${lessOptions(walk.plan).map((m) => `<button type="button" class="btn small" data-less="${m}">${m} ${esc(T().minutes)}</button>`).join("")}
+          <button type="button" class="btn small" data-less="cancel">${esc(x.lessCancel)}</button></div></div>` : ""}</div>` : ""}
       ${walkBusy ? `<div class="loading"><div class="spinner"></div>${esc(x.replanning)}</div>
         <button type="button" class="btn small" id="walkCancel">${esc(x.cancelReplan)}</button>` : ""}
       <p class="src" id="walkMsg" aria-live="polite">${esc(walk.proposal && walkMsg===x.breakKeepsRoute ? "" : walkMsg)}</p>
@@ -637,7 +648,7 @@
       walkVersion++; walkBusy = false; walk.collapsed = true; walk.searching=false; renderWalk();
     });
     $("#walkEnd").addEventListener("click", () => { walkVersion++; walkBusy = false; walk = null; renderWalk(); });
-    const ws = $("#walkSave"); if (ws) ws.addEventListener("click", () => saveWalk(walk.plan));
+    const ws = $("#walkSave"); if (ws) ws.addEventListener("click", () => saveWalk(walk.plan, true));
     const cancel = $("#walkCancel"); if (cancel) cancel.addEventListener("click", () => {
       walkVersion++; walkBusy = false; walkMsg = X().replanCancelled; renderWalk();
     });
@@ -676,16 +687,24 @@
       else s.status = "skipped";
       renderWalk();
     }));
+    box.querySelectorAll("[data-less]").forEach((b) => b.addEventListener("click", () => {
+      walk.askLess = false;
+      if (b.dataset.less === "cancel") return renderWalk();
+      replan("less_time", null, +b.dataset.less);
+    }));
     box.querySelectorAll("[data-ch]").forEach((b) => b.addEventListener("click", () => {
       const ch = b.dataset.ch;
       if (ch === "less_time") {
-        const m = window.prompt(x.lessHow, String(Math.max(10, Math.round((walk.plan.total_min || 60) / 2))));
-        if (m === null) return;
-        return replan("less_time", null, Math.max(5, Math.min(480, parseInt(m, 10) || 30)));
+        walk.askLess = !walk.askLess; renderWalk(); return;
       }
       if (ch === "closed") { const s = walk.plan.stops.find((q) => q.status === "next"); return replan("closed", s && s.poi_id); }
       replan(ch);
     }));
+  }
+  // how many minutes are left: a few round choices below the plan's own length
+  function lessOptions(plan) {
+    const total = plan.total_min || 90, opts = [10, 15, 20, 30, 45, 60, 90].filter((m) => m < total);
+    return (opts.length ? opts : [10]).slice(-5);
   }
   function undoReplan() {
     if (!walk?.history.length) return;

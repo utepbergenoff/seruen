@@ -33,6 +33,32 @@
   const T = () => window.I18N[state.lang] || window.I18N.ru;
   const fmt = (s, o) => String(s).replace(/\{(\w+)\}/g, (_, k) => (o[k] ?? ""));
 
+  // A short native <select> stays in the page (ids, values, change events, tests) but people tap a row of pills that
+  // mirror it. Setting .value from code or changing the option texts (language) redraws the pills.
+  function mirrorSelect(sel, cls = "") {
+    if (!sel || sel.dataset.pills) return;
+    sel.dataset.pills = "1";
+    const box = document.createElement("div");
+    box.className = ("seg " + cls).trim(); box.setAttribute("role", "group");
+    const name = () => { const l = sel.labels && sel.labels[0];
+      return (l ? (l.querySelector("span")?.textContent || [...l.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("")) : sel.getAttribute("aria-label") || "").trim(); };
+    const draw = () => {
+      box.setAttribute("aria-label", name());
+      box.innerHTML = [...sel.options].map((o) => `<button type="button" data-v="${esc(o.value)}"${o.value === sel.value ? ' class="on"' : ""} aria-pressed="${o.value === sel.value}" title="${esc(o.textContent.trim())}">${esc((o.dataset.short && T()[o.dataset.short]) || o.textContent.trim())}</button>`).join("");
+    };
+    box.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-v]");
+      if (!b || sel.disabled || sel.value === b.dataset.v) return;
+      sel.value = b.dataset.v; sel.dispatchEvent(new Event("change", {bubbles: true}));
+    });
+    const own = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value");
+    Object.defineProperty(sel, "value", {configurable: true, get() { return own.get.call(this); }, set(v) { own.set.call(this, v); draw(); }});
+    sel.addEventListener("change", draw);
+    new MutationObserver(draw).observe(sel, {subtree: true, childList: true, characterData: true});
+    sel.classList.add("sr-only"); sel.tabIndex = -1; sel.setAttribute("aria-hidden", "true");
+    sel.after(box); draw();
+  }
+
   // ---------- map ----------
   const map = L.map("map", {zoomControl: true}).setView([state.loc.lat, state.loc.lon], 15);
   const fitTo = (bounds, opts = {}) => map.fitBounds(bounds, {padding: [48, 48], ...opts, maxZoom: state.mapMode === "streets" ? 19 : 14});
@@ -78,6 +104,7 @@
     renderMapControls();
   }
   $("#mapMode").addEventListener("change", e => setMapMode(e.target.value));
+  mirrorSelect($("#mapMode"), "seg-map"); mirrorSelect($("#companions"));
   $("#mapDetailBtn").addEventListener("click", () => setMapMode("streets"));
   $("#themeBtn").addEventListener("click", () => { window.SeruenTheme?.cycle(); renderMapControls(); });
   setMapMode(store.get("seruen_map_mode", "streets"));
@@ -541,7 +568,7 @@
         ${p.eligible === false ? `<p class="msg warn">${esc(t.catalog.filtered)} ${esc(codeLabel(p.excluded_because))}</p>` : ""}
         <div class="actions"><a class="btn" href="${esc(nav.gisPlace)}" target="_blank" rel="noopener">${esc(t.openIn2gis)}</a>
         ${FEAT.mapLinks ? `<a class="btn" href="${esc(nav.gis)}" target="_blank" rel="noopener">${esc(t.route2gis)}</a>` : ""}
-        ${FEAT.twogis ? `<button type="button" class="btn" id="selectedGis" aria-expanded="false" aria-controls="selectedGisBox">${esc(t.gisBtn)}</button>` : ""}</div>
+        ${gisOn() ? `<button type="button" class="btn" id="selectedGis" aria-expanded="false" aria-controls="selectedGisBox">${esc(t.gisBtn)}</button>` : ""}</div>
         <div class="gis-box" id="selectedGisBox" hidden></div></article>`;
       $("#selectedGis")?.addEventListener("click", e => toggleGis(detail.firstElementChild, id, e.currentTarget));
     }
@@ -598,9 +625,9 @@
           ${FEAT.mapLinks ? `<a class="btn" href="${esc(L2.gis)}" target="_blank" rel="noopener">${icon("map")} ${esc(t.route2gis)}</a>
           <a class="btn" href="${esc(L2.google)}" target="_blank" rel="noopener">${icon("nav")} ${esc(t.routeGoogle)}</a>` : ""}
           <button type="button" class="btn" data-act="map">${icon("pin")} ${esc(t.onMap)}</button>
-          ${FEAT.twogis ? `<button type="button" class="btn" data-act="gis" aria-expanded="false" aria-controls="gis-${i}">${icon("star")} ${esc(t.gisBtn)}</button>` : ""}
+          ${gisOn() ? `<button type="button" class="btn" data-act="gis" aria-expanded="false" aria-controls="gis-${i}">${icon("star")} ${esc(t.gisBtn)}</button>` : ""}
         </div>
-        ${FEAT.twogis ? `<div class="gis-box" id="gis-${i}" aria-live="polite" hidden></div>` : ""}
+        ${gisOn() ? `<div class="gis-box" id="gis-${i}" aria-live="polite" hidden></div>` : ""}
         ${ext.cardExtras ? ext.cardExtras(r, i, d) : ""}
       </article>`;
       const pinIcon = L.divIcon({className: "", iconSize: [30, 30], iconAnchor: [15, 15], html: `<div class="pin"><b>${i + 1}</b></div>`});
@@ -677,6 +704,15 @@
   }
 
   // ---------- 2GIS rating and hours (extra): asked only when the button is pressed, never for every card ----------
+  // The server's status forgets a refusal when it restarts, so the first refused answer also counts, for 6 hours on this device.
+  const GIS_REFUSED = /access_denied|forbidden|invalid_key|quota/i;
+  try { state.gisRefused = Date.now() - (+localStorage.getItem("seruen_gis_refused") || 0) < 6 * 3600e3; } catch { state.gisRefused = false; }
+  const gisOn = () => FEAT.twogis && !state.gisRefused;
+  function gisRefusedNow(keep = null) {
+    state.gisRefused = true;
+    try { localStorage.setItem("seruen_gis_refused", String(Date.now())); } catch { /* private mode: this page only */ }
+    $$('[data-act="gis"], #selectedGis').forEach((b) => { if (b !== keep) { b.closest(".rec, article")?.querySelector(".gis-box")?.setAttribute("hidden", ""); b.remove(); } });
+  }
   const GIS_RETRY = ["twogis_timeout", "twogis_unavailable", "twogis_local_limit", "network"];
   const gisKey = (id) => `${id}|${state.lang === "kk" ? "kk" : "ru"}`;  // English gets the Russian 2GIS answer anyway
   async function getTwoGis(id) {
@@ -740,6 +776,7 @@
       const g = await getTwoGis(id);
       btn.disabled = false;
       if (!GIS_RETRY.includes(g.error)) state.gis[key] = g;  // final answers are kept, so 2GIS is asked once per place
+      if (GIS_REFUSED.test(g.error || "")) gisRefusedNow(btn);  // this box explains it once; the other buttons go away
       if (!card.isConnected) return;
       box.innerHTML = gisHtml(g);
     } else box.innerHTML = gisHtml(state.gis[key]);
@@ -876,6 +913,8 @@
       try {
         const h = await getJSON(API + "/health");
         state.features = h.feature_contract_version === 2 && h.features && typeof h.features === "object" ? h.features : {};
+        // 2GIS switched off or refusing the team key: its rating/hours button could only show an error, so it is hidden
+        if (h.twogis && (h.twogis.enabled === false || GIS_REFUSED.test(h.twogis.last_status || "")) && !state.gisRefused) gisRefusedNow();
         if (ext.onHealth) ext.onHealth(h);
         const avail = h.mode_available || [];
         state.apiMode = h.ai === "gemini" || avail.includes("ai") ? "ai" : h.ai === "no_ai" || avail.includes("no_ai") ? "no_ai" : (h.mode || null);
@@ -932,7 +971,7 @@
   window.SeruenApp = {state, FEAT, API, T, fmt, esc, icon, $, $$, map, layer, markers, L, showAt, fitTo, round3, setWalkActive,
     freezeLocation: () => { if (state.locating) { cancelLocation(); renderLocLine(); } },
     postJSON, getJSON, context, ask: () => ask(), render: (d) => render(d), rerender: () => { if (state.last) render(state.last); }, catLabel,
-    statusPill, links, fillPhotos, selectPlace: (id, focus) => selectPlace(id, focus), presetName: p => p?.name?.[state.lang] || p?.name?.ru || p?.label?.[state.lang] || p?.id || ""};
+    statusPill, links, fillPhotos, mirrorSelect, selectPlace: (id, focus) => selectPlace(id, focus), presetName: p => p?.name?.[state.lang] || p?.name?.ru || p?.label?.[state.lang] || p?.id || ""};
   init();
   if (ext.onReady) ext.onReady();
 })();

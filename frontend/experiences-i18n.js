@@ -277,3 +277,8 @@ Object.assign(window.SeruenExperienceText.en, {startA: "Your start", startB: "Fr
   walkMax: "Walk at most:", choose: "Choose a place", picking: "Tap the map where your friend starts", personB: "Friend"});
 Object.assign(window.SeruenExperienceText.kk, {startA: "Сіздің бастауыңыз", startB: "Досыңыздың бастауы", pointOnMap: "Картадағы нүкте", myLocation: "Менің орным",
   walkMax: "Жаяу ең көбі:", choose: "Орынды таңдаңыз", picking: "Досыңыз шығатын жерді картадан басыңыз", personB: "Досыңыз"});
+
+// bug fixes 20.10: nothing found within the walking limit → search again a bit further
+Object.assign(window.SeruenExperienceText.ru, {meetWider: "Искать до {n} мин пешком"});
+Object.assign(window.SeruenExperienceText.en, {meetWider: "Search up to {n} min on foot"});
+Object.assign(window.SeruenExperienceText.kk, {meetWider: "{n} минутқа дейін жаяу іздеу"});

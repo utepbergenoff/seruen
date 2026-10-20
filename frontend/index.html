@@ -91,7 +91,7 @@
         <select id="mapMode">
           <option value="streets" data-i18n="mapStreets"></option>
           <option value="satellite" data-i18n="mapSatellite"></option>
-          <option value="hybrid" data-i18n="mapHybrid"></option>
+          <option value="hybrid" data-i18n="mapHybrid" data-short="mapHybridShort"></option>
         </select>
         <p id="mapNotice" class="meta" role="status" hidden></p>
         <button id="mapDetailBtn" type="button" class="btn small" data-i18n="mapDetails" hidden></button>
@@ -155,7 +155,7 @@
               <span class="row"><select id="whenSel"><option value="now" data-i18n="now"></option><option value="other" data-i18n="other"></option></select>
               <input id="whenAt" type="datetime-local" hidden></span>
             </label>
-            <label class="check"><input id="access" type="checkbox"> <span data-i18n="access"></span></label>
+            <label class="check"><input id="access" type="checkbox" role="switch"> <span data-i18n="access"></span></label>
           </div><div id="winterField" hidden></div></details>
         </section>
         <button id="goBtn" class="btn primary context-submit" type="submit" data-i18n="go"></button>
