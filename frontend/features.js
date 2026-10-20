@@ -15,8 +15,21 @@
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode */ } },
   };
   const r3 = (x) => Math.round(x * 1000) / 1000;
-  const sessionPlaces = new Map();  // Provider labels live only in this tab's memory.
-  const placeView = p => ({...sessionPlaces.get(p.poi_id), ...p});
+  const sessionPlaces = new Map();  // Places seen in this tab: coordinates of 2GIS places live only here.
+  // A saved place plus what the app still knows about it: the stored label first, then this tab's answers,
+  // the current walk, saved walks and the 2GIS details already fetched.
+  const knownPlace = (id) => {
+    const g = state.gis?.[`${id}|ru`] || state.gis?.[`${id}|kk`];
+    return sessionPlaces.get(id) || [...(state.last?.recommendations || []), ...(state.last?.nearby_places || []),
+      ...(walk?.plan?.stops || []), ...mine.walks.flatMap((w) => w.stops || [])].find((q) => q && q.poi_id === id && q.name)
+      || (g?.provider_name ? {name: g.provider_name, address: g.address || ""} : {});
+  };
+  const placeView = (p) => {
+    if (!p) return p;
+    const k = knownPlace(p.poi_id), out = {...k, ...p};
+    for (const f of ["name", "category", "address", "coords"]) if (!p[f] && k[f]) out[f] = k[f];
+    return out;
+  };
 
   const mine = {places: new Map(), walks: [], tab: "places", filter: "all", onlyNew: pref.get("seruen_only_new", false),
     onMap: false, confirmClear: false, error: null};
@@ -39,8 +52,9 @@
   async function keep(r, patch) {
     sessionPlaces.set(r.poi_id, r);
     const cur = mine.places.get(r.poi_id) || {};
-    const row = {poi_id: r.poi_id, name: r.name || cur.name || "", category: r.category || cur.category || "",
-      address: r.address || cur.address || "", coords: r.coords || cur.coords || null, ...cur, ...patch,
+    // the label comes after the stored row: an old row saved without a name gets one now
+    const row = {...cur, ...patch, poi_id: r.poi_id, name: r.name || cur.name || "", category: r.category || cur.category || "",
+      address: r.address || cur.address || "", coords: r.coords || cur.coords || null,
       offline_allowed: r.offline_allowed === true && !r.poi_id.startsWith("2gis_")};
     try {
       const saved = await S.putPlace(row);
@@ -765,42 +779,66 @@
   }
 
   // ---------- F8: my places ----------
+  const CAT_ICONS = ["coffee", "food", "park", "kids", "culture", "sight", "viewpoint", "shopping", "sport", "night", "library", "work", "cowork", "unusual"];
+  // a 2GIS name carries its kind after a comma ("Coffee BOOM, сеть кофеен"): the name is the title, the kind goes below
+  // (in Russian only: other languages get the translated category, as 2GIS answers in Russian)
+  function placeLabel(p) {
+    const n = p.name || "", i = n.indexOf(", "), split = /^2gis_/.test(p.poi_id) && i > 0, cat = (T().cats || {})[p.category];
+    const kind = ((split && (state.lang === "ru" || !cat) ? n.slice(i + 2) : cat) || "").replace(/^./, (c) => c.toUpperCase());
+    return {title: split ? n.slice(0, i) : n || X().unknownPlace, known: !!n, sub: [kind, p.address].filter(Boolean).join(" · ")};
+  }
   function renderMine() {
     const box = $("#mine"); if (!box || box.hidden) return;
     const x = X(), all = [...mine.places.values()].map(placeView).sort((a, b) => (b.updated_at || 0) - (a.updated_at || 0));
     const pick = {all: () => true, want: (p) => p.want, visited: (p) => p.visited_at, favorite: (p) => p.favorite}[mine.filter] || (() => true);
     const list = all.filter(pick);
-    const tab = (k, l, n) => `<button type="button" role="tab" class="tab${mine.tab === k ? " on" : ""}" data-tab="${k}" aria-selected="${mine.tab === k}">${esc(l)} (${n})</button>`;
+    const locale = {en: "en-GB", kk: "kk-KZ"}[state.lang] || "ru-RU";
+    const tab = (k, l, n) => `<button type="button" role="tab" class="tab${mine.tab === k ? " on" : ""}" data-tab="${k}" aria-selected="${mine.tab === k}">${esc(l)} <span class="mine-count">${n}</span></button>`;
     const fchip = (k, l) => `<button type="button" class="chip-btn${mine.filter === k ? " on" : ""}" data-filter="${k}" aria-pressed="${mine.filter === k}">${esc(l)}</button>`;
+    const sw = (id, on, ic, l) => `<label class="mine-switch">${icon(ic)}<span>${esc(l)}</span><input type="checkbox" role="switch" id="${id}"${on ? " checked" : ""}></label>`;
+    const act = (cls, attr, label, of, ic) => `<button type="button" class="mine-act${cls}" ${attr} aria-label="${esc(label)}" aria-describedby="${of}" title="${esc(label)}">${icon(ic)}</button>`;
+    const empty = (ic, text) => `<div class="mine-empty"><span>${icon(ic)}</span><p>${esc(text)}</p></div>`;
+    const place = (p, i) => {
+      const l = placeLabel(p), id = esc(p.poi_id), of = `mineName${i}`, gis = /^2gis_\d+$/.test(p.poi_id);
+      const marks = [p.want && ["flag", x.want, "want"], p.visited_at && ["check", x.visited, "visited"], p.favorite && ["heart", x.favorite, "fav"]].filter(Boolean);
+      const inner = `<span class="mine-ico" data-cat="${CAT_ICONS.includes(p.category) ? esc(p.category) : "pin"}" aria-hidden="true"></span>
+        <span class="mine-body"><span class="mine-name"><b id="${of}"${l.known ? "" : ' class="unknown"'}>${esc(l.title)}</b>${marks.length ? `<span class="mine-marks" role="img" aria-label="${esc(marks.map((m) => m[1]).join(", "))}">${marks.map(([ic, t, k]) => `<span class="mk mk-${k}" title="${esc(t)}">${icon(ic)}</span>`).join("")}</span>` : ""}</span>
+        ${l.sub ? `<span class="mine-sub">${esc(l.sub)}</span>` : !l.known && gis ? `<span class="mine-sub hint">${esc(x.unknownHint)}</span>` : ""}
+        ${p.note ? `<span class="mine-note">${icon("note")}<span>${esc(p.note)}</span></span>` : ""}</span>`;
+      // with coordinates the whole row shows the place on the map, as in any map app's saved list
+      return `<li class="mine-item">${p.coords ? `<button type="button" class="mine-main" data-mine-map="${id}" title="${esc(T().onMap)}">${inner}<span class="sr-only">, ${esc(T().onMap)}</span></button>` : `<div class="mine-main">${inner}</div>`}
+        <div class="mine-acts">${gis ? `<a class="mine-act" href="https://2gis.kz/astana/firm/${esc(p.poi_id.slice(5))}" target="_blank" rel="noopener noreferrer" aria-label="${esc((T().gis || {}).open || "2GIS")}" aria-describedby="${of}" title="${esc((T().gis || {}).open || "2GIS")}">${icon("ext")}</a>` : ""}
+        ${act(" del", `data-mine-del="${id}"`, x.remove, of, "trash")}</div></li>`;
+    };
+    const walkItem = (w, i) => {
+      const names = (w.stops || []).map((s) => s.name).filter(Boolean), n = (w.stops || []).length, of = `mineWalk${i}`;
+      const when = w.saved_at ? new Intl.DateTimeFormat(locale, {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).format(new Date(w.saved_at)) : "";
+      const stops = fmt((x.stopsN || {})[new Intl.PluralRules(locale).select(n)] || (x.stopsN || {}).other || `{n} ${x.stops.toLowerCase()}`, {n});
+      return `<li class="mine-item"><div class="mine-main"><span class="mine-ico" data-cat="route" aria-hidden="true"></span>
+        <span class="mine-body"><span class="mine-name"><b id="${of}">${esc(w.query || x.activeWalk)}</b></span>
+        ${names.length ? `<span class="mine-sub">${esc(names.join(" → "))}</span>` : ""}
+        <span class="mine-sub">${esc([when && fmt(x.savedAt, {d: when}), stops].filter(Boolean).join(" · "))}</span></span></div>
+        <div class="mine-acts">${act(" go", `data-walk-open="${esc(w.id)}"`, x.open, of, "play")}${act(" del", `data-walk-del="${esc(w.id)}"`, x.remove, of, "trash")}</div></li>`;
+    };
     box.innerHTML = `<div class="walk-head"><h2 id="mineTitle">${icon("heart")} ${esc(x.keepTitle)}</h2>
         <button type="button" class="btn small" id="mineClose">${icon("back")} ${esc(x.backToPlaces)}</button></div>
-      <p class="src">${esc(x.deviceOnly)}</p>${mine.error ? `<p class="msg warn">${esc(mine.error)}</p>` : ""}
+      ${mine.error ? `<p class="msg warn">${esc(mine.error)}</p>` : ""}
       <div class="tabs" role="tablist">${tab("places", x.tabPlaces, all.length)}${tab("walks", x.tabWalks, mine.walks.length)}</div>
-      ${mine.tab === "places" ? `<div class="row">${fchip("all", x.fAll)}${fchip("want", x.fWant)}${fchip("visited", x.fVisited)}${fchip("favorite", x.fFav)}</div>
-        <label class="check"><input type="checkbox" id="onlyNew" ${mine.onlyNew ? "checked" : ""}> ${esc(x.onlyNew)}</label>
-        <label class="check"><input type="checkbox" id="mineOnMap" ${mine.onMap ? "checked" : ""}> ${esc(x.showOnMap)}</label>
-        ${list.length ? `<ul class="mine-list">${list.map((p) => `<li><div><b>${esc(p.name || `${x.providerBookmark} (${p.poi_id})`)}</b>
-            <span class="marks">${p.want ? icon("flag") : ""}${p.visited_at ? icon("visit") : ""}${p.favorite ? icon("heart") : ""}</span></div>
-            ${p.note ? `<div class="meta">${icon("note")} ${esc(p.note)}</div>` : ""}
-            ${/^2gis_\d+$/.test(p.poi_id) ? `<a class="btn small" target="_blank" rel="noopener" href="https://2gis.kz/astana/firm/${esc(p.poi_id.slice(5))}">2ГИС</a>` : ""}
-            <div class="row">${p.coords ? `<button type="button" class="btn small" data-mine-map="${esc(p.poi_id)}">${icon("pin")} ${esc(T().onMap)}</button>` : ""}
-            <button type="button" class="btn small" data-mine-del="${esc(p.poi_id)}">${icon("trash")} ${esc(x.remove)}</button></div></li>`).join("")}</ul>`
-          : `<p class="meta">${esc(x.emptyPlaces)}</p>`}`
-      : mine.walks.length ? `<ul class="mine-list">${mine.walks.map((w) => `<li><div><b>${esc(w.query || x.activeWalk)}</b></div>
-            <div class="meta">${esc(fmt(x.savedAt, {d: new Date(w.saved_at).toLocaleString(state.lang === "en" ? "en-GB" : "ru-RU")}))} · ${esc(w.stops.length)} ${esc(x.stops.toLowerCase())}</div>
-            <div class="row"><button type="button" class="btn small" data-walk-open="${esc(w.id)}">${esc(x.open)}</button>
-            <button type="button" class="btn small" data-walk-del="${esc(w.id)}">${icon("trash")} ${esc(x.remove)}</button></div></li>`).join("")}</ul>`
-        : `<p class="meta">${esc(x.emptyWalks)}</p>`}
-      <div class="row clear-row">${mine.confirmClear ? `<span class="meta">${esc(x.clearConfirm)}</span>
+      ${mine.tab === "places" ? `<div class="row mine-filters">${fchip("all", x.fAll)}${fchip("want", x.fWant)}${fchip("visited", x.fVisited)}${fchip("favorite", x.fFav)}</div>
+        <div class="mine-switches">${sw("mineOnMap", mine.onMap, "map", x.showOnMap)}${sw("onlyNew", mine.onlyNew, "search", x.onlyNew)}</div>
+        ${list.length ? `<ul class="mine-list">${list.map(place).join("")}</ul>` : empty("heart", x.emptyPlaces)}`
+      : mine.walks.length ? `<ul class="mine-list">${mine.walks.map(walkItem).join("")}</ul>` : empty("route", x.emptyWalks)}
+      <div class="mine-foot">${!all.length && !mine.walks.length ? "" : `<div class="row clear-row">${mine.confirmClear ? `<span class="meta">${esc(x.clearConfirm)}</span>
           <button type="button" class="btn small danger" id="clearYes">${esc(x.yes)}</button><button type="button" class="btn small" id="clearNo">${esc(x.no)}</button>`
-        : `<button type="button" class="btn small" id="clearAll">${icon("trash")} ${esc(x.clearAll)}</button>`}</div>`;
+        : `<button type="button" class="mine-clear" id="clearAll">${icon("trash")} ${esc(x.clearAll)}</button>`}</div>`}
+        <p class="src mine-device">${esc(x.deviceOnly)}</p></div>`;
     $("#mineClose").addEventListener("click", toggleMine);
     box.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => { mine.tab = b.dataset.tab; renderMine(); }));
     box.querySelectorAll("[data-filter]").forEach((b) => b.addEventListener("click", () => { mine.filter = b.dataset.filter; renderMine(); }));
     const on = $("#onlyNew"); if (on) on.addEventListener("change", () => { mine.onlyNew = on.checked; pref.set("seruen_only_new", mine.onlyNew); if (state.last) A.ask(); });
     const om = $("#mineOnMap"); if (om) om.addEventListener("change", () => { mine.onMap = om.checked; drawPersonal(); });
     box.querySelectorAll("[data-mine-map]").forEach((b) => b.addEventListener("click", () => {
-      const p = placeView(mine.places.get(b.dataset.mineMap)); if (p && p.coords) { mine.onMap = true; drawPersonal(); A.showAt([p.coords.lat, p.coords.lon], 16); }
+      const p = placeView(mine.places.get(b.dataset.mineMap)); if (p && p.coords) { mine.onMap = true; if (om) om.checked = true; drawPersonal(); A.showAt([p.coords.lat, p.coords.lon], 16); }
     }));
     box.querySelectorAll("[data-mine-del]").forEach((b) => b.addEventListener("click", async () => {
       try { await S.deletePlace(b.dataset.mineDel); } catch { /* memory copy below */ }
@@ -838,7 +876,8 @@
       if (!p.coords) return;
       const ic = p.favorite ? "heart" : p.want ? "flag" : "visit";
       const di = L.divIcon({className: "", iconSize: [24, 24], iconAnchor: [12, 12], html: `<div class="ppin">${icon(ic)}</div>`});
-      L.marker([p.coords.lat, p.coords.lon], {icon: di, title: p.name}).addTo(personal).bindPopup(`<b>${esc(p.name)}</b>${p.note ? `<br>${esc(p.note)}` : ""}`);
+      const name = placeLabel(p).title;
+      L.marker([p.coords.lat, p.coords.lon], {icon: di, title: name}).addTo(personal).bindPopup(`<b>${esc(name)}</b>${p.note ? `<br>${esc(p.note)}` : ""}`);
     });
   }
 

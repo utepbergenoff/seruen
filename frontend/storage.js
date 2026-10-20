@@ -18,9 +18,10 @@
   function personal(p) {
     const row = {poi_id: p.poi_id, want: !!p.want, favorite: !!p.favorite, note: p.note || "",
       visited_at: p.visited_at || null, updated_at: p.updated_at || Date.now(),
-      offline_allowed: p.offline_allowed === true && !p.poi_id.startsWith("2gis_")};
-    if (row.offline_allowed) Object.assign(row, {name: p.name || "", category: p.category || "",
-      address: p.address || "", coords: p.coords || null});
+      offline_allowed: p.offline_allowed === true && !p.poi_id.startsWith("2gis_"),
+      // the label is kept with the mark, so «Мои места» can name the place after a reload
+      name: p.name || "", category: p.category || "", address: p.address || ""};
+    if (row.offline_allowed) row.coords = p.coords || null;
     return row;
   }
 
@@ -59,14 +60,14 @@
     async init() {
       db = await open();
       await migrate();
-      // Preserve personal notes/marks; remove unreviewed provider facts from older previews.
-      for (const p of await api.allPlaces()) await api.putPlace(p);
+      // Preserve personal notes/marks and labels; remove unreviewed provider coordinates from older previews.
+      for (const p of await api.allPlaces()) await api.putPlace(p, true);
       return api;
     },
     async getPlace(id) { return db ? tx("places", "readonly", (s) => s.get(id)) : memory.places.get(id); },
     async allPlaces() { return db ? tx("places", "readonly", (s) => s.getAll()) : [...memory.places.values()]; },
-    async putPlace(p) {
-      const row = personal({...p, updated_at: Date.now()});
+    async putPlace(p, keepTime = false) {  // keepTime: a rewrite, not a change, so the list order stays
+      const row = personal({...p, updated_at: (keepTime && p.updated_at) || Date.now()});
       const empty = !row.want && !row.favorite && !row.note && !row.visited_at;
       if (empty) return api.deletePlace(row.poi_id);  // nothing left to keep
       if (!db) { memory.places.set(row.poi_id, row); return row; }
