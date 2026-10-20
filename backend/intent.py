@@ -2,6 +2,7 @@ import re
 
 from .indoor import indoor_required, shelter_requested
 from .schemas import Intent
+from .query_constraints import time_limit, with_children
 
 
 def detect_lang(query):
@@ -24,14 +25,15 @@ def rule_intent(request):
         tags.append("sockets")
     if re.search(r"wi.?fi|вай.?фай|ноут|laptop", q):
         tags.append("wifi")
-    child = (
-        bool(re.search(r"\b(?:ребен|деть|дети|детск|дочк|сын|child|kid|балам|баламен|балалар)", q))
-        or request.context.companions == "child"
-    )
-    if child:
+    indoor_visit = bool(re.search(r"музей|museum|мұражай|кино|cinema|театр|theat|галере|gallery", q))
+    if not categories and indoor_visit:
+        categories = ["culture"]
+    if not categories and re.search(r"поесть|еда|food|eat|тамақ", q):
+        categories = ["food"]
+    child = with_children(q) or request.context.companions == "child"
+    if child and not categories:
         categories = ["kids", "culture", "shopping"] if inside else ["kids", "park", "culture"]
     walking = bool(re.search(r"прогул|погул|прогуля|пройтись|подыш|walk|серуен|\bпарк|\bpark|сквер", q))
-    indoor_visit = bool(re.search(r"музей|museum|мұражай|кино|cinema|театр|theat|галере|gallery", q))
     if walking and not indoor_visit and not inside and (not categories or child):
         tags.append("outdoor_walk")
         if not categories:
@@ -44,21 +46,9 @@ def rule_intent(request):
         categories = ["food"]
     if inside and not categories:
         categories = ["coffee", "food", "shopping", "library", "culture"]
-    budget = 60
-    range_match = re.search(r"(\d+)\s*[-–—]\s*(\d+)\s*(мин|minute|min|час|hour|сағат)", q)
-    single = re.search(r"(\d+)\s*(мин|minute|min|час|hour|сағат)", q)
-    if range_match:
-        budget = int(range_match[2]) * (60 if range_match[3] in ("час", "hour", "сағат") else 1)
-    elif single:
-        budget = int(single[1]) * (60 if single[2] in ("час", "hour", "сағат") else 1)
-    elif re.search(r"пар[ауеы] час|час-два|couple of hours|two hours|екі сағат", q):
-        budget = 120
-    elif re.search(r"полчаса-час|полчаса.?час", q):
-        budget = 60
-    elif "полчаса" in q:
-        budget = 30
-    elif re.search(r"час|hour|сағат", q):
-        budget = 60
+    text_budget = time_limit(q)
+    budget = min(x for x in (request.context.time_budget_min, text_budget) if x is not None) if (
+        request.context.time_budget_min is not None or text_budget is not None) else 60
     excluded = set(request.context.exclude_categories)
     if re.search(r"(не|без|надоели|no|exclude|avoid).{0,20}(трц|mall|shopping)", q):
         excluded.add("shopping")
@@ -93,7 +83,7 @@ def rule_intent(request):
     return Intent(
         categories=categories,
         tags=tags,
-        time_budget_min=request.context.time_budget_min or max(5, min(480, budget)),
+        time_budget_min=budget,
         companions="child" if child else request.context.companions,
         when=when,
         lang=detect_lang(q) if request.context.lang == "auto" else request.context.lang,

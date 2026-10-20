@@ -87,7 +87,8 @@ async def test_cache_hit_context_and_privacy(service, req):
 
 
 async def test_cache_rechecks_closing_inside_slot(service, req):
-    p = service.dataset.pois[0].model_copy(update={"opening_hours_raw": "Mo-Su 08:00-14:10"})
+    # Both requests start while open; only the earlier request leaves time for the whole visit.
+    p = service.dataset.pois[0].model_copy(update={"opening_hours_raw": "Mo-Su 08:00-14:35"})
     service.dataset.pois = [p]
     service.retriever = Retriever(service.dataset, ROOT / "missing.json")
     req.context.now = datetime(2026, 10, 18, 14, 5, tzinfo=ALMATY)

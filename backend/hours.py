@@ -101,3 +101,19 @@ def open_status(poi, now):
     fresh = poi.last_checked is not None and 0 <= (now.date() - poi.last_checked).days <= 30 and not poi.hours_conflict
     state = ("open" if fresh else "likely_open") if opened else "closed"
     return OpenStatus(state=state, confidence="high" if fresh else "medium", **base)
+
+
+def closed_during_visit(poi, arrival, departure):
+    """Check the whole visit, including lunch breaks, overnight and dated exceptions."""
+    if poi.hours_source == "none":
+        return False
+    minute = arrival.astimezone(ALMATY).replace(second=0, microsecond=0)
+    while minute < departure:
+        raw = poi.published_special_hours.get(str(minute.date()), poi.opening_hours_raw)
+        try:
+            if raw and not schedule_open(raw, minute):
+                return True
+        except ValueError:
+            pass  # Unsupported or missing schedules remain unknown, never claimed open.
+        minute += timedelta(minutes=1)
+    return False
