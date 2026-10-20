@@ -10,7 +10,7 @@
   const participants = L.layerGroup().addTo(map);
   let tab = null, sequence = 0, second = null, picking = false, preview = null;
   let meetingResults = null, previewMeeting = null, activeMeeting = null, startingMeeting = null;
-  let mode = "walk", winterEnabled = false, winterLimit = 10, meetLimit = 30, showStories = false;
+  let mode = "walk", winterEnabled = false, winterLimit = 10, meetLimit = 45, showStories = false;
   let activeStory = null;
   const storyLayer = L.layerGroup().addTo(map);
   let storyIndex = [], storyLang = null, storyPending = false;
@@ -192,6 +192,8 @@
     if (!has("meet_halfway")) mode = "walk";
     if (!has("winter_plan")) winterEnabled = false;
     $("#searchModeField").hidden = !has("meet_halfway");
+    // «С кем» is about a walk; a meeting is always two people
+    const withWhom = $("#companions")?.closest("label"); if (withWhom) withWhom.hidden = mode === "meet";
     $("#searchModeField").innerHTML = has("meet_halfway") ? `<fieldset class="search-intent"><legend>${esc(x.searchFor)}</legend>
       <label><input type="radio" name="searchIntent" value="walk"${mode === "walk" ? " checked" : ""}><span>${esc(x.walkMode)}</span></label>
       <label><input type="radio" name="searchIntent" value="meet"${mode === "meet" ? " checked" : ""}><span>${esc(x.meetMode)}</span></label></fieldset>` : "";
@@ -215,7 +217,7 @@
       });
     }
     $("#storyLayerField").hidden = !has("city_history");
-    $("#storyLayerField").innerHTML = has("city_history") ? `<label class="story-layer-toggle"><input id="showCityStories" type="checkbox"${showStories ? " checked" : ""}> ${esc(x.storyLayer)}</label><button type="button" class="btn small" id="browseLandmarks">${esc(x.historyGo)}</button><p class="meta" id="storyLayerStatus" role="status"></p>` : "";
+    $("#storyLayerField").innerHTML = has("city_history") ? `<label class="story-layer-toggle"><input id="showCityStories" type="checkbox" role="switch"${showStories ? " checked" : ""}> ${esc(x.storyLayer)}</label><button type="button" class="btn small" id="browseLandmarks">${esc(x.historyGo)}</button><p class="meta" id="storyLayerStatus" role="status"></p>` : "";
     if ($("#browseLandmarks")) $("#browseLandmarks").onclick=()=>{activeStory=null;E.focusPlace?.();open("history");$("#experiences").scrollIntoView({block:"start",behavior:"smooth"});};
     if (has("city_history")) $("#showCityStories").onchange = e => { showStories = e.target.checked; drawStories(); if (showStories) void loadStories(); };
     if (!$("#experienceBody")) $("#experiences").innerHTML = '<div id="experienceBody" hidden></div>';
@@ -291,6 +293,7 @@
     if (!second) { say(X().selectionMissing); return; }
     return run("#goBtn", async current => {
       const req = await makeRequest(); delete req.end;
+      req.context.companions = "alone";  // a meeting is two people: the walk's «С кем» (child, group) does not apply
       if (!current()) return;
       const data = await A.postJSON("/meet/search", {request: req, second_location: point(second), max_walk_min: meetLimit}, 40000);
       if (!current()) return;
@@ -320,6 +323,13 @@
         void A.fillPhotos(el.querySelector(".photos"), data.items[i], () => current() && el.isConnected, req.query));
       const back=document.createElement("button");back.className="btn";back.id="meetBack";back.textContent=x.meetBack;back.hidden=true;
       $("#experienceResult").prepend(back);
+      // nothing within the limit: one tap searches again with the next longer walk
+      const wider = data.items.length ? null : LIMITS.find(n => n > meetLimit);
+      if (wider) {
+        const more = document.createElement("button"); more.type = "button"; more.className = "btn primary"; more.id = "meetWider";
+        more.textContent = A.fmt(x.meetWider, {n: wider}); $("#experienceResult").append(more);
+        more.onclick = () => { const s = $("#meetLimit"); s.value = String(wider); s.dispatchEvent(new Event("change")); $("#goBtn").click(); };  // the same path as the search button
+      }
       const draw = selected => {
         overlays.clearLayers();drawParticipants();
         data.items.forEach((p,i)=>pin(p.coords,p.name,()=>selectMeeting(i)));

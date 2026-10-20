@@ -512,3 +512,22 @@ Object.assign(window.I18N.en.x, {unknownPlace: "Unknown place", unknownHint: "Th
   stopsN: {one: "{n} stop", other: "{n} stops"}});
 Object.assign(window.I18N.kk.x, {unknownPlace: "Белгісіз орын", unknownHint: "Атауы сақталмады. 2ГИС-те ашыңыз",
   stopsN: {other: "{n} аялдама"}});
+
+// round 5: the start of the active walk's route list
+Object.assign(window.I18N.ru.x, {walkStart: "Старт"});
+Object.assign(window.I18N.en.x, {walkStart: "Start"});
+Object.assign(window.I18N.kk.x, {walkStart: "Бастау"});
+
+// bug fixes 20.10: «без 1 места» / «без 5 мест»
+Object.assign(window.I18N.ru.x, {cExcludeN: {one: "без {n} места", few: "без {n} мест", many: "без {n} мест", other: "без {n} места"}});
+Object.assign(window.I18N.en.x, {cExcludeN: {one: "{n} place left out", other: "{n} places left out"}});
+Object.assign(window.I18N.kk.x, {cExcludeN: {other: "{n} орынсыз"}});
+Object.assign(window.I18N.ru, {mapHybridShort: "Гибрид"});
+Object.assign(window.I18N.en, {mapHybridShort: "Hybrid"});
+Object.assign(window.I18N.kk, {mapHybridShort: "Гибрид"});
+Object.assign(window.I18N.ru.x, {lessCancel: "Отмена"});
+Object.assign(window.I18N.en.x, {lessCancel: "Cancel"});
+Object.assign(window.I18N.kk.x, {lessCancel: "Болдырмау"});
+Object.assign(window.I18N.ru.gis.err, {twogis_access_denied: "Рейтинг и часы из 2ГИС сейчас недоступны. Откройте место в 2ГИС по ссылке «2GIS».", twogis_quota_exceeded: "Рейтинг и часы из 2ГИС сейчас недоступны. Откройте место в 2ГИС по ссылке «2GIS»."});
+Object.assign(window.I18N.en.gis.err, {twogis_access_denied: "2GIS rating and hours are unavailable right now. Open the place in 2GIS with the «2GIS» link.", twogis_quota_exceeded: "2GIS rating and hours are unavailable right now. Open the place in 2GIS with the «2GIS» link."});
+Object.assign(window.I18N.kk.gis.err, {twogis_access_denied: "2ГИС рейтингі мен жұмыс уақыты қазір қолжетімсіз. Орынды «2GIS» сілтемесі арқылы ашыңыз.", twogis_quota_exceeded: "2ГИС рейтингі мен жұмыс уақыты қазір қолжетімсіз. Орынды «2GIS» сілтемесі арқылы ашыңыз."});
