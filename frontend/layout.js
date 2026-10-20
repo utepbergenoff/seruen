@@ -65,6 +65,9 @@
     else map.setView(c,z,{animate:false});
   };
   $('#mapOpenBtn')?.addEventListener('click',()=>openMap(false,true));
+  // The floating «Карта» button slides away while you scroll down (it would cover buttons) and comes back on the way up.
+  let lastY=window.scrollY;
+  window.addEventListener('scroll',()=>{const y=window.scrollY;if(Math.abs(y-lastY)<6)return;document.body.classList.toggle('fab-away',y>lastY&&y>120);lastY=y;},{passive:true});
   document.addEventListener('click',e=>{
     const t=e.target.closest?.('#geoMap,#locPick,#meetPick,#pickFinish,[data-act="map"],[data-nearby],[data-mine-map],[data-meet-map],.it-row');
     if(!t||!phone())return;

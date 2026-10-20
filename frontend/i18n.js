@@ -560,3 +560,6 @@ Object.assign(window.I18N.kk.x, {placeRemoved: "Орын «Менің орынд
 Object.assign(window.I18N.ru, {lgAB: "Старт A и B"});
 Object.assign(window.I18N.en, {lgAB: "Starts A and B"});
 Object.assign(window.I18N.kk, {lgAB: "A және B бастауы"});
+Object.assign(window.I18N.ru.x, {finishEstimate: "≈{m} мин на всю прогулку с таким финишем", finishEstimateLater: "Время посчитаем, когда выберете точку финиша."});
+Object.assign(window.I18N.en.x, {finishEstimate: "≈{m} min for the whole walk with this finish", finishEstimateLater: "The time is counted once you pick the finish point."});
+Object.assign(window.I18N.kk.x, {finishEstimate: "Осындай мәремен бүкіл серуен ≈{m} мин", finishEstimateLater: "Мәре нүктесін таңдағанда уақытты есептейміз."});

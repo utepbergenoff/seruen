@@ -308,3 +308,11 @@ details.more-details p { margin: 6px 0 0; font-size: 13.5px; color: var(--muted)
 /* scenario tile titles wrap inside the tile instead of running past it */
 .scard { min-height: 104px; }
 .scard span { overflow-wrap: anywhere; hyphens: auto; }
+/* phones: the «Карта» button steps aside while scrolling down; finger-sized chips and disclosures */
+@media (max-width: 860px) {
+  .map-open-btn { transition: transform .25s var(--ease, ease), opacity .25s; }
+  body.fab-away .map-open-btn { transform: translateY(160%); opacity: 0; pointer-events: none; }
+  #chips .tile { min-height: 40px; padding: 8px 14px; }
+  .answer-meta > summary, details.more-details > summary, .nope > summary { display: flex; align-items: center; min-height: 40px; }
+  .panel { padding-bottom: 96px; }
+}

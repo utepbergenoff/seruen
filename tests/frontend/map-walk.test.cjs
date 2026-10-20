@@ -80,6 +80,10 @@ test('every found place has its own «Начать прогулку» that start
   assert.equal(cards.filter(c=>c.querySelector('[data-start-walk]')).length,cards.length);
   const p=d.recommendations[2];
   cards[2].querySelector('[data-start-walk]').click();await tick();
+  // first the finish step in the card: no route is built until it is confirmed
+  assert.ok(cards[2].querySelector('.finish-step'));assert.equal(b.builds.length,0);
+  assert.equal(cards[2].querySelectorAll('[data-finish-mode]').length,3);
+  cards[2].querySelector('[data-finish-go]').click();await tick();
   assert.equal(b.w.SeruenApp.state.selectedPlaceId,p.poi_id);
   assert.deepEqual(b.builds[0].stop_ids,[p.poi_id]);
   const response=clone(FX.build_ok);response.stops=[{...response.stops[0],poi_id:p.poi_id,name:p.name}];

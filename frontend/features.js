@@ -224,7 +224,7 @@
       }));
       el.querySelectorAll("[data-nope]").forEach((b) => b.addEventListener("click", () => nope(b.dataset.nope, r, el, d)));
       // open this place, then the usual «where to finish» question and the walk
-      el.querySelector("[data-start-walk]")?.addEventListener("click", () => { A.selectPlace(r.poi_id, false); buildAnswer(d, false, r.poi_id); });
+      el.querySelector("[data-start-walk]")?.addEventListener("click", () => finishStep(el, r, d));
     });
     $$("[data-undo]").forEach((b) => b.addEventListener("click", () => {
       const k = b.dataset.undo;
@@ -250,6 +250,34 @@
     }));
     drawFinish(); drawPersonal();
   };
+
+  // A focused step before the route: where to finish, with the walk's rough total for that choice, then build.
+  function finishStep(el, r, d) {
+    const x = X(), box = el.querySelector(".card-start"); if (!box) return;
+    const before = box.innerHTML;
+    const total = (mode) => mode === "return" ? 2 * (r.walk_min || 0) + (r.time_to_spend_min || 0) + 5
+      : mode === "place" ? (r.walk_min || 0) + (r.time_to_spend_min || 0) + 5 : null;
+    const draw = () => {
+      const m = total(finishMode);
+      box.innerHTML = `<div class="finish-step" role="group" aria-label="${esc(x.finishQuestion)}"><b>${esc(x.finishQuestion)}</b>
+        <div class="seg seg-wrap">${[["place", x.finishAtPlace], ["return", x.finishReturn], ["destination", x.finishCustom]].map(([v, l]) =>
+          `<button type="button" data-finish-mode="${v}"${v === finishMode ? ' class="on"' : ""} aria-pressed="${v === finishMode}">${esc(l)}</button>`).join("")}</div>
+        <p class="est">${icon("clock")} ${esc(m != null ? fmt(x.finishEstimate, {m}) : x.finishEstimateLater)}</p>
+        <div class="row"><button type="button" class="btn primary" data-finish-go>${icon("route")} ${esc(T().buildRoute)}</button>
+          <button type="button" class="btn" data-finish-cancel>${esc(x.lessCancel)}</button></div></div>`;
+      box.querySelectorAll("[data-finish-mode]").forEach((b) => b.addEventListener("click", () => {
+        const s = $("#finishMode");  // the planner's own finish choice changes with it
+        if (s) { s.value = b.dataset.finishMode; s.dispatchEvent(new Event("change", {bubbles: true})); } else finishMode = b.dataset.finishMode;
+        draw(); box.querySelector(`[data-finish-mode="${finishMode}"]`)?.focus();
+      }));
+      box.querySelector("[data-finish-go]").addEventListener("click", () => { A.selectPlace(r.poi_id, false); buildAnswer(d, false, r.poi_id); });
+      box.querySelector("[data-finish-cancel]").addEventListener("click", () => {
+        box.innerHTML = before; box.querySelector("[data-start-walk]")?.addEventListener("click", () => finishStep(el, r, d));
+        box.querySelector("[data-start-walk]")?.focus();
+      });
+    };
+    draw(); box.querySelector("[data-finish-go]").focus();
+  }
 
   // ---------- F3: why it does not fit ----------
   async function nope(kind, r, el, d) {
