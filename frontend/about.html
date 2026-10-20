@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Серуен — о данных и приватности</title>
+  <title data-i18n="title">Серуен — о данных и приватности</title>
   <script src="theme.js"></script>
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap">
@@ -18,11 +18,16 @@
 </head>
 <body>
   <header class="top">
-    <div class="brand"><svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#00AFCA"/><path d="M8.5 22.5c6 0 5.5-13 15-13" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="8.5" cy="22.5" r="3.4" fill="#FFC20E" stroke="#fff" stroke-width="1.8"/><circle cx="23.5" cy="9.5" r="3" fill="#fff"/></svg><div><h1>Серуен</h1><p class="tagline">О данных и приватности · Data & privacy</p></div></div>
-    <nav class="top-actions"><a class="btn" href="./">← Назад / Back</a></nav>
+    <div class="brand"><svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#00AFCA"/><path d="M8.5 22.5c6 0 5.5-13 15-13" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="8.5" cy="22.5" r="3.4" fill="#FFC20E" stroke="#fff" stroke-width="1.8"/><circle cx="23.5" cy="9.5" r="3" fill="#fff"/></svg><div><h1>Серуен</h1><p class="tagline" data-i18n="tagline">О данных и приватности · Data &amp; privacy</p></div></div>
+    <nav class="top-actions">
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="kk">KZ</button><button type="button" data-lang="ru">RU</button><button type="button" data-lang="en">EN</button>
+      </div>
+      <a class="btn" href="./" data-i18n="back">← Назад / Back</a>
+    </nav>
   </header>
   <main class="page">
-    <section class="card block">
+    <section class="card block" data-i18n="data">
       <h2>Ваши данные и управление ими</h2>
       <p class="lead">Без аккаунта. Личные заметки и сохранённые прогулки остаются в этом браузере.</p>
       <ul>
@@ -35,12 +40,12 @@
         <li>Журнал приложения не записывает текст запросов и координаты. У хостинга, карт, шрифтов и внешних API есть собственные журналы и правила; они могут получать IP-адрес. Приложение не устанавливает рекламные трекеры.</li>
       </ul>
     </section>
-    <section class="card block">
+    <section class="card block" data-i18n="gemini">
       <h2>Что уходит в Gemini</h2>
       <p>Текст запроса, контекст (язык, время, состав группы, погода), ограничения и сведения о кандидатах. Отдельные поля вашей геопозиции и финиша, история посещений и личные заметки в Gemini не отправляются. Если вы сами напишете адрес или имя в запросе, этот текст может попасть в ИИ: автоматического удаления личных сведений нет.</p>
       <p>Для анализа фото передаются снимки места, его название, категория, текст запроса и состав группы. Не указывайте личные сведения в поиске. При недоступности Gemini подбор работает по правилам с соответствующей пометкой.</p>
     </section>
-    <section class="card block">
+    <section class="card block" data-i18n="read">
       <h2>Как читать рекомендации</h2>
       <ul>
         <li>Код выбирает и упорядочивает места, проверяет расстояния, расписания, ограничения и бюджет. Gemini пишет короткие объяснения и идеи занятий по переданным фактам. Принятый текст помечен «идея ИИ»; при ошибке показан текст по правилам.</li>
@@ -50,7 +55,7 @@
         <li>Время пешком — оценка. Она не гарантирует отсутствие льда, перекрытий, лестниц или доступность пути для коляски.</li>
       </ul>
     </section>
-    <section class="card block">
+    <section class="card block" data-i18n="sources">
       <h2>Источники и ограничения</h2>
       <ul>
         <li><b>OpenStreetMap</b> (ODbL) — основа локальной базы; <b>Википедия</b> (CC BY-SA) — часть описаний. Тексты, составленные по тегам, помечены как сгенерированные.</li>
@@ -63,7 +68,7 @@
         <li><b>Google Places</b>: запросы рейтингов и часов выключены.</li>
       </ul>
     </section>
-    <section class="card block">
+    <section class="card block" data-i18n="safety">
       <h2>Безопасность</h2>
       <ul>
         <li>Ночью (22:00–06:00) радиус ограничен 1 км; наружные места без отметок об освещении или людности исключаются. Эти отметки тоже могут устареть. Это фильтр данных, а не гарантия безопасности.</li>
@@ -72,8 +77,8 @@
       </ul>
     </section>
     <section class="card block" id="photos">
-      <h2>Фотографии · Photos</h2>
-      <p>Фото взяты с Wikimedia Commons под свободными лицензиями (CC0, CC BY, CC BY-SA) и уменьшены для сайта. Авторы:</p>
+      <h2 data-i18n="photosTitle">Фотографии · Photos</h2>
+      <p data-i18n="photosIntro">Фото взяты с Wikimedia Commons под свободными лицензиями (CC0, CC BY, CC BY-SA) и уменьшены для сайта. Авторы:</p>
       <ul>
         <li><a href="https://commons.wikimedia.org/wiki/File:Night_at_Esil_District%2C_Astana_%28P1190721%29.jpg" target="_blank" rel="noopener">Night at Esil District, Astana (P1190721)</a> — Matti Blume, CC BY-SA 4.0</li>
         <li><a href="https://commons.wikimedia.org/wiki/File:Taking_notes_at_a_coffee_table_%28Unsplash%29.jpg" target="_blank" rel="noopener">Taking notes at a coffee table (Unsplash)</a> — Tran Mau Tri Tam tranmautritam, CC0</li>
@@ -89,16 +94,17 @@
         <li><a href="https://commons.wikimedia.org/wiki/File:Nursultan_Nazarbayev_International_Airport%2C_Astana_%28LRM_20240405_115306%29.jpg" target="_blank" rel="noopener">Nursultan Nazarbayev International Airport, Astana (LRM 20240405 115306)</a> — Matti Blume, CC BY-SA 4.0</li>
       </ul>
     </section>
-    <section class="card block" id="city-experiences">
+    <section class="card block" id="city-experiences" data-i18n="city">
       <h2>Истории, встречи и зимние прогулки</h2>
       <p>Истории относятся к конкретным объектам: у каждой есть источник и кнопка Википедии. Тексты сокращены и переведены; пересказы Википедии доступны на условиях <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>. Авторов и историю правок можно найти в исходной статье. Подборка расширяется после проверки, а не за счёт выдуманных рассказов.</p>
       <p>Для встречи выбирайте общественные ориентиры с согласия участников. Обе точки округляются и отправляются серверу; 2ГИС может получать центр поиска между ними. Точки встречи не сохраняются в профиле или ссылке. Времена сравниваются по одной оценочной модели, обратный путь не включён. Пунктирные линии не подтверждают наличие переходов или доступность улиц.</p>
       <p>Зимний режим ограничивает время отдельных переходов и подбирает остановки в помещении. Он не проверяет лёд, ветер между зданиями или возможность войти прямо сейчас. Превью показывает расчётные этапы: это не панорама и не наблюдение за реальной обстановкой.</p>
     </section>
-    <section class="card block" lang="en">
+    <section class="card block" lang="en" data-ru-only>
       <h2>In English</h2>
       <p>No accounts. Personal notes and saved walks remain in this browser until deleted through My places or browser settings. Filtering can send visited/excluded place IDs to the backend, but not note text. Coordinates are rounded to three decimals; this is not anonymisation. Choose a public landmark instead of GPS if preferred. Gemini receives search text, context and candidate facts, without separate user-location, destination or visit-history fields. Personal information typed into search is not automatically redacted. 2GIS receives a rounded search centre; routing requests can send rounded start/end points and stops to OSRM. Bounded in-memory caches reuse results for up to 30 minutes (local recommendations), five minutes (2GIS search) or six hours (photo analysis); expired entries may remain until eviction or restart. Providers have their own logs and policies. Rules select candidates and calculate times; Gemini writes explanations and activity ideas from supplied evidence. AI text is labelled; rejected generations fall back to templates. Photo identity and image hashes are reviewed before display. Photos do not establish quietness, safety or current seating availability. Check conditions before visiting.</p>
     </section>
   </main>
+  <script src="about-i18n.js"></script>
 </body>
 </html>

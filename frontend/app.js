@@ -169,7 +169,7 @@
       const title = typeof s.title === "string" ? s.title : (s.title && (s.title[state.lang] || s.title.ru)) || s.id;
       return `<button type="button" role="menuitem" data-id="${esc(s.id)}"><img src="img/${scenarioPhoto(s)}.jpg" alt="" loading="lazy" decoding="async">
         <span class="menu-text"><b>${esc(s.id)}</b> · ${esc(title)}
-        <small>${esc(p ? plabel(p) : "")}${p ? " — " : ""}«${esc(s.query)}»</small></span></button>`;
+        <small>${esc(p ? plabel(p) : "")}${p ? " — " : ""}«${esc(scenarioQuery(s))}»</small></span></button>`;
     }).join("");
     $$("#scenariosMenu button").forEach((b) => b.addEventListener("click", () => { toggleMenu(false); runScenario(b.dataset.id); }));
   }
@@ -192,6 +192,8 @@
     q.style.height = "";
     if (q.value && q.scrollHeight > q.clientHeight) q.style.height = Math.min(q.scrollHeight + 3, 260) + "px";
   }
+  // scenarios carry their request in every interface language; Russian is the original
+  const scenarioQuery = (s) => (s.queries && s.queries[state.lang]) || s.query;
   function toggleMenu(open) { $("#scenariosMenu").hidden = !open; $("#scenariosBtn").setAttribute("aria-expanded", String(open)); }
   $("#scenariosBtn").addEventListener("click", (e) => { e.stopPropagation(); toggleMenu($("#scenariosMenu").hidden); });
   document.addEventListener("click", (e) => { if (!e.target.closest(".dropdown")) toggleMenu(false); });
@@ -204,7 +206,7 @@
     const p = state.presets.find((x) => x.id === s.preset);
     if (p) setLoc(p.lat, p.lon, "preset", p.id);
     else if (s.location) setLoc(s.location.lat, s.location.lon, "preset", null);
-    $("#query").value = s.query; fitQuery();
+    $("#query").value = scenarioQuery(s); fitQuery();
     const ctx = s.context || {};
     $("#weather").value = "auto"; $("#access").checked = !!ctx.accessibility;
     if (ctx.time_budget_min) { $("#budget").value = ctx.time_budget_min; $("#budgetOut").textContent = ctx.time_budget_min; $("#budgetAuto").checked = false; }

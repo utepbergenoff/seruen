@@ -665,3 +665,88 @@ body.map-expanded #panelSide { display:none; }
 .ask textarea:placeholder-shown { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .active-stop-pin { width:32px; height:32px; display:grid; place-items:center; border:3px solid white; border-radius:50%; background:#00708a; color:white; font:700 14px/1 sans-serif; box-shadow:0 2px 8px #0005; }
 [data-theme="dark"] .active-walk-path { stroke:#45cce0; }
+
+/* ---------- 19.10 evening: Alikhan's round 3 ---------- */
+/* 1. a larger welcome so Baiterek is visible */
+.welcome { min-height: 236px; }
+.welcome-day { object-position: center 20%; }
+@media (max-width: 860px) { .welcome { min-height: 168px; } }
+/* 2. walk / meet: the first choice, with icons */
+.search-intent span { display: flex; align-items: center; justify-content: center; gap: 9px; padding: 13px 12px; font-size: 16px; font-weight: 700; }
+.search-intent input[value="walk"] + span::before { content: ""; flex: none; width: 22px; height: 22px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='13.5' cy='4' r='1.8'/%3E%3Cpath d='M9 21l3-7 3 3v5M12 14l1.5-5.5L10 10l-2 3M13.5 8.5l2 3 3 1'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='13.5' cy='4' r='1.8'/%3E%3Cpath d='M9 21l3-7 3 3v5M12 14l1.5-5.5L10 10l-2 3M13.5 8.5l2 3 3 1'/%3E%3C/svg%3E") center / contain no-repeat; }
+.search-intent input[value="meet"] + span::before { content: ""; flex: none; width: 22px; height: 22px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='8' cy='8' r='3.2'/%3E%3Ccircle cx='16.5' cy='9' r='2.6'/%3E%3Cpath d='M2.5 20c.4-3.3 2.7-5.5 5.5-5.5s5.1 2.2 5.5 5.5M14 14.6c.8-.4 1.6-.6 2.5-.6 2.5 0 4.4 1.9 4.8 4.9'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='8' cy='8' r='3.2'/%3E%3Ccircle cx='16.5' cy='9' r='2.6'/%3E%3Cpath d='M2.5 20c.4-3.3 2.7-5.5 5.5-5.5s5.1 2.2 5.5 5.5M14 14.6c.8-.4 1.6-.6 2.5-.6 2.5 0 4.4 1.9 4.8 4.9'/%3E%3C/svg%3E") center / contain no-repeat; }
+/* 3. search ideas as a visible yellow button with a lamp; the search box gets a plain label */
+.quick-ideas { margin: 2px 0 14px; }
+.quick-ideas > summary { list-style: none; display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 12px 16px; border-radius: 14px;
+  background: var(--sun-tint); border: 1.5px solid var(--sun); color: var(--ink); font: 700 16px/1.3 var(--font); }
+.quick-ideas > summary::-webkit-details-marker { display: none; }
+.quick-ideas > summary::before { content: ""; flex: none; width: 24px; height: 24px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6M10 21h4'/%3E%3Cpath d='M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3z'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6M10 21h4'/%3E%3Cpath d='M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3z'/%3E%3C/svg%3E") center / contain no-repeat; color: #B57F00; }
+.quick-ideas > summary::after { content: ""; margin-left: auto; width: 8px; height: 8px; border-right: 2.5px solid currentColor; border-bottom: 2.5px solid currentColor;
+  transform: rotate(45deg) translateY(-3px); transition: transform .2s var(--ease); }
+.quick-ideas[open] > summary::after { transform: rotate(-135deg) translateY(-1px); }
+.quick-ideas[open] > summary { margin-bottom: 10px; }
+.quick-ideas > summary:hover { background: #FFEDB0; }
+:root[data-theme="dark"] .quick-ideas > summary { color: var(--ink); }
+:root[data-theme="dark"] .quick-ideas > summary:hover { background: #54461C; }
+:root[data-theme="dark"] .quick-ideas > summary::before { color: var(--sun); }
+.ask-label { display: block; font: 700 15px/1.35 var(--font); color: var(--ink); margin: 2px 0 8px; }
+/* 4. walk settings: plain controls instead of a developer panel */
+.ctx { background: var(--surface); }
+.time-field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--muted); }
+.field-title, .ctx-grid label > span:first-child { font-size: 13.5px; font-weight: 600; color: var(--ink); }
+.chip-toggle { align-self: flex-start; display: inline-flex; cursor: pointer; }
+.chip-toggle input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.chip-toggle span { display: inline-flex; align-items: center; min-height: 34px; padding: 6px 14px; border-radius: 999px; background: var(--ground);
+  border: 1px solid var(--line); color: var(--ink); font: 600 13px var(--font); }
+.chip-toggle input:checked + span { background: var(--sky-deep); border-color: var(--sky-deep); color: #fff; }
+.chip-toggle input:focus-visible + span { outline: 3px solid var(--sky); outline-offset: 2px; }
+.time-field:has(#budgetAuto:checked) .row { opacity: .45; }
+.ctx-grid select, .finish-field select, #noSpend, .nope-format select { -webkit-appearance: none; appearance: none; min-height: 44px; padding: 9px 38px 9px 14px;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--surface) no-repeat right 14px center / 12px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2300708A' stroke-width='2'/%3E%3C/svg%3E");
+  font: 500 14.5px var(--font); color: var(--ink); cursor: pointer; }
+.ctx-grid input[type=range] { accent-color: var(--sky-deep); height: 28px; }
+.context-more > summary { font-size: 14px; }
+/* the weather is always the real one; the start time is always now (demo links still set it) */
+#weatherField, #whenField { display: none !important; }
+/* 6. cold weather: a switch, one sentence, 5/10/15 tabs only when on */
+#winterField { padding: 14px 16px; border-radius: 16px; background: var(--sky-tint); border: 0; }
+.winter-toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; }
+.winter-title { display: inline-flex; align-items: center; gap: 9px; font: 700 15.5px var(--font); color: var(--ink); }
+.winter-title::before { content: ""; flex: none; width: 22px; height: 22px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2v20M3.3 7l17.4 10M3.3 17L20.7 7M9 4l3 2 3-2M9 20l3-2 3 2'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2v20M3.3 7l17.4 10M3.3 17L20.7 7M9 4l3 2 3-2M9 20l3-2 3 2'/%3E%3C/svg%3E") center / contain no-repeat; color: var(--sky-deep); }
+.winter-toggle input[role="switch"] { -webkit-appearance: none; appearance: none; flex: none; position: relative; width: 46px; height: 28px; margin: 0;
+  border-radius: 999px; background: #B9CCD4; cursor: pointer; transition: background .2s var(--ease); }
+.winter-toggle input[role="switch"]::before { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .2s var(--ease); }
+.winter-toggle input[role="switch"]:checked { background: var(--sky-deep); }
+.winter-toggle input[role="switch"]:checked::before { transform: translateX(18px); }
+.winter-toggle input[role="switch"]:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; }
+.winter-short { margin: 6px 0 0; font-size: 13.5px; color: var(--muted); }
+#winterSettings { padding: 12px 0 0; }
+.winter-label { display: block; font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+.winter-tabs { display: flex; gap: 6px; }
+.winter-tab { flex: 1; min-height: 40px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 600 14px var(--font); cursor: pointer; }
+.winter-tab.on { background: var(--sky-deep); border-color: var(--sky-deep); color: #fff; }
+.sr-only { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* 7-8. no privacy line under the button (it stays on «О данных и приватности»); no atmosphere block */
+#privacyHint, #atmosphereOptions, #atmosField { display: none !important; }
+/* 10. a readable header; the heart shows on the blue bar */
+.top .btn { font-size: 15.5px; }
+.lang button { font-size: 13.5px; }
+.top .btn .ic { color: var(--sun); }
+/* 12. map tools and landmark pins get icons */
+#browseLandmarks::before { content: ""; flex: none; width: 16px; height: 16px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 6h13M8 12h13M8 18h13'/%3E%3Ccircle cx='3.5' cy='6' r='1'/%3E%3Ccircle cx='3.5' cy='12' r='1'/%3E%3Ccircle cx='3.5' cy='18' r='1'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 6h13M8 12h13M8 18h13'/%3E%3Ccircle cx='3.5' cy='6' r='1'/%3E%3Ccircle cx='3.5' cy='12' r='1'/%3E%3Ccircle cx='3.5' cy='18' r='1'/%3E%3C/svg%3E") center / contain no-repeat; }
+#mapFullscreen::before { content: ""; flex: none; width: 16px; height: 16px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7'/%3E%3C/svg%3E") center / contain no-repeat; }
+#panelSide::before { content: ""; flex: none; width: 16px; height: 16px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='16' rx='2'/%3E%3Cpath d='M9.5 4v16'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='16' rx='2'/%3E%3Cpath d='M9.5 4v16'/%3E%3C/svg%3E") center / contain no-repeat; }
+#browseLandmarks, #mapFullscreen, #panelSide { display: inline-flex; align-items: center; gap: 7px; }
+.story-layer-toggle::before { content: ""; flex: none; width: 18px; height: 18px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2.5l1.6 3.2h-3.2zM10.4 5.7h3.2l1.2 13.3H9.2zM6 21h12'/%3E%3Ccircle cx='12' cy='9.5' r='2.3'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2.5l1.6 3.2h-3.2zM10.4 5.7h3.2l1.2 13.3H9.2zM6 21h12'/%3E%3Ccircle cx='12' cy='9.5' r='2.3'/%3E%3C/svg%3E") center / contain no-repeat; color: #B57F00; order: 1; }
+.story-pin { font-size: 0; display: grid; place-items: center; }
+.story-pin::before { content: ""; flex: none; width: 18px; height: 18px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2.5l1.6 3.2h-3.2zM10.4 5.7h3.2l1.2 13.3H9.2zM6 21h12'/%3E%3Ccircle cx='12' cy='9.5' r='2.3'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2.5l1.6 3.2h-3.2zM10.4 5.7h3.2l1.2 13.3H9.2zM6 21h12'/%3E%3Ccircle cx='12' cy='9.5' r='2.3'/%3E%3C/svg%3E") center / contain no-repeat; color: #122e45; }
+.search-intent span { gap: 7px; padding: 12px 8px; font-size: 15px; line-height: 1.2; }
+@media (max-width: 860px) {
+  /* the map stays visible: compact tools; side-of-screen choice means nothing on a phone */
+  #panelSide { display: none !important; }
+  .map-tools .btn.small { min-height: 36px; padding: 4px 10px; font-size: 12.5px; }
+  .map-tools { max-width: 196px; }
+  .story-layer-toggle { font-size: 12px; line-height: 1.25; hyphens: auto; overflow-wrap: anywhere; min-width: 0; }
+}

@@ -122,17 +122,18 @@
         </div>
         <div id="meetingFields" hidden></div>
         <details class="quick-ideas"><summary data-i18n="quickIdeas"></summary><div id="chips" class="chips"></div></details>
+        <label for="query" class="ask-label" data-i18n="askLabel"></label>
         <div class="ask">
           <textarea id="query" rows="1" maxlength="500" data-i18n-placeholder="placeholder" aria-label="Query" aria-describedby="privacyHint"></textarea>
         </div>
         <section id="ctxBox" class="ctx" aria-labelledby="contextTitle">
           <h3 id="contextTitle" data-i18n="settings"></h3>
           <div class="ctx-grid">
-            <label><span data-i18n="budget"></span>
-              <span class="row"><input id="budget" type="range" min="15" max="180" step="5" value="60">
+            <div class="time-field"><span id="budgetTitle" class="field-title" data-i18n="budget"></span>
+              <span class="row"><input id="budget" type="range" min="15" max="180" step="5" value="60" aria-labelledby="budgetTitle">
               <output id="budgetOut">60</output>&nbsp;<span data-i18n="minutes"></span></span>
-              <span class="row small"><input id="budgetAuto" type="checkbox" checked> <span data-i18n="budgetAuto"></span></span>
-            </label>
+              <label class="chip-toggle"><input id="budgetAuto" type="checkbox" checked><span data-i18n="budgetAuto"></span></label>
+            </div>
             <label><span data-i18n="with"></span>
               <select id="companions">
                 <option value="alone" data-i18n="alone"></option>
@@ -150,7 +151,7 @@
             </label>
           </div>
           <details class="context-more"><summary data-i18n="extraSettings"></summary><div id="contextMoreGrid" class="ctx-grid">
-            <label><span data-i18n="when"></span>
+            <label id="whenField"><span data-i18n="when"></span>
               <span class="row"><select id="whenSel"><option value="now" data-i18n="now"></option><option value="other" data-i18n="other"></option></select>
               <input id="whenAt" type="datetime-local" hidden></span>
             </label>
