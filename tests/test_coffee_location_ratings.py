@@ -22,7 +22,7 @@ COORDS = {"lat": 51.088679, "lon": 71.41551}
 
 def test_s1_card_links_route_and_old_destination_use_correct_branch():
     settings = Settings(warm_cache=False, photos_enabled=False)
-    scenario = json.loads((ROOT / "frontend/scenarios.json").read_text())[0]["request"]
+    scenario = json.loads((ROOT / "frontend/scenarios.json").read_text(encoding="utf-8"))[0]["request"]
     req = {**copy.deepcopy(scenario), "source": "local", "finish_mode": "place"}
     with TestClient(create_app(settings)) as client:
         response = client.post("/recommend", json=req)
@@ -57,7 +57,7 @@ def test_local_fallback_exposes_refusal_and_details_preserve_requested_id():
         return httpx.Response(403)
     settings = Settings(warm_cache=False, photos_enabled=False, twogis_enabled=True, twogis_api_key="test-key")
     with TestClient(create_app(settings, twogis_transport=httpx.MockTransport(respond))) as client:
-        req = json.loads((ROOT / "frontend/scenarios.json").read_text())[0]["request"]
+        req = json.loads((ROOT / "frontend/scenarios.json").read_text(encoding="utf-8"))[0]["request"]
         data = client.post("/recommend", json={**req, "source": "auto"}).json()
         assert data["source"] == "local" and data["recommendations"]
         assert data["source_error"] == "twogis_access_denied"

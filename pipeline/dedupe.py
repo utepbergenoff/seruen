@@ -1,6 +1,6 @@
 """A6: OSM elements -> clean POI records: one category, mood tags, flags, dedupe.
 
-Mapping follows docs (yerlan.md section 5 / TA appendix B).
+The category mapping and record format are described in docs/data.md.
 """
 
 import re

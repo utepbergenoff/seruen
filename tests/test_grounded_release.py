@@ -162,8 +162,8 @@ async def test_photo_identity_is_bound_to_exact_image_bytes(settings, poi, tmp_p
 
 
 def test_shipped_photo_reviews_have_real_bytes_and_fame_city_has_no_mall_photos():
-    reviews = json.loads((ROOT / "data/photo_identity_review.json").read_text())["places"]
-    index = json.loads((ROOT / "frontend/img/places/index.json").read_text())["places"]
+    reviews = json.loads((ROOT / "data/photo_identity_review.json").read_text(encoding="utf-8"))["places"]
+    index = json.loads((ROOT / "frontend/img/places/index.json").read_text(encoding="utf-8"))["places"]
     assert "osm_way_1449322354" not in index and "osm_way_1449322354" not in reviews
     for pid, entries in index.items():
         for entry in entries:
