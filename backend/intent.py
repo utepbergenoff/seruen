@@ -1,5 +1,6 @@
 import re
 
+from .indoor import indoor_required, shelter_requested
 from .schemas import Intent
 
 
@@ -13,6 +14,7 @@ def detect_lang(query):
 
 def rule_intent(request):
     q = request.query.lower().replace("ё", "е")
+    inside = indoor_required(request)
     tags, categories = [], []
     if re.search(r"коф|кафе|cafe|coffee|кофе|ноут|laptop|розет|socket|wifi|wi-fi|wi fi|поработ|жұмыс", q):
         categories = ["coffee", "library", "cowork"]
@@ -27,10 +29,10 @@ def rule_intent(request):
         or request.context.companions == "child"
     )
     if child:
-        categories = ["kids", "park", "culture"]
+        categories = ["kids", "culture", "shopping"] if inside else ["kids", "park", "culture"]
     walking = bool(re.search(r"прогул|погул|прогуля|пройтись|подыш|walk|серуен|\bпарк|\bpark|сквер", q))
-    indoor_visit = bool(re.search(r"музей|museum|мұражай|кино|cinema|театр|theat|галере|gallery|в помещении|indoors", q))
-    if walking and not indoor_visit and (not categories or child):
+    indoor_visit = bool(re.search(r"музей|museum|мұражай|кино|cinema|театр|theat|галере|gallery", q))
+    if walking and not indoor_visit and not inside and (not categories or child):
         tags.append("outdoor_walk")
         if not categories:
             categories = ["park", "viewpoint", "culture", "unusual"]
@@ -40,6 +42,8 @@ def rule_intent(request):
         categories = ["culture"]
     if not categories and re.search(r"поесть|еда|food|eat|тамақ", q):
         categories = ["food"]
+    if inside and not categories:
+        categories = ["coffee", "food", "shopping", "library", "culture"]
     budget = 60
     range_match = re.search(r"(\d+)\s*[-–—]\s*(\d+)\s*(мин|minute|min|час|hour|сағат)", q)
     single = re.search(r"(\d+)\s*(мин|minute|min|час|hour|сағат)", q)
@@ -85,7 +89,7 @@ def rule_intent(request):
         r"прогул|погул|прогуля|пройтись|подыш|рядом|сходить|посмотр|коф|кафе|ноут|музей|мұражай|кино|cinema|театр|theat|галере|gallery|парк|park|сквер|тихо|розет|ноч|вечер|мест|час|минут|вылет|аэропорт|транзит|ребен|дет|доч|необыч|walk|near|place|cafe|coffee|museum|quiet|socket|night|hour|minute|flight|airport|child|kid|unusual|бала|сағат|қайда|серуен|ұшақ|көруге",
         q,
     )
-    unrelated = unrelated or bool(q.strip() and not domain)
+    unrelated = unrelated or bool(q.strip() and not domain and not shelter_requested(q))
     return Intent(
         categories=categories,
         tags=tags,
