@@ -10,9 +10,9 @@ const withFeatures={healthData:FX.health_with_features,comfort:FX.comfort,build:
 const request={location:{lat:51.128,lon:71.43},query:'coffee',context:{lang:'ru',time_budget_min:90}};
 const startWalk=b=>b.w.SeruenFeatures.startWalk(b.w.SeruenFeatures.planView(clone(FX.build_ok),request),null);
 
-for (const [status, shown] of [['twogis_access_denied', false], ['ok', true]]) {
-  test(`2GIS rating button is ${shown ? 'shown' : 'hidden'} when 2GIS last answered ${status}`,async t=>{
-    const b=await boot(t,{healthData:{mode_available:['no_ai'],twogis:{enabled:true,search_enabled:true,last_status:status}}});await settle();
+for (const [twogis, shown] of [[{enabled:true,search_enabled:true,last_status:'twogis_access_denied'}, true], [{enabled:false,search_enabled:false,last_status:'not_checked'}, false]]) {
+  test(`2GIS rating button is ${shown ? 'shown' : 'hidden'} when /health says enabled=${twogis.enabled}`,async t=>{
+    const b=await boot(t,{healthData:{mode_available:['no_ai'],twogis}});await settle();
     b.click('#goBtn');await settle();
     b.requests[0].resolve(json(clone(FX.recommend_normal)));await settle();
     assert.ok(b.w.document.querySelectorAll('.rec').length>0);
@@ -20,7 +20,7 @@ for (const [status, shown] of [['twogis_access_denied', false], ['ok', true]]) {
   });
 }
 
-test('the first «2GIS refused» answer explains itself once and removes the other rating buttons, remembered after reload',async t=>{
+test('a refused 2GIS answer is explained in plain words and every card keeps its button',async t=>{
   const refused=()=>({ok:false,status:503,json:async()=>({error:{code:'twogis_access_denied'}})});
   const b=await boot(t,{healthData:{mode_available:['no_ai'],twogis:{enabled:true,search_enabled:true,last_status:'not_checked'}},twogis:refused});await settle();
   b.click('#goBtn');await settle();b.requests[0].resolve(json(clone(FX.recommend_normal)));await settle();
@@ -29,10 +29,8 @@ test('the first «2GIS refused» answer explains itself once and removes the oth
   buttons[0].click();await settle();
   const box=buttons[0].closest('.rec').querySelector('.gis-box').textContent;
   assert.match(box,/недоступны/);assert.doesNotMatch(box,/Сообщите команде/);
-  assert.equal(b.w.document.querySelectorAll('.rec [data-act="gis"]').length,1);
-  assert.ok(+b.w.localStorage.getItem('seruen_gis_refused')>0);
   b.w.SeruenApp.rerender();
-  assert.equal(b.w.document.querySelectorAll('.rec [data-act="gis"]').length,0);
+  assert.equal(b.w.document.querySelectorAll('.rec [data-act="gis"]').length,buttons.length);
 });
 
 test('one left-out place reads «без 1 места», five read «без 5 мест»',async t=>{

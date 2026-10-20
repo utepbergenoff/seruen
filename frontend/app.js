@@ -704,15 +704,9 @@
   }
 
   // ---------- 2GIS rating and hours (extra): asked only when the button is pressed, never for every card ----------
-  // The server's status forgets a refusal when it restarts, so the first refused answer also counts, for 6 hours on this device.
-  const GIS_REFUSED = /access_denied|forbidden|invalid_key|quota/i;
-  try { state.gisRefused = Date.now() - (+localStorage.getItem("seruen_gis_refused") || 0) < 6 * 3600e3; } catch { state.gisRefused = false; }
-  const gisOn = () => FEAT.twogis && !state.gisRefused;
-  function gisRefusedNow(keep = null) {
-    state.gisRefused = true;
-    try { localStorage.setItem("seruen_gis_refused", String(Date.now())); } catch { /* private mode: this page only */ }
-    $$('[data-act="gis"], #selectedGis').forEach((b) => { if (b !== keep) { b.closest(".rec, article")?.querySelector(".gis-box")?.setAttribute("hidden", ""); b.remove(); } });
-  }
+  // The button stays on every card; only a 2GIS switched off by the team (/health enabled:false) hides it.
+  const gisOn = () => FEAT.twogis && !state.gisOff;
+
   const GIS_RETRY = ["twogis_timeout", "twogis_unavailable", "twogis_local_limit", "network"];
   const gisKey = (id) => `${id}|${state.lang === "kk" ? "kk" : "ru"}`;  // English gets the Russian 2GIS answer anyway
   async function getTwoGis(id) {
@@ -776,7 +770,6 @@
       const g = await getTwoGis(id);
       btn.disabled = false;
       if (!GIS_RETRY.includes(g.error)) state.gis[key] = g;  // final answers are kept, so 2GIS is asked once per place
-      if (GIS_REFUSED.test(g.error || "")) gisRefusedNow(btn);  // this box explains it once; the other buttons go away
       if (!card.isConnected) return;
       box.innerHTML = gisHtml(g);
     } else box.innerHTML = gisHtml(state.gis[key]);
@@ -913,8 +906,7 @@
       try {
         const h = await getJSON(API + "/health");
         state.features = h.feature_contract_version === 2 && h.features && typeof h.features === "object" ? h.features : {};
-        // 2GIS switched off or refusing the team key: its rating/hours button could only show an error, so it is hidden
-        if (h.twogis && (h.twogis.enabled === false || GIS_REFUSED.test(h.twogis.last_status || "")) && !state.gisRefused) gisRefusedNow();
+        if (h.twogis && h.twogis.enabled === false && !state.gisOff) { state.gisOff = true; if (state.last) render(state.last); }
         if (ext.onHealth) ext.onHealth(h);
         const avail = h.mode_available || [];
         state.apiMode = h.ai === "gemini" || avail.includes("ai") ? "ai" : h.ai === "no_ai" || avail.includes("no_ai") ? "no_ai" : (h.mode || null);

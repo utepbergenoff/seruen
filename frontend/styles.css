@@ -1089,3 +1089,11 @@ input[type="checkbox"][role="switch"]:focus-visible { outline: 3px solid var(--s
 /* a select hidden behind its pills must stay 1 px even where older rules give selects width:100% (it made the page scroll sideways) */
 select.sr-only, input.sr-only { position: absolute !important; width: 1px !important; height: 1px !important; min-height: 0 !important; margin: -1px !important;
   padding: 0 !important; border: 0 !important; overflow: hidden !important; clip: rect(0 0 0 0) !important; white-space: nowrap !important; }
+/* secondary buttons must read as buttons on a white card: tinted fill plus a visible border (the pale borderless look hid them) */
+.panel .btn:not(.primary):not(.ghost), .map-tools .btn { background: var(--sky-tint); border: 1px solid #B7D9E2; color: var(--sky-ink); }
+.panel .btn:not(.primary):not(.ghost):hover, .map-tools .btn:hover { background: #CDEBF2; border-color: var(--sky-deep); color: var(--sky-ink); }
+[data-theme="dark"] .panel .btn:not(.primary):not(.ghost), [data-theme="dark"] .map-tools .btn { background: #1E4352; border-color: #3E6778; color: var(--ink); }
+[data-theme="dark"] .panel .btn:not(.primary):not(.ghost):hover, [data-theme="dark"] .map-tools .btn:hover { background: #255263; border-color: var(--sky-deep); color: var(--ink); }
+.panel .chip-scroll .btn.btn:not(.primary), .panel .keep .chip-btn:not(.on) { background: var(--surface); border: 1px solid var(--line); color: var(--ink); }
+.panel .chip-scroll .btn.btn:not(.primary):hover, .panel .keep .chip-btn:not(.on):hover { border-color: var(--sky-deep); background: var(--surface); }
+.panel .btn.btn.walk-end-btn { background: var(--bad-bg); border-color: transparent; color: var(--bad); }
