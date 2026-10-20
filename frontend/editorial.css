@@ -419,3 +419,27 @@ details.more-details p { margin: 6px 0 0; font-size: 13.5px; color: var(--muted)
 .rec .photos .tag .ic { color: var(--sun-deep); }
 .rec .photos .ph-why { margin-top: 10px; font-size: 14px; }
 [data-theme="dark"] .rec .photos .tag { border-color: #5A4A24; }
+
+/* meeting results: each place in its own numbered card, like the walk results (not a thin line between them) */
+#experiences.card { background: var(--paper-2); }
+#experienceResult { counter-reset: meet; display: grid; gap: 16px; margin-top: 14px; }
+#experienceResult > .meet-place { counter-increment: meet; margin: 0; padding: 18px 18px 16px; border: 1px solid var(--line); border-top: 1px solid var(--line);
+  border-radius: var(--r-l); background: var(--surface); box-shadow: 0 1px 0 rgba(28, 42, 34, .04), 0 12px 26px -20px rgba(28, 42, 34, .55); }
+#experienceResult > .meet-place h3 { display: flex; align-items: center; gap: 12px; margin: 0 0 2px; font: 600 20px/1.25 var(--display); color: var(--ink); }
+#experienceResult > .meet-place h3::before { content: counter(meet); flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
+  border: 2px solid var(--sky-deep); color: var(--sky-deep); background: var(--surface); font: 700 15px var(--display); }
+#experienceResult > .meet-place > h3 + .meta { margin: 0 0 4px 46px; }
+#experienceResult > .meet-place .meeting-times { margin: 12px 0 8px; }
+#experienceResult > .meet-place .meeting-times span { background: var(--paper-2); border-color: var(--line-soft); color: var(--muted); }
+#experienceResult > .meet-place .meeting-times strong { font: 700 22px var(--display); color: var(--ink); }
+#experienceResult > .meet-place .row { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; }
+#experienceResult > .meet-place [data-meet-route] { background: var(--sky-deep); border-color: var(--sky-deep); color: #FFFCF6; }
+#experienceResult > .meet-place [data-meet-route]:hover { background: var(--sky-ink); border-color: var(--sky-ink); color: #FFFCF6; }
+[data-theme="dark"] #experienceResult > .meet-place [data-meet-route] { color: #0F1813; }
+#experienceResult > .meet-place .ph-none { margin: 10px 0 0; color: var(--muted); }
+#experienceResult > #meetBack { justify-self: start; }
+@media (max-width: 860px) {
+  #experienceResult > .meet-place { padding: 16px 14px 14px; }
+  #experienceResult > .meet-place .row { display: grid; grid-template-columns: 1fr; }
+  #experienceResult > .meet-place .row .btn { justify-content: center; min-height: 46px; }
+}
