@@ -10,6 +10,8 @@ from .generate import AIError, Gemini, validate_drafts
 from .grounding import supports_draft, unknown_note
 from .geo import budget_for, haversine, in_astana, target_time, speed, walk_minutes
 from .intent import rule_intent
+from .indoor import shelter_requested
+from .query_constraints import spending_limit
 from .loader import Dataset, load_pois
 from .provider_status import log_provider
 from .places import maps_url
@@ -235,6 +237,12 @@ class RecommendationService:
             notes.append(message(refusal, intent.lang))
         elif not cards:
             notes.append(message("empty", intent.lang))
+            if request.preferences.indoor_only:
+                notes.append({
+                    "ru": "Подходящие помещения рядом не найдены. Уличные площадки и парки не подставляю; попробуйте другую точку или увеличьте время.",
+                    "en": "No suitable indoor venues were found nearby. Outdoor playgrounds and parks are excluded; try another starting point or allow more time.",
+                    "kk": "Маңайдан қолайлы жабық орын табылмады. Ашық алаңдар мен саябақтар ұсынылмайды; басқа нүктені таңдаңыз немесе уақытты көбейтіңіз.",
+                }[intent.lang])
         if search.expanded:
             notes.append(message("expanded", intent.lang))
         if search.category_relaxed:
@@ -253,6 +261,19 @@ class RecommendationService:
             notes.append(message("mock", intent.lang))
         if request.context.simulate and request.context.now:
             notes.append(message("simulation", intent.lang).format(time=now.strftime("%d.%m.%Y %H:%M")))
+        amount = spending_limit(request.query)
+        if amount is not None:
+            notes.append({
+                "ru": f"Лимит расходов {amount} ₸: актуальные полные цены не подтверждены, поэтому показываю только места с подтверждённым бесплатным посещением. Покупки в лимит не рассчитаны.",
+                "en": f"Spending limit {amount} KZT: current total prices are unverified, so only venues with confirmed free visits are shown. Purchases are not priced.",
+                "kk": f"Шығын шегі {amount} ₸: толық бағалар расталмаған, сондықтан тек тегін баруға болатын расталған орындар көрсетілді. Сатып алу құны есептелмеген.",
+            }[intent.lang])
+        elif request.preferences.expense_mode != "any":
+            notes.append({
+                "ru": "Расходы проверены по источникам: места с неизвестными или обязательными расходами исключены.",
+                "en": "Spending conditions were checked against sources; unknown or mandatory expenses are excluded.",
+                "kk": "Шығын шарттары дереккөздермен тексерілді; белгісіз не міндетті шығындары бар орындар алынып тасталды.",
+            }[intent.lang])
         filters = [
             *(tag for tag in intent.tags if tag != "outdoor_walk"),
             *[f"category:{c}" for c in intent.categories],
@@ -260,6 +281,9 @@ class RecommendationService:
         ]
         if intent.companions == "child":
             filters.append("child_friendly")
+        if request.preferences.indoor_only:
+            # Existing clients display unknown filter strings verbatim, so keep this useful on old UI too.
+            filters.append({"ru": "В помещении", "en": "Indoors", "kk": "Ғимарат ішінде"}[intent.lang])
         if request.context.accessibility:
             filters.append("wheelchair_confirmed")
         if search.category_relaxed:
@@ -305,5 +329,8 @@ class RecommendationService:
             mock=self.settings.mock,
             applied_preferences=request.preferences,
             change_codes=[request.feedback.reason] if request.feedback else [],
-            relaxation_options=relaxation_options(request.preferences) if not cards else [],
+            relaxation_options=[
+                option for option in relaxation_options(request.preferences)
+                if option != "allow_outdoor" or not shelter_requested(request.query)
+            ] if not cards else [],
         )
