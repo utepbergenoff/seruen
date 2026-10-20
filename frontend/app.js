@@ -409,10 +409,14 @@
     $("#status").innerHTML = `<div class="loading walking" role="status"><span class="trail" aria-hidden="true"><i></i></span>${esc(T().loading)}</div>`;
     $("#goBtn").disabled = true;
     try {
+      // Load capabilities alongside weather before deciding which finish fields are supported.
+      // Otherwise the first search silently uses the legacy return trip while the UI shows "stay".
+      const capabilities = healthReady ? null : refreshHealth();
       // the server searches the full 2GIS catalog with Gemini; if 2GIS fails, its demo quota is used up or it
       // has nothing that fits, the same request goes to our own checked database, so 2GIS never leaves it empty
       let body = {location: {lat: round3(state.loc.lat), lon: round3(state.loc.lon), precision_m: state.loc.precision_m || 100, source: state.loc.source},
         query: $("#query").value.trim(), context: await context()};
+      await capabilities;
       if (version !== state.requestVersion) return;
       if (ext.requestExtras) Object.assign(body, ext.requestExtras(body));
       let data = await postJSON("/recommend", body);
