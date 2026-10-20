@@ -504,3 +504,11 @@ Object.assign(window.I18N.kk, {walkFromHere: "осы жерден жаяу уа�
 Object.assign(window.I18N.ru.x, {somethingWrong: "Что-то пошло не так?"});
 Object.assign(window.I18N.en.x, {somethingWrong: "Something wrong?"});
 Object.assign(window.I18N.kk.x, {somethingWrong: "Бірдеңе дұрыс болмады ма?"});
+
+// round 4: my places
+Object.assign(window.I18N.ru.x, {unknownPlace: "Неизвестное место", unknownHint: "Название не сохранилось. Откройте в 2ГИС",
+  stopsN: {one: "{n} остановка", few: "{n} остановки", many: "{n} остановок", other: "{n} остановки"}});
+Object.assign(window.I18N.en.x, {unknownPlace: "Unknown place", unknownHint: "The name wasn't saved. Open it in 2GIS",
+  stopsN: {one: "{n} stop", other: "{n} stops"}});
+Object.assign(window.I18N.kk.x, {unknownPlace: "Белгісіз орын", unknownHint: "Атауы сақталмады. 2ГИС-те ашыңыз",
+  stopsN: {other: "{n} аялдама"}});

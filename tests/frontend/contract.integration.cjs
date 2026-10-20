@@ -52,7 +52,8 @@ test('walking features use real server shapes and preserve offline/privacy bound
   await w.SeruenStore.putPlace({poi_id:'2gis_7000001',name:'provider secret fact',address:'provider address',
     coords:{lat:51.128,lon:71.43},favorite:true,note:'My own note',offline_allowed:false});
   const bookmark=await w.SeruenStore.getPlace('2gis_7000001');
-  assert.equal(bookmark.name,undefined);assert.equal(bookmark.coords,undefined);assert.equal(bookmark.note,'My own note');
+  // round 4: the label is kept with the mark so «Мои места» can name it; provider coordinates still are not
+  assert.equal(bookmark.name,'provider secret fact');assert.equal(bookmark.coords,undefined);assert.equal(bookmark.note,'My own note');
   assert.ok(calls.every(c=>c.status===200 || (c.path==='/plans/recalculate' && c.status===409)),JSON.stringify(calls.filter(c=>c.status!==200)));
   for(const path of ['/health','/recommend','/comfort/search','/plans/build','/plans/recalculate','/plans/export','/plans/refresh']) {
     assert.ok(calls.some(c=>c.path===path),path);
