@@ -64,7 +64,7 @@ ID 2ГИС получены из 15 обычных запросов к наше�
 | team_comfort_lrt_universitet_toilet | туалет после турникета → `access=paid` (нужен проезд) |
 | team_comfort_expo_bench_1/2 | скамейки есть |
 | 8 инсталляций EXPO (2gis_70030…) | без билета → `free` |
-| 2gis_70000001072135261 Coffee Boom | можно сидеть без заказа → `optional_purchase`; координаты на месте 51.090488, 71.41574 → `team_cafe_coffeeboom_expo` |
+| 2gis_70000001072135261 Coffee Boom | можно сидеть без заказа → `optional_purchase`; телефонная отметка 51.090488, 71.41574 оказалась смещена; [исправление 20.10](frontend/COFFEE_LOCATION_RATINGS.md): 51.088679, 71.415510 |
 | osm_way_499328514 Mega Silk Way | вход свободный → `optional_purchase` |
 
 **Байтерек — Хан Шатыр**

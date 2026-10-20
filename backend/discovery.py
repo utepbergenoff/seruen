@@ -21,7 +21,7 @@ from .places import PlacesError
 from .provider_status import log_provider
 from .retrieval import Retriever, SearchResult
 from .schemas import CatalogPlace, Coords, POI
-from .twogis import DAYS, FIELDS, IDENTIFIER, intervals
+from .twogis import DAYS, FIELDS, IDENTIFIER, intervals, review_values
 
 ENDPOINT = "https://catalog.api.2gis.com/3.0/items"
 TTL = 300
@@ -152,8 +152,7 @@ def to_poi(item, request, radius):
     if category is None:
         return None
     reviews = item.get("reviews") or {}
-    rating = reviews.get("rating", reviews.get("general_rating"))
-    count = reviews.get("review_count", reviews.get("general_review_count"))
+    rating, count, _ = review_values(reviews)
     rating = rating if type(rating) in (int, float) and 0 < rating <= 5 else None
     count = count if type(count) is int and count >= 0 else None
     try:

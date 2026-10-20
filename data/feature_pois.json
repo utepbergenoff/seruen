@@ -5,25 +5,35 @@
    "poi": {
     "poi_id": "team_cafe_coffeeboom_expo",
     "name": "Coffee BOOM (EXPO, Мангилик Ел 55/1)",
-    "lat": 51.090488,
-    "lon": 71.41574,
+    "lat": 51.088679,
+    "lon": 71.41551,
+    "twogis_place_id": "70000001072135261",
+    "description_url": "https://2gis.kz/astana/firm/70000001072135261",
     "category": "coffee",
     "indoor": true,
     "sources": [
-     "team"
+     "team",
+     "2gis"
     ],
-    "last_checked": "2026-10-19"
+    "last_checked": "2026-10-20"
    },
    "evidence": {
     "source_url": "https://github.com/utepbergenoff/seruen/blob/main/docs/feature_expansion_data.md#результаты-прогулки-19102026",
     "checked_at": "2026-10-19",
     "verification": "verified",
     "method": "field_visit",
-    "note": "Ерлан был на месте: вывеска Coffee BOOM, координаты сняты на месте телефоном."
+    "note": "Ерлан подтвердил наличие филиала и вывеску Coffee BOOM. Телефонная отметка местоположения оказалась смещена; исправление координат описано в coordinate_evidence."
    },
-   "offline_allowed": true,
-   "license": "Собственные данные команды Серуен",
-   "attribution": "Команда Серуен"
+   "coordinate_evidence": {
+    "source_url": "https://2gis.kz/astana/firm/70000001072135261",
+    "checked_at": "2026-10-20",
+    "verification": "verified",
+    "method": "team_review",
+    "note": "Филиал Мангилик Ел 55/1, блок B2.4: точка назначения в публичной карточке 2ГИС 51.088679, 71.41551. Исправлена старая телефонная отметка 51.090488, 71.41574 (смещение 202 м). Это точка заведения, не проверенный вход. Условия посещения из выезда команды хранятся отдельно."
+   },
+   "offline_allowed": false,
+   "license": "Данные команды; исправленные координаты сверены с публичной карточкой 2ГИС, права на офлайн-распространение этой версии не подтверждены",
+   "attribution": "Команда Серуен; координаты — 2ГИС"
   }
  ]
 }

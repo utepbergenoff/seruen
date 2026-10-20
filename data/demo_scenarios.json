@@ -1,7 +1,11 @@
 [
   {
     "id": "S1",
-    "title": "Кофе и работа",
+    "title": {
+      "ru": "Кофе и работа",
+      "kk": "Кофе және жұмыс",
+      "en": "Coffee and work"
+    },
     "request": {
       "location": {
         "lat": 51.089,
@@ -18,11 +22,19 @@
         "lang": "auto"
       }
     },
-    "data_kind": "sample"
+    "data_kind": "sample",
+    "queries": {
+      "kk": "Ноутбукпен екі сағаттай жұмыс істегім келеді, кофе мен розеткасы бар тыныш орын керек",
+      "en": "I want to work on my laptop for a couple of hours, I need a quiet place with coffee and a socket"
+    }
   },
   {
     "id": "S2",
-    "title": "С ребёнком",
+    "title": {
+      "ru": "С ребёнком",
+      "kk": "Баламен",
+      "en": "With a child"
+    },
     "request": {
       "location": {
         "lat": 51.133,
@@ -39,11 +51,19 @@
         "lang": "auto"
       }
     },
-    "data_kind": "sample"
+    "data_kind": "sample",
+    "queries": {
+      "kk": "Баламен біргемін, бір сағатым бар. Жақын жерде қайда баруға болады?",
+      "en": "I'm with a child and have an hour. Where can we go nearby?"
+    }
   },
   {
     "id": "S3",
-    "title": "Короткая прогулка",
+    "title": {
+      "ru": "Короткая прогулка",
+      "kk": "Қысқа серуен",
+      "en": "Short walk"
+    },
     "request": {
       "location": {
         "lat": 51.089,
@@ -60,11 +80,19 @@
         "lang": "auto"
       }
     },
-    "data_kind": "sample"
+    "data_kind": "sample",
+    "queries": {
+      "kk": "Mega Silk Way жанындамын, 30–60 минут серуендегім келеді",
+      "en": "I'm near Mega Silk Way and want to walk for 30–60 minutes"
+    }
   },
   {
     "id": "S4",
-    "title": "Необычное у Экспо",
+    "title": {
+      "ru": "Необычное у Экспо",
+      "kk": "Экспо маңында ерекше нәрсе",
+      "en": "Something unusual at Expo"
+    },
     "request": {
       "location": {
         "lat": 51.089,
@@ -81,11 +109,19 @@
         "lang": "auto"
       }
     },
-    "data_kind": "sample"
+    "data_kind": "sample",
+    "queries": {
+      "kk": "Экспо 2017 ғимаратының жанындамын, 1–2 сағатқа жаяу ерекше бірдеңе қалаймын",
+      "en": "I'm at the Expo 2017 building and want something unusual for 1–2 hours, on foot"
+    }
   },
   {
     "id": "S5",
-    "title": "Перед вылетом",
+    "title": {
+      "ru": "Перед вылетом",
+      "kk": "Ұшар алдында",
+      "en": "Before the flight"
+    },
     "request": {
       "location": {
         "lat": 51.128,
@@ -102,11 +138,19 @@
         "lang": "auto"
       }
     },
-    "data_kind": "sample"
+    "data_kind": "sample",
+    "queries": {
+      "kk": "Мен туристпін, ұшуыма 2 сағат қалды, жақын жерде не көруге болады?",
+      "en": "I'm a tourist with 2 hours before my flight, what can I see nearby?"
+    }
   },
   {
     "id": "S6",
-    "title": "Ночная прогулка",
+    "title": {
+      "ru": "Ночная прогулка",
+      "kk": "Түнгі серуен",
+      "en": "Night walk"
+    },
     "request": {
       "location": {
         "lat": 51.128,
@@ -123,6 +167,10 @@
         "lang": "auto"
       }
     },
-    "data_kind": "sample"
+    "data_kind": "sample",
+    "queries": {
+      "kk": "Соңғы екі сағатқа ерекше түнгі іс-шара іздеймін",
+      "en": "Looking for an unusual night activity for the last couple of hours"
+    }
   }
 ]

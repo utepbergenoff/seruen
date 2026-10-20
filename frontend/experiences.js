@@ -28,7 +28,8 @@
   const normalized = name => String(name || "").split(",")[0].toLocaleLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
   function matchedStory(place) {
     if (!has("city_history")) return null;
-    const exact = storyIndex.find(p => p.poi_id === place.poi_id);
+    const exact = storyIndex.find(p => p.poi_id === place.poi_id
+      || (place.canonical_id && p.poi_id === place.canonical_id));
     if (exact) return exact;
     if (!place.coords) return null;
     return storyIndex.find(p => p.aliases.some(a => normalized(a) === normalized(place.name))

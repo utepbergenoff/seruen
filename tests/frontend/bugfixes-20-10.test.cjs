@@ -20,7 +20,7 @@ for (const [status, shown] of [['twogis_access_denied', false], ['ok', true]]) {
   });
 }
 
-test('the first «2GIS refused» answer explains itself once and removes the other rating buttons, remembered after reload',async t=>{
+test('the first refused answer explains itself and offers external reviews without a persistent lockout',async t=>{
   const refused=()=>({ok:false,status:503,json:async()=>({error:{code:'twogis_access_denied'}})});
   const b=await boot(t,{healthData:{mode_available:['no_ai'],twogis:{enabled:true,search_enabled:true,last_status:'not_checked'}},twogis:refused});await settle();
   b.click('#goBtn');await settle();b.requests[0].resolve(json(clone(FX.recommend_normal)));await settle();
@@ -30,9 +30,11 @@ test('the first «2GIS refused» answer explains itself once and removes the oth
   const box=buttons[0].closest('.rec').querySelector('.gis-box').textContent;
   assert.match(box,/недоступны/);assert.doesNotMatch(box,/Сообщите команде/);
   assert.equal(b.w.document.querySelectorAll('.rec [data-act="gis"]').length,1);
-  assert.ok(+b.w.localStorage.getItem('seruen_gis_refused')>0);
+  assert.equal(b.w.localStorage.getItem('seruen_gis_refused'),null);
+  assert.ok(b.w.document.querySelectorAll('[data-gis-reviews]').length>=buttons.length);
   b.w.SeruenApp.rerender();
   assert.equal(b.w.document.querySelectorAll('.rec [data-act="gis"]').length,0);
+  assert.ok(b.w.document.querySelectorAll('[data-gis-reviews]').length>=buttons.length);
 });
 
 test('one left-out place reads «без 1 места», five read «без 5 мест»',async t=>{
