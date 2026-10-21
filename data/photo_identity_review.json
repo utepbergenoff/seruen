@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "reviewed_at": "2026-10-19",
+  "reviewed_at": "2026-10-21",
   "policy": "Exact venue and image bytes; geography and AI alone are insufficient.",
   "places": {
     "osm_way_108096984": {
@@ -21,6 +21,18 @@
       "https://seruen-astana.netlify.app/img/places/c/e4c8bd3f43831116.jpg": {
         "sha256": "8675df16bd5f044cbc7c794650b72a5ab8c05902e97a3deed8e6ef8028d51afe",
         "evidence": "team_review: data/atmosphere_catalog.json#atm_baiterek_exterior"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-baiterek-1.jpg": {
+        "sha256": "d1cc59c371f2c44cccca6a60ee5fb503aaf568183993ee8843682ade8d2704d8",
+        "evidence": "team_photo: Alikhan, 5th_scen/Монумент-Бәйтерек ; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-baiterek-2.jpg": {
+        "sha256": "bbbb83042f05010915598726bffeb51aed6f6eb5604786e109ec3b381068915f",
+        "evidence": "team_photo: Alikhan, 5th_scen/Монумент-Бәйтерек ; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-baiterek-3.jpg": {
+        "sha256": "d1a1bc1375f5bb5955eda5d7c5ed85cba07e459b2e04d5f0a46f82d6845db105",
+        "evidence": "team_photo: Alikhan, 5th_scen/Монумент-Бәйтерек ; id from the live scenario search 2026-10-21"
       }
     },
     "osm_way_37884583": {
@@ -187,6 +199,212 @@
       "https://seruen-astana.netlify.app/img/places/c/team-coffeeboom-expo-3.jpg": {
         "sha256": "574b61d493e92f812eb5d673c89e6dc5c668b0f8c28b1fc1c1502b9790a20683",
         "evidence": "team_photo: existing venue-specific attribution"
+      }
+    },
+    "2gis_70000001113375067": {
+      "https://seruen-astana.netlify.app/img/places/c/team-tangybrew-expo-1.jpg": {
+        "sha256": "0852ab85f7468b797f11bc5f7f9ca5c1a25a2a164205306137139656c70ae13c",
+        "evidence": "team_photo: Alikhan, 1st_scen/Tangy_Brew; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-tangybrew-expo-2.jpg": {
+        "sha256": "eadc8b66c716eb1fe4103e75b2d197ab9217520a80d235ff72c371a2891e4b5d",
+        "evidence": "team_photo: Alikhan, 1st_scen/Tangy_Brew; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-tangybrew-expo-3.jpg": {
+        "sha256": "1ad82e2093875d4476fa77d2e39dbc8055ddf5f3e04afa5007929798196eeab7",
+        "evidence": "team_photo: Alikhan, 1st_scen/Tangy_Brew; id from the live scenario search 2026-10-21"
+      }
+    },
+    "2gis_70000001105675233": {
+      "https://seruen-astana.netlify.app/img/places/c/team-urpaq-expo-1.jpg": {
+        "sha256": "8f5be4db7c37cd7c61b5301c29483d791f6621ad3644ed1c30efacebe84008a5",
+        "evidence": "team_photo: Alikhan, 1st_scen/Urpaq Coffee & Tea; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-urpaq-expo-2.jpg": {
+        "sha256": "7c4c249c2db10abe9a886573840bf6c740a7d671fb84ab3d193dcc48ee6e4309",
+        "evidence": "team_photo: Alikhan, 1st_scen/Urpaq Coffee & Tea; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-urpaq-expo-3.jpg": {
+        "sha256": "05192b5f9ff534f7da9e782a4f8913afd1eb84288011c0c9b48b9190e1a237fe",
+        "evidence": "team_photo: Alikhan, 1st_scen/Urpaq Coffee & Tea; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-urpaq-expo-4.jpg": {
+        "sha256": "d2c3bf19f1e0ea8e584e3a34ed1aa926df5ecd2974726828feaaee04c01e6f59",
+        "evidence": "team_photo: Alikhan, 1st_scen/Urpaq Coffee & Tea; id from the live scenario search 2026-10-21"
+      }
+    },
+    "2gis_70000001022013630": {
+      "https://seruen-astana.netlify.app/img/places/c/team-famecity-khan-1.jpg": {
+        "sha256": "65cd742265d0f13ee831f22cb11c2f8e322f43472316792cc642b71ef00e5ca0",
+        "evidence": "team_photo: Alikhan, 2nd_scen/Fame City; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-famecity-khan-2.jpg": {
+        "sha256": "ec8868150e577b7fc8651c1eaf7d47eda5d2bdb098b3dc6bfa110af1fb966422",
+        "evidence": "team_photo: Alikhan, 2nd_scen/Fame City; id from the live scenario search 2026-10-21"
+      }
+    },
+    "2gis_70000001068514649": {
+      "https://seruen-astana.netlify.app/img/places/c/team-playground-khan-1.jpg": {
+        "sha256": "a20e08f2e4c0a574c82297906517261d3b01fa4cc35a8b17cc5e8be17b902011",
+        "evidence": "team_photo: Alikhan, 2nd_scen/Детская площадка ; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-playground-khan-2.jpg": {
+        "sha256": "28e49d7a521230be84afce5f8bfbce20cd98e42060992d398978cb276ebed70f",
+        "evidence": "team_photo: Alikhan, 2nd_scen/Детская площадка ; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-playground-khan-3.jpg": {
+        "sha256": "2c456c5359680cfd58fd09385463c79bc9dc6e97589e5c98abefe0b775741e3d",
+        "evidence": "team_photo: Alikhan, 2nd_scen/Детская площадка ; id from the live scenario search 2026-10-21"
+      }
+    },
+    "2gis_70000001034948288": {
+      "https://seruen-astana.netlify.app/img/places/c/team-gameclub-khan-1.jpg": {
+        "sha256": "f4af03b67fbd8961fd41fde55cc5dddd3b4beda49126a4f764203271ae93d1b2",
+        "evidence": "team_photo: Alikhan, 2nd_scen/Игровой клуб; id from the live scenario search 2026-10-21"
+      }
+    },
+    "osm_way_1467797207": {
+      "https://seruen-astana.netlify.app/img/places/c/team-nupark-1.jpg": {
+        "sha256": "467660d2c62e63c8f1af26123b6ea5fc26cfb118425842b4c0294e80c65c3a3a",
+        "evidence": "team_photo: Alikhan, 3rd_scen/NU Park; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-nupark-2.jpg": {
+        "sha256": "25cc588453eac39bccf7ba45a9e6238998de35486d22fd724abca2c7df82f2b5",
+        "evidence": "team_photo: Alikhan, 3rd_scen/NU Park; id from the live scenario search 2026-10-21"
+      }
+    },
+    "osm_way_1470723968": {
+      "https://seruen-astana.netlify.app/img/places/c/team-skver-mega-1.jpg": {
+        "sha256": "35595c18bf086893e20693797d5a5ec398375f0d19ca8dc53285e31bbcd27590",
+        "evidence": "team_photo: Alikhan, 3rd_scen/Сквер; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-skver-mega-2.jpg": {
+        "sha256": "7726ea2936b37a8fa0a46323a439693abec8d8380a4bf10f49b5b4cddb7ba6af",
+        "evidence": "team_photo: Alikhan, 3rd_scen/Сквер; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-skver-mega-3.jpg": {
+        "sha256": "788ae8544237c7601c72d20773792f7901b97847f5b71e21f8a617b2d41c457a",
+        "evidence": "team_photo: Alikhan, 3rd_scen/Сквер; id from the live scenario search 2026-10-21"
+      }
+    },
+    "2gis_70030076926979082": {
+      "https://seruen-astana.netlify.app/img/places/c/team-decor-expo-a-1.jpg": {
+        "sha256": "90ace52c0beed2fb89aa61e0bfc2ecfc1fd69692d5d4f5154baeacfaa06b0db0",
+        "evidence": "team_photo: Alikhan, 4th_scen/Декоративный объект 5(2); id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-decor-expo-a-2.jpg": {
+        "sha256": "249d83411611229b286d0f8484cd3edcbf8a12a904148d5ee3579251bb0ae581",
+        "evidence": "team_photo: Alikhan, 4th_scen/Декоративный объект 5(2); id from the live scenario search 2026-10-21"
+      }
+    },
+    "2gis_70030076926979084": {
+      "https://seruen-astana.netlify.app/img/places/c/team-decor-expo-b-1.jpg": {
+        "sha256": "fb52489384637602f20bb3ae499577970f4d4c29a192388a49700b603f575100",
+        "evidence": "team_photo: Alikhan, 4th_scen/Декоративный объект 5(3); id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-decor-expo-b-2.jpg": {
+        "sha256": "32604681d4010b0e5898e84e9f7ea96cb08cb3fb674b8e4d484b33a8b68e7ed6",
+        "evidence": "team_photo: Alikhan, 4th_scen/Декоративный объект 5(3); id from the live scenario search 2026-10-21"
+      }
+    },
+    "2gis_70030076137946253": {
+      "https://seruen-astana.netlify.app/img/places/c/team-water-expo-1.jpg": {
+        "sha256": "0cfb07f9d86c5919de1af0cb5c975f616caf1bf303f450fc99d29609bed1aaef",
+        "evidence": "team_photo: Alikhan, 4th_scen/Инсталляция Вода; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-water-expo-2.jpg": {
+        "sha256": "c02eb53aa94e3941b23314137836dbbbda825e685af066826af1d4f56fe4f12e",
+        "evidence": "team_photo: Alikhan, 4th_scen/Инсталляция Вода; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-water-expo-3.jpg": {
+        "sha256": "dac78f8b2036c67fb3e19e089d582c6298108a57fab2bcc17df567641e81215f",
+        "evidence": "team_photo: Alikhan, 4th_scen/Инсталляция Вода; id from the live scenario search 2026-10-21"
+      }
+    },
+    "2gis_70030076137930662": {
+      "https://seruen-astana.netlify.app/img/places/c/team-lions-nurzhol-1.jpg": {
+        "sha256": "563e3d6cc5651289f008c678dd16e079dd0a0f392be44d39253f0c6537bc5680",
+        "evidence": "team_photo: Alikhan, 5th_scen/Львы ; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-lions-nurzhol-2.jpg": {
+        "sha256": "29e6bd0113a23d4d66c55a02ba0f770437997eeb7ea5234d6e96478b1d8b89c8",
+        "evidence": "team_photo: Alikhan, 5th_scen/Львы ; id from the live scenario search 2026-10-21"
+      }
+    },
+    "2gis_70000001021365759": {
+      "https://seruen-astana.netlify.app/img/places/c/team-baiterek-1.jpg": {
+        "sha256": "d1cc59c371f2c44cccca6a60ee5fb503aaf568183993ee8843682ade8d2704d8",
+        "evidence": "team_photo: Alikhan, 5th_scen/Монумент-Бәйтерек ; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-baiterek-2.jpg": {
+        "sha256": "bbbb83042f05010915598726bffeb51aed6f6eb5604786e109ec3b381068915f",
+        "evidence": "team_photo: Alikhan, 5th_scen/Монумент-Бәйтерек ; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-baiterek-3.jpg": {
+        "sha256": "d1a1bc1375f5bb5955eda5d7c5ed85cba07e459b2e04d5f0a46f82d6845db105",
+        "evidence": "team_photo: Alikhan, 5th_scen/Монумент-Бәйтерек ; id from the live scenario search 2026-10-21"
+      }
+    },
+    "2gis_9570844992864313": {
+      "https://seruen-astana.netlify.app/img/places/c/team-fountain-nurzhol-1.jpg": {
+        "sha256": "368dd0401f60a770f9aa8b66416d68d408c7c0e02dc133b5006d9a0a03ef1695",
+        "evidence": "team_photo: Alikhan, 5th_scen/Фонтан; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-fountain-nurzhol-2.jpg": {
+        "sha256": "7292b4a0d8daff4d8ba20d3c65c0e0e864bf1437e5c024390eb793a6e02c42e4",
+        "evidence": "team_photo: Alikhan, 5th_scen/Фонтан; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-fountain-nurzhol-3.jpg": {
+        "sha256": "c2b80064c1f73bebd3d18019eb1ec907b7a7e05381c43add6098016b5655df65",
+        "evidence": "team_photo: Alikhan, 5th_scen/Фонтан; id from the live scenario search 2026-10-21"
+      }
+    },
+    "2gis_70000001080830423": {
+      "https://seruen-astana.netlify.app/img/places/c/team-brand-konaev-1.jpg": {
+        "sha256": "50a1d1aa0b16d477c96cb2a2e89f18066e7720910fcc10512bdf2de2b91cde2f",
+        "evidence": "team_photo: Alikhan, 6th_scen/Brand; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-brand-konaev-2.jpg": {
+        "sha256": "597a5caa36960739ab29c4ad280a4f030fd2cf0863694c3a49144fce3003e311",
+        "evidence": "team_photo: Alikhan, 6th_scen/Brand; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-brand-konaev-3.jpg": {
+        "sha256": "4a0edd111dea7098fcb34b3622286354c2b36a9e7bd08dc6fbf7e0ce9b419ad9",
+        "evidence": "team_photo: Alikhan, 6th_scen/Brand; id from the live scenario search 2026-10-21"
+      }
+    },
+    "2gis_70000001101370539": {
+      "https://seruen-astana.netlify.app/img/places/c/team-vtoroi-konaev-1.jpg": {
+        "sha256": "1b0d8504f0f993571569968aed3ac29b84538c03e879a6055753bc87c221f6e0",
+        "evidence": "team_photo: Alikhan, 6th_scen/Второй; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-vtoroi-konaev-2.jpg": {
+        "sha256": "53664574215748d7f8df8261a0d0ff30e6204ed2608578a5d5b3c3cbf6b8390f",
+        "evidence": "team_photo: Alikhan, 6th_scen/Второй; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-vtoroi-konaev-3.jpg": {
+        "sha256": "6d8d8d00951e300045b5dcaceed9949d4bdf6698753df837916751764b346be9",
+        "evidence": "team_photo: Alikhan, 6th_scen/Второй; id from the live scenario search 2026-10-21"
+      }
+    },
+    "2gis_70000001066638430": {
+      "https://seruen-astana.netlify.app/img/places/c/team-nushoty-konaev-1.jpg": {
+        "sha256": "ccfa9908e7f7a2eef4f7759ce342e1ea9582e171a22999a8a35f673066fd8d28",
+        "evidence": "team_photo: Alikhan, 6th_scen/Ну, шоты ; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-nushoty-konaev-2.jpg": {
+        "sha256": "19855f6a2e0cc35c7d6bd59a5482efadba8eefac41713bef9dfa4c4c687b7f4c",
+        "evidence": "team_photo: Alikhan, 6th_scen/Ну, шоты ; id from the live scenario search 2026-10-21"
+      }
+    },
+    "osm_node_13620484606": {
+      "https://seruen-astana.netlify.app/img/places/c/team-nushoty-konaev-1.jpg": {
+        "sha256": "ccfa9908e7f7a2eef4f7759ce342e1ea9582e171a22999a8a35f673066fd8d28",
+        "evidence": "team_photo: Alikhan, 6th_scen/Ну, шоты ; id from the live scenario search 2026-10-21"
+      },
+      "https://seruen-astana.netlify.app/img/places/c/team-nushoty-konaev-2.jpg": {
+        "sha256": "19855f6a2e0cc35c7d6bd59a5482efadba8eefac41713bef9dfa4c4c687b7f4c",
+        "evidence": "team_photo: Alikhan, 6th_scen/Ну, шоты ; id from the live scenario search 2026-10-21"
       }
     }
   }

@@ -102,3 +102,16 @@ test('a meeting with nothing in the limit offers one tap to search a bit further
   assert.equal(sent.length,2);assert.equal(sent[1].max_walk_min,60);
   assert.equal(b.w.document.querySelector('#meetWider'),null);
 });
+
+test('when Gemini cannot read the team photos now, their earlier Gemini labels still show under the photos, with the date',async t=>{
+  const pics=[1,2,3].map(i=>({url:`https://seruen-astana.netlify.app/img/places/c/team-coffeeboom-expo-${i}.jpg`,source:'team'}));
+  const b=await boot(t,{photos:()=>json({photos:pics,status:'ai_unavailable',analysis:null})});await settle();
+  b.click('#goBtn');await settle();b.requests[0].resolve(json(clone(FX.recommend_normal)));await settle();await settle();
+  const box=b.w.document.querySelector('.rec .photos');
+  assert.ok(box.querySelectorAll('.ph-strip img').length===3);
+  assert.match(box.querySelector('.tags').textContent,/около 40 мест/);
+  assert.match(box.textContent,/анализ этих фото Gemini от 20 окт/);
+  // the labels come after the description in the card, not before the name
+  const card=box.closest('.rec');const kids=[...card.children];
+  assert.ok(kids.indexOf(box)>kids.indexOf(card.querySelector('.rec-desc')));
+});

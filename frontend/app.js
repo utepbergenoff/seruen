@@ -67,6 +67,11 @@
   const fitTo = (bounds, opts = {}) => map.fitBounds(bounds, {padding: [48, 48], ...opts, maxZoom: state.mapMode === "streets" ? 19 : 14});
   const showAt = (latlng, zoom) => map.setView(latlng, Math.min(zoom, state.mapMode === "streets" ? 19 : 14));
   let baseTiles = [], tileVersion = 0;
+  // Route lines glow like neon: each kind of line has its own pane and neon.css puts a glow filter on the pane
+  // (a filter on the pane's box works in every browser; one on SVG paths does not in Safari). The open-now
+  // lights sit under the lines, the place pins above them.
+  for (const [name, z] of [["lights", 405], ["neonDots", 420], ["neonGold", 425], ["neon", 430]]) if (map.createPane && !map.getPane(name)) map.createPane(name).style.zIndex = z;
+  const neonPane = (name) => (map.getPane?.(name) ? {pane: name} : {});
   function renderMapControls() {
     $("#mapMode").value = state.mapMode;
     $("#mapNotice").hidden = !state.mapError && state.mapMode === "streets";
@@ -669,7 +674,7 @@
       const pinIcon = L.divIcon({className: "", iconSize: [30, 30], iconAnchor: [15, 15], html: `<div class="pin"><b>${i + 1}</b></div>`});
       // a thin dashed line from the person to each pick: every place is measured from where they stand
       const from = state.lastReq ? state.lastReq.location : state.loc;
-      if (L.polyline) L.polyline([[from.lat, from.lon], [r.coords.lat, r.coords.lon]], {color: cssColor("--route-light", "#3F7B5C"), weight: 3, dashArray: "1 8", lineCap: "round", opacity: .95, interactive: false}).addTo(suggestionRoutes);
+      if (L.polyline) L.polyline([[from.lat, from.lon], [r.coords.lat, r.coords.lon]], {color: cssColor("--route-light", "#3F7B5C"), weight: 3, dashArray: "1 8", lineCap: "round", opacity: .95, interactive: false, className: "neon-line", ...neonPane("neonDots")}).addTo(suggestionRoutes);
       markers[r.poi_id] = L.marker([r.coords.lat, r.coords.lon], {icon: pinIcon, title: r.name}).addTo(layer)
         .bindPopup(`<b>${i + 1}. ${esc(r.name)}</b><br>${esc(r.distance_m)} ${esc(t.distance)} · ${esc(r.walk_min)} ${esc(t.walk)}`)
         .on("click", () => selectPlace(r.poi_id));
@@ -818,10 +823,15 @@
   // ---------- photos of the place and what Gemini sees on them (asked for every card after the answer) ----------
   const photoCredit = (x) => x.source === "team" ? T().ph.team : `${x.author || "Wikimedia Commons"}${x.license ? ", " + x.license : ""}`;
   const https = (u) => /^https:\/\//.test(u || "") ? u : "";
+  // the team's photos keep their Gemini labels even when Gemini is out of quota (photo-labels.json, matched by photo file)
+  const photoPath = (u) => String(u || "").replace(/^https?:\/\/[^/]+\//, "").replace(/^\.?\//, "");
+  const savedLabels = (photos) => (state.photoLabels || []).find((x) => photos.some((ph) => (x.photos || []).includes(photoPath(ph.url))));
   function photosHtml(p) {
     const P = T().ph, photos = ((p && p.photos) || []).filter((x) => https(x.url));
     if (!photos.length) return `<p class="ph-none">${icon("camera")} ${esc(!p || p.status === "ai_unavailable" ? P.noAnalysis : P.none)}</p>`;
-    const a = p.analysis;
+    // Gemini cannot read these photos right now: use its earlier analysis of the very same photos, with the date
+    const saved = !p.analysis && savedLabels(photos);
+    const a = p.analysis || (saved && saved.analysis);
     const chips = a ? [
       P.light[a.lighting] && ["sun", P.light[a.lighting]],
       P.kids[a.kids_area] && ["kids", P.kids[a.kids_area]],
@@ -832,6 +842,7 @@
     return `<div class="ph-strip">${photos.map((x) => `<a class="ph" href="${esc(https(x.page_url) || x.url)}" target="_blank" rel="noopener" title="${esc(photoCredit(x))}"><img src="${esc(x.url)}" alt="${esc(P.alt)}" loading="lazy" referrerpolicy="no-referrer"></a>`).join("")}</div>
       ${a && a.summary ? `<div class="field ph-why">${icon("camera")} <b>${esc(P.title)}:</b> ${esc(a.summary)}</div>` : a ? "" : `<p class="src">${esc(P.noAnalysis)}</p>`}
       ${chips ? `<div class="tags">${chips}</div>` : ""}
+      ${saved ? `<p class="src">${esc(fmt(P.savedAnalysis, {d: new Intl.DateTimeFormat({en: "en-GB", kk: "kk-KZ"}[state.lang] || "ru-RU", {day: "numeric", month: "short", timeZone: "UTC"}).format(new Date(saved.analyzed_at + "T00:00:00Z"))}))}</p>` : ""}
       <p class="src">${esc(P.credit)}: ${[...new Set(photos.map(photoCredit))].map(esc).join("; ")}</p>`;
   }
   async function loadPhotos(r, d) {
@@ -916,7 +927,7 @@
     const geo = await osrmLine([start, ...plan.order, start]);
     if (state.walkActive || state.last !== d || !$("#routeBox")) return;
     if (routeLine) map.removeLayer(routeLine);
-    routeLine = L.polyline(geo.line, {color: cssColor("--route", "#1E4A37"), weight: 5, dashArray: geo.osrm ? null : "8 8", lineCap: "round", opacity: .9}).addTo(map);
+    routeLine = L.polyline(geo.line, {color: cssColor("--route", "#1E4A37"), weight: 5, dashArray: geo.osrm ? null : "8 8", lineCap: "round", opacity: .9, className: "neon-line", ...neonPane("neon")}).addTo(map);
     fitTo(routeLine.getBounds());
     const pts = plan.order.map((p) => `${p.lon}%2C${p.lat}`).join("%7C");
     const gis = `https://2gis.kz/astana/directions/tab/pedestrian/points/%7C${pts}?m=${plan.order[0].lon}%2C${plan.order[0].lat}%2F15`;
@@ -967,6 +978,7 @@
     const initialLocVersion = state.locVersion;
     [state.presets, state.scenarios] = await Promise.all([
       getJSON("presets.json").catch(() => []), getJSON("scenarios.json").catch(() => []),
+      getJSON("photo-labels.json").then((x) => { state.photoLabels = x.items || []; }).catch(() => { state.photoLabels = []; }),
     ]);
     // accept both {"query": "text"} and {"query": {"q": "text"}} from the backend
     state.scenarios = state.scenarios.map((x) => {
@@ -1002,7 +1014,7 @@
   window.SeruenApp = {state, FEAT, API, T, fmt, esc, icon, $, $$, map, layer, markers, L, showAt, fitTo, round3, setWalkActive,
     freezeLocation: () => { if (state.locating) { cancelLocation(); renderLocLine(); } },
     postJSON, getJSON, context, ask: () => ask(), render: (d) => render(d), rerender: () => { if (state.last) render(state.last); }, catLabel,
-    statusPill, links, fillPhotos, mirrorSelect, cssColor, renderScenarioStrip: () => renderScenarioStrip(), selectPlace: (id, focus) => selectPlace(id, focus), presetName: p => p?.name?.[state.lang] || p?.name?.ru || p?.label?.[state.lang] || p?.id || ""};
+    statusPill, links, fillPhotos, mirrorSelect, cssColor, neonPane, renderScenarioStrip: () => renderScenarioStrip(), selectPlace: (id, focus) => selectPlace(id, focus), presetName: p => p?.name?.[state.lang] || p?.name?.ru || p?.label?.[state.lang] || p?.id || ""};
   init();
   if (ext.onReady) ext.onReady();
 })();

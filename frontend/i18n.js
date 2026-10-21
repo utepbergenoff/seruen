@@ -571,3 +571,11 @@ Object.assign(window.I18N.kk, {hoursToday: "Бүгін"});
 Object.assign(window.I18N.ru.x, {providerCostUnknown: "Цена входа и обязательный заказ в 2ГИС не указаны."});
 Object.assign(window.I18N.en.x, {providerCostUnknown: "2GIS lists no entry fee or minimum order."});
 Object.assign(window.I18N.kk.x, {providerCostUnknown: "2ГИС-те кіру ақысы мен міндетті тапсырыс көрсетілмеген."});
+Object.assign(window.I18N.ru.ph, {savedAnalysis: "Подписи — анализ этих фото Gemini от {d}: сейчас ИИ недоступен."});
+Object.assign(window.I18N.en.ph, {savedAnalysis: "Labels: Gemini's analysis of these photos from {d} (the AI is unavailable right now)."});
+Object.assign(window.I18N.kk.ph, {savedAnalysis: "Белгілер — Gemini осы фотоларды {d} талдаған: қазір ЖИ қолжетімсіз."});
+
+// neon night (21.10): on the dark map the places open right now glow
+Object.assign(window.I18N.ru, {lgLights: "Открыто сейчас", night: {info: "Светятся места, открытые в {t}: {n}", until: "открыто до {t}", allDay: "круглосуточно", hours: "Часы"}});
+Object.assign(window.I18N.en, {lgLights: "Open now", night: {info: "Glowing: {n} places open at {t}", until: "open until {t}", allDay: "open 24/7", hours: "Hours"}});
+Object.assign(window.I18N.kk, {lgLights: "Қазір ашық", night: {info: "{t} кезінде ашық орындар жарқырайды: {n}", until: "{t} дейін ашық", allDay: "тәулік бойы", hours: "Жұмыс уақыты"}});

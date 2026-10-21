@@ -1,0 +1,10 @@
+{
+  "about": "Gemini's analysis of the team's own photos, saved when it last worked. Shown only when the server cannot analyse the same photos right now, with the date.",
+  "items": [
+    {
+      "photos": ["img/places/c/team-coffeeboom-expo-1.jpg", "img/places/c/team-coffeeboom-expo-2.jpg", "img/places/c/team-coffeeboom-expo-3.jpg"],
+      "analyzed_at": "2026-10-20",
+      "analysis": {"lighting": "natural", "kids_area": "no", "seats": 40, "seating": "many", "space": "large", "decor": "", "summary": ""}
+    }
+  ]
+}

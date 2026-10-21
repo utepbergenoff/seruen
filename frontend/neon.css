@@ -1,0 +1,80 @@
+/* Neon night (21.10). Route lines glow emerald, stops shine gold, «you» is a white beacon, and on the dark map
+   the places open right now light up (night-lights.js). Same emerald / ivory / gold as editorial.css, pushed
+   brighter. Loaded last. The glow sits on whole map panes (see app.js): CSS filters on the pane boxes work in
+   every browser, filters on single SVG paths do not in Safari. */
+
+:root {
+  --neon: #10B981;
+  --neon-core: #0A8F63;
+  --neon-glow: rgba(16, 185, 129, .55);
+  --neon-glow-far: rgba(16, 185, 129, .18);
+  --neon-gold: #E0A800;
+  --neon-gold-glow: rgba(255, 190, 0, .5);
+  --stop: #FFC93C;
+  --stop-ink: #1C2A22;
+  --stop-ring: #FFF8E1;
+  --stop-glow: rgba(255, 196, 0, .5);
+  --stop-glow-far: rgba(255, 196, 0, .18);
+  --light: #FFD45C;
+}
+:root[data-theme="dark"] {
+  --neon: #2BF0AA;
+  --neon-core: #C4FFE9;                  /* the bright tube; the colour comes from the glow around it */
+  --neon-glow: rgba(38, 240, 170, .95);
+  --neon-glow-far: rgba(16, 220, 150, .45);
+  --neon-gold: #FFE7A0;
+  --neon-gold-glow: rgba(255, 196, 0, .95);
+  --stop-glow: rgba(255, 196, 0, .8);
+  --stop-glow-far: rgba(255, 196, 0, .32);
+}
+
+/* ---------- route lines ---------- */
+.leaflet-neon-pane, .leaflet-neonDots-pane {
+  filter: drop-shadow(0 0 1.5px var(--neon-glow)) drop-shadow(0 0 5px var(--neon-glow)) drop-shadow(0 0 14px var(--neon-glow-far));
+}
+.leaflet-neonGold-pane { filter: drop-shadow(0 0 1.5px var(--neon-gold-glow)) drop-shadow(0 0 6px var(--neon-gold-glow)); }
+.leaflet-neon-pane path.neon-line, .leaflet-neonDots-pane path.neon-line { stroke: var(--neon-core); stroke-opacity: 1; }
+.leaflet-neonGold-pane path.neon-b { stroke: var(--neon-gold); stroke-opacity: 1; }
+.leaflet-neonDots-pane path.neon-line { stroke-width: 3.5px; }
+
+/* ---------- pins: gold discs that shine ---------- */
+.pin:not(.dot):not(.finish-pin), .active-stop-pin {
+  background: var(--stop) !important; color: var(--stop-ink) !important; border: 2.5px solid var(--stop-ring) !important;
+  box-shadow: 0 0 0 3px var(--stop-glow-far), 0 0 12px 2px var(--stop-glow), 0 0 30px 8px var(--stop-glow-far) !important;
+}
+.pin:not(.dot):not(.finish-pin) b { color: var(--stop-ink) !important; }
+.active-stop-pin { font-family: var(--font) !important; }
+.pin.dot { background: var(--neon) !important; border: 2px solid #F2FFF9 !important; box-shadow: 0 0 8px 2px var(--neon-glow) !important; }
+
+/* «you»: a white beacon with an emerald ring that slowly pulses */
+.me { position: relative; background: #FFFFFF !important; border: 0 !important;
+  box-shadow: 0 0 0 4px var(--neon), 0 0 16px 5px var(--neon-glow) !important; }
+.me::after { content: ""; position: absolute; inset: -12px; border-radius: 50%; border: 2px solid var(--neon);
+  opacity: 0; animation: me-pulse 2.6s ease-out infinite; pointer-events: none; }
+@keyframes me-pulse { 0% { transform: scale(.45); opacity: .85; } 100% { transform: scale(1.5); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .me::after { animation: none; opacity: 0; } }
+
+/* ---------- the dark map: darker and cooler so the lights read ---------- */
+[data-theme="dark"] #map[data-mode="streets"] .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(.66) contrast(1.12) saturate(.4); }
+
+/* ---------- open-now lights ---------- */
+.night-light { display: block; width: 8px; height: 8px; margin: 3px; border-radius: 50%; background: var(--light);
+  box-shadow: 0 0 3px 1px rgba(255, 210, 90, .95), 0 0 11px 4px rgba(255, 170, 0, .42); transition: transform .15s; }
+.leaflet-marker-icon:hover .night-light, .leaflet-marker-icon:focus .night-light { transform: scale(1.6); }
+/* the open-now note sits right above the legend, in one stack at the bottom-left of the map */
+.map-foot { position: absolute; left: 12px; bottom: 26px; z-index: 800; display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+  max-width: min(460px, calc(100% - 24px)); pointer-events: none; }
+.map-foot > * { pointer-events: auto; }
+.map-foot .map-legend { position: static; max-width: 100%; }
+.night-info { margin: 0; display: inline-flex; align-items: center; gap: 8px; max-width: 100%; padding: 6px 12px; border-radius: 999px;
+  background: rgba(9, 18, 13, .86); color: #FFE9A8; font: 600 12.5px/1.3 var(--font); box-shadow: 0 0 0 1px rgba(255, 212, 92, .28); }
+.night-info[hidden] { display: none; }
+.night-info i { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--light); box-shadow: 0 0 6px 2px rgba(255, 200, 70, .9); }
+@media (max-width: 860px) { .map-foot { bottom: 30px; } body.map-expanded .map-foot { bottom: 86px; } .night-info { font-size: 11.5px; } }
+
+/* ---------- legend follows the new colours ---------- */
+.lg-me { background: #FFFFFF !important; box-shadow: 0 0 0 2px var(--neon), 0 0 6px var(--neon-glow) !important; }
+.lg-rec, .lg-active { background: var(--stop) !important; box-shadow: 0 0 6px var(--stop-glow); }
+.lg-other { background: var(--neon) !important; border: 0 !important; box-shadow: 0 0 5px var(--neon-glow); }
+.lg-route { background: var(--neon-core) !important; box-shadow: 0 0 4px var(--neon-glow), 0 0 8px var(--neon-glow); }
+.lg-lights { width: 9px !important; height: 9px !important; margin: 0 1.5px; background: var(--light); box-shadow: 0 0 6px 2px rgba(255, 200, 70, .8); }
