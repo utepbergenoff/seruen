@@ -336,7 +336,7 @@
       const draw = selected => {
         overlays.clearLayers();drawParticipants();
         data.items.forEach((p,i)=>pin(p.coords,p.name,()=>selectMeeting(i)));
-        if(selected){selected.paths.forEach((path,i)=>L.polyline(path.map(([lon,lat])=>[lat,lon]),{color:i?A.cssColor("--route-b","#B07A1A"):A.cssColor("--route","#1E4A37"),weight:3,dashArray:"6 6"}).addTo(overlays));
+        if(selected){selected.paths.forEach((path,i)=>L.polyline(path.map(([lon,lat])=>[lat,lon]),{color:i?A.cssColor("--route-b","#B07A1A"):A.cssColor("--route","#1E4A37"),weight:3,dashArray:"6 6",className:i?"neon-line neon-b":"neon-line",...A.neonPane?.(i?"neonGold":"neon")}).addTo(overlays));
           A.fitTo(L.latLngBounds([...selected.paths[0],...selected.paths[1]].map(([lon,lat])=>[lat,lon])));}
       };
       const selectMeeting=index=>{
@@ -395,7 +395,7 @@
       <p class="meta">${result.routing_source==="distance_estimate"?esc(x.routeEstimate):""}</p>
       <details><summary>${esc(x.source)}</summary><p class="meta">${esc(result.notes.join(" "))}</p></details>
       ${active?"":`<button id="previewStart" class="btn primary" type="button">${esc(x.start)}</button>`}</section>`;
-    if(result.geometry?.length){L.polyline(result.geometry.map(([lon,lat])=>[lat,lon]),{color:A.cssColor("--route","#1E4A37"),weight:4,dashArray:result.routing_source==="osrm_foot"?null:"5 5"}).addTo(overlays);
+    if(result.geometry?.length){L.polyline(result.geometry.map(([lon,lat])=>[lat,lon]),{color:A.cssColor("--route","#1E4A37"),weight:4,dashArray:result.routing_source==="osrm_foot"?null:"5 5",className:"neon-line",...A.neonPane?.("neon")}).addTo(overlays);
       const bounds=result.geometry.map(([lon,lat])=>[lat,lon]);
       if(meeting) bounds.push([meeting.second.lat,meeting.second.lon]);
       A.fitTo(L.latLngBounds(bounds));}

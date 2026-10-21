@@ -595,7 +595,7 @@
       // a new street-following route draws itself once; re-renders and estimated (dashed) lines appear as they are
       const draw = solid && shape !== lastDrawnRoute; lastDrawnRoute = shape;
       walkLine = L.polyline(p.server.geometry.map(([lon, lat]) => [lat, lon]), {
-        color: A.cssColor("--route", "#1E4A37"), weight: 5, className: "active-walk-path" + (draw ? " route-draw" : ""), dashArray: solid ? null : "8 8",
+        color: A.cssColor("--route", "#1E4A37"), weight: 5, className: "active-walk-path neon-line" + (draw ? " route-draw" : ""), dashArray: solid ? null : "8 8", ...A.neonPane?.("neon"),
       }).addTo(map);
     }
     // Accepted stops stay visible on the active route, including a newly added break.

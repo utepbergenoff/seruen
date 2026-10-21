@@ -18,7 +18,7 @@
   // The legend names only the kinds of marks that are on the map right now (two kinds or more).
   const LEGEND=[['me','.me','lgMe'],['rec','.pin:not(.dot):not(.finish-pin)','lgRec'],['other','.pin.dot','lgOther'],['ab','.participant-pin','lgAB'],['meet','.experience-pin:not(.participant-pin)','lgMeet'],
     ['story','.story-pin','lgStory'],['rest','.cpin:not(.story-pin):not(.experience-pin)','lgRest'],['active','.active-stop-pin','lgActive'],['mine','.ppin','lgMine'],
-    ['finish','.finish-pin','lgFinish'],['route','path.active-walk-path','lgRoute']];
+    ['finish','.finish-pin','lgFinish'],['route','path.active-walk-path','lgRoute'],['lights','.night-light','lgLights']];
   let legendTimer=null;
   function drawLegend(){
     const box=$('#mapLegend'),root=$('#map');if(!box||!root)return;
@@ -27,7 +27,7 @@
     box.innerHTML=on.map(([k,,key])=>`<span><i class="lg-${k}" aria-hidden="true"></i>${A.esc(T()[key]||k)}</span>`).join('');
   }
   const watchMarks=()=>{clearTimeout(legendTimer);legendTimer=setTimeout(drawLegend,150);};
-  for(const pane of ['.leaflet-marker-pane','.leaflet-overlay-pane']){const el=$('#map '+pane);if(el&&window.MutationObserver)new MutationObserver(watchMarks).observe(el,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});}
+  for(const pane of ['.leaflet-marker-pane','.leaflet-overlay-pane','.leaflet-neon-pane','.leaflet-lights-pane']){const el=$('#map '+pane);if(el&&window.MutationObserver)new MutationObserver(watchMarks).observe(el,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});}
   function labels(){
     drawLegend();
     // the map buttons are compact icons on wide screens: their names live in the tooltip
