@@ -79,11 +79,14 @@
 .lg-route { background: var(--neon-core) !important; box-shadow: 0 0 4px var(--neon-glow), 0 0 8px var(--neon-glow); }
 .lg-lights { width: 9px !important; height: 9px !important; margin: 0 1.5px; background: var(--light); box-shadow: 0 0 6px 2px rgba(255, 200, 70, .8); }
 
-/* ---------- result cards (21.10): a clear edge between one place and the next, also for meetings ---------- */
-:root { --card-edge: #C9BB9D; }
-:root[data-theme="dark"] { --card-edge: #46624F; }
-.card.rec, #experienceResult > .meet-place { border: 2px solid var(--card-edge); }
-.card.rec:hover, #experienceResult > .meet-place:hover { border-color: var(--sky); }
+/* ---------- result cards (22.10): more room between them and a bright, thick edge, also for meetings ---------- */
+:root { --card-edge: #2FA36B; }
+:root[data-theme="dark"] { --card-edge: #5FD39B; }
+/* only between two cards: the summary and notes above them keep their spacing (gap 14px + 16px = 30px) */
+.card.rec + .card.rec { margin-top: 16px; }
+#experienceResult > .meet-place + .meet-place { margin-top: 14px; }
+.card.rec, #experienceResult > .meet-place { border: 3px solid var(--card-edge); }
+.card.rec:hover, #experienceResult > .meet-place:hover { border-color: var(--sun); }
 .card.rec.active { border-color: var(--sun); }
 
 /* ---------- purchase note and 2GIS facts: one closed list under the photos (21.10) ---------- */
