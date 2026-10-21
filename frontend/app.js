@@ -540,7 +540,6 @@
     return `<span class="hours-fact"${tip ? ` title="${esc(tip)}"` : ""}><span class="status-pill st-${esc(st.state)}">${esc(t.status[st.state] || st.state)}</span>${hours ? `<span class="hours-value">${esc(date + hours)}</span>` : ""}</span>`;
   }
 
-  const srcBadge = (src) => src === "ai" ? `<span class="badge ai">${esc(T().aiIdea)}</span>` : `<span class="badge tpl">${esc(T().template)}</span>`;
   function budgetBar(b) {
     const t = T(), tot = Math.max(b.budget_min || b.total_min, b.total_min);
     const finalWalk = b.walk_to_end_min ?? b.walk_back_min;
@@ -659,7 +658,6 @@
         ${FEAT.photos ? `<div class="photos" aria-live="polite"></div>` : ""}
         ${ext.cardBadges ? `<div class="pills">${ext.cardBadges(r)}</div>` : ""}
         <div class="field why rec-desc fit"><p class="fit-line"><b>${esc(t.fitWhy)}</b>${esc(sentences(r.why))}</p><p class="fit-line"><b>${esc(t.todo)}</b>${esc(sentences(r.what_to_do))}</p></div>
-        <div class="meta rec-stay">⏱ ${esc(t.stay)}: ~${esc(r.time_to_spend_min)} ${esc(t.minutes)} · ${srcBadge(r.what_to_do_source)}</div>
         ${ext.cardPrimary ? ext.cardPrimary(r, i, d) : ""}
         <div class="actions">
           ${FEAT.mapLinks ? `<a class="btn" href="${esc(L2.gis)}" target="_blank" rel="noopener">${icon("map")} ${esc(t.route2gis)}</a>
