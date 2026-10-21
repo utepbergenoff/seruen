@@ -111,7 +111,9 @@ test('when Gemini cannot read the team photos now, their earlier Gemini labels s
   assert.ok(box.querySelectorAll('.ph-strip img').length===3);
   assert.match(box.querySelector('.tags').textContent,/около 40 мест/);
   assert.match(box.textContent,/анализ этих фото Gemini от 20 окт/);
-  // the labels come after the description in the card, not before the name
+  // photos and their labels come right after the name, walk and address: before the purchase note, 2GIS facts and the description
   const card=box.closest('.rec');const kids=[...card.children];
-  assert.ok(kids.indexOf(box)>kids.indexOf(card.querySelector('.rec-desc')));
+  assert.ok(kids.indexOf(box)>kids.indexOf(card.querySelector('.rec-title')));
+  assert.ok(kids.indexOf(box)<kids.indexOf(card.querySelector('.pills')));
+  assert.ok(kids.indexOf(box)<kids.indexOf(card.querySelector('.rec-desc')));
 });
