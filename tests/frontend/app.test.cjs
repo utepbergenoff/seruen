@@ -336,8 +336,11 @@ test('an old server never receives new fields', async t => {
 test('only new: without server support visited places are hidden here and counted', async t => {
   const b = await boot(t); await settle(); b.click('#goBtn'); await tick();
   b.requests[0].resolve(json({...answer('x'), recommendations: [rec('p1', 'Был'), rec('p2', 'Новое')]})); await settle();
-  b.click('.rec [data-keep="visited"]'); await settle();
+  // «Посетил(а)» is gone from the cards (21.10); a place is marked as visited via «Не подходит → Уже был(а)» or older data
+  const F = b.w.SeruenFeatures; F.mine.places.set('p1', await b.w.SeruenStore.putPlace({poi_id: 'p1', name: 'Был', visited_at: Date.now()}));
   b.click('#mineBtn'); await settle();
+  assert.equal(b.w.document.querySelector('[data-keep="visited"]'), null);  // no «Посетил(а)» on cards
+  assert.equal(b.w.document.querySelector('#mine [data-filter="visited"]'), null);  // nor in My places
   const box = b.w.document.querySelector('#onlyNew'); box.checked = true; box.dispatchEvent(new b.w.Event('change')); await tick();
   b.requests[1].resolve(json({...answer('y'), recommendations: [rec('p1', 'Был'), rec('p2', 'Новое')]})); await settle();
   assert.deepEqual([...b.w.document.querySelectorAll('.rec h3')].map(h => h.textContent.trim()), ['Новое']);

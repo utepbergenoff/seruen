@@ -85,3 +85,10 @@
 .card.rec, #experienceResult > .meet-place { border: 2px solid var(--card-edge); }
 .card.rec:hover, #experienceResult > .meet-place:hover { border-color: var(--sky); }
 .card.rec.active { border-color: var(--sun); }
+
+/* ---------- purchase note and 2GIS facts: one closed list under the photos (21.10) ---------- */
+.provider-conditions { opacity: 1; }
+.provider-more > summary { cursor: pointer; width: fit-content; font: 600 13.5px/1.4 var(--font); color: var(--sky-deep); padding: 4px 0; }
+.provider-more > summary:hover { text-decoration: underline; }
+.provider-facts { display: grid; justify-items: start; gap: 8px; margin-top: 6px; }
+.provider-facts p { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--muted); }

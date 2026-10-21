@@ -113,12 +113,13 @@
       return Number(useful.test(b))-Number(useful.test(a));
     });
     const attrHTML=values=>values.map(a=>`<span>${esc(a)}</span>`).join(" · ");
-    const attrs=attrHTML(labels.slice(0,4));
-    const more=labels.length>4 ? `<details class="provider-more"><summary>${esc(fmt(x.providerMore,{n:labels.length-4}))}</summary>${attrHTML(labels.slice(4))}</details>` : "";
     const unknown = st === "unknown" && provider ? x.providerCostUnknown : x[COST[st]];
-    return `<span class="cost cost-${esc(st)}" title="${esc(title)}">${icon("wallet")} ${esc(unknown)}${cost.note ? ` · ${esc(cost.note)}` : ""}</span>
-      ${provider && attrs ? `<div class="provider-conditions">${attrs} · <a href="${esc(cost.provider_url)}" target="_blank" rel="noopener noreferrer">${esc(x.providerConditions)}</a>${more}</div>` : ""}
-`;
+    const pill = `<span class="cost cost-${esc(st)}" title="${esc(title)}">${icon("wallet")} ${esc(unknown)}${cost.note ? ` · ${esc(cost.note)}` : ""}</span>`;
+    if (!provider || !labels.length) return pill;
+    // the purchase note and every 2GIS fact sit in one closed list, so the photos and the description come first
+    const n = labels.length + 1, form = new Intl.PluralRules({en: "en", kk: "kk"}[state.lang] || "ru").select(n);
+    return `<div class="provider-conditions"><details class="provider-more"><summary>${esc(fmt((x.placeFacts || {})[form] || (x.placeFacts || {}).other || x.providerMore, {n}))}</summary>
+      <div class="provider-facts">${pill}<p>${attrHTML(labels)} · <a href="${esc(cost.provider_url)}" target="_blank" rel="noopener noreferrer">${esc(x.providerConditions)}</a></p></div></details></div>`;
   };
   ext.cardPrimary = (r) => has("plan_export")
     ? `<div class="card-start"><button type="button" class="btn primary" data-start-walk="${esc(r.poi_id)}">${icon("play")} ${esc(X().startWalk)}</button></div>` : "";
@@ -131,7 +132,7 @@
       html += `<div class="meta finish-line">${icon("finish")} ${[b.walk_to_end_min > 0 && esc(fmt(x.toEnd, {m: b.walk_to_end_min})), at && esc(fmt(x.arrival, {t: at}))].filter(Boolean).join(" · ")}</div>`;
     }
     html += `<div class="keep" role="group" aria-label="${esc(x.keepTitle)}">
-      ${chip("want", "flag", !!p.want, x.want)}${chip("visited", "visit", !!p.visited_at, x.visited)}
+      ${chip("want", "flag", !!p.want, x.want)}
       ${chip("favorite", "heart", !!p.favorite, x.favorite)}${chip("note", "note", !!p.note, x.note)}</div>
       <div class="note-box" hidden><textarea maxlength="500" rows="2" placeholder="${esc(x.notePh)}">${esc(p.note || "")}</textarea>
       <div class="row"><button type="button" class="btn small" data-note="save">${esc(x.noteSave)}</button>${p.note ? `<button type="button" class="btn small" data-note="del">${esc(x.noteDelete)}</button>` : ""}</div>
@@ -840,8 +841,9 @@
   }
   function renderMine() {
     const box = $("#mine"); if (!box || box.hidden) return;
-    const x = X(), all = [...mine.places.values()].map(placeView).sort((a, b) => (b.updated_at || 0) - (a.updated_at || 0));
-    const pick = {all: () => true, want: (p) => p.want, visited: (p) => p.visited_at, favorite: (p) => p.favorite}[mine.filter] || (() => true);
+    // a place kept only as «уже был(а)» (from «Не подходит?») is not listed: it only hides the place from «только новое» searches
+    const x = X(), all = [...mine.places.values()].map(placeView).filter((p) => p.want || p.favorite || p.note).sort((a, b) => (b.updated_at || 0) - (a.updated_at || 0));
+    const pick = {all: () => true, want: (p) => p.want, favorite: (p) => p.favorite}[mine.filter] || (() => true);
     const list = all.filter(pick);
     const locale = {en: "en-GB", kk: "kk-KZ"}[state.lang] || "ru-RU";
     const tab = (k, l, n) => `<button type="button" role="tab" class="tab${mine.tab === k ? " on" : ""}" data-tab="${k}" aria-selected="${mine.tab === k}">${esc(l)} <span class="mine-count">${n}</span></button>`;
@@ -851,7 +853,7 @@
     const empty = (ic, text) => `<div class="mine-empty"><span>${icon(ic)}</span><p>${esc(text)}</p></div>`;
     const place = (p, i) => {
       const l = placeLabel(p), id = esc(p.poi_id), of = `mineName${i}`, gis = /^2gis_\d+$/.test(p.poi_id);
-      const marks = [p.want && ["flag", x.want, "want"], p.visited_at && ["check", x.visited, "visited"], p.favorite && ["heart", x.favorite, "fav"]].filter(Boolean);
+      const marks = [p.want && ["flag", x.want, "want"], p.favorite && ["heart", x.favorite, "fav"]].filter(Boolean);
       const inner = `<span class="mine-ico" data-cat="${CAT_ICONS.includes(p.category) ? esc(p.category) : "pin"}" aria-hidden="true"></span>
         <span class="mine-body"><span class="mine-name"><b id="${of}"${l.known ? "" : ' class="unknown"'}>${esc(l.title)}</b>${marks.length ? `<span class="mine-marks" role="img" aria-label="${esc(marks.map((m) => m[1]).join(", "))}">${marks.map(([ic, t, k]) => `<span class="mk mk-${k}" title="${esc(t)}">${icon(ic)}</span>`).join("")}</span>` : ""}</span>
         ${l.sub ? `<span class="mine-sub">${esc(l.sub)}</span>` : !l.known && gis ? `<span class="mine-sub hint">${esc(x.unknownHint)}</span>` : ""}
@@ -876,11 +878,11 @@
       ${mine.error ? `<p class="msg warn">${esc(mine.error)}</p>` : ""}
       ${mine.undo ? `<div class="mine-undo" role="status"><span>${esc(x.placeRemoved)}</span><button type="button" id="mineUndo">${esc(x.undo)}</button></div>` : ""}
       <div class="tabs" role="tablist">${tab("places", x.tabPlaces, all.length)}${tab("walks", x.tabWalks, mine.walks.length)}</div>
-      ${mine.tab === "places" ? `<div class="row mine-filters">${fchip("all", x.fAll)}${fchip("want", x.fWant)}${fchip("visited", x.fVisited)}${fchip("favorite", x.fFav)}</div>
+      ${mine.tab === "places" ? `<div class="row mine-filters">${fchip("all", x.fAll)}${fchip("want", x.fWant)}${fchip("favorite", x.fFav)}</div>
         <div class="mine-switches">${sw("mineOnMap", mine.onMap, "map", x.showOnMap)}${sw("onlyNew", mine.onlyNew, "search", x.onlyNew)}</div>
         ${list.length ? `<ul class="mine-list">${list.map(place).join("")}</ul>` : empty("heart", x.emptyPlaces)}`
       : mine.walks.length ? `<ul class="mine-list">${mine.walks.map(walkItem).join("")}</ul>` : empty("route", x.emptyWalks)}
-      <div class="mine-foot">${!all.length && !mine.walks.length ? "" : `<div class="row clear-row">${mine.confirmClear ? `<span class="meta">${esc(x.clearConfirm)}</span>
+      <div class="mine-foot">${!mine.places.size && !mine.walks.length ? "" : `<div class="row clear-row">${mine.confirmClear ? `<span class="meta">${esc(x.clearConfirm)}</span>
           <button type="button" class="btn small danger" id="clearYes">${esc(x.yes)}</button><button type="button" class="btn small" id="clearNo">${esc(x.no)}</button>`
         : `<button type="button" class="mine-clear" id="clearAll">${icon("trash")} ${esc(x.clearAll)}</button>`}</div>`}
         <p class="src mine-device">${esc(x.deviceOnly)}</p></div>`;

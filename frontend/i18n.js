@@ -579,3 +579,8 @@ Object.assign(window.I18N.kk.ph, {savedAnalysis: "Белгілер — Gemini о
 Object.assign(window.I18N.ru, {lgLights: "Открыто сейчас", night: {info: "Светятся места, открытые в {t}: {n}", until: "открыто до {t}", allDay: "круглосуточно", hours: "Часы"}});
 Object.assign(window.I18N.en, {lgLights: "Open now", night: {info: "Glowing: {n} places open at {t}", until: "open until {t}", allDay: "open 24/7", hours: "Hours"}});
 Object.assign(window.I18N.kk, {lgLights: "Қазір ашық", night: {info: "{t} кезінде ашық орындар жарқырайды: {n}", until: "{t} дейін ашық", allDay: "тәулік бойы", hours: "Жұмыс уақыты"}});
+
+// 21.10: the purchase note and all 2GIS facts are one closed list on the card
+Object.assign(window.I18N.ru.x, {placeFacts: {one: "Ещё {n} сведение о месте", few: "Ещё {n} сведения о месте", many: "Ещё {n} сведений о месте", other: "Ещё {n} сведений о месте"}});
+Object.assign(window.I18N.en.x, {placeFacts: {one: "{n} more detail about the place", other: "{n} more details about the place"}});
+Object.assign(window.I18N.kk.x, {placeFacts: {other: "Орын туралы тағы {n} мәлімет"}});

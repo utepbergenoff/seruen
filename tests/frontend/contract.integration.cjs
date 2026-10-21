@@ -15,7 +15,6 @@ test('walking features use real server shapes and preserve offline/privacy bound
   assert.equal(w.SeruenApp.state.lastReq.end.source,'preset');
   assert.ok(w.SeruenApp.state.last.recommendations.every(r=>r.budget_breakdown.walk_to_end_min != null));
   const first=w.SeruenApp.state.last.recommendations[0].poi_id;
-  b.click('.rec [data-keep="visited"]'); await until(()=>w.SeruenFeatures.mine.places.get(first)?.visited_at);
   b.click('.rec [data-nope="other"]'); await until(()=>w.SeruenApp.state.last.recommendations[0].poi_id!==first);
   assert.ok(calls.filter(c=>c.path==='/recommend').at(-1).body.preferences.exclude_poi_ids.includes(first));
 
