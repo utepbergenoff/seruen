@@ -656,10 +656,10 @@
           <span class="walk-txt">${icon("walk")} <b>${esc(r.walk_min)}</b> ${esc(t.walk)} · ${esc(r.distance_m)} ${esc(t.distance)}</span>
           ${r.open_status ? statusPill(r.open_status) : ""}</div>
         ${r.address ? `<div class="meta">${icon("pin")} ${esc(r.address)}</div>` : ""}
+        ${FEAT.photos ? `<div class="photos" aria-live="polite"></div>` : ""}
         ${ext.cardBadges ? `<div class="pills">${ext.cardBadges(r)}</div>` : ""}
         <div class="field why rec-desc fit"><p class="fit-line"><b>${esc(t.fitWhy)}</b>${esc(sentences(r.why))}</p><p class="fit-line"><b>${esc(t.todo)}</b>${esc(sentences(r.what_to_do))}</p></div>
         <div class="meta rec-stay">⏱ ${esc(t.stay)}: ~${esc(r.time_to_spend_min)} ${esc(t.minutes)} · ${srcBadge(r.what_to_do_source)}</div>
-        ${FEAT.photos ? `<div class="photos" aria-live="polite"></div>` : ""}
         ${ext.cardPrimary ? ext.cardPrimary(r, i, d) : ""}
         <div class="actions">
           ${FEAT.mapLinks ? `<a class="btn" href="${esc(L2.gis)}" target="_blank" rel="noopener">${icon("map")} ${esc(t.route2gis)}</a>
