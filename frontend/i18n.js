@@ -584,3 +584,7 @@ Object.assign(window.I18N.kk, {lgLights: "Қазір ашық", night: {info: "{
 Object.assign(window.I18N.ru.x, {placeFacts: {one: "Ещё {n} сведение о месте", few: "Ещё {n} сведения о месте", many: "Ещё {n} сведений о месте", other: "Ещё {n} сведений о месте"}});
 Object.assign(window.I18N.en.x, {placeFacts: {one: "{n} more detail about the place", other: "{n} more details about the place"}});
 Object.assign(window.I18N.kk.x, {placeFacts: {other: "Орын туралы тағы {n} мәлімет"}});
+// phones: the button on the small map in the planner
+Object.assign(window.I18N.ru, {mapOpenFull: "Открыть карту"});
+Object.assign(window.I18N.kk, {mapOpenFull: "Картаны ашу"});
+Object.assign(window.I18N.en, {mapOpenFull: "Open the map"});
