@@ -1,0 +1,644 @@
+{
+  "osm_node_11993865901": [
+    {
+      "url": "c/team-linebrew-expo-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Line Brew, ресторан, район EXPO"
+    },
+    {
+      "url": "c/team-linebrew-expo-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Line Brew, ресторан, район EXPO"
+    },
+    {
+      "url": "c/team-linebrew-expo-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Line Brew, ресторан, район EXPO"
+    }
+  ],
+  "osm_node_12093489323": [
+    {
+      "url": "c/team-delpapa-mega-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Del Papa, ресторан, район EXPO"
+    },
+    {
+      "url": "c/team-delpapa-mega-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Del Papa, ресторан, район EXPO"
+    },
+    {
+      "url": "c/team-delpapa-mega-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Del Papa, ресторан, район EXPO"
+    }
+  ],
+  "osm_node_5880883097": [
+    {
+      "url": "c/team-chaplin-mega-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Chaplin Cinema, кинотеатр, район EXPO"
+    },
+    {
+      "url": "c/team-chaplin-mega-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Chaplin Cinema, кинотеатр, район EXPO"
+    },
+    {
+      "url": "c/team-chaplin-mega-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Chaplin Cinema, кинотеатр, район EXPO"
+    }
+  ],
+  "osm_node_14107301089": [
+    {
+      "url": "c/team-koreanhouse-mega-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Korean House, ресторан, район EXPO"
+    },
+    {
+      "url": "c/team-koreanhouse-mega-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Korean House, ресторан, район EXPO"
+    },
+    {
+      "url": "c/team-koreanhouse-mega-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Korean House, ресторан, район EXPO"
+    }
+  ],
+  "osm_node_9047331879": [
+    {
+      "url": "c/team-starbucks-mega-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Starbucks, кофейня, район EXPO"
+    },
+    {
+      "url": "c/team-starbucks-mega-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Starbucks, кофейня, район EXPO"
+    }
+  ],
+  "osm_node_12093489321": [
+    {
+      "url": "c/team-daredzhani-mega-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Дареджани, ресторан, район EXPO"
+    },
+    {
+      "url": "c/team-daredzhani-mega-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Дареджани, ресторан, район EXPO"
+    },
+    {
+      "url": "c/team-daredzhani-mega-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Дареджани, ресторан, район EXPO"
+    }
+  ],
+  "osm_node_13397061028": [
+    {
+      "url": "c/team-coco-mega-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Coco, ресторан, район EXPO"
+    },
+    {
+      "url": "c/team-coco-mega-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Coco, ресторан, район EXPO"
+    },
+    {
+      "url": "c/team-coco-mega-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Coco, ресторан, район EXPO"
+    }
+  ],
+  "osm_way_1456208624": [
+    {
+      "url": "c/team-alleyamira-expo-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Бейбітшілік пен Келісім аллеясы, аллея, район EXPO"
+    },
+    {
+      "url": "c/team-alleyamira-expo-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Бейбітшілік пен Келісім аллеясы, аллея, район EXPO"
+    },
+    {
+      "url": "c/team-alleyamira-expo-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Бейбітшілік пен Келісім аллеясы, аллея, район EXPO"
+    }
+  ],
+  "osm_node_12293708057": [
+    {
+      "url": "c/team-paul-mega-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Paul, кафе-пекарня, район EXPO"
+    },
+    {
+      "url": "c/team-paul-mega-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Paul, кафе-пекарня, район EXPO"
+    }
+  ],
+  "osm_node_10211901020": [
+    {
+      "url": "c/team-tanuki-expo-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Тануки, ресторан, район EXPO"
+    },
+    {
+      "url": "c/team-tanuki-expo-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Тануки, ресторан, район EXPO"
+    },
+    {
+      "url": "c/team-tanuki-expo-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Тануки, ресторан, район EXPO"
+    }
+  ],
+  "osm_node_13397061026": [
+    {
+      "url": "c/team-luckeeyu-mega-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Luckee Yu, ресторан, район EXPO"
+    },
+    {
+      "url": "c/team-luckeeyu-mega-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Luckee Yu, ресторан, район EXPO"
+    },
+    {
+      "url": "c/team-luckeeyu-mega-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Luckee Yu, ресторан, район EXPO"
+    }
+  ],
+  "osm_node_12520559591": [
+    {
+      "url": "c/team-lepim-mega-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Лепим и варим, кафе, район EXPO"
+    },
+    {
+      "url": "c/team-lepim-mega-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Лепим и варим, кафе, район EXPO"
+    }
+  ],
+  "osm_node_8237697404": [
+    {
+      "url": "c/team-pinta-mega-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Пинта, бар, район EXPO"
+    },
+    {
+      "url": "c/team-pinta-mega-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Пинта, бар, район EXPO"
+    }
+  ],
+  "osm_node_12990081501": [
+    {
+      "url": "c/team-discovery-expo-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Discovery Coffee, кофейня, район EXPO"
+    },
+    {
+      "url": "c/team-discovery-expo-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Discovery Coffee, кофейня, район EXPO"
+    },
+    {
+      "url": "c/team-discovery-expo-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Discovery Coffee, кофейня, район EXPO"
+    }
+  ],
+  "osm_node_14275682079": [
+    {
+      "url": "c/team-drinkit-mega-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Drinkit, кофейня, район EXPO"
+    },
+    {
+      "url": "c/team-drinkit-mega-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Drinkit, кофейня, район EXPO"
+    },
+    {
+      "url": "c/team-drinkit-mega-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Drinkit, кофейня, район EXPO"
+    },
+    {
+      "url": "c/team-drinkit-mega-4.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Drinkit, кофейня, район EXPO"
+    },
+    {
+      "url": "c/team-drinkit-mega-5.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Drinkit, кофейня, район EXPO"
+    }
+  ],
+  "osm_node_11345949796": [
+    {
+      "url": "c/team-golpas-expo-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Golpas, кафе, район EXPO"
+    },
+    {
+      "url": "c/team-golpas-expo-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Golpas, кафе, район EXPO"
+    },
+    {
+      "url": "c/team-golpas-expo-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Golpas, кафе, район EXPO"
+    }
+  ],
+  "osm_node_13681674667": [
+    {
+      "url": "c/team-leto-expo-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Лето, кафе, район EXPO"
+    },
+    {
+      "url": "c/team-leto-expo-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Лето, кафе, район EXPO"
+    },
+    {
+      "url": "c/team-leto-expo-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Лето, кафе, район EXPO"
+    }
+  ],
+  "osm_way_499328449": [
+    {
+      "url": "c/team-balet-expo-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Астана балет, театр, район EXPO"
+    },
+    {
+      "url": "c/team-balet-expo-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Астана балет, театр, район EXPO"
+    },
+    {
+      "url": "c/team-balet-expo-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Астана балет, театр, район EXPO"
+    },
+    {
+      "url": "c/team-balet-expo-4.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Астана балет, театр, район EXPO"
+    },
+    {
+      "url": "c/team-balet-expo-5.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Астана балет, театр, район EXPO"
+    }
+  ],
+  "osm_node_14104582301": [
+    {
+      "url": "c/team-noble-expo-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Noble, кофейня, район EXPO"
+    },
+    {
+      "url": "c/team-noble-expo-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Noble, кофейня, район EXPO"
+    },
+    {
+      "url": "c/team-noble-expo-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Noble, кофейня, район EXPO"
+    }
+  ],
+  "osm_node_11290690869": [
+    {
+      "url": "c/team-tlp-expo-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "TLP Flowers & Coffee, кофейня-цветочный, район EXPO"
+    },
+    {
+      "url": "c/team-tlp-expo-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "TLP Flowers & Coffee, кофейня-цветочный, район EXPO"
+    },
+    {
+      "url": "c/team-tlp-expo-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "TLP Flowers & Coffee, кофейня-цветочный, район EXPO"
+    },
+    {
+      "url": "c/team-tlp-expo-4.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "TLP Flowers & Coffee, кофейня-цветочный, район EXPO"
+    },
+    {
+      "url": "c/team-tlp-expo-5.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "TLP Flowers & Coffee, кофейня-цветочный, район EXPO"
+    }
+  ],
+  "osm_node_14102594001": [
+    {
+      "url": "c/team-sherbet-expo-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Sherbet, кафе, район EXPO"
+    },
+    {
+      "url": "c/team-sherbet-expo-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Sherbet, кафе, район EXPO"
+    },
+    {
+      "url": "c/team-sherbet-expo-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Sherbet, кафе, район EXPO"
+    },
+    {
+      "url": "c/team-sherbet-expo-4.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Sherbet, кафе, район EXPO"
+    }
+  ],
+  "osm_node_12098662467": [
+    {
+      "url": "c/team-canele-expo-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Canele, кофейня-кондитерская, район EXPO"
+    },
+    {
+      "url": "c/team-canele-expo-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Canele, кофейня-кондитерская, район EXPO"
+    },
+    {
+      "url": "c/team-canele-expo-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Canele, кофейня-кондитерская, район EXPO"
+    }
+  ],
+  "osm_node_10248180510": [
+    {
+      "url": "c/team-delish-expo-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Delish, кофейня, район EXPO"
+    },
+    {
+      "url": "c/team-delish-expo-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Delish, кофейня, район EXPO"
+    },
+    {
+      "url": "c/team-delish-expo-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Delish, кофейня, район EXPO"
+    }
+  ],
+  "osm_node_11925892164": [
+    {
+      "url": "c/team-tary-expo-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Tary, кафе, район EXPO"
+    },
+    {
+      "url": "c/team-tary-expo-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Tary, кафе, район EXPO"
+    },
+    {
+      "url": "c/team-tary-expo-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Tary, кафе, район EXPO"
+    }
+  ],
+  "osm_way_1196402246": [
+    {
+      "url": "c/team-botsad-expo-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Ботаникалық бақ, парк, район EXPO"
+    },
+    {
+      "url": "c/team-botsad-expo-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Ботаникалық бақ, парк, район EXPO"
+    },
+    {
+      "url": "c/team-botsad-expo-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Ботаникалық бақ, парк, район EXPO"
+    },
+    {
+      "url": "c/team-botsad-expo-4.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Ботаникалық бақ, парк, район EXPO"
+    }
+  ],
+  "osm_way_549307755": [
+    {
+      "url": "c/team-mangilikel-expo-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Мәңгілік Ел салтанат қақпасы, арка, район EXPO"
+    },
+    {
+      "url": "c/team-mangilikel-expo-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Мәңгілік Ел салтанат қақпасы, арка, район EXPO"
+    }
+  ],
+  "osm_way_166267459": [
+    {
+      "url": "c/team-alau-expo-1.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Алау мұзайдыны сарайы, ледовый дворец, район EXPO"
+    },
+    {
+      "url": "c/team-alau-expo-2.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Алау мұзайдыны сарайы, ледовый дворец, район EXPO"
+    },
+    {
+      "url": "c/team-alau-expo-3.jpg",
+      "source": "team",
+      "author": "Ерлан, команда Серуен",
+      "license": "Собственное фото команды",
+      "note": "Алау мұзайдыны сарайы, ледовый дворец, район EXPO"
+    }
+  ]
+}
