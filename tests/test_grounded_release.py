@@ -170,3 +170,18 @@ def test_shipped_photo_reviews_have_real_bytes_and_fame_city_has_no_mall_photos(
             url = "https://seruen-astana.netlify.app/img/places/" + entry["url"]
             digest = hashlib.sha256((ROOT / "frontend/img/places" / entry["url"]).read_bytes()).hexdigest()
             assert reviews[pid][url]["sha256"] == digest
+
+
+def test_withheld_photos_are_not_published_or_approved():
+    exclusions = json.loads((ROOT / "data/photo_publication_exclusions.json").read_text(encoding="utf-8"))
+    index = json.loads((ROOT / "frontend/img/places/index.json").read_text(encoding="utf-8"))["places"]
+    reviews = json.loads((ROOT / "data/photo_identity_review.json").read_text(encoding="utf-8"))["places"]
+    published = {entry["url"].rsplit("/", 1)[-1] for entries in index.values() for entry in entries}
+    approved = {url.rsplit("/", 1)[-1] for entries in reviews.values() for url in entries}
+    for entry in exclusions["items"]:
+        if entry["status"] != "withheld":
+            continue
+        filename = entry["filename"]
+        assert filename not in published
+        assert filename not in approved
+        assert not (ROOT / "frontend/img/places/c" / filename).exists()
