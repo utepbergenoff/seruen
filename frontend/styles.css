@@ -1014,6 +1014,8 @@ input[type="checkbox"][role="switch"]:checked::before { transform: translateX(16
 input[type="checkbox"][role="switch"]:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; }
 .ctx-grid label.check { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-direction: row-reverse; min-height: 44px; }
 .story-layer-toggle { gap: 10px; }
+/* the label wraps and hyphenates at every width, so a long word never pushes the switch out of the map panel */
+.story-layer-toggle { hyphens: auto; overflow-wrap: anywhere; min-width: 0; }
 .story-layer-toggle::before { order: -1; }
 .story-layer-toggle input { order: 1; margin-left: auto; }
 
