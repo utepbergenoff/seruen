@@ -135,7 +135,7 @@ def test_schema_export_and_invalid_data_fail_without_network(expanded, tmp_path)
     out = tmp_path / "schemas"
     write_schemas(out)
     for name in MODELS:
-        schema = json.loads((out / name.replace(".json", ".schema.json")).read_text())
+        schema = json.loads((out / name.replace(".json", ".schema.json")).read_text(encoding="utf-8"))
         assert schema["properties"]["version"]["const"] == 1
         assert schema["additionalProperties"] is False
     (expanded.feature_data_dir / "comfort_points.json").write_text('{"version": 2,"items":[]}')
@@ -323,7 +323,7 @@ def test_deny_unknown_offline_rights_and_impossible_plan(api):
 def test_invalid_data_rejected_and_schemas_have_all_collections(expanded):
     assert len(MODELS) == 4
     path = expanded.feature_data_dir / "poi_identity_links.json"
-    body = json.loads(path.read_text())
+    body = json.loads(path.read_text(encoding="utf-8"))
     body["items"].append(body["items"][0])
     path.write_text(json.dumps(body))
     with pytest.raises(ValueError, match="identity_overlap"):

@@ -129,7 +129,7 @@ flowchart LR
 
 Остановка предварительно ищется впереди до следующей цели: до 450 м от текущей точки, до 100 м от прямого коридора, с ограничением добавочного пути и последующей проверкой маршрута. Такой отбор может пропускать варианты при сложной геометрии улиц.
 
-Подробности: [условия подбора](docs/scenario_constraints_audit.md), [остановки](docs/walk_first_ux.md), [расчёты](backend/geo.py).
+Подробности: [условия подбора](docs/archive/scenario_constraints_audit.md), [остановки](docs/archive/walk_first_ux.md), [расчёты](backend/geo.py).
 
 </details>
 
@@ -174,7 +174,7 @@ python scripts/reindex.py
 
 Первая команда **перезаписывает** снимок POI и отчёт. Используются сохранённые исходники, если они есть. При доступном ключе этап описаний может обращаться к Gemini; для полностью локальной пересборки нужны сохранённые исходники и окружение без ключей.
 
-`python -m pipeline.run --fresh` обращается к внешним источникам и расходует их квоты. Для обычного старта это не требуется. Форматы: [POI](docs/data.md), [дополнения Ерлана](docs/feature_data_handoff.md), [источники и полевые проверки](docs/feature_expansion_data.md), [реестр фото](data/photo_identity_review.json).
+`python -m pipeline.run --fresh` обращается к внешним источникам и расходует их квоты. Для обычного старта это не требуется. Форматы: [POI](docs/data.md), [дополнения Ерлана](docs/archive/feature_data_handoff.md), [источники и полевые проверки](docs/feature_expansion_data.md), [реестр фото](data/photo_identity_review.json).
 
 ## Соответствие ТЗ
 
@@ -361,7 +361,7 @@ python eval/run_spec.py
 
 Оценочные скрипты без `--ai` проверяют локальные сценарии. Они записывают отчёты; `run_spec.py` обновляет `eval/real_spec/`. Это не оценка живого ИИ. Синтетические места не публикуются как реальные.
 
-[Документ PDF](docs/submission/Seruen_test_scenarios_and_limits.pdf) и [Word](docs/submission/Seruen_test_scenarios_and_limits.docx) фиксируют момент контрольного прогона; более поздняя публикация сайта отмечена выше. [Правила последней проверки](docs/scenario_constraints_audit.md).
+[Документ PDF](docs/submission/Seruen_test_scenarios_and_limits.pdf) и [Word](docs/submission/Seruen_test_scenarios_and_limits.docx) фиксируют момент контрольного прогона; более поздняя публикация сайта отмечена выше. [Правила последней проверки](docs/archive/scenario_constraints_audit.md).
 
 ## Приватность и безопасность
 
@@ -422,19 +422,31 @@ data/             POI, исходники, индекс и проверенны�
 scripts/          переиндексация, валидация, запуск и утилиты
 tests/            серверные тесты и tests/frontend/ для интерфейса
 eval/             сценарии и датированные отчёты
-docs/             контракты, инструкции, источники, отчёты выпусков
+docs/             действующие контракты, инструкции и источники
+docs/archive/     датированные рабочие заметки и отчёты выпусков
 docs/submission/  документ сценариев и ограничений для сдачи
 ```
 
 | Материал | Для чего |
 |---|---|
 | [API](docs/api.md), [расширения](docs/feature_expansion_contract.md) | Запросы, ответы, совместимость |
-| [Интерфейс](docs/frontend/README.md) | Просмотр, файлы, публикация |
+| [Интерфейс](docs/archive/frontend/README.md) | Просмотр, файлы, публикация |
 | [2ГИС](docs/twogis.md), [фото](docs/photos.md) | Интеграции и проверка данных |
 | [POI](docs/data.md), [качество](data/quality_report.md) | Состав и происхождение снимка |
-| [Форматы для Ерлана](docs/feature_data_handoff.md) | Добавление удобств, условий и связей ID |
-| [Условия рекомендаций](docs/scenario_constraints_audit.md) | Погода, дети, время, часы, расходы |
-| [Планирование](docs/walk_first_ux.md) | Цель, финиш, остановки |
-| [Сценарии и этика от 19 октября](docs/scenarios_and_ethics.md), [аудит ТЗ от 19 октября](docs/spec_audit.md) | Исторические свидетельства; текущий состав и статус — в этом README |
+| [Форматы для Ерлана](docs/archive/feature_data_handoff.md) | Добавление удобств, условий и связей ID |
+| [Условия рекомендаций](docs/archive/scenario_constraints_audit.md) | Погода, дети, время, часы, расходы |
+| [Планирование](docs/archive/walk_first_ux.md) | Цель, финиш, остановки |
+| [Сценарии и этика от 19 октября](docs/scenarios_and_ethics.md), [аудит ТЗ от 19 октября](docs/archive/spec_audit.md) | Исторические свидетельства; текущий состав и статус — в этом README |
 
 Следующие шаги для реального запуска: расширить проверенные входы и удобства, собрать оценки полезности, проверить доступность и нагрузку, вычитать переводы, согласовать права и устойчивые квоты внешних сервисов.
+
+## Лицензии
+
+Код — [MIT](LICENSE). Лицензия кода не распространяется автоматически на данные, фотографии и картографические слои.
+
+- OpenStreetMap — © участники OpenStreetMap, [ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/).
+- Wikimedia Commons — условия конкретного файла, автор и ссылка в `frontend/img/places/index.json` и `frontend/img/credits.json`.
+- Фотографии команды (`team-*`) — © команда Серуен; публикация требует проверки источника и прав.
+- Тексты Wikipedia — CC BY-SA со ссылкой на исходную статью.
+
+[Архив разработки](docs/archive/README.md) содержит прежние передачи задач и отчёты. Их статусы относятся к указанной дате.

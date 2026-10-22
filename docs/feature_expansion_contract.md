@@ -1,15 +1,15 @@
 # Серуен: общий контракт функций прогулки, редакция 2
 
-Дополнение 19 октября: `/health.features.on_route_breaks=1` включает остановки по направлению к следующей цели с сохранением оставшихся точек и финиша. `/comfort/search` принимает `on_route_only=true` с минимум двумя `route_points`, возвращает `extra_walk_min`. Неподходящая остановка даёт 409 `no_on_route_break`, `break_not_on_route` или `break_detour_too_long`; клиент оставляет действующий план. `OpenStatus` дополнен `today_hours`, `for_date`, `source_url`, `schedule_note`, `schedule_has_exceptions`; `VisitConditionView` — `provider_attributes`, `provider_url`. Все поля совместимы со старым клиентом. Поведение и публикация: [walk_first_ux.md](walk_first_ux.md).
+Дополнение 19 октября: `/health.features.on_route_breaks=1` включает остановки по направлению к следующей цели с сохранением оставшихся точек и финиша. `/comfort/search` принимает `on_route_only=true` с минимум двумя `route_points`, возвращает `extra_walk_min`. Неподходящая остановка даёт 409 `no_on_route_break`, `break_not_on_route` или `break_detour_too_long`; клиент оставляет действующий план. `OpenStatus` дополнен `today_hours`, `for_date`, `source_url`, `schedule_note`, `schedule_has_exceptions`; `VisitConditionView` — `provider_attributes`, `provider_url`. Все поля совместимы со старым клиентом. Поведение и публикация: [walk_first_ux.md](archive/walk_first_ux.md).
 
 Совместимое расширение API. База: `https://seruen-backend-f36d.onrender.com`.
 Точные типы и ограничения: `/openapi.json`, интерактивная проверка: `/docs`.
-Рабочие примеры на **синтетических данных**, включая обычный, пустой и ошибочный ответ: [examples/features](examples/features/).
-Форматы для Ерлана: [feature_data_handoff.md](feature_data_handoff.md).
+Рабочие примеры на **синтетических данных**, включая обычный, пустой и ошибочный ответ: [examples/features](examples/features).
+Форматы для Ерлана: [feature_data_handoff.md](archive/feature_data_handoff.md).
 
 Редакция 2 согласует код из `feat/frontend-eight-features` с сервером. Версии серверных PlanState/OfflinePlan и файлов данных остаются 1; локальная оболочка сохранённой прогулки в браузере — version=2.
 
-`GET /health` возвращает `feature_contract_version:2` и `features:{replan:1,end_point:1,constraints:1,comfort:1,cost:1,comfort_breaks:1,plan_export:1,nearby_break:1,city_history:1,meet_halfway:1,winter_plan:1}`. Флаги означают поддержку API, а не наличие новых данных или живой квоты Gemini. Подготовленный фронтенд включает функции только при этой редакции. Старый опубликованный интерфейс продолжает работать. Новые городские функции описаны в [city_experiences.md](city_experiences.md).
+`GET /health` возвращает `feature_contract_version:2` и `features:{replan:1,end_point:1,constraints:1,comfort:1,cost:1,comfort_breaks:1,plan_export:1,nearby_break:1,city_history:1,meet_halfway:1,winter_plan:1}`. Флаги означают поддержку API, а не наличие новых данных или живой квоты Gemini. Подготовленный фронтенд включает функции только при этой редакции. Старый опубликованный интерфейс продолжает работать. Новые городские функции описаны в [city_experiences.md](archive/city_experiences.md).
 
 | Назначение | Согласованный формат (вместо черновика v0) |
 |---|---|
@@ -142,7 +142,7 @@
 
 ## F7: функция удалена
 
-По решению команды подбор по атмосфере удалён. Он не объявляется в `/health`, не влияет на поиск и маршруты; его API больше нет. Старые сохранённые preferences очищаются от трёх прежних полей при чтении сервером, остальные ограничения сохраняются. Фото и их Gemini-анализ работают независимо. [Публикация и совместимость](frontend/ATMOSPHERE_REMOVAL.md).
+По решению команды подбор по атмосфере удалён. Он не объявляется в `/health`, не влияет на поиск и маршруты; его API больше нет. Старые сохранённые preferences очищаются от трёх прежних полей при чтении сервером, остальные ограничения сохраняются. Фото и их Gemini-анализ работают независимо. [Публикация и совместимость](archive/frontend/ATMOSPHERE_REMOVAL.md).
 
 ## F8: идентичность
 
@@ -215,7 +215,7 @@ SW v26: при начале прогулки пунктирные связи с 
 
 `PlanRequest.finish_poi_id`, `PlanState.finish_poi_id`, `OfflinePlan.finish_poi_id` are optional. For staying at a selected place, send plan `finish_mode=destination`, `destination` and its verified ID. The server resolves exact public POI coordinates instead of using rounded private coordinates as the venue's finish. Retain the ID in replans/export requests. Only a complete permitted offline route exports it.
 
-Recommendation order/durations now come from deterministic rules; `ai_reviewed` identifies a validated Gemini draft, while `selection_source=rules`. Shared time formula, UI behavior, backward compatibility and limits: [context_map_release.md](context_map_release.md).
+Recommendation order/durations now come from deterministic rules; `ai_reviewed` identifies a validated Gemini draft, while `selection_source=rules`. Shared time formula, UI behavior, backward compatibility and limits: [context_map_release.md](archive/context_map_release.md).
 
 
 ## Пояснения и фото: grounded-rag, 19.10.2026

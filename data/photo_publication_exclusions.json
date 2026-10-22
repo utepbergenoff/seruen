@@ -1,0 +1,122 @@
+{
+  "version": 1,
+  "decision_date": "2026-10-22",
+  "decision": "Keep all 19 flagged EXPO photos outside publication; do not import the original staging set wholesale.",
+  "source": "https://github.com/utepbergenoff/seruen/pull/78",
+  "items": [
+    {
+      "filename": "team-linebrew-expo-3.jpg",
+      "place": "01 Line Brew",
+      "status": "withheld",
+      "reason": "лицо мужчины справа на фоне — обрезать или убрать"
+    },
+    {
+      "filename": "team-chaplin-mega-3.jpg",
+      "place": "03 Chaplin Cinema",
+      "status": "withheld",
+      "reason": "постер фильма с актёрами; ребёнок со спины"
+    },
+    {
+      "filename": "team-koreanhouse-mega-3.jpg",
+      "place": "04 Korean House",
+      "status": "withheld",
+      "reason": "лицо женщины слева видно — убрать или обрезать"
+    },
+    {
+      "filename": "team-daredzhani-mega-3.jpg",
+      "place": "07 Дареджани",
+      "status": "withheld",
+      "reason": "лицо мужчины в очках — убрать или обрезать"
+    },
+    {
+      "filename": "team-coco-mega-3.jpg",
+      "place": "08 Coco",
+      "status": "withheld",
+      "reason": "часть лица сотрудника у левого верхнего края — обрезать"
+    },
+    {
+      "filename": "team-lepim-mega-2.jpg",
+      "place": "13 Лепим и варим",
+      "status": "withheld",
+      "reason": "читаемые цены на меню — убрать или обрезать"
+    },
+    {
+      "filename": "team-drinkit-mega-3.jpg",
+      "place": "16 Drinkit",
+      "status": "withheld",
+      "reason": "лицо посетительницы в профиль — проверить"
+    },
+    {
+      "filename": "team-drinkit-mega-4.jpg",
+      "place": "16 Drinkit",
+      "status": "withheld",
+      "reason": "лицо девушки видно — убрать или обрезать"
+    },
+    {
+      "filename": "team-drinkit-mega-5.jpg",
+      "place": "16 Drinkit",
+      "status": "withheld",
+      "reason": "реклама с детьми и чужие бренды — убрать"
+    },
+    {
+      "filename": "team-golpas-expo-3.jpg",
+      "place": "18 Golpas",
+      "status": "withheld",
+      "reason": "на экране ТВ узнаваемые лица — убрать или обрезать"
+    },
+    {
+      "filename": "team-leto-expo-3.jpg",
+      "place": "19 Лето",
+      "status": "withheld",
+      "reason": "лицо мужчины в очках слева — убрать или обрезать"
+    },
+    {
+      "filename": "team-balet-expo-4.jpg",
+      "place": "20 Астана балет",
+      "status": "withheld",
+      "reason": "лицо артистки крупно — нужно её согласие или убрать"
+    },
+    {
+      "filename": "team-balet-expo-5.jpg",
+      "place": "20 Астана балет",
+      "status": "withheld",
+      "reason": "лицо артистки видно — нужно согласие или убрать"
+    },
+    {
+      "filename": "team-tlp-expo-5.jpg",
+      "place": "23 TLP Flowers & Coffee",
+      "status": "withheld",
+      "reason": "на ноутбуке видны данные — обрезать или убрать"
+    },
+    {
+      "filename": "team-sherbet-expo-3.jpg",
+      "place": "24 Sherbet",
+      "status": "withheld",
+      "reason": "лицо сотрудника и ценник 400 тг — убрать или обрезать"
+    },
+    {
+      "filename": "team-sherbet-expo-4.jpg",
+      "place": "24 Sherbet",
+      "status": "withheld",
+      "reason": "на столе грязные салфетки — лучше убрать"
+    },
+    {
+      "filename": "team-delish-expo-3.jpg",
+      "place": "26 Delish",
+      "status": "withheld",
+      "reason": "лицо посетительницы справа — убрать или обрезать"
+    },
+    {
+      "filename": "team-tary-expo-3.jpg",
+      "place": "27 Tary",
+      "status": "withheld",
+      "reason": "гости вдали — проверить"
+    },
+    {
+      "filename": "team-alau-expo-3.jpg",
+      "place": "30 Алау мұзайдыны сарайы",
+      "status": "withheld",
+      "reason": "ребёнок на переднем плане и лицо мужчины — убрать"
+    }
+  ]
+}
