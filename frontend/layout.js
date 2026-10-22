@@ -46,7 +46,7 @@
   function fullscreen(value){
     if(full===value)return;
     if(value)priorFocus=document.activeElement;
-    full=value;document.body.classList.toggle('map-expanded',full);
+    full=value;placeMap();document.body.classList.toggle('map-expanded',full);
     // Keep keyboard navigation inside the visible map; restore the panel on Exit/Escape.
     for(const el of [panel,$('.top'),divider]){el.inert=full;if(full)el.setAttribute('inert','');else el.removeAttribute('inert');}
     if(full){wrap.setAttribute('role','dialog');wrap.setAttribute('aria-modal','true');}else{wrap.removeAttribute('role');wrap.removeAttribute('aria-modal');}
@@ -56,6 +56,18 @@
   $('#mapFullscreen').onclick=()=>fullscreen(!full);
   // Phones lead with the planner; the map opens full screen when a task needs it and closes after a pick.
   const phone=()=>window.matchMedia?.('(max-width: 860px)').matches;
+  // Phones keep the map in sight inside the planner, under the location line: drag and pinch it there.
+  // Full screen and wide screens put it back in its own column (the planner is inert while the map is full screen).
+  const slot=$('#phoneMapSlot'),home=document.createComment('map');wrap.before(home);
+  function placeMap(){
+    const inline=!!slot&&phone()&&!full;
+    if(inline&&wrap.parentNode!==slot)slot.prepend(wrap);
+    else if(!inline&&wrap.parentNode===slot)home.after(wrap);
+    map.invalidateSize();
+  }
+  // A tap on the small map only moves it; the point is chosen with «Выбрать на карте», full screen.
+  const mapClick=E.onMapClick;
+  E.onMapClick=e=>(phone()&&!full&&wrap.parentNode===slot)||!!mapClick?.(e);
   let pickOpen=false;
   // The map was laid out while hidden: keep the place it was asked to show, or frame you and the answer.
   const openMap=(pick=false,frame=false)=>{
@@ -67,6 +79,7 @@
     else map.setView(c,z,{animate:false});
   };
   $('#mapTopBtn')?.addEventListener('click',()=>openMap(false,true));
+  $('#mapInlineOpen')?.addEventListener('click',()=>openMap(false,false));
   // ⋯ on phones: theme, language and «О данных» open as a second header row
   const more=$('#moreBtn'),top=$('.top');
   const setMore=(on)=>{top.classList.toggle('more-open',on);more?.setAttribute('aria-expanded',String(on));};
@@ -90,7 +103,7 @@
       else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}
     }
   });
-  window.addEventListener('resize',()=>resize());
+  window.addEventListener('resize',()=>{placeMap();resize();});
   const changed=()=>{
     state.contextVersion++;
     if($('#goBtn').disabled){state.requestVersion++;$('#goBtn').disabled=false;$('#status').textContent='';}
@@ -100,5 +113,5 @@
   const oldSearch=E.onSearch,oldLang=E.onLang;
   E.onSearch=(...args)=>{$('#contextChanged').hidden=true;return oldSearch?.(...args);};
   E.onLang=(...args)=>{oldLang?.(...args);labels();};
-  layout.classList.toggle('panel-right',right);resize();labels();
+  layout.classList.toggle('panel-right',right);placeMap();resize();labels();
 })();
