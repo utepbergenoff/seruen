@@ -600,6 +600,7 @@
         <p class="src">${esc(t.catalogSelection)}</p><h3>${esc(p.name)}</h3>
         <p class="meta">${esc(catLabel(p.category))}${p.rating ? ` · ${icon("star")} ${esc(p.rating)}` : ""}</p>
         ${p.address ? `<p>${esc(p.address)}</p>` : ""}
+        ${FEAT.photos ? '<div class="photos" aria-live="polite"></div>' : ""}
         <p>${esc(p.distance_m)} ${esc(t.distance)}${p.walk_min != null ? ` · ${esc(p.walk_min)} ${esc(t.walk)}` : ""}</p>
         ${p.open_status ? statusPill(p.open_status) : ""}
         ${ext.cardBadges?.(p) || ""}
@@ -609,6 +610,9 @@
         ${gisOn() ? `<button type="button" class="btn" id="selectedGis" data-gis-url="${esc(nav.gisPlace)}" aria-expanded="false" aria-controls="selectedGisBox">${esc(t.gisBtn)}</button>` : ""}</div>
         <div class="gis-box" id="selectedGisBox" hidden></div></article>`;
       $("#selectedGis")?.addEventListener("click", e => toggleGis(detail.firstElementChild, id, e.currentTarget));
+      const answer = state.last, lang = state.lang;
+      fillPhotos(detail.querySelector(".photos"), p,
+        () => state.last === answer && state.selectedPlaceId === id && state.lang === lang);
     }
     $("#selectedPlaceActions").innerHTML = ext.selectedPlaceActions ? ext.selectedPlaceActions(p) : "";
     if (ext.onPlaceSelected) ext.onPlaceSelected(p, state.last);
