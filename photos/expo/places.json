@@ -1,0 +1,998 @@
+[
+  {
+    "n": 1,
+    "folder": "01 Line Brew",
+    "poi_id": "osm_node_11993865901",
+    "name": "Line Brew",
+    "type": "ресторан",
+    "lat": 51.0888656,
+    "lon": 71.4150156,
+    "twogis_map": "https://2gis.kz/astana?m=71.4150156%2C51.0888656%2F18",
+    "photos": [
+      {
+        "file": "c/team-linebrew-expo-1.jpg",
+        "from": "01 Line Brew/Screenshot 2026-10-22 071432.png",
+        "caption": "Зал с деревянными кабинками и витражными арочными окнами",
+        "size": "571x728",
+        "sha256": "7cf9a4456b11b8e57f19962159762da1e5e8e1bf11c1e653cb70af336ef0d95c",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-linebrew-expo-2.jpg",
+        "from": "01 Line Brew/Screenshot 2026-10-22 071737.png",
+        "caption": "Терраса с плетёными креслами у панорамных окон",
+        "size": "571x725",
+        "sha256": "df1ea019dae5fe3065f61d7adae810daec5c7be013ef1e64c822f947adceac27",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-linebrew-expo-3.jpg",
+        "from": "01 Line Brew/Screenshot 2026-10-22 071652.png",
+        "caption": "Томатный суп и картофель фри, логотип LINE BREW на тарелке",
+        "size": "567x731",
+        "sha256": "deef006f0290360c86cbfad49fafa1a415d0834fe120caef63e6e9d1cce18497",
+        "review": "лицо мужчины справа на фоне — обрезать или убрать"
+      }
+    ]
+  },
+  {
+    "n": 2,
+    "folder": "02 Del Papa",
+    "poi_id": "osm_node_12093489323",
+    "name": "Del Papa",
+    "type": "ресторан",
+    "lat": 51.088547,
+    "lon": 71.410156,
+    "twogis_map": "https://2gis.kz/astana?m=71.410156%2C51.088547%2F18",
+    "photos": [
+      {
+        "file": "c/team-delpapa-mega-1.jpg",
+        "from": "02 Del Papa/Screenshot 2026-10-22 071817.png",
+        "caption": "Зал с оливковым диваном, цветами и плиточным полом",
+        "size": "573x728",
+        "sha256": "5af62f6af273e9f2d48337f6d82eaee55f4e5e57c17d6af560632cbd6293da43",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-delpapa-mega-2.jpg",
+        "from": "02 Del Papa/Screenshot 2026-10-22 071942.png",
+        "caption": "Круглый стол с плетёными стульями у плиточной колонны",
+        "size": "544x683",
+        "sha256": "a68a3bbdbf7579e62befc02952c788901eecb0dedd0416bd595a077dbc5d998c",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-delpapa-mega-3.jpg",
+        "from": "02 Del Papa/Screenshot 2026-10-22 071957.png",
+        "caption": "Бар с бутылками вина и жёлтые бархатные кресла",
+        "size": "540x669",
+        "sha256": "07f4428855b4fa13c3b77aa5a80921c2bacb3a3a21a1d3e0d0116bba13b7c55f",
+        "review": "ok"
+      }
+    ]
+  },
+  {
+    "n": 3,
+    "folder": "03 Chaplin Cinema",
+    "poi_id": "osm_node_5880883097",
+    "name": "Chaplin Cinema",
+    "type": "кинотеатр",
+    "lat": 51.0883192,
+    "lon": 71.40973,
+    "twogis_map": "https://2gis.kz/astana?m=71.40973%2C51.0883192%2F18",
+    "photos": [
+      {
+        "file": "c/team-chaplin-mega-1.jpg",
+        "from": "03 Chaplin Cinema/Screenshot 2026-10-22 072258.png",
+        "caption": "Попкорн на фоне вывески Chaplin Cinemas",
+        "size": "565x705",
+        "sha256": "37c4f1a4cb3cc98de51514af6bb8b7f0a7f0441d2a0379fe85074209c4018e8c",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-chaplin-mega-2.jpg",
+        "from": "03 Chaplin Cinema/Screenshot 2026-10-22 072243.png",
+        "caption": "Кинозал с кожаными креслами-реклайнерами",
+        "size": "566x723",
+        "sha256": "1b0e6dc5733d0f0ba9aacdb03508fd2fcb66a7c22c453409a49e1b4df24b870f",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-chaplin-mega-3.jpg",
+        "from": "03 Chaplin Cinema/Screenshot 2026-10-22 072115.png",
+        "caption": "Коридор кинотеатра у входа в зал 6",
+        "size": "538x678",
+        "sha256": "c1a72a6b75965121d92bdf58e1ea2a98888a79f88440cbb2f5140aa113a7c2c5",
+        "review": "постер фильма с актёрами; ребёнок со спины"
+      }
+    ]
+  },
+  {
+    "n": 4,
+    "folder": "04 Korean House",
+    "poi_id": "osm_node_14107301089",
+    "name": "Korean House",
+    "type": "ресторан",
+    "lat": 51.0883714,
+    "lon": 71.4094571,
+    "twogis_map": "https://2gis.kz/astana?m=71.4094571%2C51.0883714%2F18",
+    "photos": [
+      {
+        "file": "c/team-koreanhouse-mega-1.jpg",
+        "from": "04 Korean House/Screenshot 2026-10-22 072616.png",
+        "caption": "Зал с бежевыми креслами и стеллажом с вазами",
+        "size": "573x729",
+        "sha256": "8d7e291924ffab945ed191d2bcec77e1c23a58450367790046fe022d3daac502",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-koreanhouse-mega-2.jpg",
+        "from": "04 Korean House/Screenshot 2026-10-22 072605.png",
+        "caption": "Жареные пельмени и закуски панчан на столе",
+        "size": "567x708",
+        "sha256": "47bab334c026cb63a39a39a8299c0c190b0a243ca44db1bd8bfa158cbedf6581",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-koreanhouse-mega-3.jpg",
+        "from": "04 Korean House/Screenshot 2026-10-22 072331.png",
+        "caption": "Зал с золотыми кубическими люстрами и красными решётками",
+        "size": "570x725",
+        "sha256": "cd9e6cdf3bafa22ab236f736d6cba8d3980eccb6d72c2e0ceb5e71803779dbb2",
+        "review": "лицо женщины слева видно — убрать или обрезать"
+      }
+    ]
+  },
+  {
+    "n": 6,
+    "folder": "06 Starbucks",
+    "poi_id": "osm_node_9047331879",
+    "name": "Starbucks",
+    "type": "кофейня",
+    "lat": 51.0890092,
+    "lon": 71.4089158,
+    "twogis_map": "https://2gis.kz/astana?m=71.4089158%2C51.0890092%2F18",
+    "photos": [
+      {
+        "file": "c/team-starbucks-mega-1.jpg",
+        "from": "06 Starbucks/Screenshot 2026-10-22 072746.png",
+        "caption": "Два карамельных фраппучино в стаканах Starbucks",
+        "size": "424x726",
+        "sha256": "cd0973a337a3d2aa2101308485cbd06e6bc4acd4dac97b9b4ff26fe5bdc00fa4",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-starbucks-mega-2.jpg",
+        "from": "06 Starbucks/Screenshot 2026-10-22 072753.png",
+        "caption": "Зал с деревянной картой мира «Кофейный пояс»",
+        "size": "856x608",
+        "sha256": "546b190094eef342d78d4c68864cc27dab95dd56be0d8006fc454d2ff5de7e0c",
+        "review": "ok"
+      }
+    ]
+  },
+  {
+    "n": 7,
+    "folder": "07 Дареджани",
+    "poi_id": "osm_node_12093489321",
+    "name": "Дареджани",
+    "type": "ресторан",
+    "lat": 51.0891636,
+    "lon": 71.4088848,
+    "twogis_map": "https://2gis.kz/astana?m=71.4088848%2C51.0891636%2F18",
+    "photos": [
+      {
+        "file": "c/team-daredzhani-mega-1.jpg",
+        "from": "07 Дареджани/Screenshot 2026-10-22 073041.png",
+        "caption": "Расписные своды, бар с винными бутылками и сервированные столы",
+        "size": "573x720",
+        "sha256": "0739404a8a91e4852e5c7fa747cbc43488a2b9bb1c031e84fd5805493b2dc74a",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-daredzhani-mega-2.jpg",
+        "from": "07 Дареджани/Screenshot 2026-10-22 073115.png",
+        "caption": "Люля-кебаб, медный чайник и чашка чая",
+        "size": "564x724",
+        "sha256": "676b93e638592be6abb4930a607f6aa8eaaf83aff09d0a96a8be1480e3428e7c",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-daredzhani-mega-3.jpg",
+        "from": "07 Дареджани/Screenshot 2026-10-22 073035.png",
+        "caption": "Зал со сводчатым расписным потолком и винными полками",
+        "size": "568x713",
+        "sha256": "2bcbbeb91ef27986eb0bba9cf9cf37dd47f22247acba54f178aa8a481e8e4c26",
+        "review": "лицо мужчины в очках — убрать или обрезать"
+      }
+    ]
+  },
+  {
+    "n": 8,
+    "folder": "08 Coco",
+    "poi_id": "osm_node_13397061028",
+    "name": "Coco",
+    "type": "ресторан",
+    "lat": 51.0891569,
+    "lon": 71.4087027,
+    "twogis_map": "https://2gis.kz/astana?m=71.4087027%2C51.0891569%2F18",
+    "photos": [
+      {
+        "file": "c/team-coco-mega-1.jpg",
+        "from": "08 Coco/Screenshot 2026-10-22 073228.png",
+        "caption": "Жёлтая лестница и скейтборд с логотипом COCO",
+        "size": "565x727",
+        "sha256": "52c926aabb23a72136ff4fec1a61fcedbe432f7a0f2864795c7cf1a66e26fe24",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-coco-mega-2.jpg",
+        "from": "08 Coco/Screenshot 2026-10-22 073155.png",
+        "caption": "Витрина с футболкой Streetfood Warriors и скейтбордом",
+        "size": "566x743",
+        "sha256": "4adfdf0c0d1ff4e47b34642dfa0915ababc3c2dd9d523a856934793638700500",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-coco-mega-3.jpg",
+        "from": "08 Coco/Screenshot 2026-10-22 073211.png",
+        "caption": "Бургер, картофель фри и закуски на столе",
+        "size": "855x606",
+        "sha256": "aaea2f1e30b23237e216c411385a05e88ebdd9480f09d1fe2e2ca99e0cfb655a",
+        "review": "часть лица сотрудника у левого верхнего края — обрезать"
+      }
+    ]
+  },
+  {
+    "n": 9,
+    "folder": "09 Аллея Мира и Согласия",
+    "poi_id": "osm_way_1456208624",
+    "name": "Бейбітшілік пен Келісім аллеясы",
+    "type": "аллея",
+    "lat": 51.0938123,
+    "lon": 71.4169498,
+    "twogis_map": "https://2gis.kz/astana?m=71.4169498%2C51.0938123%2F18",
+    "photos": [
+      {
+        "file": "c/team-alleyamira-expo-1.jpg",
+        "from": "09 Аллея Мира и Согласия/Screenshot 2026-10-22 073438.png",
+        "caption": "Стеклянная сфера между зданиями на закате",
+        "size": "858x611",
+        "sha256": "e667983d09b14dc20d70aa965b17655a1ed3a99f8c6388a2a16f1019a3dea6e3",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-alleyamira-expo-2.jpg",
+        "from": "09 Аллея Мира и Согласия/Screenshot 2026-10-22 073358.png",
+        "caption": "Цветущие гортензии на фоне стеклянной сферы",
+        "size": "571x729",
+        "sha256": "b5be156ae021b39c8f873f14df4c4313062cdc64c8d8900dbc2644255937ff4a",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-alleyamira-expo-3.jpg",
+        "from": "09 Аллея Мира и Согласия/Screenshot 2026-10-22 073336.png",
+        "caption": "Фонтан на закате на фоне облачного неба",
+        "size": "860x598",
+        "sha256": "2838be5b832203fd37f50abd015832653c9165b1bb4111e63852ecec2c813ebf",
+        "review": "ok"
+      }
+    ]
+  },
+  {
+    "n": 10,
+    "folder": "10 Paul",
+    "poi_id": "osm_node_12293708057",
+    "name": "Paul",
+    "type": "кафе-пекарня",
+    "lat": 51.088657,
+    "lon": 71.408584,
+    "twogis_map": "https://2gis.kz/astana?m=71.408584%2C51.088657%2F18",
+    "photos": [
+      {
+        "file": "c/team-paul-mega-1.jpg",
+        "from": "10 Paul/Screenshot 2026-10-22 073502.png",
+        "caption": "Зал с цветочными креслами и постером PAUL",
+        "size": "427x682",
+        "sha256": "e82a9853b2e08d576e1ed9b90c6d28802bfe10c13724c09f820f370ae6f26bcc",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-paul-mega-2.jpg",
+        "from": "10 Paul/Screenshot 2026-10-22 073541.png",
+        "caption": "Салат, круассан, хлеб и матча в чашке PAUL",
+        "size": "570x668",
+        "sha256": "275d36e7e7f8dfcb758e05f51f254b53fb9543c7dec7e8e1510505079e676313",
+        "review": "ok"
+      }
+    ]
+  },
+  {
+    "n": 11,
+    "folder": "11 Тануки",
+    "poi_id": "osm_node_10211901020",
+    "name": "Тануки",
+    "type": "ресторан",
+    "lat": 51.0905282,
+    "lon": 71.4242112,
+    "twogis_map": "https://2gis.kz/astana?m=71.4242112%2C51.0905282%2F18",
+    "photos": [
+      {
+        "file": "c/team-tanuki-expo-1.jpg",
+        "from": "11 Тануки/Screenshot 2026-10-22 073655.png",
+        "caption": "Деревянные столы с оранжевыми салфетками у панорамных окон",
+        "size": "566x721",
+        "sha256": "91204af8a821a1fb1df58a50a6f802d2e23b40b50e59d73e0fd81d07d1a8cb1a",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-tanuki-expo-2.jpg",
+        "from": "11 Тануки/Screenshot 2026-10-22 073635.png",
+        "caption": "Зал с крупными растениями и оранжевой рельефной стеной",
+        "size": "565x605",
+        "sha256": "8cde6df526f665d2b718b45d81066955f400c8337633e6739638cce75cc53b42",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-tanuki-expo-3.jpg",
+        "from": "11 Тануки/Screenshot 2026-10-22 073644.png",
+        "caption": "Длинный стол под подвесными фигурами черепах",
+        "size": "507x587",
+        "sha256": "3b21cc132576bff00ec70172558da49d524de2747cb5e54443e902c6ff5ee209",
+        "review": "ok"
+      }
+    ]
+  },
+  {
+    "n": 12,
+    "folder": "12 Luckee Yu",
+    "poi_id": "osm_node_13397061026",
+    "name": "Luckee Yu",
+    "type": "ресторан",
+    "lat": 51.0892714,
+    "lon": 71.4078873,
+    "twogis_map": "https://2gis.kz/astana?m=71.4078873%2C51.0892714%2F18",
+    "photos": [
+      {
+        "file": "c/team-luckeeyu-mega-1.jpg",
+        "from": "12 Luckee Yu/Screenshot 2026-10-22 073743.png",
+        "caption": "Открытая кухня с красной неоновой подсветкой Luckee Yu",
+        "size": "840x591",
+        "sha256": "5375bdddb479c0b34c2d6defc6382c873e4b00e31fa21095ef57d353feefb90f",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-luckeeyu-mega-2.jpg",
+        "from": "12 Luckee Yu/Screenshot 2026-10-22 073728.png",
+        "caption": "Зал с деревянными столами, бамбуковыми табличками и иероглифами",
+        "size": "848x645",
+        "sha256": "f75862204f234250e7978cae4894c2bc5ef3fd021d386b5cba15499eea0d035b",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-luckeeyu-mega-3.jpg",
+        "from": "12 Luckee Yu/Screenshot 2026-10-22 073717.png",
+        "caption": "Столик у колонны с красными цветами и фонариками",
+        "size": "566x687",
+        "sha256": "e625e5d12d87c61f621c395460685511b1f037d47c14c8c9cf675846b7183fa2",
+        "review": "ok"
+      }
+    ]
+  },
+  {
+    "n": 13,
+    "folder": "13 Лепим и варим",
+    "poi_id": "osm_node_12520559591",
+    "name": "Лепим и варим",
+    "type": "кафе",
+    "lat": 51.0891569,
+    "lon": 71.4078454,
+    "twogis_map": "https://2gis.kz/astana?m=71.4078454%2C51.0891569%2F18",
+    "photos": [
+      {
+        "file": "c/team-lepim-mega-1.jpg",
+        "from": "13 Лепим и варим/Screenshot 2026-10-22 073809.png",
+        "caption": "Стена-соты с вывеской «Лепим и варим»",
+        "size": "841x514",
+        "sha256": "c8390f7841e369263baceae3b7971f73279d661805d5f5ef676f4a4cef48e1dc",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-lepim-mega-2.jpg",
+        "from": "13 Лепим и варим/Screenshot 2026-10-22 073815.png",
+        "caption": "Зал с открытой кухней и меню-доской над стойкой",
+        "size": "857x591",
+        "sha256": "69c6ab76b08766a55235407820b5191a4740d7ab9cba38aa3c888944862fd67d",
+        "review": "читаемые цены на меню — убрать или обрезать"
+      }
+    ]
+  },
+  {
+    "n": 14,
+    "folder": "14 Пинта",
+    "poi_id": "osm_node_8237697404",
+    "name": "Пинта",
+    "type": "бар",
+    "lat": 51.089228,
+    "lon": 71.407533,
+    "twogis_map": "https://2gis.kz/astana?m=71.407533%2C51.089228%2F18",
+    "photos": [
+      {
+        "file": "c/team-pinta-mega-1.jpg",
+        "from": "14 Пинта/Screenshot 2026-10-22 073859.png",
+        "caption": "Пивная башня на столе, сзади светящаяся вывеска «Пинта»",
+        "size": "570x565",
+        "sha256": "a718c4837a1239fd2489ee013f9544e31e22c33d019c994af3d17aa1c4913367",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-pinta-mega-2.jpg",
+        "from": "14 Пинта/Screenshot 2026-10-22 073852.png",
+        "caption": "Зал с бархатными креслами и большими абажурами",
+        "size": "563x600",
+        "sha256": "f5dd9d4055553186bbde1eadad0280c5f5d203e667131b85190c0cc525496a9c",
+        "review": "ok"
+      }
+    ]
+  },
+  {
+    "n": 15,
+    "folder": "15 Discovery Coffee",
+    "poi_id": "osm_node_12990081501",
+    "name": "Discovery Coffee",
+    "type": "кофейня",
+    "lat": 51.0906396,
+    "lon": 71.4260369,
+    "twogis_map": "https://2gis.kz/astana?m=71.4260369%2C51.0906396%2F18",
+    "photos": [
+      {
+        "file": "c/team-discovery-expo-1.jpg",
+        "from": "15 Discovery Coffee/Screenshot 2026-10-22 074003.png",
+        "caption": "Вход со стеклянным козырьком и вывеской Discovery Coffee",
+        "size": "432x537",
+        "sha256": "11d135c83d0864bef02671273ca6c1e681cf6370c6825b5222bce74c273fd78f",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-discovery-expo-2.jpg",
+        "from": "15 Discovery Coffee/Screenshot 2026-10-22 074034.png",
+        "caption": "Потолок из деревянных кофейных зёрен и витрина с кофе",
+        "size": "852x443",
+        "sha256": "add44975683f7976c2a47d306193a5c4d4c18a9b350b930f4aef685134ebe7a0",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-discovery-expo-3.jpg",
+        "from": "15 Discovery Coffee/Screenshot 2026-10-22 074015.png",
+        "caption": "Стакан кофе на столе у окна с видом на высотки",
+        "size": "570x648",
+        "sha256": "690edd4d99fa654abef6e3fe70fe00080bbba856089c9542c68b5dc4181ffc51",
+        "review": "ok"
+      }
+    ]
+  },
+  {
+    "n": 16,
+    "folder": "16 Drinkit",
+    "poi_id": "osm_node_14275682079",
+    "name": "Drinkit",
+    "type": "кофейня",
+    "lat": 51.0890765,
+    "lon": 71.40609,
+    "twogis_map": "https://2gis.kz/astana?m=71.40609%2C51.0890765%2F18",
+    "photos": [
+      {
+        "file": "c/team-drinkit-mega-1.jpg",
+        "from": "16 Drinkit/Screenshot 2026-10-22 074137.png",
+        "caption": "Стеклянная витрина кофейни с вывеской drinkit coffee",
+        "size": "567x587",
+        "sha256": "853f9c7e182d78e51a14d27e73d27974891bf26d44303d4db898a080863b1bc2",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-drinkit-mega-2.jpg",
+        "from": "16 Drinkit/Screenshot 2026-10-22 074246.png",
+        "caption": "Стойка выдачи с напитками и планшеты для заказа",
+        "size": "852x591",
+        "sha256": "a4a39bf96124a5fc6bc698774d0dbd18bfc221032b11e2be42dc984b8c307397",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-drinkit-mega-3.jpg",
+        "from": "16 Drinkit/Screenshot 2026-10-22 074150.png",
+        "caption": "Голубой интерьер с вывеской drinkit coffee и стойкой бариста",
+        "size": "554x686",
+        "sha256": "f70c0a6ffe8e656b68e0e6ebfc75e72e06d5b866fbf8866e8ca91a947e517911",
+        "review": "лицо посетительницы в профиль — проверить"
+      },
+      {
+        "file": "c/team-drinkit-mega-4.jpg",
+        "from": "16 Drinkit/Screenshot 2026-10-22 074201.png",
+        "caption": "Голубая зона ступенчатых сидений и планшеты для заказа",
+        "size": "569x650",
+        "sha256": "297f161c2ba9c5684039d5ea31f7ace7eafd4ba438729c1b277e70d849486abb",
+        "review": "лицо девушки видно — убрать или обрезать"
+      },
+      {
+        "file": "c/team-drinkit-mega-5.jpg",
+        "from": "16 Drinkit/Screenshot 2026-10-22 074214.png",
+        "caption": "Вид на кофейню drinkit coffee с галереи ТРЦ",
+        "size": "513x514",
+        "sha256": "c2e1eeda047bee9455a951ffb7d89d7d5fbd3b4dbe15625421c58f3c12c242c7",
+        "review": "реклама с детьми и чужие бренды — убрать"
+      }
+    ]
+  },
+  {
+    "n": 18,
+    "folder": "18 Golpas",
+    "poi_id": "osm_node_11345949796",
+    "name": "Golpas",
+    "type": "кафе",
+    "lat": 51.0911515,
+    "lon": 71.4276338,
+    "twogis_map": "https://2gis.kz/astana?m=71.4276338%2C51.0911515%2F18",
+    "photos": [
+      {
+        "file": "c/team-golpas-expo-1.jpg",
+        "from": "18 Golpas/Screenshot 2026-10-22 074522.png",
+        "caption": "Зал с люстрой, деревянным балконом и зелёными креслами",
+        "size": "846x528",
+        "sha256": "0a68082f8051ceb4869b74f837fc636a8cd0937d2790a804723fdb957b35848d",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-golpas-expo-2.jpg",
+        "from": "18 Golpas/Screenshot 2026-10-22 074648.png",
+        "caption": "Деревянный балкон-антресоль, зелёные обои и бирюзовые кресла",
+        "size": "562x669",
+        "sha256": "5538fdb2b791fc48e79ceb7242de9786f5a1d6f0554770041e2f7cfb5864d5d3",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-golpas-expo-3.jpg",
+        "from": "18 Golpas/Screenshot 2026-10-22 074455.png",
+        "caption": "Сервированный стол на балконе с деревянными перилами",
+        "size": "854x518",
+        "sha256": "82a558ef6e2f2f033a2de52ffe2a064b1bda5808e2a3e60860cef5d410d06c74",
+        "review": "на экране ТВ узнаваемые лица — убрать или обрезать"
+      }
+    ]
+  },
+  {
+    "n": 19,
+    "folder": "19 Лето",
+    "poi_id": "osm_node_13681674667",
+    "name": "Лето",
+    "type": "кафе",
+    "lat": 51.0963407,
+    "lon": 71.426494,
+    "twogis_map": "https://2gis.kz/astana?m=71.426494%2C51.0963407%2F18",
+    "photos": [
+      {
+        "file": "c/team-leto-expo-1.jpg",
+        "from": "19 Лето/Screenshot 2026-10-22 074746.png",
+        "caption": "Зал с зелёными кожаными креслами и плетёными люстрами",
+        "size": "804x499",
+        "sha256": "4f24a4dd878e27e38211abe2f06abd453a473f99823c4068ce7bd1c4ba1b57f4",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-leto-expo-2.jpg",
+        "from": "19 Лето/Screenshot 2026-10-22 074800.png",
+        "caption": "Зал с плетёными светильниками, оливковыми деревьями и круглыми диванами",
+        "size": "851x535",
+        "sha256": "d9f6b606e4f8e6704ba0f285db6453a08b6ceec5762362b2f779c480d19b1c89",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-leto-expo-3.jpg",
+        "from": "19 Лето/Screenshot 2026-10-22 074811.png",
+        "caption": "Тёмный зал с оливковыми деревьями и барной стойкой вдали",
+        "size": "551x676",
+        "sha256": "f1c958536f5045673048b8ccce21fb35f843731dad40035c6f56c3eb34695aec",
+        "review": "лицо мужчины в очках слева — убрать или обрезать"
+      }
+    ]
+  },
+  {
+    "n": 20,
+    "folder": "20 Астана балет",
+    "poi_id": "osm_way_499328449",
+    "name": "Астана балет",
+    "type": "театр",
+    "lat": 51.0992346,
+    "lon": 71.4196527,
+    "twogis_map": "https://2gis.kz/astana?m=71.4196527%2C51.0992346%2F18",
+    "photos": [
+      {
+        "file": "c/team-balet-expo-1.jpg",
+        "from": "20 Астана балет/Screenshot 2026-10-22 074839.png",
+        "caption": "Зрительный зал с ярусами балконов и хрустальной люстрой",
+        "size": "833x536",
+        "sha256": "0dc88ab2bf85939de2b62179049de5db758920e21407ebd2dd494e0c3741d2bf",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-balet-expo-2.jpg",
+        "from": "20 Астана балет/Screenshot 2026-10-22 074909.png",
+        "caption": "Вид из фойе через окна на шар Нур Алем",
+        "size": "476x651",
+        "sha256": "72b365a374d625349da147085d8a8028f9933fc088e63eef0fac6eccf4ca0a47",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-balet-expo-3.jpg",
+        "from": "20 Астана балет/Screenshot 2026-10-22 074931.png",
+        "caption": "Сцена с декорациями средневекового города во время спектакля",
+        "size": "558x498",
+        "sha256": "0a1e595bad89a54ae1ff32f2893c52ae627d08e0dd1f52d3e9f63218fc95f082",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-balet-expo-4.jpg",
+        "from": "20 Астана балет/Screenshot 2026-10-22 074846.png",
+        "caption": "Балерина в арабеске на сцене в оранжевом платье",
+        "size": "476x575",
+        "sha256": "4d50a56836ff8c029fc346903263600ab693cab894d3e1def20da3f8a02821e9",
+        "review": "лицо артистки крупно — нужно её согласие или убрать"
+      },
+      {
+        "file": "c/team-balet-expo-5.jpg",
+        "from": "20 Астана балет/Screenshot 2026-10-22 074941.png",
+        "caption": "Танцовщица на сцене среди полотен с казахским орнаментом",
+        "size": "795x501",
+        "sha256": "79a854a816787a48efc034884e9275d90100df7826fa765511b9849c3af8331c",
+        "review": "лицо артистки видно — нужно согласие или убрать"
+      }
+    ]
+  },
+  {
+    "n": 22,
+    "folder": "22 Noble",
+    "poi_id": "osm_node_14104582301",
+    "name": "Noble",
+    "type": "кофейня",
+    "lat": 51.0786681,
+    "lon": 71.4230736,
+    "twogis_map": "https://2gis.kz/astana?m=71.4230736%2C51.0786681%2F18",
+    "photos": [
+      {
+        "file": "c/team-noble-expo-1.jpg",
+        "from": "22 Noble/noble1.png",
+        "caption": "Барная стойка под вывеской NOBLE COFFEE со списком напитков",
+        "size": "604x764",
+        "sha256": "58d2eed63e971180b245c0e2268f6bdf6c368213b03069c4ea191e2115755361",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-noble-expo-2.jpg",
+        "from": "22 Noble/noble2.png",
+        "caption": "Столик у окна с мягкими креслами и белой фактурной стеной",
+        "size": "597x761",
+        "sha256": "34ddfbac9b6fc7604abfbd51e1ca3b0f7bfc6b22658f50f7ebab375785961eb3",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-noble-expo-3.jpg",
+        "from": "22 Noble/noble.png",
+        "caption": "Тарелка драников с салатом, подсвеченная барная стойка",
+        "size": "603x771",
+        "sha256": "6f175ed8e182bb854ca33c95a5896e876aa6e1b867b7a144bdd3185e385c734e",
+        "review": "ok"
+      }
+    ]
+  },
+  {
+    "n": 23,
+    "folder": "23 TLP Flowers & Coffee",
+    "poi_id": "osm_node_11290690869",
+    "name": "TLP Flowers & Coffee",
+    "type": "кофейня-цветочный",
+    "lat": 51.1005554,
+    "lon": 71.412037,
+    "twogis_map": "https://2gis.kz/astana?m=71.412037%2C51.1005554%2F18",
+    "photos": [
+      {
+        "file": "c/team-tlp-expo-1.jpg",
+        "from": "23 TLP Flowers & Coffee/tlp.png",
+        "caption": "Новогодняя витрина с щелкунчиками, лошадками и сухоцветами",
+        "size": "1069x755",
+        "sha256": "bafc9341b596e9bf7e4b6042d3b75ebba65f9a4e0ff5ba86f90ceec70aa65b13",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-tlp-expo-2.jpg",
+        "from": "23 TLP Flowers & Coffee/tlp1.png",
+        "caption": "Большой щелкунчик среди стеллажей с сухоцветами",
+        "size": "601x767",
+        "sha256": "13dee2d3b361e5ff1c3e55747c4b4d81f5331681bd29644069b90d7c53647eb7",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-tlp-expo-3.jpg",
+        "from": "23 TLP Flowers & Coffee/tlp3.png",
+        "caption": "Тёмный зал с люстрой, картинами и цветочной витриной в окне",
+        "size": "591x752",
+        "sha256": "719df73f1d23b32ac4d3c18ac364ecef3347a563578476ba2fa4d801b7976cbf",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-tlp-expo-4.jpg",
+        "from": "23 TLP Flowers & Coffee/tlp4.png",
+        "caption": "Тёмный зал с хрустальными люстрами и зелёной стойкой",
+        "size": "598x766",
+        "sha256": "e0c906b3201b7e14b2d8c005a88b8afc9e265af5f0d64c44dfcae552fde58b21",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-tlp-expo-5.jpg",
+        "from": "23 TLP Flowers & Coffee/tlp2.png",
+        "caption": "Латте на столе на фоне стеллажей с сухоцветами",
+        "size": "436x757",
+        "sha256": "706e25aa912597996545912d24b240b1bba1b0240e874f1b585674e0512dc64e",
+        "review": "на ноутбуке видны данные — обрезать или убрать"
+      }
+    ]
+  },
+  {
+    "n": 24,
+    "folder": "24 Sherbet",
+    "poi_id": "osm_node_14102594001",
+    "name": "Sherbet",
+    "type": "кафе",
+    "lat": 51.0784106,
+    "lon": 71.424989,
+    "twogis_map": "https://2gis.kz/astana?m=71.424989%2C51.0784106%2F18",
+    "photos": [
+      {
+        "file": "c/team-sherbet-expo-1.jpg",
+        "from": "24 Sherbet/sherbet.png",
+        "caption": "Зал с кирпичной стеной, зелёной стеной и круглыми столами",
+        "size": "599x758",
+        "sha256": "45b983a746078bb5d13d43c18ea7d37ab9d6afb6497a2a716b7f0a87ec08e31b",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-sherbet-expo-2.jpg",
+        "from": "24 Sherbet/sherbet2.png",
+        "caption": "Столики у окна, кирпичная стена и вертикальное озеленение",
+        "size": "602x699",
+        "sha256": "fd883f2bbb5d26a453bce61051d879df07affbe6ab07e529a007b8600c055c53",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-sherbet-expo-3.jpg",
+        "from": "24 Sherbet/sherbet1.png",
+        "caption": "Витрина с выпечкой, фруктами и холодильник с напитками",
+        "size": "604x694",
+        "sha256": "0064b9d9fb6114eefcd6b693deb9c9711cc5cb0a6a045c6948bf2bc751d99da7",
+        "review": "лицо сотрудника и ценник 400 тг — убрать или обрезать"
+      },
+      {
+        "file": "c/team-sherbet-expo-4.jpg",
+        "from": "24 Sherbet/sherbet3.png",
+        "caption": "Деревянный стол с хлебной корзинкой, столики в зале",
+        "size": "600x698",
+        "sha256": "84867ccb5840dff550f23e047fc0f8267bb064cc274448d2617d371c93a9ca16",
+        "review": "на столе грязные салфетки — лучше убрать"
+      }
+    ]
+  },
+  {
+    "n": 25,
+    "folder": "25 Canele",
+    "poi_id": "osm_node_12098662467",
+    "name": "Canele",
+    "type": "кофейня-кондитерская",
+    "lat": 51.1013122,
+    "lon": 71.4146083,
+    "twogis_map": "https://2gis.kz/astana?m=71.4146083%2C51.1013122%2F18",
+    "photos": [
+      {
+        "file": "c/team-canele-expo-1.jpg",
+        "from": "25 Canele/canele.png",
+        "caption": "Витрина с пирожными под вывеской CANELÉ",
+        "size": "600x770",
+        "sha256": "c3fe92dfda2466d56e1ec2127f95f49086f6ef91ec4314f2f2fee926b22b3614",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-canele-expo-2.jpg",
+        "from": "25 Canele/canele1.png",
+        "caption": "Сервированный стол у панорамного окна с тюльпанами",
+        "size": "446x772",
+        "sha256": "08701699b51dc1097af04c2a79241a9fbd3f13004bf3f7250653d1a85bd02275",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-canele-expo-3.jpg",
+        "from": "25 Canele/canele2.png",
+        "caption": "Светлый зал с подвесными лампами и растениями",
+        "size": "598x762",
+        "sha256": "d66fdd24cf9837173242c0ebf53ff27c09c134caae717081144ea3bfa4d746cf",
+        "review": "ok"
+      }
+    ]
+  },
+  {
+    "n": 26,
+    "folder": "26 Delish",
+    "poi_id": "osm_node_10248180510",
+    "name": "Delish",
+    "type": "кофейня",
+    "lat": 51.1010935,
+    "lon": 71.4227958,
+    "twogis_map": "https://2gis.kz/astana?m=71.4227958%2C51.1010935%2F18",
+    "photos": [
+      {
+        "file": "c/team-delish-expo-1.jpg",
+        "from": "26 Delish/delish.png",
+        "caption": "Бирюзовый зал с пампасной травой над столиками",
+        "size": "600x770",
+        "sha256": "4a46ffd215a909ae1ea39095b31079474cee25fdea5c36ce78e3db0c174d2864",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-delish-expo-2.jpg",
+        "from": "26 Delish/delish1.png",
+        "caption": "Зал с арками, голубыми стенами и деревянными столами",
+        "size": "600x770",
+        "sha256": "2add6d2590318c99942260fb6a79322086e7e361ea64d937b50a855512aec05b",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-delish-expo-3.jpg",
+        "from": "26 Delish/delish2.png",
+        "caption": "Просторный зал с арками и бирюзовыми стульями",
+        "size": "598x765",
+        "sha256": "17d4ca291bb670023bf3010fed81d8e93ee200f7e8f9f750802415fcdf475fee",
+        "review": "лицо посетительницы справа — убрать или обрезать"
+      }
+    ]
+  },
+  {
+    "n": 27,
+    "folder": "27 Tary",
+    "poi_id": "osm_node_11925892164",
+    "name": "Tary",
+    "type": "кафе",
+    "lat": 51.1008676,
+    "lon": 71.4281541,
+    "twogis_map": "https://2gis.kz/astana?m=71.4281541%2C51.1008676%2F18",
+    "photos": [
+      {
+        "file": "c/team-tary-expo-1.jpg",
+        "from": "27 Tary/tary2.png",
+        "caption": "Высокий сводчатый зал с белыми скатертями и коврами",
+        "size": "606x767",
+        "sha256": "bf861ea4656e08fdbd4f6586a0273149d3bfdb072f2dc0fbb81456421abe47cd",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-tary-expo-2.jpg",
+        "from": "27 Tary/tary1.png",
+        "caption": "Стол с белой скатертью у книжного стеллажа",
+        "size": "444x772",
+        "sha256": "886b0779d5208de34904781d137ed9810410bf799f196e6e4d750e038eba434c",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-tary-expo-3.jpg",
+        "from": "27 Tary/tary.png",
+        "caption": "Зал с белыми скатертями, ковром на стене и поленницей",
+        "size": "603x757",
+        "sha256": "609d86d6ed60dbe87ed48d63483992bdaee892b473411f296131ab7e67c801db",
+        "review": "гости вдали — проверить"
+      }
+    ]
+  },
+  {
+    "n": 28,
+    "folder": "28 Ботанический сад",
+    "poi_id": "osm_way_1196402246",
+    "name": "Ботаникалық бақ",
+    "type": "парк",
+    "lat": 51.1061652,
+    "lon": 71.4165705,
+    "twogis_map": "https://2gis.kz/astana?m=71.4165705%2C51.1061652%2F18",
+    "photos": [
+      {
+        "file": "c/team-botsad-expo-1.jpg",
+        "from": "28 Ботанический сад/bota1.png",
+        "caption": "Сад камней с водой, можжевельниками и беседкой",
+        "size": "599x763",
+        "sha256": "b4ff77072097f701ee8f622fc9897e3bc4625707eece3abd85e7bb3f9c784cf8",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-botsad-expo-2.jpg",
+        "from": "28 Ботанический сад/bota3.png",
+        "caption": "Цветочные клумбы и аллея среди хвойных деревьев",
+        "size": "601x766",
+        "sha256": "9f036d35d7d682175a345ab915e2f6f59861a7309f51edda2e9b66326d212da1",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-botsad-expo-3.jpg",
+        "from": "28 Ботанический сад/bota2.png",
+        "caption": "Тропинка среди газона на закате",
+        "size": "595x763",
+        "sha256": "73897ed07ab19a91553d7a857e418543cd45198f43ec0436cdfb563d1dcdd10f",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-botsad-expo-4.jpg",
+        "from": "28 Ботанический сад/bota.png",
+        "caption": "Набережная с сосной, водой и высотками на горизонте",
+        "size": "1100x581",
+        "sha256": "00210f97076e77bf12d374e9fca6e43a6a23bb673037a0cb2bf57d2eaf18ae70",
+        "review": "ok"
+      }
+    ]
+  },
+  {
+    "n": 29,
+    "folder": "29 Мәңгілік Ел арка",
+    "poi_id": "osm_way_549307755",
+    "name": "Мәңгілік Ел салтанат қақпасы",
+    "type": "арка",
+    "lat": 51.1043034,
+    "lon": 71.4300836,
+    "twogis_map": "https://2gis.kz/astana?m=71.4300836%2C51.1043034%2F18",
+    "photos": [
+      {
+        "file": "c/team-mangilikel-expo-1.jpg",
+        "from": "29 Мәңгілік Ел арка/arka.png",
+        "caption": "Арка Мәңгілік Ел с подсветкой ночью",
+        "size": "1069x693",
+        "sha256": "cc745b1424a4d6250d39bdfd7a21cac065f688812f90a5d3288e778605156ce6",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-mangilikel-expo-2.jpg",
+        "from": "29 Мәңгілік Ел арка/arka1.png",
+        "caption": "Бронзовая статуя в нише арки на фоне неба",
+        "size": "601x700",
+        "sha256": "4a59eba5c90f79fbbe4baa8a9a7a94c50bb5c6ded82cf36825ff92efb84394f9",
+        "review": "ok"
+      }
+    ]
+  },
+  {
+    "n": 30,
+    "folder": "30 Алау ледовый дворец",
+    "poi_id": "osm_way_166267459",
+    "name": "Алау мұзайдыны сарайы",
+    "type": "ледовый дворец",
+    "lat": 51.1048776,
+    "lon": 71.4050693,
+    "twogis_map": "https://2gis.kz/astana?m=71.4050693%2C51.1048776%2F18",
+    "photos": [
+      {
+        "file": "c/team-alau-expo-1.jpg",
+        "from": "30 Алау ледовый дворец/alau.png",
+        "caption": "Каток с дорожкой KAZAKHSTAN и трибунами",
+        "size": "1100x582",
+        "sha256": "4b4a7f371ce61e94b8224a628b8befd6ca8e75fa647ed07bcee9fecd11b53255",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-alau-expo-2.jpg",
+        "from": "30 Алау ледовый дворец/алау.png",
+        "caption": "Ледовая арена с длинным катком и трибунами",
+        "size": "597x770",
+        "sha256": "5969d21a68baec6ddd61ad37deaa0f214315574e22d9d031766c39ed8a87a959",
+        "review": "ok"
+      },
+      {
+        "file": "c/team-alau-expo-3.jpg",
+        "from": "30 Алау ледовый дворец/image.png",
+        "caption": "Посетители катаются на льду, на стене вывеска ALAU",
+        "size": "1079x768",
+        "sha256": "7cd2dc823efb37e3da0ce7bae2248d4c8cab0fd5d235bbc9df5209dbffb54d54",
+        "review": "ребёнок на переднем плане и лицо мужчины — убрать"
+      }
+    ]
+  }
+]
