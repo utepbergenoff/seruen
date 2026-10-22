@@ -30,6 +30,7 @@ async function boot(t, opts = {}) {
     DomEvent:{disableClickPropagation(){},on:(el,event,cb)=>el.addEventListener(event,cb),stop:e=>e.stopPropagation()}};
   w.fetch=async(url,options)=>{
     opts.onFetch?.(url,options);
+    if(url==='photo-labels.json') return json(JSON.parse(fs.readFileSync('frontend/'+url,'utf8')));
     if(url==='presets.json'||url==='scenarios.json') return opts.staticFiles?.[url]?.promise || json(JSON.parse(fs.readFileSync('frontend/'+url,'utf8')));
     if(opts.live && url.startsWith('https://api.example.test')) {
       let response;

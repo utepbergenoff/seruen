@@ -210,6 +210,20 @@ input[type="checkbox"][role="switch"]:checked, .winter-toggle input[role="switch
   body.map-expanded #mapFullscreen { background: var(--sky-deep); color: #FFFCF6; border-color: var(--sky-deep); }
   .map-legend { bottom: 30px; font-size: 11.5px; }
 }
+/* phones: the map in the planner, under the location line — small, movable, one tap to full screen.
+   isolation keeps Leaflet's own layers under the sticky header. */
+.phone-map-slot { display: none; }
+@media (max-width: 860px) {
+  .phone-map-slot { display: block; position: relative; isolation: isolate; height: clamp(220px, 36vh, 300px); margin: 12px 0 6px;
+    border-radius: var(--r-l); overflow: hidden; border: 1px solid var(--line); background: var(--soft); }
+  .phone-map-slot .map-wrap { position: absolute; inset: 0; height: 100%; min-height: 0; overflow: hidden; border-radius: 0; }
+  .phone-map-slot .map-tools, .phone-map-slot .map-foot { display: none !important; }
+  .map-inline-open { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 1100; display: inline-flex; align-items: center; gap: 8px;
+    min-height: 46px; padding: 10px 20px; border: 0; border-radius: 999px; background: var(--sky-deep); color: #FFFCF6; font: 700 15px var(--font);
+    box-shadow: var(--shadow-lift); cursor: pointer; white-space: nowrap; }
+  .map-inline-open .ic { width: 18px; height: 18px; color: var(--sun); }
+  [data-theme="dark"] .map-inline-open, [data-theme="dark"] .map-inline-open .ic { color: #0F1813; }
+}
 
 /* ---------- 4. results and place cards ---------- */
 .answer-summary { display: grid; gap: 4px; padding: 16px 18px; border-radius: var(--r-l); background: var(--surface); border: 1px solid var(--line-soft); }
@@ -226,15 +240,14 @@ input[type="checkbox"][role="switch"]:checked, .winter-toggle input[role="switch
 .it-time, .ws-leg { background: var(--sun-tint); color: var(--ink); }
 .rec { padding: 0; gap: 0; overflow: hidden; border-radius: var(--r-l); }
 .rec > * { margin-left: 20px; margin-right: 20px; }
-.rec > .photos { order: -1; margin: 0 0 4px; }
+/* photos come after the name and the description, with Gemini's labels right under them (Alikhan, 20.10) */
+.rec > .photos { margin-top: 14px; }
+.rec > .photos .ph-strip { border-radius: var(--r); overflow: hidden; }
 .rec > .rec-title { margin-top: 16px; }
 .rec > :last-child { margin-bottom: 18px; }
 .rec > * + * { margin-top: 12px; }
-.rec > .photos + * { margin-top: 16px; }
-.rec .photos:empty, .rec .photos .loading, .rec .photos .ph-none { display: none; }
-.rec .photos .ph-strip { border-radius: 0; gap: 2px; }
-.rec .photos .ph-strip img { border-radius: 0; }
-.rec .photos > :not(.ph-strip) { margin-left: 20px; margin-right: 20px; }
+.rec .photos:empty { display: none; }
+.rec .photos .ph-strip { gap: 4px; }
 .rec .photos > .ph-strip + * { margin-top: 10px; }
 .rec h3 { font: 600 21px/1.25 var(--display); }
 .num { background: var(--surface); border-color: var(--sky-deep); color: var(--sky-deep); }
@@ -412,4 +425,35 @@ details.more-details p { margin: 6px 0 0; font-size: 13.5px; color: var(--muted)
   .map-top-btn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .map-top-btn { min-width: 44px; justify-content: center; }
   .top .brand h1 { font-size: 18px; }
+}
+
+/* Gemini's photo labels under the photos: clearly visible chips */
+.rec .photos .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.rec .photos .tag { font-size: 13px; padding: 5px 11px; background: var(--sun-tint); color: var(--ink); border: 1px solid #E9D9AE; }
+.rec .photos .tag .ic { color: var(--sun-deep); }
+.rec .photos .ph-why { margin-top: 10px; font-size: 14px; }
+[data-theme="dark"] .rec .photos .tag { border-color: #5A4A24; }
+
+/* meeting results: each place in its own numbered card, like the walk results (not a thin line between them) */
+#experiences.card { background: var(--paper-2); }
+#experienceResult { counter-reset: meet; display: grid; gap: 16px; margin-top: 14px; }
+#experienceResult > .meet-place { counter-increment: meet; margin: 0; padding: 18px 18px 16px; border: 1px solid var(--line); border-top: 1px solid var(--line);
+  border-radius: var(--r-l); background: var(--surface); box-shadow: 0 1px 0 rgba(28, 42, 34, .04), 0 12px 26px -20px rgba(28, 42, 34, .55); }
+#experienceResult > .meet-place h3 { display: flex; align-items: center; gap: 12px; margin: 0 0 2px; font: 600 20px/1.25 var(--display); color: var(--ink); }
+#experienceResult > .meet-place h3::before { content: counter(meet); flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
+  border: 2px solid var(--sky-deep); color: var(--sky-deep); background: var(--surface); font: 700 15px var(--display); }
+#experienceResult > .meet-place > h3 + .meta { margin: 0 0 4px 46px; }
+#experienceResult > .meet-place .meeting-times { margin: 12px 0 8px; }
+#experienceResult > .meet-place .meeting-times span { background: var(--paper-2); border-color: var(--line-soft); color: var(--muted); }
+#experienceResult > .meet-place .meeting-times strong { font: 700 22px var(--display); color: var(--ink); }
+#experienceResult > .meet-place .row { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; }
+#experienceResult > .meet-place [data-meet-route] { background: var(--sky-deep); border-color: var(--sky-deep); color: #FFFCF6; }
+#experienceResult > .meet-place [data-meet-route]:hover { background: var(--sky-ink); border-color: var(--sky-ink); color: #FFFCF6; }
+[data-theme="dark"] #experienceResult > .meet-place [data-meet-route] { color: #0F1813; }
+#experienceResult > .meet-place .ph-none { margin: 10px 0 0; color: var(--muted); }
+#experienceResult > #meetBack { justify-self: start; }
+@media (max-width: 860px) {
+  #experienceResult > .meet-place { padding: 16px 14px 14px; }
+  #experienceResult > .meet-place .row { display: grid; grid-template-columns: 1fr; }
+  #experienceResult > .meet-place .row .btn { justify-content: center; min-height: 46px; }
 }

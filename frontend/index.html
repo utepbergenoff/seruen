@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="editorial.css">
   <link rel="stylesheet" href="alignment.css">
+  <link rel="stylesheet" href="neon.css">
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -102,7 +103,7 @@
         <div id="storyLayerField" hidden></div>
         <div class="map-layout-actions"><button id="mapFullscreen" type="button" class="btn small" aria-pressed="false"></button><button id="panelSide" type="button" class="btn small"></button></div>
       </div>
-      <div id="mapLegend" class="map-legend" aria-label="Legend" hidden></div>
+      <div class="map-foot"><p id="nightInfo" class="night-info" role="status" hidden></p><div id="mapLegend" class="map-legend" aria-label="Legend" hidden></div></div>
     </section>
 
     <div id="panelDivider" class="panel-divider" role="separator" tabindex="0" aria-orientation="vertical" aria-controls="searchPanel map"></div>
@@ -125,6 +126,9 @@
         <div id="geoActions" class="geo-actions" hidden>
           <button id="geoRetry" type="button" class="btn small" data-i18n="retry"></button>
           <button id="geoMap" type="button" class="btn small" data-i18n="geoPickMap"></button>
+        </div>
+        <div id="phoneMapSlot" class="phone-map-slot">
+          <button id="mapInlineOpen" class="map-inline-open" type="button"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg> <span data-i18n="mapOpenFull"></span></button>
         </div>
         <div id="meetingFields" hidden></div>
         <section id="scenarioStrip" class="strip" aria-labelledby="stripTitle" hidden>
@@ -193,5 +197,6 @@
   <script src="experiences-i18n.js"></script>
   <script src="experiences.js"></script>
   <script src="layout.js"></script>
+  <script src="night-lights.js"></script>
 </body>
 </html>

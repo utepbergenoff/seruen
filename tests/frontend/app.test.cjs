@@ -145,22 +145,22 @@ test('2GIS failures: no match is final, a timeout offers retry, the card stays',
   assert.match(c1.querySelector('h3').textContent,/Coffee BOOM/);
 });
 
-test('card face shows the action, visit duration and truthful AI/template source without expanding More',async t=>{
+test('card face shows the action; visit duration and the truthful AI/template source are under More',async t=>{
   const b=await boot(t);b.click('#goBtn');await tick();
   const ai={...rec('p1','Fame City'),why_source:'ai',what_to_do_source:'ai'};
   b.requests[0].resolve(json({...answer('mixed'),mode:'ai',recommendations:[ai,rec('p2','Сквер'),rec('p3','Парк')]}));await tick();
   const cards=[...b.w.document.querySelectorAll('.rec')];
   for(const c of cards){
-    assert.equal(c.querySelectorAll('.badge.ai,.badge.tpl').length,1);
+    assert.equal(c.querySelector('.rec-stay'),null);  // no «На месте · идея ИИ» line on the face (22.10): both live under «Подробнее»
     // why it fits and what to do are two labelled lines on the face; the time budget is in plain words under «Подробнее»
     assert.match(c.querySelector('.why').textContent.replace(/\s+/g,' '),/Почему подходит ?w\. ?Что делать ?d\./);
-    assert.match(c.querySelector('.rec-stay').textContent,/На месте: ~30/);
     const more=c.querySelector('details.more-details');
     assert.ok(more&&!more.open);assert.doesNotMatch(more.textContent,/≤|\+ \d+ на месте/);
+    assert.match(more.textContent,/на месте ≈30 мин/);
+    assert.match(more.textContent,c===cards[0]?/текст написал ИИ \(Gemini\)/:/по шаблону/);
   }
   assert.match(cards[0].querySelector('details.more-details').textContent,/текст написал ИИ/);
-  assert.equal(cards[0].querySelectorAll('.badge.ai').length,1);
-  assert.equal(cards[1].querySelectorAll('.badge.ai').length,0);
+  assert.equal(b.w.document.querySelectorAll('.rec .badge.ai,.rec .badge.tpl').length,0);
   assert.match(cards[1].querySelector('details.more-details').textContent,/место добавлено кодом/);
 });
 
@@ -336,8 +336,11 @@ test('an old server never receives new fields', async t => {
 test('only new: without server support visited places are hidden here and counted', async t => {
   const b = await boot(t); await settle(); b.click('#goBtn'); await tick();
   b.requests[0].resolve(json({...answer('x'), recommendations: [rec('p1', 'Был'), rec('p2', 'Новое')]})); await settle();
-  b.click('.rec [data-keep="visited"]'); await settle();
+  // «Посетил(а)» is gone from the cards (21.10); a place is marked as visited via «Не подходит → Уже был(а)» or older data
+  const F = b.w.SeruenFeatures; F.mine.places.set('p1', await b.w.SeruenStore.putPlace({poi_id: 'p1', name: 'Был', visited_at: Date.now()}));
   b.click('#mineBtn'); await settle();
+  assert.equal(b.w.document.querySelector('[data-keep="visited"]'), null);  // no «Посетил(а)» on cards
+  assert.equal(b.w.document.querySelector('#mine [data-filter="visited"]'), null);  // nor in My places
   const box = b.w.document.querySelector('#onlyNew'); box.checked = true; box.dispatchEvent(new b.w.Event('change')); await tick();
   b.requests[1].resolve(json({...answer('y'), recommendations: [rec('p1', 'Был'), rec('p2', 'Новое')]})); await settle();
   assert.deepEqual([...b.w.document.querySelectorAll('.rec h3')].map(h => h.textContent.trim()), ['Новое']);

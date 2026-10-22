@@ -571,3 +571,20 @@ Object.assign(window.I18N.kk, {hoursToday: "Бүгін"});
 Object.assign(window.I18N.ru.x, {providerCostUnknown: "Цена входа и обязательный заказ в 2ГИС не указаны."});
 Object.assign(window.I18N.en.x, {providerCostUnknown: "2GIS lists no entry fee or minimum order."});
 Object.assign(window.I18N.kk.x, {providerCostUnknown: "2ГИС-те кіру ақысы мен міндетті тапсырыс көрсетілмеген."});
+Object.assign(window.I18N.ru.ph, {savedAnalysis: "Подписи — анализ этих фото Gemini от {d}: сейчас ИИ недоступен."});
+Object.assign(window.I18N.en.ph, {savedAnalysis: "Labels: Gemini's analysis of these photos from {d} (the AI is unavailable right now)."});
+Object.assign(window.I18N.kk.ph, {savedAnalysis: "Белгілер — Gemini осы фотоларды {d} талдаған: қазір ЖИ қолжетімсіз."});
+
+// neon night (21.10): on the dark map the places open right now glow
+Object.assign(window.I18N.ru, {lgLights: "Открыто сейчас", night: {info: "Светятся места, открытые в {t}: {n}", until: "открыто до {t}", allDay: "круглосуточно", hours: "Часы"}});
+Object.assign(window.I18N.en, {lgLights: "Open now", night: {info: "Glowing: {n} places open at {t}", until: "open until {t}", allDay: "open 24/7", hours: "Hours"}});
+Object.assign(window.I18N.kk, {lgLights: "Қазір ашық", night: {info: "{t} кезінде ашық орындар жарқырайды: {n}", until: "{t} дейін ашық", allDay: "тәулік бойы", hours: "Жұмыс уақыты"}});
+
+// 21.10: the purchase note and all 2GIS facts are one closed list on the card
+Object.assign(window.I18N.ru.x, {placeFacts: {one: "Ещё {n} сведение о месте", few: "Ещё {n} сведения о месте", many: "Ещё {n} сведений о месте", other: "Ещё {n} сведений о месте"}});
+Object.assign(window.I18N.en.x, {placeFacts: {one: "{n} more detail about the place", other: "{n} more details about the place"}});
+Object.assign(window.I18N.kk.x, {placeFacts: {other: "Орын туралы тағы {n} мәлімет"}});
+// phones: the button on the small map in the planner
+Object.assign(window.I18N.ru, {mapOpenFull: "Открыть карту"});
+Object.assign(window.I18N.kk, {mapOpenFull: "Картаны ашу"});
+Object.assign(window.I18N.en, {mapOpenFull: "Open the map"});
