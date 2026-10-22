@@ -56,6 +56,33 @@ test('selection survives language and health rerenders; a fresh search clears it
   assert.equal(b.w.document.querySelector('#resultsOverview').hidden,false);
 });
 
+test('a catalog selection loads its own photos once; late photos cannot replace another selected place',async t=>{
+  let finishPhoto;
+  const pendingPhoto=new Promise(resolve=>{finishPhoto=resolve;});
+  const photoUrl='https://seruen-astana.netlify.app/img/places/c/test-extra.jpg';
+  const b=await boot(t,{...opts,photos:url=>url.includes('/2gis_extra/')
+    ? pendingPhoto : json({photos:[],status:'no_photos'})});
+  const d=await search(b), a=b.w.SeruenApp;
+  assert.equal(b.photos.filter(p=>p.url.includes('/2gis_extra/')).length,0);
+  a.markers['2gis_extra'].fire('click');await settle();
+  assert.ok(b.w.document.querySelector('#selectedPlaceCard .photos .loading'));
+  const calls=b.photos.filter(p=>p.url.includes('/2gis_extra/'));
+  assert.equal(calls.length,1);
+  assert.equal(calls[0].body.near.lat,d.nearby_places[0].coords.lat);
+  assert.equal(calls[0].body.near.lon,d.nearby_places[0].coords.lon);
+  a.markers[d.recommendations[0].poi_id].fire('click');
+  finishPhoto(json({photos:[{url:photoUrl,source:'team'}],status:'ai_unavailable'}));
+  await settle();
+  assert.equal(a.state.selectedPlaceId,d.recommendations[0].poi_id);
+  assert.equal(b.w.document.querySelector(`#selectedPlaceCard img[src="${photoUrl}"]`),null);
+  a.markers['2gis_extra'].fire('click');await settle();
+  assert.equal(b.w.document.querySelector('#selectedPlaceCard .photos img').src,photoUrl);
+  assert.equal(b.photos.filter(p=>p.url.includes('/2gis_extra/')).length,1);
+  b.click('#backToPlaces');await settle();
+  assert.equal(b.w.document.querySelector('#resultsOverview').hidden,false);
+  assert.equal(b.requests.length,1);
+});
+
 for(const selected of ['recommendation','catalog']) {
   test(`start walk targets exactly the selected ${selected}, never top 1`,async t=>{
     const wait={};wait.promise=new Promise(r=>wait.resolve=r);
